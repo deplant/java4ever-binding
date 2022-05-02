@@ -1,6 +1,7 @@
 plugins {
     id "java-library"
     id 'maven-publish'
+    id "com.github.node-gradle.node" version "3.2.1" // for generating API with NodeJS script
     id "io.freefair.lombok" version "6.4.3" // apply false
 }
 
