@@ -135,6 +135,11 @@ sourceSets {
     }
 }
 
+task generateApi(type: NodeTask) {
+    script = file('generator/gen-java.js')
+    //args = ['arg1', 'arg2']
+}
+
 test {
     useJUnitPlatform()
 }
