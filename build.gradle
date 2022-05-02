@@ -1,0 +1,97 @@
+plugins {
+    id "java-library"
+    id 'maven-publish'
+    id "io.freefair.lombok" version "6.4.3" // apply false
+}
+
+group v_groupId
+version v_version
+
+repositories {
+    mavenCentral()
+}
+
+publishing {
+    publications {
+        Binding(MavenPublication) {
+            groupId = v_groupId
+            artifactId = v_bindingName
+            version = v_version
+
+            from components.java
+
+            pom {
+                name = 'java4ever/Binding'
+                description = 'Binding library for Everscale DApp development'
+                url = "https://github.com/deplant/" + v_bindingRepo
+//                properties = [
+//                        myProp          : "value",
+//                        "prop.with.dots": "anotherValue"
+//                ]
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = v_developerId
+                        name = v_developerName
+                        email = v_developerEmail
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/deplant/java4ever-binding.git'
+                    developerConnection = 'scm:git:ssh://github.com/deplant/java4ever-binding.git'
+                    url = 'http://github.com/deplant/java4ever-binding'
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+
+    //TODO Remove all dependencies from binding core!!!
+
+    // Logging
+    implementation "org.apache.logging.log4j:log4j-core:$lo4jVersion"
+    implementation "org.apache.logging.log4j:log4j-api:$lo4jVersion"
+
+    // JSON
+    implementation "com.google.code.gson:gson:2.8.9"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec) {
+    jvmArgs += "--enable-preview"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/gen/java']
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task replaceVersionInREADME << {
+    // Maven
+    ant.replaceregexp(match: '<version>([0-9\\.]+)</version>', replace: "<version>${v_version}</version>", flags: 'g', byline: true) {
+        fileset(dir: '.', includes: 'README.md')
+    }
+    // Gradle
+    ant.replaceregexp(match: 'com\\.acme\\:mylibrary\\:([0-9\\.]+)', replace: "com.acme:mylibrary:${v_version}", flags: 'g', byline: true) {
+        fileset(dir: '.', includes: 'README.md')
+    }
+}
