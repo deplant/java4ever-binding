@@ -26,14 +26,6 @@ version v_version
 
 repositories {
     mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/deplant/java4ever-binding")
-        credentials {
-            username = System.getenv("USERNAME")
-            password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
-        }
-    }
 }
 
 publishing {
