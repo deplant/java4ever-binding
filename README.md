@@ -1,7 +1,7 @@
 # java4ever:binding
 
-[![JDK version](https://img.shields.io/badge/Java-17+-green.svg)](https://shields.io/)
-[![SDK version](https://img.shields.io/badge/TON%20SDK-v1.28.1-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
+[![JDK version](https://img.shields.io/badge/Java-17.0.2+-green.svg)](https://shields.io/)
+[![SDK version](https://img.shields.io/badge/TON%20SDK-v1.33.0+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
 Java Binding for TON-SDK via JSON-RPC interface. Native interconnection is not based on JNI derivatives but on
@@ -24,7 +24,7 @@ channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegr
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.binding:binding:1.1.5'
+    implementation 'tech.deplant.binding:binding:1.1.1'
 }
 ```
 
@@ -33,9 +33,9 @@ dependencies {
 ```xml
 
 <dependency>
-    <groupId>io.everails.binding</groupId>
+    <groupId>tech.deplant.binding</groupId>
     <artifactId>binding</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -43,5 +43,5 @@ dependencies {
 
 ### Can be used with any TON-SDK version
 
-You can use TON-SDK 1.16.0+ for your project or even load multiple libraries with different versions. You can use your
+You can use TON-SDK 1.33.0+ for your project or even load multiple libraries with different versions. You can use your
 custom TON-SDK fork if you like. 
