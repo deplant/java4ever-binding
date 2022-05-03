@@ -15,9 +15,12 @@ on:
     branches:
       - 'master'
 
-jobs:
-  build:
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
+jobs:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
