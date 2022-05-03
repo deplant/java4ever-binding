@@ -37,6 +37,16 @@ repositories {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/deplant/java4ever-binding")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
+            }
+        }
+    }
     publications {
         gpr(MavenPublication) {
             groupId = v_groupId
