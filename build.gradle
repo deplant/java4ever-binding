@@ -73,6 +73,7 @@ publishing {
                 }
             }
         }
+    }
 }
 
 dependencies {
