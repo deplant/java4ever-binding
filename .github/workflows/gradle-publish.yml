@@ -62,6 +62,7 @@ jobs:
         gradle-version: 7.4.2
         arguments: publish --stacktrace
       env:
+        REGISTRY: 'https://maven.pkg.github.com/deplant/java4ever-binding'
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_PACKAGES_UPLOAD_TOKEN: ${{ secrets.PUBLISH_NOEXPIRE_TOKEN }}
