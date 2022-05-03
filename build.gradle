@@ -39,41 +39,40 @@ repositories {
 publishing {
     publications {
         gpr(MavenPublication) {
-            groupId = v_groupId
-            artifactId = v_bindingName
-            version = v_version
+//            groupId = v_groupId
+//            artifactId = v_bindingName
+//            version = v_version
 
             from components.java
 
-            pom {
-                name = 'java4ever/Binding'
-                description = 'Binding library for Everscale DApp development'
-                url = "https://github.com/deplant/" + v_bindingRepo
-//                properties = [
-//                        myProp          : "value",
-//                        "prop.with.dots": "anotherValue"
-//                ]
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = v_developerId
-                        name = v_developerName
-                        email = v_developerEmail
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/deplant/java4ever-binding.git'
-                    developerConnection = 'scm:git:ssh://github.com/deplant/java4ever-binding.git'
-                    url = 'http://github.com/deplant/java4ever-binding'
-                }
+//            pom {
+//                name = 'java4ever/Binding'
+//                description = 'Binding library for Everscale DApp development'
+//                url = "https://github.com/deplant/" + v_bindingRepo
+////                properties = [
+////                        myProp          : "value",
+////                        "prop.with.dots": "anotherValue"
+////                ]
+//                licenses {
+//                    license {
+//                        name = 'The Apache License, Version 2.0'
+//                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id = v_developerId
+//                        name = v_developerName
+//                        email = v_developerEmail
+//                    }
+//                }
+//                scm {
+//                    connection = 'scm:git:git://github.com/deplant/java4ever-binding.git'
+//                    developerConnection = 'scm:git:ssh://github.com/deplant/java4ever-binding.git'
+//                    url = 'http://github.com/deplant/java4ever-binding'
+//                }
             }
         }
-    }
 }
 
 dependencies {
