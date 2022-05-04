@@ -8,4 +8,3 @@ target/
 hs_err_pid*.*
 *.iml
 .DS_Store
-gradle.properties

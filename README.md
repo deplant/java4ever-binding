@@ -4,8 +4,14 @@
 [![SDK version](https://img.shields.io/badge/TON%20SDK-v1.33.0+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
-Java Binding for TON-SDK via JSON-RPC interface. Native interconnection is not based on JNI derivatives but on
-modern [Foreign Memory Access API](https://openjdk.java.net/jeps/393)
+**java4ever:binding** is a Java Binding library for 
+[EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of 
+[Everscale](https://everscale.network/) network via 
+[JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface. 
+Native interconnection is not based on JNI derivatives but on
+modern [Foreign Memory Access API](https://openjdk.java.net/jeps/393). 
+This artifact provide only binding functionality and is not suitable for large tests or fast prototyping. 
+There is a companion [java4ever:framework](https://github.com/deplant/java4ever-framework) library that should be used together with this binding. 
 
 **Get quick help in our telegram
 channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/deplant\_chat)
@@ -13,10 +19,15 @@ channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegr
 ### Goals
 
 * Provide Java binding for EVER-SDK based on modern Java native memory access
-* Support any modern versions of EVER-SDK without rebuild of binding
-* Support of custom EVER-SDK
-* Support different ways to plug EVER-SDK library
-* Support arbitrary complex objects (with deep inheritance hierarchies and extensive use of generic types)
+* Support any modern versions of EVER-SDK without rebuild of binding itself
+* Support custom EVER-SDK binaries
+
+### Prerequisites
+
+* **JDK 17** (17.0.2 or higher)
+* **EVER-SDK** binary lib "**ton_client**" (build it yourself from github or get [precomiled ones](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
+* **java.library.path** set. Add correct path to library as argument to Java run: `-Djava.library.path=<path_to_lib>`.
+
 
 ### Download (Binding-only)
 
@@ -39,9 +50,7 @@ dependencies {
 </dependency>
 ```
 
-## Features
-
 ### Can be used with any TON-SDK version
 
 You can use TON-SDK 1.33.0+ for your project or even load multiple libraries with different versions. You can use your
-custom TON-SDK fork if you like. 
+custom TON-SDK fork if you like. You can use even lower versions, but we will not fix any issues with it.

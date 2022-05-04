@@ -1,7 +1,7 @@
 plugins {
     id "java-library"
-    id 'maven-publish'
-    id 'signing'
+    id "maven-publish"
+    id "signing"
     id "com.github.node-gradle.node" version "3.2.1" // for generating API with NodeJS script
     id "io.freefair.lombok" version "6.4.3" // apply false
 }
@@ -43,8 +43,8 @@ publishing {
             name = "Sonatype"
             url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD ")
             }
         }
     }
@@ -137,12 +137,6 @@ java {
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-    doFirst {
-        options.compilerArgs += [
-                '--module-path', classpath.asPath
-        ]
-        classpath = files()
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -158,7 +152,6 @@ tasks.withType(JavaExec).configureEach {
     }
     jvmArgs += "--enable-preview"
 }
-
 
 sourceSets {
     main {
