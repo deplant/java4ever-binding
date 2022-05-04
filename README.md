@@ -35,7 +35,7 @@ channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegr
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.binding:binding:1.1.1'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.1.1'
 }
 ```
 
@@ -44,8 +44,8 @@ dependencies {
 ```xml
 
 <dependency>
-    <groupId>tech.deplant.binding</groupId>
-    <artifactId>binding</artifactId>
+    <groupId>tech.deplant.java4ever</groupId>
+    <artifactId>java4ever-binding</artifactId>
     <version>1.1.1</version>
 </dependency>
 ```
