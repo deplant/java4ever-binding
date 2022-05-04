@@ -26,7 +26,7 @@ channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegr
 
 * **JDK 17** (17.0.2 or higher)
 * **EVER-SDK** binary lib "**ton_client**" (build it yourself from github or get [precomiled ones](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
-* **java.library.path** set. Add correct path to library as argument to Java run: `-Djava.library.path=<path_to_lib>`.
+* **java.library.path** set. Add correct path to "**ton_client**" library as argument to Java run: `-Djava.library.path=<path_to_ton_client>`.
 
 
 ### Download (Binding-only)
