@@ -55,7 +55,7 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: 7.4.2
-        arguments: publish --stacktrace
+        arguments: publishGprPublicationToGitHubPackagesRepository --stacktrace
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}

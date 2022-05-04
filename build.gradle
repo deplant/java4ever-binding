@@ -1,6 +1,7 @@
 plugins {
     id "java-library"
     id 'maven-publish'
+    id 'signing'
     id "com.github.node-gradle.node" version "3.2.1" // for generating API with NodeJS script
     id "io.freefair.lombok" version "6.4.3" // apply false
 }
@@ -38,14 +39,22 @@ publishing {
                 password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
             }
         }
+        maven {
+            name = "Sonatype"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
     }
     publications {
         gpr(MavenPublication) {
+            from components.java
+
             groupId = v_groupId
             artifactId = v_bindingName
             version = v_version
-
-            from components.java
 
             pom {
                 name = 'java4ever/Binding'
@@ -66,6 +75,8 @@ publishing {
                         id = v_developerId
                         name = v_developerName
                         email = v_developerEmail
+                        organization = "deplant"
+                        organizationUrl = "https://deplant.tech"
                     }
                 }
                 scm {
@@ -76,6 +87,14 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.gpr
+}
+
+javadoc {
+    options.addBooleanOption('html5', true)
 }
 
 dependencies {
@@ -110,6 +129,9 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withJavadocJar()
+    withSourcesJar()
+
 }
 
 compileJava {
