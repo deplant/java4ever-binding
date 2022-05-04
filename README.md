@@ -1,4 +1,4 @@
-# java4ever:binding
+# java4ever-binding
 
 [![JDK version](https://img.shields.io/badge/Java-17.0.2+-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/TON%20SDK-v1.33.0+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
@@ -11,7 +11,7 @@
 Native interconnection is not based on JNI derivatives but on
 modern [Foreign Memory Access API](https://openjdk.java.net/jeps/393). 
 This artifact provide only binding functionality and is not suitable for large tests or fast prototyping. 
-There is a companion [java4ever:framework](https://github.com/deplant/java4ever-framework) library that should be used together with this binding. 
+There is a companion [java4ever-framework](https://github.com/deplant/java4ever-framework) library that should be used together with this binding. 
 
 **Get quick help in our telegram
 channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/deplant\_chat)
