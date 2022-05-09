@@ -8,11 +8,11 @@ plugins {
 
 // Global variables for all modules
 ext {
-    lo4jVersion = "2.17.1" // <2.15="CVE-2021-44228 Log4j 2 Vulnerability"
+    lo4jVersion = "2.17.2" // <2.15="CVE-2021-44228 Log4j 2 Vulnerability"
     junitVersion = "5.8.2"
     v_groupRepo = "deplant"
     v_groupId = "tech.deplant.java4ever"
-    v_version = "1.1.1"
+    v_version = "1.1.2"
     v_bindingName = "java4ever-binding"
     v_bindingRepo = "java4ever-binding"
     v_frameworkName = "java4ever-framework"
@@ -107,6 +107,16 @@ dependencies {
 
     // JSON
     implementation "com.google.code.gson:gson:2.8.9"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.2.2"
+    implementation "com.fasterxml.jackson.module:jackson-module-parameter-names"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
+
+    // Tests
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher" // https://github.com/gradle/gradle/issues/18627
+
 }
 
 tasks.withType(JavaCompile) {
