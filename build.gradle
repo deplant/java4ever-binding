@@ -104,6 +104,7 @@ dependencies {
     // Logging
     implementation "org.apache.logging.log4j:log4j-core:$lo4jVersion"
     implementation "org.apache.logging.log4j:log4j-api:$lo4jVersion"
+    implementation "com.lmax:disruptor:3.4.4" // required for log4j2 async logging
 
     // JSON
     implementation "com.google.code.gson:gson:2.8.9"
@@ -130,6 +131,7 @@ tasks.withType(JavaExec) {
     jvmArgs += "--add-modules=jdk.incubator.foreign"
     jvmArgs += "--enable-native-access=java4ever.binding"
     jvmArgs += "-Djava.library.path=c:/opt/sdk/"
+    jvmArgs += "-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
     jvmArgs += "-XX:+UseShenandoahGC"
     jvmArgs += "-XX:+AlwaysPreTouch"
 }

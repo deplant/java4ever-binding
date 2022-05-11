@@ -9,11 +9,14 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
+import tech.deplant.java4ever.binding.Crypto;
 import tech.deplant.java4ever.binding.GraphQL;
 import tech.deplant.java4ever.binding.Net;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Log4j2
 public class Async {
@@ -37,9 +40,4 @@ public class Async {
 
         log.debug(c.publicKey + ", " + c.secretKey);
     }
-
-
-
-    // mapper.convertValue(map, MyPojo.class);
-
 }
