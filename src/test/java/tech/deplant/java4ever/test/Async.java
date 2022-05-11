@@ -6,14 +6,20 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
+import tech.deplant.java4ever.binding.GraphQL;
+import tech.deplant.java4ever.binding.Net;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
 public class Async {
 
     @Test
-    public void testJackson() throws JsonProcessingException {
+    public void testJacksonRead() throws JsonProcessingException {
         String s = "{" +
                 "\"publicKey\": \"public1\"," +
                 "\"secretKey\": \"secret1\"" +
@@ -31,5 +37,9 @@ public class Async {
 
         log.debug(c.publicKey + ", " + c.secretKey);
     }
+
+
+
+    // mapper.convertValue(map, MyPojo.class);
 
 }
