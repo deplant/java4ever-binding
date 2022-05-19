@@ -37,11 +37,11 @@ public final class Context {
     //HashMap<Integer, CompletableFuture<String>> responses = new HashMap<>();
     //HashMap<Integer, Callback<?>> callbacks = new HashMap<>();
     //HashMap<Integer, Object> appObjects = new HashMap<>();
-    private ResourceScope resourceScopeOfConfig = ResourceScope.newSharedScope();
+    //private ResourceScope resourceScopeOfConfig = ResourceScope.newSharedScope();
 
     public Context(LibraryLoader loader, String config) {
         loader.load();
-        this.id = tcCreateContext(resourceScopeOfConfig, config);
+        this.id = tcCreateContext(ResourceScope.newSharedScope(), config);
         this.timeout = 30;
     }
 
@@ -61,7 +61,7 @@ public final class Context {
     public CompletableFuture<String> tcRequest(String functionName, String params) {
         int requestId = this.requestCount++;
         EverResponse response = new EverResponse();
-        log.trace("FUNC:{} CTXID:{} REQID:{} SEND:{}", () -> functionName, () -> this.id(), () -> requestId, () -> params);
+        log.trace("FUNC:{} CTXID:{} REQID:{} SEND:{}", () -> functionName, this::id, () -> requestId, () -> params);
         ton_client.tc_request(this.id(), tc_string_data_t.ofString(functionName, ResourceScope.newSharedScope()), tc_string_data_t.ofString(params, ResourceScope.newSharedScope()),
                 requestId, tc_response_handler_t.allocate(response, ResourceScope.newSharedScope()));
         response.result().thenApply(res -> {

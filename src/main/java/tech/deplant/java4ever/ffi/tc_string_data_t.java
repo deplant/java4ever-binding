@@ -5,13 +5,14 @@ import jdk.incubator.foreign.*;
 
 import java.lang.invoke.VarHandle;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static jdk.incubator.foreign.CLinker.C_INT;
 import static jdk.incubator.foreign.CLinker.C_POINTER;
 
 public final class tc_string_data_t {
 
-    static final Charset CHARSET = Charset.forName("UTF-8");
+    static final Charset CHARSET = StandardCharsets.UTF_8;
 
     static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
             C_POINTER.withName("content"),

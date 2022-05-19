@@ -8,8 +8,9 @@ plugins {
 
 // Global variables for all modules
 ext {
-    lo4jVersion = "2.17.2" // <2.15="CVE-2021-44228 Log4j 2 Vulnerability"
-    junitVersion = "5.8.2"
+    lo4jVersion = "2.17.+" // <2.15="CVE-2021-44228 Log4j 2 Vulnerability"
+    junitVersion = "5.8.+"
+    jacksonVersion = "2.13.+"
     v_groupRepo = "deplant"
     v_groupId = "tech.deplant.java4ever"
     v_version = "1.1.2"
@@ -28,6 +29,30 @@ version v_version
 repositories {
     mavenCentral()
 }
+
+dependencies {
+
+    //TODO Remove all dependencies from binding core!!!
+
+    // Logging
+    implementation "org.apache.logging.log4j:log4j-core:$lo4jVersion"
+    implementation "org.apache.logging.log4j:log4j-api:$lo4jVersion"
+    implementation "com.lmax:disruptor:3.4.4" // required for log4j2 async logging
+
+    // JSON
+    implementation "com.google.code.gson:gson:2.8.9"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.module:jackson-module-parameter-names:$jacksonVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
+
+    // Tests
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher" // https://github.com/gradle/gradle/issues/18627
+
+}
+
 
 publishing {
     repositories {
@@ -97,29 +122,6 @@ javadoc {
     options.addBooleanOption('html5', true)
 }
 
-dependencies {
-
-    //TODO Remove all dependencies from binding core!!!
-
-    // Logging
-    implementation "org.apache.logging.log4j:log4j-core:$lo4jVersion"
-    implementation "org.apache.logging.log4j:log4j-api:$lo4jVersion"
-    implementation "com.lmax:disruptor:3.4.4" // required for log4j2 async logging
-
-    // JSON
-    implementation "com.google.code.gson:gson:2.8.9"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.2.2"
-    implementation "com.fasterxml.jackson.module:jackson-module-parameter-names"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
-
-    // Tests
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher" // https://github.com/gradle/gradle/issues/18627
-
-}
-
 tasks.withType(JavaCompile) {
     options.compilerArgs += "--enable-preview"
 }
@@ -130,10 +132,7 @@ tasks.withType(JavaExec) {
     jvmArgs += "--enable-preview"
     jvmArgs += "--add-modules=jdk.incubator.foreign"
     jvmArgs += "--enable-native-access=java4ever.binding"
-    jvmArgs += "-Djava.library.path=c:/opt/sdk/"
     jvmArgs += "-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
-    jvmArgs += "-XX:+UseShenandoahGC"
-    jvmArgs += "-XX:+AlwaysPreTouch"
 }
 
 

@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 @Log4j2
 public class EverResponse implements tc_response_handler_t {
 
-    private CompletableFuture<String> result = new CompletableFuture<>();
+    final private CompletableFuture<String> result = new CompletableFuture<>();
 
     /**
      * @param x0 uint32_t request_id

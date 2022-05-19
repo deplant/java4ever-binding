@@ -23,7 +23,7 @@ public class InputMapSerializationAdapter implements TypeAdapterFactory {
     }
 
     private <T> TypeAdapter<T> createCustomTypeAdapter(TypeAdapter<T> delegate) {
-        return new TypeAdapter<T>() {
+        return new TypeAdapter<>() {
             @Override
             public void write(JsonWriter out, T value) throws IOException {
                 final boolean serializeNulls = out.getSerializeNulls();

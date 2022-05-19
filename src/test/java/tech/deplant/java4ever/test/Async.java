@@ -22,6 +22,11 @@ import java.util.concurrent.ExecutionException;
 public class Async {
 
     @Test
+    public void testGenerics() {
+
+    }
+
+    @Test
     public void testJacksonRead() throws JsonProcessingException {
         String s = "{" +
                 "\"publicKey\": \"public1\"," +
