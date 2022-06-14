@@ -1,11 +1,10 @@
 'use strict';
 
-const api = require('./api.json');
+const api = require('../resources/api.json')
 const fs = require('fs');
 
-const moduleName = 'binding';
-const packageName = 'binding';
-
+const packageName = 'tech.deplant.java4ever.binding';
+const PATH = 'src/gen/java/tech/deplant/java4ever/binding/';
 
 const reserved = {
     public: 'publicKey',
@@ -13,13 +12,12 @@ const reserved = {
     switch: 'switchTo'
 };
 
-const PATH = moduleName + '/src/main/java/' + packageName + '/';
+var genFiles = require('../../gen/nodejs/gen-files.json');
 
 let types = {};
 let appInterfaces = {};
 let currMod;
 
-var genFiles = require('./gen-files.json');
 for(var f of genFiles) {
     if (fs.existsSync(PATH + f))
         fs.unlinkSync(PATH + f);
@@ -55,10 +53,21 @@ function toHTML(s) {
 
 function toJavadoc(summary,description) {
     if (!isEmpty(summary) || !isEmpty(description)) {
-        return toHTML(!isEmpty(summary)?summary+' ':'' + !isEmpty(description)?description:'');
+        return toHTML((!isEmpty(summary)?summary+' ':'') + (!isEmpty(description)?description:''));
     }
     else {
         return '';
+    }
+}
+
+function toJavadocBlock(summary,description) {
+    if (!isEmpty(summary) || !isEmpty(description)) {
+        return `/**
+        * ${toHTML((!isEmpty(summary)?summary+' ':'') + (!isEmpty(description)?description:''))}
+        */`
+    }
+    else {
+        return ``;
     }
 }
 
@@ -179,13 +188,14 @@ api.modules.forEach(m => m.types.forEach(t => {
             type.isStruct = true;
             break;
         case 'EnumOfConsts':
-            type.fields = t.enum_consts.map(f => ({name:f.name, desc: f.description/*, getType:(mName)=>{console.log('==',mName,t.name);return toCapitalCase(t.name)}*/}));
+            type.fields = t.enum_consts.map(f => ({name:f.name, desc: f.description, summary: f.summary/*, getType:(mName)=>{console.log('==',mName,t.name);return toCapitalCase(t.name)}*/}));
             type.isEnum = true;
             break;
         case 'EnumOfTypes':
             type.variants = t.enum_types.map(v => ({
                 name:v.name,
                 desc:v.description,
+                summary:v.summary,
                 get fields() {
                     if (v.ref_name)
                         return types[v.ref_name].fields;
@@ -208,12 +218,13 @@ setTypeExported({type:'client.ClientConfig'});
 
 api.modules.forEach(mod => {
     currMod = mod;
-    let imports = {'binding.json.JsonData':true,'java.util.Map':true,'java.util.Optional':true,'lombok.*':true,'java.util.concurrent.CompletableFuture':true,'java.util.stream.*':true,'com.google.gson.annotations.SerializedName':true,'java.util.Arrays':true};
+    let imports = {'com.fasterxml.jackson.annotation.JsonProperty':true,'com.fasterxml.jackson.core.JsonProcessingException':true,'java.util.Map':true,'java.util.Optional':true,'lombok.*':true,'java.util.concurrent.CompletableFuture':true,'java.util.stream.*':true,'com.google.gson.annotations.SerializedName':true,'java.util.Arrays':true};
     let body = '';
 
     mod.functions.forEach(f => {
         let rName = f.result.generic_args[0].ref_name;
         let rType = types[rName];
+        let origName = f.name
         let rField = {getType:()=>'Void'};
         let rParamName = '';
         if (rType&&rType.fields.length > 0) { // edited >1 to >0 to export real results
@@ -290,15 +301,16 @@ api.modules.forEach(mod => {
         if (appObject)
             params.push({type:appObject.type, name:'appObject', optional:''});
         // TODO temporary removed app objects
-            body += `   /**\n`;
+            body += `    /**\n`;
+            body += `    * <h2>${mod.name}.${f.name}</h2>\n`;
             body += `    * ${toJavadoc(f.summary,f.description)}\n`;
             body += params.map(p => `    * @param ${p.name} ${toHTML(p.summary)} ${toHTML(p.desc)}\n`).join('');
             let rDesc = rField.desc || (((type)=>{return type&&type.desc})(types[rField.getType()]));
             if (rDesc)
             body += `    * @return ${toHTML(rDesc)}\n`;
             body += `    */\n`;
-            body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static CompletableFuture<${rField.getType(mod.name).replace('Map<String,Object>','Map')}> ${toCamelCase(f.name)}(@NonNull Context context${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''}) {\n`
-            body += `        return Module.future${event||appObject?'Callback':''}("${mod.name}.${f.name}", context, ${rParamName?'new ' + rParamName + '(':''}${params.map(p=>p.name).join(', ')}${rParamName?')':'null'}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
+            body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static CompletableFuture<${rField.getType(mod.name).replace('Map<String,Object>','Map')}> ${toCamelCase(f.name)}(@NonNull Context context${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
+            body += `        return context.future${event||appObject?'Callback':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${params.map(p=>p.name).join(', ')}${rParamName?')':'null'}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
             body += `    }\n\n`;
     });
 
@@ -310,7 +322,9 @@ api.modules.forEach(mod => {
 ${Object.keys(imports).map(i=>`import ${i};`).join('\n')}
 
 /**
- *  ${toHTML(mod.description||'')}
+ *  <h1>Module "${mod.name}"</h1>
+ *  ${toJavadoc(mod.summary,mod.description)}
+ *  @version EVER-SDK ${api.version}
  */
 public class ${className} {
 ${Object.entries(types).filter(([n,t])=>t.isExported&&n.startsWith(mod.name+'.')).map(([cName,t]) => {
@@ -336,42 +350,24 @@ function getStructSource(cName, t, sClass) {
     var args = t.fields.filter(f=>f.name);
     var constr = '';
 
-return `
-    ${!isEmpty(t.desc)?`/**
-                        *  ${toHTML(t.desc||'')}
-                        */`:''}
-    @Value
-    public static class ${cName} ${sClass?`extends ${sClass} `:`extends JsonData `} {
-        ${t.fields.filter(f=>f.name).map(f=> {
-            var arr = f.isArray?'[]':'';
-return `${!f.isOptional && (!isEmpty(f.summary) || !isEmpty(f.desc))?`
-        /**
-        * ${toJavadoc(f.summary,f.desc)}
-        */
-        `:''}${!f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated`:``} @SerializedName("${f.name}") ${f.isOptional?`@Getter(AccessLevel.NONE)`:`@NonNull`} ${f.getType()} ${toCamelCase(f.name)};
-        ${f.isOptional?`${(!isEmpty(f.summary) || !isEmpty(f.desc))?`
-        /**
-        * ${toJavadoc(f.summary,f.desc)}
-        */
-        `:''}${f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated`:``} public ${'Optional<'+f.getType()+'>'} ${toCamelCase(f.name)}() {
-            return ${'Optional.ofNullable('+toCamelCase(f.name)+')'};
-        }
-        `:''}`
-        }).join('')}
-    }`
+return `\n
+    /**
+    * ${toJavadoc(t.summary,t.desc)}
+${t.fields.filter(f=>f.name).map(f=>
+    {
+    return `    * @param ${toCamelCase(f.name)} ${toJavadoc(f.summary,f.desc)}`
+    }).join('\n')}
+    */
+    public record ${cName}(${t.fields.filter(f=>f.name).map(f=> {
+                           return `${!f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated `:``}${f.isOptional?``:`@NonNull `}${reserved.hasOwnProperty(f.name)?`@JsonProperty("${f.name}") `:``}${f.getType()} ${toCamelCase(f.name)}`
+                           }).join(', ')}) ${sClass?`implements ${sClass} `:``}{}`
 }
 
 function getEnumSource(cName, t) {
-    return `
-
-    /**
-     *  ${toHTML(t.desc||'')}
-     */
+    return `${toJavadocBlock(t.summary,t.desc)}
     public enum ${cName} {
         ${t.fields.filter(f=>f.name).map(f=> `
-        /**
-         * ${toHTML(f.desc)}
-         */
+        ${toJavadocBlock(f.summary,f.desc)}
         ${f.name}`).join(',\n')}
     }`
 }
@@ -380,7 +376,7 @@ function getEnumOfTypesSource(cName, t) {
     if (toCapitalCase(currMod.name) == cName)
         cName = cName.toUpperCase();
     return `
-    public static abstract class ${cName} {
+    public interface ${cName} {
 ${t.variants.map(v => {
 
     return (v.fields.length?'':`
@@ -403,13 +399,13 @@ import java.util.Map;
 public interface ${className} {
 ${Object.entries(iface.methods).map(([n,o]) => {
     let name = n.charAt(0).toLowerCase() + n.slice(1);
-    let res = o.result&&o.result.length?o.result[0].getType():'Void';
+    let res = o.result && o.result.length ? o.result[0].getType() : 'Void';
     return `    ${o.result?`CompletableFuture<${res}>`:'void'} ${dereserve(name)}(${o.params.map(p=>p.getType()+' '+toCamelCase(p.name))});`;
 }).join('\n')}
 }
 `);
 }
 
-fs.writeFileSync('generator/gen-files.json', JSON.stringify(genFiles));
+fs.writeFileSync('src/gen/nodejs/gen-files.json', JSON.stringify(genFiles));
 
 //Object.entries(types).filter(([n,t])=>true/*t.isExported*/).forEach(([n,t])=>console.log(n,t.isExported));

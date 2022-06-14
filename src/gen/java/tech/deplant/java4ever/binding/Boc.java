@@ -1,835 +1,476 @@
 package tech.deplant.java4ever.binding;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Value;
-import tech.deplant.java4ever.binding.json.JsonData;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
+import lombok.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.*;
+import com.google.gson.annotations.SerializedName;
+import java.util.Arrays;
 
 /**
- *
+ *  <h1>Module "boc"</h1>
+ *  BOC manipulation module.
+ *  @version EVER-SDK 1.34.2
  */
 public class Boc {
 
+    public interface BocCacheType {
+
+
     /**
-     * Parses message boc into a JSON
-     *
-     * @param boc BOC encoded as base64
-     */
-    public static CompletableFuture<ResultOfParse> parseMessage(@NonNull Context context, @NonNull String boc) {
+    * Pin the BOC with `pin` name. Such BOC will not be removed from cache until it is unpinned
+    * @param pin 
+    */
+    public record Pinned(@NonNull String pin) implements BocCacheType {}
+
+        public static final Unpinned Unpinned = new Unpinned();
+
+
+    /**
+    * 
+
+    */
+    public record Unpinned() implements BocCacheType {}
+}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64
+    */
+    public record ParamsOfParse(@NonNull String boc) {}
+
+    /**
+    * 
+    * @param parsed JSON containing parsed BOC
+    */
+    public record ResultOfParse(@NonNull Map<String,Object> parsed) {}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64
+    * @param id Shardstate identificator
+    * @param workchainId Workchain shardstate belongs to
+    */
+    public record ParamsOfParseShardstate(@NonNull String boc, @NonNull String id, @NonNull Number workchainId) {}
+
+    /**
+    * 
+    * @param blockBoc Key block BOC or zerostate BOC encoded as base64
+    */
+    public record ParamsOfGetBlockchainConfig(@NonNull String blockBoc) {}
+
+    /**
+    * 
+    * @param configBoc Blockchain config BOC encoded as base64
+    */
+    public record ResultOfGetBlockchainConfig(@NonNull String configBoc) {}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64 or BOC handle
+    */
+    public record ParamsOfGetBocHash(@NonNull String boc) {}
+
+    /**
+    * 
+    * @param hash BOC root hash encoded with hex
+    */
+    public record ResultOfGetBocHash(@NonNull String hash) {}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64 or BOC handle
+    */
+    public record ParamsOfGetBocDepth(@NonNull String boc) {}
+
+    /**
+    * 
+    * @param depth BOC root cell depth
+    */
+    public record ResultOfGetBocDepth(@NonNull Number depth) {}
+
+    /**
+    * 
+    * @param tvc Contract TVC image or image BOC handle
+    */
+    public record ParamsOfGetCodeFromTvc(@NonNull String tvc) {}
+
+    /**
+    * 
+    * @param code Contract code encoded as base64
+    */
+    public record ResultOfGetCodeFromTvc(@NonNull String code) {}
+
+    /**
+    * 
+    * @param bocRef Reference to the cached BOC
+    */
+    public record ParamsOfBocCacheGet(@NonNull String bocRef) {}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64.
+    */
+    public record ResultOfBocCacheGet(String boc) {}
+
+    /**
+    * 
+    * @param boc BOC encoded as base64 or BOC reference
+    * @param cacheType Cache type
+    */
+    public record ParamsOfBocCacheSet(@NonNull String boc, @NonNull BocCacheType cacheType) {}
+
+    /**
+    * 
+    * @param bocRef Reference to the cached BOC
+    */
+    public record ResultOfBocCacheSet(@NonNull String bocRef) {}
+
+    /**
+    * 
+    * @param pin Pinned name
+    * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
+    */
+    public record ParamsOfBocCacheUnpin(@NonNull String pin, String bocRef) {}
+    public interface BuilderOp {
+
+
+    /**
+    * Append integer to cell data.
+    * @param size Bit size of the value.
+    * @param value Value: - `Number` containing integer number. e.g. `123`, `-123`. - Decimal string. e.g. `"123"`, `"-123"`.- `0x` prefixed hexadecimal string.  e.g `0x123`, `0X123`, `-0x123`.
+    */
+    public record Integer(@NonNull Number size, @NonNull Map<String,Object> value) implements BuilderOp {}
+
+
+    /**
+    * Append bit string to cell data.
+    * @param value Bit string content using bitstring notation. See `TON VM specification` 1.0. Contains hexadecimal string representation:- Can end with `_` tag.- Can be prefixed with `x` or `X`.- Can be prefixed with `x{` or `X{` and ended with `}`.<p>Contains binary string represented as a sequenceof `0` and `1` prefixed with `n` or `N`.<p>Examples:`1AB`, `x1ab`, `X1AB`, `x{1abc}`, `X{1ABC}``2D9_`, `x2D9_`, `X2D9_`, `x{2D9_}`, `X{2D9_}``n00101101100`, `N00101101100`
+    */
+    public record BitString(@NonNull String value) implements BuilderOp {}
+
+
+    /**
+    * Append ref to nested cells.
+    * @param builder Nested cell builder.
+    */
+    public record Cell(@NonNull BuilderOp[] builder) implements BuilderOp {}
+
+
+    /**
+    * Append ref to nested cell.
+    * @param boc Nested cell BOC encoded with `base64` or BOC cache key.
+    */
+    public record CellBoc(@NonNull String boc) implements BuilderOp {}
+
+
+    /**
+    * Address.
+    * @param address Address in a common `workchain:account` or base64 format.
+    */
+    public record Address(@NonNull String address) implements BuilderOp {}
+}
+
+    /**
+    * 
+    * @param builder Cell builder operations.
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
+    */
+    public record ParamsOfEncodeBoc(@NonNull BuilderOp[] builder, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param boc Encoded cell BOC or BOC cache key.
+    */
+    public record ResultOfEncodeBoc(@NonNull String boc) {}
+
+    /**
+    * 
+    * @param code Contract code BOC encoded as base64 or code BOC handle
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
+    */
+    public record ParamsOfGetCodeSalt(@NonNull String code, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param salt Contract code salt if present. BOC encoded as base64 or BOC handle
+    */
+    public record ResultOfGetCodeSalt(String salt) {}
+
+    /**
+    * 
+    * @param code Contract code BOC encoded as base64 or code BOC handle
+    * @param salt Code salt to set. BOC encoded as base64 or BOC handle
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
+    */
+    public record ParamsOfSetCodeSalt(@NonNull String code, @NonNull String salt, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param code Contract code with salt set. BOC encoded as base64 or BOC handle
+    */
+    public record ResultOfSetCodeSalt(@NonNull String code) {}
+
+    /**
+    * 
+    * @param tvc Contract TVC image BOC encoded as base64 or BOC handle
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
+    */
+    public record ParamsOfDecodeTvc(@NonNull String tvc, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param code Contract code BOC encoded as base64 or BOC handle
+    * @param codeHash Contract code hash
+    * @param codeDepth Contract code depth
+    * @param data Contract data BOC encoded as base64 or BOC handle
+    * @param dataHash Contract data hash
+    * @param dataDepth Contract data depth
+    * @param library Contract library BOC encoded as base64 or BOC handle
+    * @param tick `special.tick` field. Specifies the contract ability to handle tick transactions
+    * @param tock `special.tock` field. Specifies the contract ability to handle tock transactions
+    * @param splitDepth Is present and non-zero only in instances of large smart contracts
+    * @param compilerVersion Compiler version, for example 'sol 0.49.0'
+    */
+    public record ResultOfDecodeTvc(String code, String codeHash, Number codeDepth, String data, String dataHash, Number dataDepth, String library, Boolean tick, Boolean tock, Number splitDepth, String compilerVersion) {}
+
+    /**
+    * 
+    * @param code Contract code BOC encoded as base64 or BOC handle
+    * @param data Contract data BOC encoded as base64 or BOC handle
+    * @param library Contract library BOC encoded as base64 or BOC handle
+    * @param tick `special.tick` field. Specifies the contract ability to handle tick transactions
+    * @param tock `special.tock` field. Specifies the contract ability to handle tock transactions
+    * @param splitDepth Is present and non-zero only in instances of large smart contracts
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
+    */
+    public record ParamsOfEncodeTvc(String code, String data, String library, Boolean tick, Boolean tock, Number splitDepth, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param tvc Contract TVC image BOC encoded as base64 or BOC handle of boc_cache parameter was specified
+    */
+    public record ResultOfEncodeTvc(@NonNull String tvc) {}
+
+    /**
+    * 
+    * @param src Source address.
+    * @param dst Destination address.
+    * @param init Bag of cells with state init (used in deploy messages).
+    * @param body Bag of cells with the message body encoded as base64.
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
+    */
+    public record ParamsOfEncodeExternalInMessage(String src, @NonNull String dst, String init, String body, BocCacheType bocCache) {}
+
+    /**
+    * 
+    * @param message Message BOC encoded with `base64`.
+    * @param messageId Message id.
+    */
+    public record ResultOfEncodeExternalInMessage(@NonNull String message, @NonNull String messageId) {}
+
+    /**
+    * 
+    * @param code Contract code BOC encoded as base64 or code BOC handle
+    */
+    public record ParamsOfGetCompilerVersion(@NonNull String code) {}
+
+    /**
+    * 
+    * @param version Compiler version, for example 'sol 0.49.0'
+    */
+    public record ResultOfGetCompilerVersion(String version) {}
+    /**
+    * <h2>boc.parse_message</h2>
+    * Parses message boc into a JSON JSON structure is compatible with GraphQL API message object
+    * @param boc BOC encoded as base64 
+    */
+    public static CompletableFuture<ResultOfParse> parseMessage(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-     * Parses transaction boc into a JSON
-     *
-     * @param boc BOC encoded as base64
-     */
-    public static CompletableFuture<ResultOfParse> parseTransaction(@NonNull Context context, @NonNull String boc) {
+    * <h2>boc.parse_transaction</h2>
+    * Parses transaction boc into a JSON JSON structure is compatible with GraphQL API transaction object
+    * @param boc BOC encoded as base64 
+    */
+    public static CompletableFuture<ResultOfParse> parseTransaction(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-     * Parses account boc into a JSON
-     *
-     * @param boc BOC encoded as base64
-     */
-    public static CompletableFuture<ResultOfParse> parseAccount(@NonNull Context context, @NonNull String boc) {
+    * <h2>boc.parse_account</h2>
+    * Parses account boc into a JSON JSON structure is compatible with GraphQL API account object
+    * @param boc BOC encoded as base64 
+    */
+    public static CompletableFuture<ResultOfParse> parseAccount(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-     * Parses block boc into a JSON
-     *
-     * @param boc BOC encoded as base64
-     */
-    public static CompletableFuture<ResultOfParse> parseBlock(@NonNull Context context, @NonNull String boc) {
+    * <h2>boc.parse_block</h2>
+    * Parses block boc into a JSON JSON structure is compatible with GraphQL API block object
+    * @param boc BOC encoded as base64 
+    */
+    public static CompletableFuture<ResultOfParse> parseBlock(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-     * Parses shardstate boc into a JSON
-     *
-     * @param boc         BOC encoded as base64
-     * @param id          Shardstate identificator
-     * @param workchainId Workchain shardstate belongs to
-     */
-    public static CompletableFuture<ResultOfParse> parseShardstate(@NonNull Context context, @NonNull String boc, @NonNull String id, @NonNull Number workchainId) {
+    * <h2>boc.parse_shardstate</h2>
+    * Parses shardstate boc into a JSON JSON structure is compatible with GraphQL API shardstate object
+    * @param boc BOC encoded as base64 
+    * @param id Shardstate identificator 
+    * @param workchainId Workchain shardstate belongs to 
+    */
+    public static CompletableFuture<ResultOfParse> parseShardstate(@NonNull Context context, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
         return context.future("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
     }
 
     /**
-     * Extract blockchain configuration from key block and also from zerostate.
-     *
-     * @param blockBoc Key block BOC or zerostate BOC encoded as base64
-     */
-    public static CompletableFuture<ResultOfGetBlockchainConfig> getBlockchainConfig(@NonNull Context context, @NonNull String blockBoc) {
+    * <h2>boc.get_blockchain_config</h2>
+    * Extract blockchain configuration from key block and also from zerostate.
+    * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
+    */
+    public static CompletableFuture<ResultOfGetBlockchainConfig> getBlockchainConfig(@NonNull Context context, @NonNull String blockBoc)  throws JsonProcessingException {
         return context.future("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
     }
 
     /**
-     * Calculates BOC root hash
-     *
-     * @param boc BOC encoded as base64 or BOC handle
-     */
-    public static CompletableFuture<ResultOfGetBocHash> getBocHash(@NonNull Context context, @NonNull String boc) {
+    * <h2>boc.get_boc_hash</h2>
+    * Calculates BOC root hash
+    * @param boc BOC encoded as base64 or BOC handle 
+    */
+    public static CompletableFuture<ResultOfGetBocHash> getBocHash(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
     }
 
     /**
-     * Calculates BOC depth
-     *
-     * @param boc BOC encoded as base64 or BOC handle
-     */
-    public static CompletableFuture<ResultOfGetBocDepth> getBocDepth(@NonNull Context context, @NonNull String boc) {
+    * <h2>boc.get_boc_depth</h2>
+    * Calculates BOC depth
+    * @param boc BOC encoded as base64 or BOC handle 
+    */
+    public static CompletableFuture<ResultOfGetBocDepth> getBocDepth(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
     }
 
     /**
-     * Extracts code from TVC contract image
-     *
-     * @param tvc Contract TVC image or image BOC handle
-     */
-    public static CompletableFuture<ResultOfGetCodeFromTvc> getCodeFromTvc(@NonNull Context context, @NonNull String tvc) {
+    * <h2>boc.get_code_from_tvc</h2>
+    * Extracts code from TVC contract image
+    * @param tvc Contract TVC image or image BOC handle 
+    */
+    public static CompletableFuture<ResultOfGetCodeFromTvc> getCodeFromTvc(@NonNull Context context, @NonNull String tvc)  throws JsonProcessingException {
         return context.future("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
     }
 
     /**
-     * Get BOC from cache
-     *
-     * @param bocRef Reference to the cached BOC
-     */
-    public static CompletableFuture<ResultOfBocCacheGet> cacheGet(@NonNull Context context, @NonNull String bocRef) {
+    * <h2>boc.cache_get</h2>
+    * Get BOC from cache
+    * @param bocRef Reference to the cached BOC 
+    */
+    public static CompletableFuture<ResultOfBocCacheGet> cacheGet(@NonNull Context context, @NonNull String bocRef)  throws JsonProcessingException {
         return context.future("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
     }
 
     /**
-     * Save BOC into cache
-     *
-     * @param boc       BOC encoded as base64 or BOC reference
-     * @param cacheType Cache type
-     */
-    public static CompletableFuture<ResultOfBocCacheSet> cacheSet(@NonNull Context context, @NonNull String boc, @NonNull BocCacheType cacheType) {
+    * <h2>boc.cache_set</h2>
+    * Save BOC into cache
+    * @param boc BOC encoded as base64 or BOC reference 
+    * @param cacheType Cache type 
+    */
+    public static CompletableFuture<ResultOfBocCacheSet> cacheSet(@NonNull Context context, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
         return context.future("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
     }
 
     /**
-     * Unpin BOCs with specified pin.
-     *
-     * @param pin    Pinned name
-     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
-     */
-    public static CompletableFuture<Void> cacheUnpin(@NonNull Context context, @NonNull String pin, String bocRef) {
+    * <h2>boc.cache_unpin</h2>
+    * Unpin BOCs with specified pin. BOCs which don't have another pins will be removed from cache
+    * @param pin Pinned name 
+    * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
+    */
+    public static CompletableFuture<Void> cacheUnpin(@NonNull Context context, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
         return context.future("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef), Void.class);
     }
 
     /**
-     * Encodes bag of cells (BOC) with builder operations. This method provides the same functionality as Solidity TvmBuilder. Resulting BOC of this method can be passed into Solidity and C++ contracts as TvmCell type
-     *
-     * @param builder  Cell builder operations.
-     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
-     */
-    public static CompletableFuture<ResultOfEncodeBoc> encodeBoc(@NonNull Context context, @NonNull BuilderOp[] builder, BocCacheType bocCache) {
+    * <h2>boc.encode_boc</h2>
+    * Encodes bag of cells (BOC) with builder operations. This method provides the same functionality as Solidity TvmBuilder. Resulting BOC of this method can be passed into Solidity and C++ contracts as TvmCell type.
+    * @param builder Cell builder operations. 
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    */
+    public static CompletableFuture<ResultOfEncodeBoc> encodeBoc(@NonNull Context context, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
     }
 
     /**
-     * Returns the contract code's salt if it is present.
-     *
-     * @param code     Contract code BOC encoded as base64 or code BOC handle
-     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
-     */
-    public static CompletableFuture<ResultOfGetCodeSalt> getCodeSalt(@NonNull Context context, @NonNull String code, BocCacheType bocCache) {
+    * <h2>boc.get_code_salt</h2>
+    * Returns the contract code's salt if it is present.
+    * @param code Contract code BOC encoded as base64 or code BOC handle 
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    */
+    public static CompletableFuture<ResultOfGetCodeSalt> getCodeSalt(@NonNull Context context, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
     }
 
     /**
-     * Sets new salt to contract code.
-     *
-     * @param code     Contract code BOC encoded as base64 or code BOC handle
-     * @param salt     Code salt to set. BOC encoded as base64 or BOC handle
-     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
-     */
-    public static CompletableFuture<ResultOfSetCodeSalt> setCodeSalt(@NonNull Context context, @NonNull String code, @NonNull String salt, BocCacheType bocCache) {
+    * <h2>boc.set_code_salt</h2>
+    * Sets new salt to contract code. Returns the new contract code with salt.
+    * @param code Contract code BOC encoded as base64 or code BOC handle 
+    * @param salt Code salt to set. BOC encoded as base64 or BOC handle
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    */
+    public static CompletableFuture<ResultOfSetCodeSalt> setCodeSalt(@NonNull Context context, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
     }
 
     /**
-     * Decodes tvc into code, data, libraries and special options.
-     *
-     * @param tvc      Contract TVC image BOC encoded as base64 or BOC handle
-     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
-     */
-    public static CompletableFuture<ResultOfDecodeTvc> decodeTvc(@NonNull Context context, @NonNull String tvc, BocCacheType bocCache) {
+    * <h2>boc.decode_tvc</h2>
+    * Decodes tvc into code, data, libraries and special options.
+    * @param tvc Contract TVC image BOC encoded as base64 or BOC handle 
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    */
+    public static CompletableFuture<ResultOfDecodeTvc> decodeTvc(@NonNull Context context, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
     }
 
     /**
-     * Encodes tvc from code, data, libraries ans special options (see input params)
-     *
-     * @param code       Contract code BOC encoded as base64 or BOC handle
-     * @param data       Contract data BOC encoded as base64 or BOC handle
-     * @param library    Contract library BOC encoded as base64 or BOC handle
-     * @param tick       `special.tick` field. Specifies the contract ability to handle tick transactions
-     * @param tock       `special.tock` field. Specifies the contract ability to handle tock transactions
-     * @param splitDepth Is present and non-zero only in instances of large smart contracts
-     * @param bocCache   Cache type to put the result. The BOC itself returned if no cache type provided.
-     */
-    public static CompletableFuture<ResultOfEncodeTvc> encodeTvc(@NonNull Context context, String code, String data, String library, Boolean tick, Boolean tock, Number splitDepth, BocCacheType bocCache) {
+    * <h2>boc.encode_tvc</h2>
+    * Encodes tvc from code, data, libraries ans special options (see input params)
+    * @param code Contract code BOC encoded as base64 or BOC handle 
+    * @param data Contract data BOC encoded as base64 or BOC handle 
+    * @param library Contract library BOC encoded as base64 or BOC handle 
+    * @param tick `special.tick` field. Specifies the contract ability to handle tick transactions
+    * @param tock `special.tock` field. Specifies the contract ability to handle tock transactions
+    * @param splitDepth Is present and non-zero only in instances of large smart contracts 
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    */
+    public static CompletableFuture<ResultOfEncodeTvc> encodeTvc(@NonNull Context context,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
     }
 
     /**
-     * Returns the compiler version used to compile the code.
-     *
-     * @param code Contract code BOC encoded as base64 or code BOC handle
-     */
-    public static CompletableFuture<ResultOfGetCompilerVersion> getCompilerVersion(@NonNull Context context, @NonNull String code) {
+    * <h2>boc.encode_external_in_message</h2>
+    * Encodes a message Allows to encode any external inbound message.
+    * @param src Source address. 
+    * @param dst Destination address. 
+    * @param init Bag of cells with state init (used in deploy messages). 
+    * @param body Bag of cells with the message body encoded as base64. 
+    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
+    */
+    public static CompletableFuture<ResultOfEncodeExternalInMessage> encodeExternalInMessage(@NonNull Context context,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
+        return context.future("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
+    }
+
+    /**
+    * <h2>boc.get_compiler_version</h2>
+    * Returns the compiler version used to compile the code.
+    * @param code Contract code BOC encoded as base64 or code BOC handle 
+    */
+    public static CompletableFuture<ResultOfGetCompilerVersion> getCompilerVersion(@NonNull Context context, @NonNull String code)  throws JsonProcessingException {
         return context.future("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
-    }
-
-    public static abstract class BocCacheType {
-
-        public static final Unpinned Unpinned = new Unpinned();
-
-        /**
-         * Such BOC will not be removed from cache until it is unpinned
-         */
-        @Value
-        public static class Pinned extends BocCacheType {
-            @SerializedName("pin")
-            @NonNull String pin;
-
-        }
-
-        @Value
-        public static class Unpinned extends BocCacheType {
-
-        }
-    }
-
-    @Value
-    public static class ParamsOfParse extends JsonData {
-
-        /**
-         * BOC encoded as base64
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-    }
-
-    @Value
-    public static class ResultOfParse extends JsonData {
-
-        /**
-         * JSON containing parsed BOC
-         */
-        @SerializedName("parsed")
-        @NonNull Map<String, Object> parsed;
-
-    }
-
-    @Value
-    public static class ParamsOfParseShardstate extends JsonData {
-
-        /**
-         * BOC encoded as base64
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-        /**
-         * Shardstate identificator
-         */
-        @SerializedName("id")
-        @NonNull String id;
-
-        /**
-         * Workchain shardstate belongs to
-         */
-        @SerializedName("workchain_id")
-        @NonNull Number workchainId;
-
-    }
-
-    @Value
-    public static class ParamsOfGetBlockchainConfig extends JsonData {
-
-        /**
-         * Key block BOC or zerostate BOC encoded as base64
-         */
-        @SerializedName("block_boc")
-        @NonNull String blockBoc;
-
-    }
-
-    @Value
-    public static class ResultOfGetBlockchainConfig extends JsonData {
-
-        /**
-         * Blockchain config BOC encoded as base64
-         */
-        @SerializedName("config_boc")
-        @NonNull String configBoc;
-
-    }
-
-    @Value
-    public static class ParamsOfGetBocHash extends JsonData {
-
-        /**
-         * BOC encoded as base64 or BOC handle
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-    }
-
-    @Value
-    public static class ResultOfGetBocHash extends JsonData {
-
-        /**
-         * BOC root hash encoded with hex
-         */
-        @SerializedName("hash")
-        @NonNull String hash;
-
-    }
-
-    @Value
-    public static class ParamsOfGetBocDepth extends JsonData {
-
-        /**
-         * BOC encoded as base64 or BOC handle
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-    }
-
-    @Value
-    public static class ResultOfGetBocDepth extends JsonData {
-
-        /**
-         * BOC root cell depth
-         */
-        @SerializedName("depth")
-        @NonNull Number depth;
-
-    }
-
-    @Value
-    public static class ParamsOfGetCodeFromTvc extends JsonData {
-
-        /**
-         * Contract TVC image or image BOC handle
-         */
-        @SerializedName("tvc")
-        @NonNull String tvc;
-
-    }
-
-    @Value
-    public static class ResultOfGetCodeFromTvc extends JsonData {
-
-        /**
-         * Contract code encoded as base64
-         */
-        @SerializedName("code")
-        @NonNull String code;
-
-    }
-
-    @Value
-    public static class ParamsOfBocCacheGet extends JsonData {
-
-        /**
-         * Reference to the cached BOC
-         */
-        @SerializedName("boc_ref")
-        @NonNull String bocRef;
-
-    }
-
-    @Value
-    public static class ResultOfBocCacheGet extends JsonData {
-        @SerializedName("boc")
-        @Getter(AccessLevel.NONE)
-        String boc;
-
-        /**
-         * BOC encoded as base64.
-         */
-        public Optional<String> boc() {
-            return Optional.ofNullable(this.boc);
-        }
-
-    }
-
-    @Value
-    public static class ParamsOfBocCacheSet extends JsonData {
-
-        /**
-         * BOC encoded as base64 or BOC reference
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-        /**
-         * Cache type
-         */
-        @SerializedName("cache_type")
-        @NonNull BocCacheType cacheType;
-
-    }
-
-    @Value
-    public static class ResultOfBocCacheSet extends JsonData {
-
-        /**
-         * Reference to the cached BOC
-         */
-        @SerializedName("boc_ref")
-        @NonNull String bocRef;
-
-    }
-
-    @Value
-    public static class ParamsOfBocCacheUnpin extends JsonData {
-
-        /**
-         * Pinned name
-         */
-        @SerializedName("pin")
-        @NonNull String pin;
-        @SerializedName("boc_ref")
-        @Getter(AccessLevel.NONE)
-        String bocRef;
-
-        /**
-         * Reference to the cached BOC.
-         */
-        public Optional<String> bocRef() {
-            return Optional.ofNullable(this.bocRef);
-        }
-
-    }
-
-    public static abstract class BuilderOp {
-
-
-        @Value
-        public static class Integer extends BuilderOp {
-
-            /**
-             * Bit size of the value.
-             */
-            @SerializedName("size")
-            @NonNull Number size;
-
-            /**
-             * Value: - `Number` containing integer number.
-             */
-            @SerializedName("value")
-            @NonNull Map<String, Object> value;
-
-        }
-
-
-        @Value
-        public static class BitString extends BuilderOp {
-
-            /**
-             * Bit string content using bitstring notation. See `TON VM specification` 1.0.
-             */
-            @SerializedName("value")
-            @NonNull String value;
-
-        }
-
-
-        @Value
-        public static class Cell extends BuilderOp {
-
-            /**
-             * Nested cell builder
-             */
-            @SerializedName("builder")
-            @NonNull BuilderOp[] builder;
-
-        }
-
-
-        @Value
-        public static class CellBoc extends BuilderOp {
-
-            /**
-             * Nested cell BOC encoded with `base64` or BOC cache key.
-             */
-            @SerializedName("boc")
-            @NonNull String boc;
-
-        }
-    }
-
-    @Value
-    public static class ParamsOfEncodeBoc extends JsonData {
-
-        /**
-         * Cell builder operations.
-         */
-        @SerializedName("builder")
-        @NonNull BuilderOp[] builder;
-        @SerializedName("boc_cache")
-        @Getter(AccessLevel.NONE)
-        BocCacheType bocCache;
-
-        /**
-         * Cache type to put the result. The BOC itself returned if no cache type provided.
-         */
-        public Optional<BocCacheType> bocCache() {
-            return Optional.ofNullable(this.bocCache);
-        }
-
-    }
-
-    @Value
-    public static class ResultOfEncodeBoc extends JsonData {
-
-        /**
-         * Encoded cell BOC or BOC cache key.
-         */
-        @SerializedName("boc")
-        @NonNull String boc;
-
-    }
-
-    @Value
-    public static class ParamsOfGetCodeSalt extends JsonData {
-
-        /**
-         * Contract code BOC encoded as base64 or code BOC handle
-         */
-        @SerializedName("code")
-        @NonNull String code;
-        @SerializedName("boc_cache")
-        @Getter(AccessLevel.NONE)
-        BocCacheType bocCache;
-
-        /**
-         * Cache type to put the result. The BOC itself returned if no cache type provided.
-         */
-        public Optional<BocCacheType> bocCache() {
-            return Optional.ofNullable(this.bocCache);
-        }
-
-    }
-
-    @Value
-    public static class ResultOfGetCodeSalt extends JsonData {
-        @SerializedName("salt")
-        @Getter(AccessLevel.NONE)
-        String salt;
-
-        /**
-         * Contract code salt if present.
-         */
-        public Optional<String> salt() {
-            return Optional.ofNullable(this.salt);
-        }
-
-    }
-
-    @Value
-    public static class ParamsOfSetCodeSalt extends JsonData {
-
-        /**
-         * Contract code BOC encoded as base64 or code BOC handle
-         */
-        @SerializedName("code")
-        @NonNull String code;
-
-        /**
-         * Code salt to set.
-         */
-        @SerializedName("salt")
-        @NonNull String salt;
-        @SerializedName("boc_cache")
-        @Getter(AccessLevel.NONE)
-        BocCacheType bocCache;
-
-        /**
-         * Cache type to put the result. The BOC itself returned if no cache type provided.
-         */
-        public Optional<BocCacheType> bocCache() {
-            return Optional.ofNullable(this.bocCache);
-        }
-
-    }
-
-    @Value
-    public static class ResultOfSetCodeSalt extends JsonData {
-
-        /**
-         * Contract code with salt set.
-         */
-        @SerializedName("code")
-        @NonNull String code;
-
-    }
-
-    @Value
-    public static class ParamsOfDecodeTvc extends JsonData {
-
-        /**
-         * Contract TVC image BOC encoded as base64 or BOC handle
-         */
-        @SerializedName("tvc")
-        @NonNull String tvc;
-        @SerializedName("boc_cache")
-        @Getter(AccessLevel.NONE)
-        BocCacheType bocCache;
-
-        /**
-         * Cache type to put the result. The BOC itself returned if no cache type provided.
-         */
-        public Optional<BocCacheType> bocCache() {
-            return Optional.ofNullable(this.bocCache);
-        }
-
-    }
-
-    @Value
-    public static class ResultOfDecodeTvc extends JsonData {
-        @SerializedName("code")
-        @Getter(AccessLevel.NONE)
-        String code;
-        @SerializedName("code_hash")
-        @Getter(AccessLevel.NONE)
-        String codeHash;
-        @SerializedName("code_depth")
-        @Getter(AccessLevel.NONE)
-        Number codeDepth;
-        @SerializedName("data")
-        @Getter(AccessLevel.NONE)
-        String data;
-        @SerializedName("data_hash")
-        @Getter(AccessLevel.NONE)
-        String dataHash;
-        @SerializedName("data_depth")
-        @Getter(AccessLevel.NONE)
-        Number dataDepth;
-        @SerializedName("library")
-        @Getter(AccessLevel.NONE)
-        String library;
-        @SerializedName("tick")
-        @Getter(AccessLevel.NONE)
-        Boolean tick;
-        @SerializedName("tock")
-        @Getter(AccessLevel.NONE)
-        Boolean tock;
-        @SerializedName("split_depth")
-        @Getter(AccessLevel.NONE)
-        Number splitDepth;
-        @SerializedName("compiler_version")
-        @Getter(AccessLevel.NONE)
-        String compilerVersion;
-
-        /**
-         * Contract code BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> code() {
-            return Optional.ofNullable(this.code);
-        }
-
-        /**
-         * Contract code hash
-         */
-        public Optional<String> codeHash() {
-            return Optional.ofNullable(this.codeHash);
-        }
-
-        /**
-         * Contract code depth
-         */
-        public Optional<Number> codeDepth() {
-            return Optional.ofNullable(this.codeDepth);
-        }
-
-        /**
-         * Contract data BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> data() {
-            return Optional.ofNullable(this.data);
-        }
-
-        /**
-         * Contract data hash
-         */
-        public Optional<String> dataHash() {
-            return Optional.ofNullable(this.dataHash);
-        }
-
-        /**
-         * Contract data depth
-         */
-        public Optional<Number> dataDepth() {
-            return Optional.ofNullable(this.dataDepth);
-        }
-
-        /**
-         * Contract library BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> library() {
-            return Optional.ofNullable(this.library);
-        }
-
-        /**
-         * `special.tick` field.
-         */
-        public Optional<Boolean> tick() {
-            return Optional.ofNullable(this.tick);
-        }
-
-        /**
-         * `special.tock` field.
-         */
-        public Optional<Boolean> tock() {
-            return Optional.ofNullable(this.tock);
-        }
-
-        /**
-         * Is present and non-zero only in instances of large smart contracts
-         */
-        public Optional<Number> splitDepth() {
-            return Optional.ofNullable(this.splitDepth);
-        }
-
-        /**
-         * Compiler version, for example 'sol 0.49.0'
-         */
-        public Optional<String> compilerVersion() {
-            return Optional.ofNullable(this.compilerVersion);
-        }
-
-    }
-
-    @Value
-    public static class ParamsOfEncodeTvc extends JsonData {
-        @SerializedName("code")
-        @Getter(AccessLevel.NONE)
-        String code;
-        @SerializedName("data")
-        @Getter(AccessLevel.NONE)
-        String data;
-        @SerializedName("library")
-        @Getter(AccessLevel.NONE)
-        String library;
-        @SerializedName("tick")
-        @Getter(AccessLevel.NONE)
-        Boolean tick;
-        @SerializedName("tock")
-        @Getter(AccessLevel.NONE)
-        Boolean tock;
-        @SerializedName("split_depth")
-        @Getter(AccessLevel.NONE)
-        Number splitDepth;
-        @SerializedName("boc_cache")
-        @Getter(AccessLevel.NONE)
-        BocCacheType bocCache;
-
-        /**
-         * Contract code BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> code() {
-            return Optional.ofNullable(this.code);
-        }
-
-        /**
-         * Contract data BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> data() {
-            return Optional.ofNullable(this.data);
-        }
-
-        /**
-         * Contract library BOC encoded as base64 or BOC handle
-         */
-        public Optional<String> library() {
-            return Optional.ofNullable(this.library);
-        }
-
-        /**
-         * `special.tick` field.
-         */
-        public Optional<Boolean> tick() {
-            return Optional.ofNullable(this.tick);
-        }
-
-        /**
-         * `special.tock` field.
-         */
-        public Optional<Boolean> tock() {
-            return Optional.ofNullable(this.tock);
-        }
-
-        /**
-         * Is present and non-zero only in instances of large smart contracts
-         */
-        public Optional<Number> splitDepth() {
-            return Optional.ofNullable(this.splitDepth);
-        }
-
-        /**
-         * Cache type to put the result. The BOC itself returned if no cache type provided.
-         */
-        public Optional<BocCacheType> bocCache() {
-            return Optional.ofNullable(this.bocCache);
-        }
-
-    }
-
-    @Value
-    public static class ResultOfEncodeTvc extends JsonData {
-
-        /**
-         * Contract TVC image BOC encoded as base64 or BOC handle of boc_cache parameter was specified
-         */
-        @SerializedName("tvc")
-        @NonNull String tvc;
-
-    }
-
-    @Value
-    public static class ParamsOfGetCompilerVersion extends JsonData {
-
-        /**
-         * Contract code BOC encoded as base64 or code BOC handle
-         */
-        @SerializedName("code")
-        @NonNull String code;
-
-    }
-
-    @Value
-    public static class ResultOfGetCompilerVersion extends JsonData {
-        @SerializedName("version")
-        @Getter(AccessLevel.NONE)
-        String version;
-
-        /**
-         * Compiler version, for example 'sol 0.49.0'
-         */
-        public Optional<String> version() {
-            return Optional.ofNullable(this.version);
-        }
-
     }
 
 }

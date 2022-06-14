@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;
@@ -49,14 +50,19 @@ public final class Context {
         this(loader, config.toJson());
     }
 
-    static <T, P extends JsonData> CompletableFuture<T> futureCallback(String functionName, Context context, P params, Class<T> clazz) {
-        return context.future(functionName, params, clazz);
+    public <T, P> CompletableFuture<T> futureCallback(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
+        return future(functionName, params, clazz);
     }
 
-    public <T, P extends JsonData> CompletableFuture<T> future(String functionName, P params, Class<T> clazz) {
-        return tcRequest(functionName, params == null ? "" : params.toJson(version())).thenApply(json -> new Gson().fromJson(json, clazz));
+    public <T, P> CompletableFuture<T> future(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
+        return tcRequest(functionName, params == null ? "" : JsonContext.MAPPER.writeValueAsString(params)).thenApply(json -> {
+            try {
+                return JsonContext.MAPPER.readValue(json, clazz);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
-
 
     public CompletableFuture<String> tcRequest(String functionName, String params) {
         int requestId = this.requestCount++;
@@ -78,7 +84,12 @@ public final class Context {
         MemorySegment out = ton_client.tc_read_string(SegmentAllocator.ofScope(scope), ton_client.tc_create_context(tc_string_data_t.ofString(configJson, scope)));
         String result = tc_string_data_t.toString(out, scope);
         log.info("FUNC:sdk.create_context CTXID:0 REQID:0 RESP:{}", () -> result);
-        var context = new Gson().fromJson(result, ResultOfCreateContext.class);
+        ResultOfCreateContext context = null;
+        try {
+            context = JsonContext.MAPPER.readValue(result, ResultOfCreateContext.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return context.result() == null ? -1 : context.result();
     }
 
@@ -118,11 +129,7 @@ public final class Context {
 
     }
 
-    @Value
-    public static class ResultOfCreateContext extends JsonData {
-        Integer result;
-        String error;
-    }
+    public record ResultOfCreateContext(Integer result,String error) {}
 
     private class Callback<T> {
         BiConsumer<T, Integer> consumer;

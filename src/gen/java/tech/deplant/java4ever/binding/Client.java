@@ -1,444 +1,184 @@
 package tech.deplant.java4ever.binding;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Value;
-import tech.deplant.java4ever.binding.json.JsonData;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
+import lombok.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.*;
+import com.google.gson.annotations.SerializedName;
+import java.util.Arrays;
 
 /**
- *
+ *  <h1>Module "client"</h1>
+ *  Provides information about library.
+ *  @version EVER-SDK 1.34.2
  */
 public class Client {
 
 
     /**
-     * Returns Core Library API reference
-     */
-    public static CompletableFuture<ResultOfGetApiReference> getApiReference(@NonNull Context context) {
+    * 
+    * @param network 
+    * @param crypto 
+    * @param abi 
+    * @param boc 
+    * @param proofs 
+    * @param localStoragePath For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
+    */
+    public record ClientConfig(NetworkConfig network, CryptoConfig crypto, AbiConfig abi, BocConfig boc, ProofsConfig proofs, String localStoragePath) {}
+
+    /**
+    * 
+    * @param serverAddress **This field is deprecated, but left for backward-compatibility.** DApp Server public address.
+    * @param endpoints List of DApp Server addresses. Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.Check the full list of <a target="_blank" href="supported network endpoints">supported network endpoints</a>(../ton-os-api/networks.md).
+    * @param networkRetriesCount Deprecated. You must use `network.max_reconnect_timeout` that allows to specify maximum network resolving timeout.
+    * @param maxReconnectTimeout Maximum time for sequential reconnections. Must be specified in milliseconds. Default is 120000 (2 min).
+    * @param reconnectTimeout Deprecated
+    * @param messageRetriesCount The number of automatic message processing retries that SDK performs in case of `Message Expired (507)` error - but only for those messages which local emulation was successful or failed with replay protection error. Default is 5.
+    * @param messageProcessingTimeout Timeout that is used to process message delivery for the contracts which ABI does not include "expire" header. If the message is not delivered within the specified timeout the appropriate error occurs. Must be specified in milliseconds. Default is 40000 (40 sec).
+    * @param waitForTimeout Maximum timeout that is used for query response. Must be specified in milliseconds. Default is 40000 (40 sec).
+    * @param outOfSyncThreshold Maximum time difference between server and client. If client's device time is out of sync and difference is more than the threshold then error will occur. Also an error will occur if the specified threshold is more than`message_processing_timeout/2`.<p>Must be specified in milliseconds. Default is 15000 (15 sec).
+    * @param sendingEndpointCount Maximum number of randomly chosen endpoints the library uses to broadcast a message. Default is 1.
+    * @param latencyDetectionInterval Frequency of sync latency detection. Library periodically checks the current endpoint for blockchain data syncronization latency.If the latency (time-lag) is less then `NetworkConfig.max_latency`then library selects another endpoint.<p>Must be specified in milliseconds. Default is 60000 (1 min).
+    * @param maxLatency Maximum value for the endpoint's blockchain data syncronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint. Must be specified in milliseconds. Default is 60000 (1 min).
+    * @param queryTimeout Default timeout for http requests. Is is used when no timeout specified for the request to limit the answer waiting time. If no answer received during the timeout requests ends witherror.<p>Must be specified in milliseconds. Default is 60000 (1 min).
+    * @param queriesProtocol Queries protocol. `HTTP` or `WS`. Default is `HTTP`.
+    * @param firstRempStatusTimeout UNSTABLE. First REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 1000 (1 sec).
+    * @param nextRempStatusTimeout UNSTABLE. Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 5000 (5 sec).
+    * @param accessKey Access key to GraphQL API. At the moment is not used in production.
+    */
+    public record NetworkConfig(String serverAddress, String[] endpoints, Number networkRetriesCount, Number maxReconnectTimeout, Number reconnectTimeout, Number messageRetriesCount, Number messageProcessingTimeout, Number waitForTimeout, Number outOfSyncThreshold, Number sendingEndpointCount, Number latencyDetectionInterval, Number maxLatency, Number queryTimeout, NetworkQueriesProtocol queriesProtocol, Number firstRempStatusTimeout, Number nextRempStatusTimeout, String accessKey) {}
+    public enum NetworkQueriesProtocol {
+        
+        /**
+        * Each GraphQL query uses separate HTTP request.
+        */
+        HTTP,
+
+        /**
+        * All GraphQL queries will be served using single web socket connection.
+        */
+        WS
+    }
+
+    /**
+    * 
+    * @param mnemonicDictionary Mnemonic dictionary that will be used by default in crypto functions. If not specified, 1 dictionary will be used.
+    * @param mnemonicWordCount Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
+    * @param hdkeyDerivationPath Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
+    */
+    public record CryptoConfig(Number mnemonicDictionary, Number mnemonicWordCount, String hdkeyDerivationPath) {}
+
+    /**
+    * 
+    * @param workchain Workchain id that is used by default in DeploySet
+    * @param messageExpirationTimeout Message lifetime for contracts which ABI includes "expire" header. The default value is 40 sec.
+    * @param messageExpirationTimeoutGrowFactor Factor that increases the expiration timeout for each retry The default value is 1.5
+    */
+    public record AbiConfig(Number workchain, Number messageExpirationTimeout, Number messageExpirationTimeoutGrowFactor) {}
+
+    /**
+    * 
+    * @param cacheMaxSize Maximum BOC cache size in kilobytes. Default is 10 MB
+    */
+    public record BocConfig(Number cacheMaxSize) {}
+
+    /**
+    * 
+    * @param cacheInLocalStorage Cache proofs in the local storage. Default is `true`. If this value is set to `true`, downloaded proofs and master-chain BOCs are saved into thepersistent local storage (e.g. file system for native environments or browser's IndexedDBfor the web); otherwise all the data is cached only in memory in current client's contextand will be lost after destruction of the client.
+    */
+    public record ProofsConfig(Boolean cacheInLocalStorage) {}
+
+    /**
+    * 
+    * @param name Dependency name. Usually it is a crate name.
+    * @param gitCommit Git commit hash of the related repository.
+    */
+    public record BuildInfoDependency(@NonNull String name, @NonNull String gitCommit) {}
+    public interface AppRequestResult {
+
+
+    /**
+    * Error occurred during request processing
+    * @param text Error description
+    */
+    public record Error(@NonNull String text) implements AppRequestResult {}
+
+
+    /**
+    * Request processed successfully
+    * @param result Request processing result
+    */
+    public record Ok(@NonNull Map<String,Object> result) implements AppRequestResult {}
+}
+
+    /**
+    * 
+    * @param api 
+    */
+    public record ResultOfGetApiReference(@NonNull Map<String,Object> api) {}
+
+    /**
+    * 
+    * @param version Core Library version
+    */
+    public record ResultOfVersion(@NonNull String version) {}
+
+    /**
+    * 
+    * @param buildNumber Build number assigned to this build by the CI.
+    * @param dependencies Fingerprint of the most important dependencies.
+    */
+    public record ResultOfBuildInfo(@NonNull Number buildNumber, @NonNull BuildInfoDependency[] dependencies) {}
+
+    /**
+    * 
+    * @param appRequestId Request ID received from SDK
+    * @param result Result of request processing
+    */
+    public record ParamsOfResolveAppRequest(@NonNull Number appRequestId, @NonNull AppRequestResult result) {}
+    /**
+    * <h2>client.get_api_reference</h2>
+    * Returns Core Library API reference
+    */
+    public static CompletableFuture<ResultOfGetApiReference> getApiReference(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
     /**
-     * Returns Core Library version
-     */
-    public static CompletableFuture<ResultOfVersion> version(@NonNull Context context) {
+    * <h2>client.version</h2>
+    * Returns Core Library version
+    */
+    public static CompletableFuture<ResultOfVersion> version(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.version", null, ResultOfVersion.class);
     }
 
     /**
-     * Returns detailed information about this build.
-     */
-    public static CompletableFuture<ResultOfBuildInfo> buildInfo(@NonNull Context context) {
+    * <h2>client.config</h2>
+    * Returns Core Library API reference
+    */
+    public static CompletableFuture<ClientConfig> config(@NonNull Context context)  throws JsonProcessingException {
+        return context.future("client.config", null, ClientConfig.class);
+    }
+
+    /**
+    * <h2>client.build_info</h2>
+    * Returns detailed information about this build.
+    */
+    public static CompletableFuture<ResultOfBuildInfo> buildInfo(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.build_info", null, ResultOfBuildInfo.class);
     }
 
     /**
-     * Resolves application request processing result
-     *
-     * @param appRequestId Request ID received from SDK
-     * @param result       Result of request processing
-     */
-    public static CompletableFuture<Void> resolveAppRequest(@NonNull Context context, @NonNull Number appRequestId, @NonNull AppRequestResult result) {
+    * <h2>client.resolve_app_request</h2>
+    * Resolves application request processing result
+    * @param appRequestId Request ID received from SDK 
+    * @param result Result of request processing 
+    */
+    public static CompletableFuture<Void> resolveAppRequest(@NonNull Context context, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
         return context.future("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result), Void.class);
-    }
-
-    @Value
-    public static class ClientConfig extends JsonData {
-        @SerializedName("network")
-        @Getter(AccessLevel.NONE)
-        NetworkConfig network;
-        @SerializedName("crypto")
-        @Getter(AccessLevel.NONE)
-        CryptoConfig crypto;
-        @SerializedName("abi")
-        @Getter(AccessLevel.NONE)
-        AbiConfig abi;
-        @SerializedName("boc")
-        @Getter(AccessLevel.NONE)
-        BocConfig boc;
-        @SerializedName("proofs")
-        @Getter(AccessLevel.NONE)
-        ProofsConfig proofs;
-        @SerializedName("local_storage_path")
-        @Getter(AccessLevel.NONE)
-        String localStoragePath;
-
-        public Optional<NetworkConfig> network() {
-            return Optional.ofNullable(this.network);
-        }
-
-        public Optional<CryptoConfig> crypto() {
-            return Optional.ofNullable(this.crypto);
-        }
-
-        public Optional<AbiConfig> abi() {
-            return Optional.ofNullable(this.abi);
-        }
-
-        public Optional<BocConfig> boc() {
-            return Optional.ofNullable(this.boc);
-        }
-
-        public Optional<ProofsConfig> proofs() {
-            return Optional.ofNullable(this.proofs);
-        }
-
-        /**
-         * For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
-         */
-        public Optional<String> localStoragePath() {
-            return Optional.ofNullable(this.localStoragePath);
-        }
-
-    }
-
-    @Value
-    public static class NetworkConfig extends JsonData {
-        @SerializedName("server_address")
-        @Getter(AccessLevel.NONE)
-        String serverAddress;
-        @SerializedName("endpoints")
-        @Getter(AccessLevel.NONE)
-        String[] endpoints;
-        @SerializedName("network_retries_count")
-        @Getter(AccessLevel.NONE)
-        Number networkRetriesCount;
-        @SerializedName("max_reconnect_timeout")
-        @Getter(AccessLevel.NONE)
-        Number maxReconnectTimeout;
-        @SerializedName("reconnect_timeout")
-        @Getter(AccessLevel.NONE)
-        Number reconnectTimeout;
-        @SerializedName("message_retries_count")
-        @Getter(AccessLevel.NONE)
-        Number messageRetriesCount;
-        @SerializedName("message_processing_timeout")
-        @Getter(AccessLevel.NONE)
-        Number messageProcessingTimeout;
-        @SerializedName("wait_for_timeout")
-        @Getter(AccessLevel.NONE)
-        Number waitForTimeout;
-        @SerializedName("out_of_sync_threshold")
-        @Getter(AccessLevel.NONE)
-        Number outOfSyncThreshold;
-        @SerializedName("sending_endpoint_count")
-        @Getter(AccessLevel.NONE)
-        Number sendingEndpointCount;
-        @SerializedName("latency_detection_interval")
-        @Getter(AccessLevel.NONE)
-        Number latencyDetectionInterval;
-        @SerializedName("max_latency")
-        @Getter(AccessLevel.NONE)
-        Number maxLatency;
-        @SerializedName("query_timeout")
-        @Getter(AccessLevel.NONE)
-        Number queryTimeout;
-        @SerializedName("access_key")
-        @Getter(AccessLevel.NONE)
-        String accessKey;
-
-        /**
-         * DApp Server public address. For instance, for `net.ton.dev/graphql` GraphQL endpoint the server address will be net.ton.dev
-         */
-        public Optional<String> serverAddress() {
-            return Optional.ofNullable(this.serverAddress);
-        }
-
-        /**
-         * List of DApp Server addresses.
-         */
-        public Optional<String[]> endpoints() {
-            return Optional.ofNullable(this.endpoints);
-        }
-
-        /**
-         * Deprecated.
-         */
-        @Deprecated
-        public Optional<Number> networkRetriesCount() {
-            return Optional.ofNullable(this.networkRetriesCount);
-        }
-
-        /**
-         * Maximum time for sequential reconnections.
-         */
-        public Optional<Number> maxReconnectTimeout() {
-            return Optional.ofNullable(this.maxReconnectTimeout);
-        }
-
-        /**
-         * Deprecated
-         */
-        @Deprecated
-        public Optional<Number> reconnectTimeout() {
-            return Optional.ofNullable(this.reconnectTimeout);
-        }
-
-        /**
-         * The number of automatic message processing retries that SDK performs in case of `Message Expired (507)` error - but only for those messages which local emulation was successful or failed with replay protection error.
-         */
-        public Optional<Number> messageRetriesCount() {
-            return Optional.ofNullable(this.messageRetriesCount);
-        }
-
-        /**
-         * Timeout that is used to process message delivery for the contracts which ABI does not include "expire" header. If the message is not delivered within the specified timeout the appropriate error occurs.
-         */
-        public Optional<Number> messageProcessingTimeout() {
-            return Optional.ofNullable(this.messageProcessingTimeout);
-        }
-
-        /**
-         * Maximum timeout that is used for query response.
-         */
-        public Optional<Number> waitForTimeout() {
-            return Optional.ofNullable(this.waitForTimeout);
-        }
-
-        /**
-         * Maximum time difference between server and client.
-         */
-        public Optional<Number> outOfSyncThreshold() {
-            return Optional.ofNullable(this.outOfSyncThreshold);
-        }
-
-        /**
-         * Maximum number of randomly chosen endpoints the library uses to broadcast a message.
-         */
-        public Optional<Number> sendingEndpointCount() {
-            return Optional.ofNullable(this.sendingEndpointCount);
-        }
-
-        /**
-         * Frequency of sync latency detection.
-         */
-        public Optional<Number> latencyDetectionInterval() {
-            return Optional.ofNullable(this.latencyDetectionInterval);
-        }
-
-        /**
-         * Maximum value for the endpoint's blockchain data syncronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint.
-         */
-        public Optional<Number> maxLatency() {
-            return Optional.ofNullable(this.maxLatency);
-        }
-
-        /**
-         * Default timeout for http requests.
-         */
-        public Optional<Number> queryTimeout() {
-            return Optional.ofNullable(this.queryTimeout);
-        }
-
-        /**
-         * Access key to GraphQL API.
-         */
-        public Optional<String> accessKey() {
-            return Optional.ofNullable(this.accessKey);
-        }
-
-    }
-
-    @Value
-    public static class CryptoConfig extends JsonData {
-        @SerializedName("mnemonic_dictionary")
-        @Getter(AccessLevel.NONE)
-        Number mnemonicDictionary;
-        @SerializedName("mnemonic_word_count")
-        @Getter(AccessLevel.NONE)
-        Number mnemonicWordCount;
-        @SerializedName("hdkey_derivation_path")
-        @Getter(AccessLevel.NONE)
-        String hdkeyDerivationPath;
-
-        /**
-         * Mnemonic dictionary that will be used by default in crypto functions. If not specified, 1 dictionary will be used.
-         */
-        public Optional<Number> mnemonicDictionary() {
-            return Optional.ofNullable(this.mnemonicDictionary);
-        }
-
-        /**
-         * Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
-         */
-        public Optional<Number> mnemonicWordCount() {
-            return Optional.ofNullable(this.mnemonicWordCount);
-        }
-
-        /**
-         * Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
-         */
-        public Optional<String> hdkeyDerivationPath() {
-            return Optional.ofNullable(this.hdkeyDerivationPath);
-        }
-
-    }
-
-    @Value
-    public static class AbiConfig extends JsonData {
-        @SerializedName("workchain")
-        @Getter(AccessLevel.NONE)
-        Number workchain;
-        @SerializedName("message_expiration_timeout")
-        @Getter(AccessLevel.NONE)
-        Number messageExpirationTimeout;
-        @SerializedName("message_expiration_timeout_grow_factor")
-        @Getter(AccessLevel.NONE)
-        Number messageExpirationTimeoutGrowFactor;
-
-        /**
-         * Workchain id that is used by default in DeploySet
-         */
-        public Optional<Number> workchain() {
-            return Optional.ofNullable(this.workchain);
-        }
-
-        /**
-         * Message lifetime for contracts which ABI includes "expire" header. The default value is 40 sec.
-         */
-        public Optional<Number> messageExpirationTimeout() {
-            return Optional.ofNullable(this.messageExpirationTimeout);
-        }
-
-        /**
-         * Factor that increases the expiration timeout for each retry The default value is 1.5
-         */
-        public Optional<Number> messageExpirationTimeoutGrowFactor() {
-            return Optional.ofNullable(this.messageExpirationTimeoutGrowFactor);
-        }
-
-    }
-
-    @Value
-    public static class BocConfig extends JsonData {
-        @SerializedName("cache_max_size")
-        @Getter(AccessLevel.NONE)
-        Number cacheMaxSize;
-
-        /**
-         * Maximum BOC cache size in kilobytes.
-         */
-        public Optional<Number> cacheMaxSize() {
-            return Optional.ofNullable(this.cacheMaxSize);
-        }
-
-    }
-
-    @Value
-    public static class ProofsConfig extends JsonData {
-        @SerializedName("cache_in_local_storage")
-        @Getter(AccessLevel.NONE)
-        Boolean cacheInLocalStorage;
-
-        /**
-         * Cache proofs in the local storage.
-         */
-        public Optional<Boolean> cacheInLocalStorage() {
-            return Optional.ofNullable(this.cacheInLocalStorage);
-        }
-
-    }
-
-    @Value
-    public static class BuildInfoDependency extends JsonData {
-
-        /**
-         * Dependency name.
-         */
-        @SerializedName("name")
-        @NonNull String name;
-
-        /**
-         * Git commit hash of the related repository.
-         */
-        @SerializedName("git_commit")
-        @NonNull String gitCommit;
-
-    }
-
-    public static abstract class AppRequestResult {
-
-
-        @Value
-        public static class Error extends AppRequestResult {
-
-            /**
-             * Error description
-             */
-            @SerializedName("text")
-            @NonNull String text;
-
-        }
-
-
-        @Value
-        public static class Ok extends AppRequestResult {
-
-            /**
-             * Request processing result
-             */
-            @SerializedName("result")
-            @NonNull Map<String, Object> result;
-
-        }
-    }
-
-    @Value
-    public static class ResultOfGetApiReference extends JsonData {
-        @SerializedName("api")
-        @NonNull Map<String, Object> api;
-
-    }
-
-    @Value
-    public static class ResultOfVersion extends JsonData {
-
-        /**
-         * Core Library version
-         */
-        @SerializedName("version")
-        @NonNull String version;
-
-    }
-
-    @Value
-    public static class ResultOfBuildInfo extends JsonData {
-
-        /**
-         * Build number assigned to this build by the CI.
-         */
-        @SerializedName("build_number")
-        @NonNull Number buildNumber;
-
-        /**
-         * Fingerprint of the most important dependencies.
-         */
-        @SerializedName("dependencies")
-        @NonNull BuildInfoDependency[] dependencies;
-
-    }
-
-    @Value
-    public static class ParamsOfResolveAppRequest extends JsonData {
-
-        /**
-         * Request ID received from SDK
-         */
-        @SerializedName("app_request_id")
-        @NonNull Number appRequestId;
-
-        /**
-         * Result of request processing
-         */
-        @SerializedName("result")
-        @NonNull AppRequestResult result;
-
     }
 
 }

@@ -1,494 +1,259 @@
 package tech.deplant.java4ever.binding;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Value;
-import tech.deplant.java4ever.binding.json.JsonData;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
+import lombok.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.*;
+import com.google.gson.annotations.SerializedName;
+import java.util.Arrays;
 
 /**
- *
+ *  <h1>Module "debot"</h1>
+ *  <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Module for working with debot.
+ *  @version EVER-SDK 1.34.2
  */
 public class Debot {
 
 
     /**
-     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Starts the DeBot.
-     *
-     * @param debotHandle Debot handle which references an instance of debot engine.
-     */
-    public static CompletableFuture<Void> start(@NonNull Context context, @NonNull Integer debotHandle) {
+    * 
+    * @param description A short action description. Should be used by Debot Browser as name of menu item.
+    * @param name Depends on action type. Can be a debot function name or a print string (for Print Action).
+    * @param actionType Action type.
+    * @param to ID of debot context to switch after action execution.
+    * @param attributes Action attributes. In the form of "param=value,flag". attribute example: instant, args, fargs, sign.
+    * @param misc Some internal action data. Used by debot only.
+    */
+    public record DebotAction(@NonNull String description, @NonNull String name, @NonNull Number actionType, @NonNull Number to, @NonNull String attributes, @NonNull String misc) {}
+
+    /**
+    * 
+    * @param name DeBot short name.
+    * @param version DeBot semantic version.
+    * @param publisher The name of DeBot deployer.
+    * @param caption Short info about DeBot.
+    * @param author The name of DeBot developer.
+    * @param support TON address of author for questions and donations.
+    * @param hello String with the first messsage from DeBot.
+    * @param language String with DeBot interface language (ISO-639).
+    * @param dabi String with DeBot ABI.
+    * @param icon DeBot icon.
+    * @param interfaces Vector with IDs of DInterfaces used by DeBot.
+    * @param dabiVersion ABI version ("x.y") supported by DeBot
+    */
+    public record DebotInfo(String name, String version, String publisher, String caption, String author, String support, String hello, String language, String dabi, String icon, @NonNull String[] interfaces, @NonNull String dabiVersion) {}
+
+    /**
+    * 
+    * @param address Debot smart contract address
+    */
+    public record ParamsOfInit(@NonNull String address) {}
+
+    /**
+    * 
+    * @param debotHandle Debot handle which references an instance of debot engine.
+    * @param debotAbi Debot abi as json string.
+    * @param info Debot metadata.
+    */
+    public record RegisteredDebot(@NonNull Integer debotHandle, @NonNull String debotAbi, @NonNull DebotInfo info) {}
+    public interface ParamsOfAppDebotBrowser {
+
+
+    /**
+    * Print message to user.
+    * @param msg A string that must be printed to user.
+    */
+    public record Log(@NonNull String msg) implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Switch debot to another context (menu).
+    * @param contextId Debot context ID to which debot is switched.
+    */
+    public record Switch(@NonNull Number contextId) implements ParamsOfAppDebotBrowser {}
+
+        public static final SwitchCompleted SwitchCompleted = new SwitchCompleted();
+
+
+    /**
+    * Notify browser that all context actions are shown.
+
+    */
+    public record SwitchCompleted() implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Show action to the user. Called after `switch` for each action in context.
+    * @param action Debot action that must be shown to user as menu item. At least `description` property must be shown from <a target="_blank" href="DebotAction">DebotAction</a> structure.
+    */
+    public record ShowAction(@NonNull DebotAction action) implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Request user input.
+    * @param prompt A prompt string that must be printed to user before input request.
+    */
+    public record Input(@NonNull String prompt) implements ParamsOfAppDebotBrowser {}
+
+        public static final GetSigningBox GetSigningBox = new GetSigningBox();
+
+
+    /**
+    * Get signing box to sign data. Signing box returned is owned and disposed by debot engine
+
+    */
+    public record GetSigningBox() implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Execute action of another debot.
+    * @param debotAddr Address of debot in blockchain.
+    * @param action Debot action to execute.
+    */
+    public record InvokeDebot(@NonNull String debotAddr, @NonNull DebotAction action) implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Used by Debot to call DInterface implemented by Debot Browser.
+    * @param message Internal message to DInterface address. Message body contains interface function and parameters.
+    */
+    public record Send(@NonNull String message) implements ParamsOfAppDebotBrowser {}
+
+
+    /**
+    * Requests permission from DeBot Browser to execute DeBot operation.
+    * @param activity DeBot activity details.
+    */
+    public record Approve(@NonNull Map<String,Object> activity) implements ParamsOfAppDebotBrowser {}
+}
+    public interface ResultOfAppDebotBrowser {
+
+
+    /**
+    * Result of user input.
+    * @param value String entered by user.
+    */
+    public record Input(@NonNull String value) implements ResultOfAppDebotBrowser {}
+
+
+    /**
+    * Result of getting signing box.
+    * @param signingBox Signing box for signing data requested by debot engine. Signing box is owned and disposed by debot engine
+    */
+    public record GetSigningBox(@NonNull Integer signingBox) implements ResultOfAppDebotBrowser {}
+
+        public static final InvokeDebot InvokeDebot = new InvokeDebot();
+
+
+    /**
+    * Result of debot invoking.
+
+    */
+    public record InvokeDebot() implements ResultOfAppDebotBrowser {}
+
+
+    /**
+    * Result of `approve` callback.
+    * @param approved Indicates whether the DeBot is allowed to perform the specified operation.
+    */
+    public record Approve(@NonNull Boolean approved) implements ResultOfAppDebotBrowser {}
+}
+
+    /**
+    * 
+    * @param debotHandle Debot handle which references an instance of debot engine.
+    */
+    public record ParamsOfStart(@NonNull Integer debotHandle) {}
+
+    /**
+    * 
+    * @param address Debot smart contract address.
+    */
+    public record ParamsOfFetch(@NonNull String address) {}
+
+    /**
+    * 
+    * @param info Debot metadata.
+    */
+    public record ResultOfFetch(@NonNull DebotInfo info) {}
+
+    /**
+    * 
+    * @param debotHandle Debot handle which references an instance of debot engine.
+    * @param action Debot Action that must be executed.
+    */
+    public record ParamsOfExecute(@NonNull Integer debotHandle, @NonNull DebotAction action) {}
+
+    /**
+    * 
+    * @param debotHandle Debot handle which references an instance of debot engine.
+    * @param message BOC of internal message to debot encoded in base64 format.
+    */
+    public record ParamsOfSend(@NonNull Integer debotHandle, @NonNull String message) {}
+
+    /**
+    * 
+    * @param debotHandle Debot handle which references an instance of debot engine.
+    */
+    public record ParamsOfRemove(@NonNull Integer debotHandle) {}
+    /**
+    * <h2>debot.init</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Creates and instance of DeBot. Downloads debot smart contract (code and data) from blockchain and createsan instance of Debot Engine for it.<p># RemarksIt does not switch debot to context 0. Browser Callbacks are not called.
+    * @param address Debot smart contract address 
+    * @param appObject  
+    */
+    public static CompletableFuture<RegisteredDebot> init(@NonNull Context context, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
+        return context.futureCallback("debot.init", new ParamsOfInit(address, appObject), RegisteredDebot.class);
+    }
+
+    /**
+    * <h2>debot.start</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Starts the DeBot. Downloads debot smart contract from blockchain and switches it tocontext zero.<p>This function must be used by Debot Browser to start a dialog with debot.While the function is executing, several Browser Callbacks can be called,since the debot tries to display all actions from the context 0 to the user.<p>When the debot starts SDK registers `BrowserCallbacks` AppObject.Therefore when `debote.remove` is called the debot is being deleted and the callback is calledwith `finish`=`true` which indicates that it will never be used again.
+    * @param debotHandle Debot handle which references an instance of debot engine. 
+    */
+    public static CompletableFuture<Void> start(@NonNull Context context, @NonNull Integer debotHandle)  throws JsonProcessingException {
         return context.future("debot.start", new ParamsOfStart(debotHandle), Void.class);
     }
 
     /**
-     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Fetches DeBot metadata from blockchain.
-     *
-     * @param address Debot smart contract address.
-     */
-    public static CompletableFuture<ResultOfFetch> fetch(@NonNull Context context, @NonNull String address) {
+    * <h2>debot.fetch</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Fetches DeBot metadata from blockchain. Downloads DeBot from blockchain and creates and fetches its metadata.
+    * @param address Debot smart contract address. 
+    */
+    public static CompletableFuture<ResultOfFetch> fetch(@NonNull Context context, @NonNull String address)  throws JsonProcessingException {
         return context.future("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
     }
 
     /**
-     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Executes debot action.
-     *
-     * @param debotHandle Debot handle which references an instance of debot engine.
-     * @param action      Debot Action that must be executed.
-     */
-    public static CompletableFuture<Void> execute(@NonNull Context context, @NonNull Integer debotHandle, @NonNull DebotAction action) {
+    * <h2>debot.execute</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Executes debot action. Calls debot engine referenced by debot handle to execute input action.Calls Debot Browser Callbacks if needed.<p># RemarksChain of actions can be executed if input action generates a list of subactions.
+    * @param debotHandle Debot handle which references an instance of debot engine. 
+    * @param action Debot Action that must be executed. 
+    */
+    public static CompletableFuture<Void> execute(@NonNull Context context, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
         return context.future("debot.execute", new ParamsOfExecute(debotHandle, action), Void.class);
     }
 
     /**
-     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Sends message to Debot.
-     *
-     * @param debotHandle Debot handle which references an instance of debot engine.
-     * @param message     BOC of internal message to debot encoded in base64 format.
-     */
-    public static CompletableFuture<Void> send(@NonNull Context context, @NonNull Integer debotHandle, @NonNull String message) {
+    * <h2>debot.send</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Sends message to Debot. Used by Debot Browser to send response on Dinterface call or from other Debots.
+    * @param debotHandle Debot handle which references an instance of debot engine. 
+    * @param message BOC of internal message to debot encoded in base64 format. 
+    */
+    public static CompletableFuture<Void> send(@NonNull Context context, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
         return context.future("debot.send", new ParamsOfSend(debotHandle, message), Void.class);
     }
 
     /**
-     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Destroys debot handle.
-     *
-     * @param debotHandle Debot handle which references an instance of debot engine.
-     */
-    public static CompletableFuture<Void> remove(@NonNull Context context, @NonNull Integer debotHandle) {
+    * <h2>debot.remove</h2>
+    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Destroys debot handle. Removes handle from Client Context and drops debot engine referenced by that handle.
+    * @param debotHandle Debot handle which references an instance of debot engine. 
+    */
+    public static CompletableFuture<Void> remove(@NonNull Context context, @NonNull Integer debotHandle)  throws JsonProcessingException {
         return context.future("debot.remove", new ParamsOfRemove(debotHandle), Void.class);
-    }
-
-    @Value
-    public static class DebotAction extends JsonData {
-
-        /**
-         * A short action description.
-         */
-        @SerializedName("description")
-        @NonNull String description;
-
-        /**
-         * Depends on action type.
-         */
-        @SerializedName("name")
-        @NonNull String name;
-
-        /**
-         * Action type.
-         */
-        @SerializedName("action_type")
-        @NonNull Number actionType;
-
-        /**
-         * ID of debot context to switch after action execution.
-         */
-        @SerializedName("to")
-        @NonNull Number to;
-
-        /**
-         * Action attributes.
-         */
-        @SerializedName("attributes")
-        @NonNull String attributes;
-
-        /**
-         * Some internal action data.
-         */
-        @SerializedName("misc")
-        @NonNull String misc;
-
-    }
-
-    @Value
-    public static class DebotInfo extends JsonData {
-        @SerializedName("name")
-        @Getter(AccessLevel.NONE)
-        String name;
-        @SerializedName("version")
-        @Getter(AccessLevel.NONE)
-        String version;
-        @SerializedName("publisher")
-        @Getter(AccessLevel.NONE)
-        String publisher;
-        @SerializedName("caption")
-        @Getter(AccessLevel.NONE)
-        String caption;
-        @SerializedName("author")
-        @Getter(AccessLevel.NONE)
-        String author;
-        @SerializedName("support")
-        @Getter(AccessLevel.NONE)
-        String support;
-        @SerializedName("hello")
-        @Getter(AccessLevel.NONE)
-        String hello;
-        @SerializedName("language")
-        @Getter(AccessLevel.NONE)
-        String language;
-        @SerializedName("dabi")
-        @Getter(AccessLevel.NONE)
-        String dabi;
-        @SerializedName("icon")
-        @Getter(AccessLevel.NONE)
-        String icon;
-        /**
-         * Vector with IDs of DInterfaces used by DeBot.
-         */
-        @SerializedName("interfaces")
-        @NonNull String[] interfaces;
-        /**
-         * ABI version ("x.y") supported by DeBot
-         */
-        @SerializedName("dabiVersion")
-        @NonNull String dabiVersion;
-
-        /**
-         * DeBot short name.
-         */
-        public Optional<String> name() {
-            return Optional.ofNullable(this.name);
-        }
-
-        /**
-         * DeBot semantic version.
-         */
-        public Optional<String> version() {
-            return Optional.ofNullable(this.version);
-        }
-
-        /**
-         * The name of DeBot deployer.
-         */
-        public Optional<String> publisher() {
-            return Optional.ofNullable(this.publisher);
-        }
-
-        /**
-         * Short info about DeBot.
-         */
-        public Optional<String> caption() {
-            return Optional.ofNullable(this.caption);
-        }
-
-        /**
-         * The name of DeBot developer.
-         */
-        public Optional<String> author() {
-            return Optional.ofNullable(this.author);
-        }
-
-        /**
-         * TON address of author for questions and donations.
-         */
-        public Optional<String> support() {
-            return Optional.ofNullable(this.support);
-        }
-
-        /**
-         * String with the first messsage from DeBot.
-         */
-        public Optional<String> hello() {
-            return Optional.ofNullable(this.hello);
-        }
-
-        /**
-         * String with DeBot interface language (ISO-639).
-         */
-        public Optional<String> language() {
-            return Optional.ofNullable(this.language);
-        }
-
-        /**
-         * String with DeBot ABI.
-         */
-        public Optional<String> dabi() {
-            return Optional.ofNullable(this.dabi);
-        }
-
-        /**
-         * DeBot icon.
-         */
-        public Optional<String> icon() {
-            return Optional.ofNullable(this.icon);
-        }
-
-    }
-
-    @Value
-    public static class ParamsOfInit extends JsonData {
-
-        /**
-         * Debot smart contract address
-         */
-        @SerializedName("address")
-        @NonNull String address;
-
-    }
-
-    @Value
-    public static class RegisteredDebot extends JsonData {
-
-        /**
-         * Debot handle which references an instance of debot engine.
-         */
-        @SerializedName("debot_handle")
-        @NonNull Integer debotHandle;
-
-        /**
-         * Debot abi as json string.
-         */
-        @SerializedName("debot_abi")
-        @NonNull String debotAbi;
-
-        /**
-         * Debot metadata.
-         */
-        @SerializedName("info")
-        @NonNull DebotInfo info;
-
-    }
-
-    public static abstract class ParamsOfAppDebotBrowser {
-
-
-        public static final SwitchCompleted SwitchCompleted = new SwitchCompleted();
-        public static final GetSigningBox GetSigningBox = new GetSigningBox();
-
-        @Value
-        public static class Log extends ParamsOfAppDebotBrowser {
-
-            /**
-             * A string that must be printed to user.
-             */
-            @SerializedName("msg")
-            @NonNull String msg;
-
-        }
-
-        @Value
-        public static class Switch extends ParamsOfAppDebotBrowser {
-
-            /**
-             * Debot context ID to which debot is switched.
-             */
-            @SerializedName("context_id")
-            @NonNull Number contextId;
-
-        }
-
-        @Value
-        public static class SwitchCompleted extends ParamsOfAppDebotBrowser {
-
-        }
-
-        @Value
-        public static class ShowAction extends ParamsOfAppDebotBrowser {
-
-            /**
-             * Debot action that must be shown to user as menu item. At least `description` property must be shown from <a target="_blank" href="DebotAction">DebotAction</a> structure.
-             */
-            @SerializedName("action")
-            @NonNull DebotAction action;
-
-        }
-
-        @Value
-        public static class Input extends ParamsOfAppDebotBrowser {
-
-            /**
-             * A prompt string that must be printed to user before input request.
-             */
-            @SerializedName("prompt")
-            @NonNull String prompt;
-
-        }
-
-        /**
-         * Signing box returned is owned and disposed by debot engine
-         */
-        @Value
-        public static class GetSigningBox extends ParamsOfAppDebotBrowser {
-
-        }
-
-
-        @Value
-        public static class InvokeDebot extends ParamsOfAppDebotBrowser {
-
-            /**
-             * Address of debot in blockchain.
-             */
-            @SerializedName("debot_addr")
-            @NonNull String debotAddr;
-
-            /**
-             * Debot action to execute.
-             */
-            @SerializedName("action")
-            @NonNull DebotAction action;
-
-        }
-
-
-        @Value
-        public static class Send extends ParamsOfAppDebotBrowser {
-
-            /**
-             * Internal message to DInterface address.
-             */
-            @SerializedName("message")
-            @NonNull String message;
-
-        }
-
-
-        @Value
-        public static class Approve extends ParamsOfAppDebotBrowser {
-
-            /**
-             * DeBot activity details.
-             */
-            @SerializedName("activity")
-            @NonNull Map<String, Object> activity;
-
-        }
-    }
-
-    public static abstract class ResultOfAppDebotBrowser {
-
-
-        public static final InvokeDebot InvokeDebot = new InvokeDebot();
-
-        @Value
-        public static class Input extends ResultOfAppDebotBrowser {
-
-            /**
-             * String entered by user.
-             */
-            @SerializedName("value")
-            @NonNull String value;
-
-        }
-
-        @Value
-        public static class GetSigningBox extends ResultOfAppDebotBrowser {
-
-            /**
-             * Signing box for signing data requested by debot engine.
-             */
-            @SerializedName("signing_box")
-            @NonNull Integer signingBox;
-
-        }
-
-        @Value
-        public static class InvokeDebot extends ResultOfAppDebotBrowser {
-
-        }
-
-
-        @Value
-        public static class Approve extends ResultOfAppDebotBrowser {
-
-            /**
-             * Indicates whether the DeBot is allowed to perform the specified operation.
-             */
-            @SerializedName("approved")
-            @NonNull Boolean approved;
-
-        }
-    }
-
-    @Value
-    public static class ParamsOfStart extends JsonData {
-
-        /**
-         * Debot handle which references an instance of debot engine.
-         */
-        @SerializedName("debot_handle")
-        @NonNull Integer debotHandle;
-
-    }
-//   /**
-//    * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Creates and instance of DeBot.
-//    * @param address Debot smart contract address
-//    * @param appObject
-//    */
-//    public static CompletableFuture<RegisteredDebot> init(@NonNull Context context, @NonNull String address,  AppDebotBrowser appObject) {
-//        return Module.futureCallback("debot.init", context, new ParamsOfInit(address, appObject), RegisteredDebot.class);
-//    }
-
-    @Value
-    public static class ParamsOfFetch extends JsonData {
-
-        /**
-         * Debot smart contract address.
-         */
-        @SerializedName("address")
-        @NonNull String address;
-
-    }
-
-    @Value
-    public static class ResultOfFetch extends JsonData {
-
-        /**
-         * Debot metadata.
-         */
-        @SerializedName("info")
-        @NonNull DebotInfo info;
-
-    }
-
-    @Value
-    public static class ParamsOfExecute extends JsonData {
-
-        /**
-         * Debot handle which references an instance of debot engine.
-         */
-        @SerializedName("debot_handle")
-        @NonNull Integer debotHandle;
-
-        /**
-         * Debot Action that must be executed.
-         */
-        @SerializedName("action")
-        @NonNull DebotAction action;
-
-    }
-
-    @Value
-    public static class ParamsOfSend extends JsonData {
-
-        /**
-         * Debot handle which references an instance of debot engine.
-         */
-        @SerializedName("debot_handle")
-        @NonNull Integer debotHandle;
-
-        /**
-         * BOC of internal message to debot encoded in base64 format.
-         */
-        @SerializedName("message")
-        @NonNull String message;
-
-    }
-
-    @Value
-    public static class ParamsOfRemove extends JsonData {
-
-        /**
-         * Debot handle which references an instance of debot engine.
-         */
-        @SerializedName("debot_handle")
-        @NonNull Integer debotHandle;
-
     }
 
 }

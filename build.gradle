@@ -127,6 +127,8 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Test) {
     jvmArgs += "--enable-preview"
+    jvmArgs += "-Djava.library.path=c:/opt/sdk/"
+    jvmArgs += "--enable-native-access=java4ever.binding"
 }
 tasks.withType(JavaExec) {
     jvmArgs += "--enable-preview"
@@ -173,7 +175,7 @@ sourceSets {
 }
 
 task generateApi(type: NodeTask) {
-    script = file('generator/gen-java.js')
+    script = file('src/main/nodejs/gen-java.js')
     //args = ['arg1', 'arg2']
 }
 
