@@ -13,7 +13,7 @@ ext {
     jacksonVersion = "2.13.+"
     v_groupRepo = "deplant"
     v_groupId = "tech.deplant.java4ever"
-    v_version = "1.1.2"
+    v_version = "1.2.0"
     v_bindingName = "java4ever-binding"
     v_bindingRepo = "java4ever-binding"
     v_frameworkName = "java4ever-framework"
@@ -144,7 +144,6 @@ java {
     }
     withJavadocJar()
     withSourcesJar()
-
 }
 
 compileJava {

@@ -1,7 +1,7 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;
 import jdk.incubator.foreign.SegmentAllocator;
@@ -18,6 +18,7 @@ import tech.deplant.java4ever.ffi.ton_client;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 //TODO Define rules for responses and exceptions (Timeout & so on)
 //TODO Methods for map of contexts
@@ -46,11 +47,15 @@ public final class Context {
         this.timeout = 30;
     }
 
-    private Context(LibraryLoader loader, Config config) {
-        this(loader, config.toJson());
+    public Context(LibraryLoader loader, Client.ClientConfig config) throws JsonProcessingException {
+        this(loader,JsonContext.MAPPER.writeValueAsString(config));
     }
 
-    public <T, P> CompletableFuture<T> futureCallback(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
+    public <T, P, A> CompletableFuture<T> futureAppObject(String functionName, P params, A appObject, Class<T> clazz) throws JsonProcessingException {
+        return future(functionName, params, clazz);
+    }
+
+    public <T, P, E extends ExternalEvent> CompletableFuture<T> futureEvent(String functionName, P params, Consumer<E> consumer, Class<T> clazz) throws JsonProcessingException {
         return future(functionName, params, clazz);
     }
 
@@ -93,53 +98,53 @@ public final class Context {
         return context.result() == null ? -1 : context.result();
     }
 
-    @Value
-    public static class Config extends JsonData {
-        Context.NetworkConfig network;
-        Context.CryptoConfig crypto;
-        Context.AbiConfig abi;
-    }
-
-    @Value
-    public static class NetworkConfig extends JsonData {
-        String[] endpoints;
-        @Deprecated
-        String server_address; // deprecated, use endpoints
-        Integer network_retries_count; // default = 5
-        Integer message_retries_count; // default = 5
-        Integer message_processing_timeout; // default = 40000 ms
-        Integer wait_for_timeout; // default = 40000 ms
-        Integer out_of_sync_threshold; // default = 15000 ms
-        Integer reconnect_timeout; // default = 12000 ms
-        String access_key;
-    }
-
-    @Value
-    public static class CryptoConfig extends JsonData {
-        Integer mnemonic_dictionary; // default = 1
-        Integer mnemonic_word_count; // default = 12
-        String hdkey_derivation_path; // default = "m/44'/396'/0'/0/0"
-    }
-
-    @Value
-    public static class AbiConfig extends JsonData {
-        Integer workchain; // default = 0
-        Integer message_expiration_timeout; // default = 40000 ms
-        Integer message_expiration_timeout_grow_factor; // default = 1.5
-
-    }
+//    @Value
+//    public static class Config extends JsonData {
+//        Context.NetworkConfig network;
+//        Context.CryptoConfig crypto;
+//        Context.AbiConfig abi;
+//    }
+//
+//    @Value
+//    public static class NetworkConfig extends JsonData {
+//        String[] endpoints;
+//        @Deprecated
+//        String server_address; // deprecated, use endpoints
+//        Integer network_retries_count; // default = 5
+//        Integer message_retries_count; // default = 5
+//        Integer message_processing_timeout; // default = 40000 ms
+//        Integer wait_for_timeout; // default = 40000 ms
+//        Integer out_of_sync_threshold; // default = 15000 ms
+//        Integer reconnect_timeout; // default = 12000 ms
+//        String access_key;
+//    }
+//
+//    @Value
+//    public static class CryptoConfig extends JsonData {
+//        Integer mnemonic_dictionary; // default = 1
+//        Integer mnemonic_word_count; // default = 12
+//        String hdkey_derivation_path; // default = "m/44'/396'/0'/0/0"
+//    }
+//
+//    @Value
+//    public static class AbiConfig extends JsonData {
+//        Integer workchain; // default = 0
+//        Integer message_expiration_timeout; // default = 40000 ms
+//        Integer message_expiration_timeout_grow_factor; // default = 1.5
+//
+//    }
 
     public record ResultOfCreateContext(Integer result,String error) {}
 
-    private class Callback<T> {
-        BiConsumer<T, Integer> consumer;
-        Class<T> clazz;
-
-        Callback(BiConsumer<T, Integer> consumer, Class<T> clazz) {
-            this.consumer = consumer;
-            this.clazz = clazz;
-        }
-
-    }
+//    private class Callback<T> {
+//        BiConsumer<T, Integer> consumer;
+//        Class<T> clazz;
+//
+//        Callback(BiConsumer<T, Integer> consumer, Class<T> clazz) {
+//            this.consumer = consumer;
+//            this.clazz = clazz;
+//        }
+//
+//    }
 
 }

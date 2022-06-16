@@ -49,7 +49,7 @@ public class Client {
     * @param nextRempStatusTimeout UNSTABLE. Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 5000 (5 sec).
     * @param accessKey Access key to GraphQL API. At the moment is not used in production.
     */
-    public record NetworkConfig(String serverAddress, String[] endpoints, Number networkRetriesCount, Number maxReconnectTimeout, Number reconnectTimeout, Number messageRetriesCount, Number messageProcessingTimeout, Number waitForTimeout, Number outOfSyncThreshold, Number sendingEndpointCount, Number latencyDetectionInterval, Number maxLatency, Number queryTimeout, NetworkQueriesProtocol queriesProtocol, Number firstRempStatusTimeout, Number nextRempStatusTimeout, String accessKey) {}
+    public record NetworkConfig(@Deprecated String serverAddress, String[] endpoints, @Deprecated Number networkRetriesCount, Number maxReconnectTimeout, @Deprecated Number reconnectTimeout, Number messageRetriesCount, Number messageProcessingTimeout, Number waitForTimeout, Number outOfSyncThreshold, Number sendingEndpointCount, Number latencyDetectionInterval, Number maxLatency, Number queryTimeout, NetworkQueriesProtocol queriesProtocol, Number firstRempStatusTimeout, Number nextRempStatusTimeout, String accessKey) {}
     public enum NetworkQueriesProtocol {
         
         /**

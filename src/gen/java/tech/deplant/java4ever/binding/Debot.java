@@ -206,7 +206,7 @@ public class Debot {
     * @param appObject  
     */
     public static CompletableFuture<RegisteredDebot> init(@NonNull Context context, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
-        return context.futureCallback("debot.init", new ParamsOfInit(address, appObject), RegisteredDebot.class);
+        return context.futureAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
     }
 
     /**

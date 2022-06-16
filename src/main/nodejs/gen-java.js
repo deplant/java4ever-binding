@@ -310,7 +310,7 @@ api.modules.forEach(mod => {
             body += `    * @return ${toHTML(rDesc)}\n`;
             body += `    */\n`;
             body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static CompletableFuture<${rField.getType(mod.name).replace('Map<String,Object>','Map')}> ${toCamelCase(f.name)}(@NonNull Context context${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
-            body += `        return context.future${event||appObject?'Callback':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${params.map(p=>p.name).join(', ')}${rParamName?')':'null'}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
+            body += `        return context.future${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
             body += `    }\n\n`;
     });
 
@@ -359,7 +359,7 @@ ${t.fields.filter(f=>f.name).map(f=>
     }).join('\n')}
     */
     public record ${cName}(${t.fields.filter(f=>f.name).map(f=> {
-                           return `${!f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated `:``}${f.isOptional?``:`@NonNull `}${reserved.hasOwnProperty(f.name)?`@JsonProperty("${f.name}") `:``}${f.getType()} ${toCamelCase(f.name)}`
+                           return `${f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated `:``}${!f.isOptional?`@NonNull `:``}${reserved.hasOwnProperty(f.name)?`@JsonProperty("${f.name}") `:``}${f.getType()} ${toCamelCase(f.name)}`
                            }).join(', ')}) ${sClass?`implements ${sClass} `:``}{}`
 }
 

@@ -67,7 +67,7 @@ public class Tvm {
     * @param totalFwdFees Total fees the account pays for message forwarding
     * @param accountFees Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
     */
-    public record TransactionFees(@Deprecated @NonNull Long inMsgFwdFee, @NonNull Long storageFee, @NonNull Long gasFee, @Deprecated @NonNull Long outMsgsFwdFee, @Deprecated @NonNull Long totalAccountFees, @Deprecated @NonNull Long totalOutput, @NonNull Long extInMsgFee, @NonNull Long totalFwdFees, @NonNull Long accountFees) {}
+    public record TransactionFees(@NonNull Long inMsgFwdFee, @NonNull Long storageFee, @NonNull Long gasFee, @NonNull Long outMsgsFwdFee, @NonNull Long totalAccountFees, @NonNull Long totalOutput, @NonNull Long extInMsgFee, @NonNull Long totalFwdFees, @NonNull Long accountFees) {}
 
     /**
     * 

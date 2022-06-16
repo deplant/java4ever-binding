@@ -401,7 +401,7 @@ public class Net {
     * @param result Projection (result) string 
     */
     public static CompletableFuture<ResultOfSubscribeCollection> subscribeCollection(@NonNull Context context, @NonNull String collection,  Map<String,Object> filter, @NonNull String result, Consumer<SubscribeCollectionEvent> consumer)  throws JsonProcessingException {
-        return context.futureCallback("net.subscribe_collection", new ParamsOfSubscribeCollection(collection, filter, result), ResultOfSubscribeCollection.class);
+        return context.futureEvent("net.subscribe_collection", new ParamsOfSubscribeCollection(collection, filter, result), consumer, ResultOfSubscribeCollection.class);
     }
 
     /**
@@ -411,7 +411,7 @@ public class Net {
     * @param variables Variables used in subscription. Must be a map with named values that can be used in query.
     */
     public static CompletableFuture<ResultOfSubscribeCollection> subscribe(@NonNull Context context, @NonNull String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer)  throws JsonProcessingException {
-        return context.futureCallback("net.subscribe", new ParamsOfSubscribe(subscription, variables), ResultOfSubscribeCollection.class);
+        return context.futureEvent("net.subscribe", new ParamsOfSubscribe(subscription, variables), consumer, ResultOfSubscribeCollection.class);
     }
 
     /**

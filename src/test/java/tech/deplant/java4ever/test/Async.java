@@ -12,9 +12,24 @@ public class Async {
 
     @Test
     public void testGenerics() throws JsonProcessingException {
-        var ctx = new Context(new JavaLibraryPathLoader(),"{}");
-        var result = Client.version(ctx).join();
-        log.debug(result.version());
+        var ctx = new Context(new JavaLibraryPathLoader(),
+                new Client.ClientConfig(
+                    new Client.NetworkConfig(null, new String[]{"http://80.78.241.3/"},null,
+                        null,null,null,
+                        null,null,null,
+                        null,null,null,
+                        null,null,null,null,null
+                    ),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
+        );
+
+        var result = Client.config(ctx).join();
+        log.debug(result.network().endpoints()[0]);
     }
 
 //    @Test

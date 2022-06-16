@@ -1092,7 +1092,7 @@ public class Crypto {
     * @param appObject  
     */
     public static CompletableFuture<RegisteredSigningBox> registerSigningBox(@NonNull Context context,  AppSigningBox appObject)  throws JsonProcessingException {
-        return context.futureCallback("crypto.register_signing_box", appObjectnull, RegisteredSigningBox.class);
+        return context.futureAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
     }
 
     /**
@@ -1139,7 +1139,7 @@ public class Crypto {
     * @param appObject  
     */
     public static CompletableFuture<RegisteredEncryptionBox> registerEncryptionBox(@NonNull Context context,  AppEncryptionBox appObject)  throws JsonProcessingException {
-        return context.futureCallback("crypto.register_encryption_box", appObjectnull, RegisteredEncryptionBox.class);
+        return context.futureAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
     }
 
     /**

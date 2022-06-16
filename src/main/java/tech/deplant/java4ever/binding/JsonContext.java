@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import tech.deplant.java4ever.binding.json.RecordNamingStrategyPatchModule;
 
 public class JsonContext {
     public final static ObjectMapper MAPPER = JsonMapper.builder() // or different mapper for other format
@@ -14,5 +15,6 @@ public class JsonContext {
             .addModule(new JavaTimeModule())
             // and possibly other configuration, modules, then:
             .build()
-            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .registerModule(new RecordNamingStrategyPatchModule());
 }

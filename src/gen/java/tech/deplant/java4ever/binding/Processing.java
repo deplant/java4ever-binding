@@ -74,7 +74,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     */
     public static CompletableFuture<ResultOfSendMessage> sendMessage(@NonNull Context context, @NonNull String message,  Abi.ABI abi, @NonNull Boolean sendEvents, Consumer<SendMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureCallback("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), ResultOfSendMessage.class);
+        return context.futureEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Processing {
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
     */
     public static CompletableFuture<ResultOfProcessMessage> waitForTransaction(@NonNull Context context,  Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer)  throws JsonProcessingException {
-        return context.futureCallback("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), ResultOfProcessMessage.class);
+        return context.futureEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
     }
 
     /**
@@ -102,7 +102,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     */
     public static CompletableFuture<ResultOfProcessMessage> processMessage(@NonNull Context context, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureCallback("processing.process_message", new ParamsOfProcessMessage(abi, address, deploySet, callSet, signer, processingTryIndex, sendEvents), ResultOfProcessMessage.class);
+        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
     }
 
 }
