@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;
 import jdk.incubator.foreign.SegmentAllocator;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -26,30 +27,17 @@ import java.util.function.Consumer;
 //TODO Move context creation here
 //TODO In ConfigContext remove all constructors except AllArgs
 @Log4j2
+@AllArgsConstructor
 public final class Context {
-
+    @Getter
     public int requestCount = 0;
     @Getter
     int id;
-    @Getter
-    @Setter
-    long timeout;
-    @Getter
-    Double version = 1.28;
+
     //HashMap<Integer, CompletableFuture<String>> responses = new HashMap<>();
     //HashMap<Integer, Callback<?>> callbacks = new HashMap<>();
     //HashMap<Integer, Object> appObjects = new HashMap<>();
     //private ResourceScope resourceScopeOfConfig = ResourceScope.newSharedScope();
-
-    public Context(LibraryLoader loader, String config) {
-        loader.load();
-        this.id = tcCreateContext(ResourceScope.newSharedScope(), config);
-        this.timeout = 30;
-    }
-
-    public Context(LibraryLoader loader, Client.ClientConfig config) throws JsonProcessingException {
-        this(loader,JsonContext.MAPPER.writeValueAsString(config));
-    }
 
     public <T, P, A> CompletableFuture<T> futureAppObject(String functionName, P params, A appObject, Class<T> clazz) throws JsonProcessingException {
         return future(functionName, params, clazz);
@@ -84,55 +72,30 @@ public final class Context {
         //}
     }
 
-    private int tcCreateContext(ResourceScope scope, String configJson) {
-        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 SEND:{}", () -> configJson);
-        MemorySegment out = ton_client.tc_read_string(SegmentAllocator.ofScope(scope), ton_client.tc_create_context(tc_string_data_t.ofString(configJson, scope)));
-        String result = tc_string_data_t.toString(out, scope);
-        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 RESP:{}", () -> result);
-        ResultOfCreateContext context = null;
-        try {
-            context = JsonContext.MAPPER.readValue(result, ResultOfCreateContext.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+    public static Context create(LibraryLoader loader, String configJson) throws JsonProcessingException {
+        loader.load();
+        String responseJson = null;
+        try (ResourceScope scope = ResourceScope.newSharedScope()) {
+            responseJson = tcCreateContext(scope, configJson);
         }
-        return context.result() == null ? -1 : context.result();
+        var createContextResponse = JsonContext.MAPPER.readValue(responseJson, ResultOfCreateContext.class);
+        if (createContextResponse.result() == null || createContextResponse.result() < 1) {
+            throw new RuntimeException("sdk.create_context failed!");
+        }
+        return new Context(0,createContextResponse.result());
     }
 
-//    @Value
-//    public static class Config extends JsonData {
-//        Context.NetworkConfig network;
-//        Context.CryptoConfig crypto;
-//        Context.AbiConfig abi;
-//    }
-//
-//    @Value
-//    public static class NetworkConfig extends JsonData {
-//        String[] endpoints;
-//        @Deprecated
-//        String server_address; // deprecated, use endpoints
-//        Integer network_retries_count; // default = 5
-//        Integer message_retries_count; // default = 5
-//        Integer message_processing_timeout; // default = 40000 ms
-//        Integer wait_for_timeout; // default = 40000 ms
-//        Integer out_of_sync_threshold; // default = 15000 ms
-//        Integer reconnect_timeout; // default = 12000 ms
-//        String access_key;
-//    }
-//
-//    @Value
-//    public static class CryptoConfig extends JsonData {
-//        Integer mnemonic_dictionary; // default = 1
-//        Integer mnemonic_word_count; // default = 12
-//        String hdkey_derivation_path; // default = "m/44'/396'/0'/0/0"
-//    }
-//
-//    @Value
-//    public static class AbiConfig extends JsonData {
-//        Integer workchain; // default = 0
-//        Integer message_expiration_timeout; // default = 40000 ms
-//        Integer message_expiration_timeout_grow_factor; // default = 1.5
-//
-//    }
+    public static Context create(LibraryLoader loader, Client.ClientConfig config) throws JsonProcessingException  {
+        return create(loader, JsonContext.MAPPER.writeValueAsString(config));
+    }
+
+    private static String tcCreateContext(ResourceScope scope, String configJson) {
+        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 SEND:{}", () -> configJson);
+        MemorySegment out = ton_client.tc_read_string(SegmentAllocator.ofScope(scope), ton_client.tc_create_context(tc_string_data_t.ofString(configJson, scope)));
+        final String result = tc_string_data_t.toString(out, scope);
+        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 RESP:{}", () -> result);
+        return result;
+    }
 
     public record ResultOfCreateContext(Integer result,String error) {}
 

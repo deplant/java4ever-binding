@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Remove when the following issue is resolved:
+ * <a href="https://github.com/FasterXML/jackson-databind/issues/2992">Properties naming strategy do not work with Record #2992</a>
+ */
 public class RecordNamingStrategyPatchModule extends SimpleModule {
 
     @Override
@@ -22,10 +26,7 @@ public class RecordNamingStrategyPatchModule extends SimpleModule {
         super.setupModule(context);
     }
 
-    /**
-     * Remove when the following issue is resolved:
-     * <a href="https://github.com/FasterXML/jackson-databind/issues/2992">Properties naming strategy do not work with Record #2992</a>
-     */
+
     private static class ValueInstantiatorsModifier extends ValueInstantiators.Base {
         @Override
         public ValueInstantiator findValueInstantiator(
