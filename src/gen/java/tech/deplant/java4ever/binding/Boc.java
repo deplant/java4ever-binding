@@ -11,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
- *  <h1>Module "boc"</h1>
+ *  <h1>boc</h1>
+ *  Contains methods of "boc" module.
+
  *  BOC manipulation module.
  *  @version EVER-SDK 1.34.2
  */
@@ -24,16 +26,22 @@ public class Boc {
     * Pin the BOC with `pin` name. Such BOC will not be removed from cache until it is unpinned
     * @param pin 
     */
-    public record Pinned(@NonNull String pin) implements BocCacheType {}
+    public record Pinned(@NonNull String pin) implements BocCacheType {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
-        public static final Unpinned Unpinned = new Unpinned();
+        public static final Unpinned UNPINNED = new Unpinned();
 
 
     /**
     * 
 
     */
-    public record Unpinned() implements BocCacheType {}
+    public record Unpinned() implements BocCacheType {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 }
 
     /**
@@ -143,35 +151,50 @@ public class Boc {
     * @param size Bit size of the value.
     * @param value Value: - `Number` containing integer number. e.g. `123`, `-123`. - Decimal string. e.g. `"123"`, `"-123"`.- `0x` prefixed hexadecimal string.  e.g `0x123`, `0X123`, `-0x123`.
     */
-    public record Integer(@NonNull Number size, @NonNull Map<String,Object> value) implements BuilderOp {}
+    public record Integer(@NonNull Number size, @NonNull Map<String,Object> value) implements BuilderOp {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
     * Append bit string to cell data.
     * @param value Bit string content using bitstring notation. See `TON VM specification` 1.0. Contains hexadecimal string representation:- Can end with `_` tag.- Can be prefixed with `x` or `X`.- Can be prefixed with `x{` or `X{` and ended with `}`.<p>Contains binary string represented as a sequenceof `0` and `1` prefixed with `n` or `N`.<p>Examples:`1AB`, `x1ab`, `X1AB`, `x{1abc}`, `X{1ABC}``2D9_`, `x2D9_`, `X2D9_`, `x{2D9_}`, `X{2D9_}``n00101101100`, `N00101101100`
     */
-    public record BitString(@NonNull String value) implements BuilderOp {}
+    public record BitString(@NonNull String value) implements BuilderOp {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
     * Append ref to nested cells.
     * @param builder Nested cell builder.
     */
-    public record Cell(@NonNull BuilderOp[] builder) implements BuilderOp {}
+    public record Cell(@NonNull BuilderOp[] builder) implements BuilderOp {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
     * Append ref to nested cell.
     * @param boc Nested cell BOC encoded with `base64` or BOC cache key.
     */
-    public record CellBoc(@NonNull String boc) implements BuilderOp {}
+    public record CellBoc(@NonNull String boc) implements BuilderOp {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
     * Address.
     * @param address Address in a common `workchain:account` or base64 format.
     */
-    public record Address(@NonNull String address) implements BuilderOp {}
+    public record Address(@NonNull String address) implements BuilderOp {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 }
 
     /**
@@ -287,6 +310,7 @@ public class Boc {
     * <h2>boc.parse_message</h2>
     * Parses message boc into a JSON JSON structure is compatible with GraphQL API message object
     * @param boc BOC encoded as base64 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static CompletableFuture<ResultOfParse> parseMessage(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
@@ -296,6 +320,7 @@ public class Boc {
     * <h2>boc.parse_transaction</h2>
     * Parses transaction boc into a JSON JSON structure is compatible with GraphQL API transaction object
     * @param boc BOC encoded as base64 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static CompletableFuture<ResultOfParse> parseTransaction(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
@@ -305,6 +330,7 @@ public class Boc {
     * <h2>boc.parse_account</h2>
     * Parses account boc into a JSON JSON structure is compatible with GraphQL API account object
     * @param boc BOC encoded as base64 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static CompletableFuture<ResultOfParse> parseAccount(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
@@ -314,6 +340,7 @@ public class Boc {
     * <h2>boc.parse_block</h2>
     * Parses block boc into a JSON JSON structure is compatible with GraphQL API block object
     * @param boc BOC encoded as base64 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static CompletableFuture<ResultOfParse> parseBlock(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
@@ -325,6 +352,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @param id Shardstate identificator 
     * @param workchainId Workchain shardstate belongs to 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static CompletableFuture<ResultOfParse> parseShardstate(@NonNull Context context, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
         return context.future("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
@@ -334,6 +362,7 @@ public class Boc {
     * <h2>boc.get_blockchain_config</h2>
     * Extract blockchain configuration from key block and also from zerostate.
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBlockchainConfig}
     */
     public static CompletableFuture<ResultOfGetBlockchainConfig> getBlockchainConfig(@NonNull Context context, @NonNull String blockBoc)  throws JsonProcessingException {
         return context.future("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
@@ -343,6 +372,7 @@ public class Boc {
     * <h2>boc.get_boc_hash</h2>
     * Calculates BOC root hash
     * @param boc BOC encoded as base64 or BOC handle 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocHash}
     */
     public static CompletableFuture<ResultOfGetBocHash> getBocHash(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
@@ -352,6 +382,7 @@ public class Boc {
     * <h2>boc.get_boc_depth</h2>
     * Calculates BOC depth
     * @param boc BOC encoded as base64 or BOC handle 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocDepth}
     */
     public static CompletableFuture<ResultOfGetBocDepth> getBocDepth(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
         return context.future("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
@@ -361,6 +392,7 @@ public class Boc {
     * <h2>boc.get_code_from_tvc</h2>
     * Extracts code from TVC contract image
     * @param tvc Contract TVC image or image BOC handle 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeFromTvc}
     */
     public static CompletableFuture<ResultOfGetCodeFromTvc> getCodeFromTvc(@NonNull Context context, @NonNull String tvc)  throws JsonProcessingException {
         return context.future("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
@@ -370,6 +402,7 @@ public class Boc {
     * <h2>boc.cache_get</h2>
     * Get BOC from cache
     * @param bocRef Reference to the cached BOC 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheGet}
     */
     public static CompletableFuture<ResultOfBocCacheGet> cacheGet(@NonNull Context context, @NonNull String bocRef)  throws JsonProcessingException {
         return context.future("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
@@ -380,6 +413,7 @@ public class Boc {
     * Save BOC into cache
     * @param boc BOC encoded as base64 or BOC reference 
     * @param cacheType Cache type 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheSet}
     */
     public static CompletableFuture<ResultOfBocCacheSet> cacheSet(@NonNull Context context, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
         return context.future("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
@@ -390,6 +424,7 @@ public class Boc {
     * Unpin BOCs with specified pin. BOCs which don't have another pins will be removed from cache
     * @param pin Pinned name 
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
+    * @return {@link tech.deplant.java4ever.binding.Boc.Void}
     */
     public static CompletableFuture<Void> cacheUnpin(@NonNull Context context, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
         return context.future("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef), Void.class);
@@ -400,6 +435,7 @@ public class Boc {
     * Encodes bag of cells (BOC) with builder operations. This method provides the same functionality as Solidity TvmBuilder. Resulting BOC of this method can be passed into Solidity and C++ contracts as TvmCell type.
     * @param builder Cell builder operations. 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeBoc}
     */
     public static CompletableFuture<ResultOfEncodeBoc> encodeBoc(@NonNull Context context, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
@@ -410,6 +446,7 @@ public class Boc {
     * Returns the contract code's salt if it is present.
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeSalt}
     */
     public static CompletableFuture<ResultOfGetCodeSalt> getCodeSalt(@NonNull Context context, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
@@ -421,6 +458,7 @@ public class Boc {
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @param salt Code salt to set. BOC encoded as base64 or BOC handle
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfSetCodeSalt}
     */
     public static CompletableFuture<ResultOfSetCodeSalt> setCodeSalt(@NonNull Context context, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
@@ -431,6 +469,7 @@ public class Boc {
     * Decodes tvc into code, data, libraries and special options.
     * @param tvc Contract TVC image BOC encoded as base64 or BOC handle 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfDecodeTvc}
     */
     public static CompletableFuture<ResultOfDecodeTvc> decodeTvc(@NonNull Context context, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
@@ -446,6 +485,7 @@ public class Boc {
     * @param tock `special.tock` field. Specifies the contract ability to handle tock transactions
     * @param splitDepth Is present and non-zero only in instances of large smart contracts 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeTvc}
     */
     public static CompletableFuture<ResultOfEncodeTvc> encodeTvc(@NonNull Context context,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
@@ -459,6 +499,7 @@ public class Boc {
     * @param init Bag of cells with state init (used in deploy messages). 
     * @param body Bag of cells with the message body encoded as base64. 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeExternalInMessage}
     */
     public static CompletableFuture<ResultOfEncodeExternalInMessage> encodeExternalInMessage(@NonNull Context context,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
         return context.future("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
@@ -468,6 +509,7 @@ public class Boc {
     * <h2>boc.get_compiler_version</h2>
     * Returns the compiler version used to compile the code.
     * @param code Contract code BOC encoded as base64 or code BOC handle 
+    * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCompilerVersion}
     */
     public static CompletableFuture<ResultOfGetCompilerVersion> getCompilerVersion(@NonNull Context context, @NonNull String code)  throws JsonProcessingException {
         return context.future("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);

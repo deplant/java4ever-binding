@@ -56,9 +56,11 @@ fabric.properties
 build/
 target/
 
-# JVM Crash Logs
+# JVM crash logs
 hs_err_pid*.*
+
+# Local debug logs
 *.log
 
-# Local Keys
+# Local keys
 gradle.properties

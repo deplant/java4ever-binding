@@ -11,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
- *  <h1>Module "tvm"</h1>
+ *  <h1>tvm</h1>
+ *  Contains methods of "tvm" module.
+
  *  
  *  @version EVER-SDK 1.34.2
  */
@@ -28,23 +30,29 @@ public class Tvm {
     public record ExecutionOptions(String blockchainConfig, Number blockTime, Long blockLt, Long transactionLt) {}
     public interface AccountForExecutor {
 
-        public static final None None = new None();
+        public static final None NONE = new None();
 
 
     /**
     * Non-existing account to run a creation internal message. Should be used with `skip_transaction_check = true` if the message has no deploy data since transactions on the uninitialized account are always aborted
 
     */
-    public record None() implements AccountForExecutor {}
+    public record None() implements AccountForExecutor {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
-        public static final Uninit Uninit = new Uninit();
+        public static final Uninit UNINIT = new Uninit();
 
 
     /**
     * Emulate uninitialized account to run deploy message
 
     */
-    public record Uninit() implements AccountForExecutor {}
+    public record Uninit() implements AccountForExecutor {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
@@ -52,7 +60,10 @@ public class Tvm {
     * @param boc Account BOC. Encoded as base64.
     * @param unlimitedBalance Flag for running account with the unlimited balance. Can be used to calculate transaction fees without balance check
     */
-    public record Account(@NonNull String boc, Boolean unlimitedBalance) implements AccountForExecutor {}
+    public record Account(@NonNull String boc, Boolean unlimitedBalance) implements AccountForExecutor {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 }
 
     /**
@@ -135,6 +146,7 @@ public class Tvm {
     * @param skipTransactionCheck Skip transaction check flag 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
+    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunExecutor}
     */
     public static CompletableFuture<ResultOfRunExecutor> runExecutor(@NonNull Context context, @NonNull String message, @NonNull AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
         return context.future("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
@@ -149,6 +161,7 @@ public class Tvm {
     * @param abi Contract ABI for decoding output messages 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
+    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunTvm}
     */
     public static CompletableFuture<ResultOfRunTvm> runTvm(@NonNull Context context, @NonNull String message, @NonNull String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
         return context.future("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
@@ -162,6 +175,7 @@ public class Tvm {
     * @param input Input parameters 
     * @param executionOptions Execution options 
     * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
+    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunGet}
     */
     public static CompletableFuture<ResultOfRunGet> runGet(@NonNull Context context, @NonNull String account, @NonNull String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray)  throws JsonProcessingException {
         return context.future("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);

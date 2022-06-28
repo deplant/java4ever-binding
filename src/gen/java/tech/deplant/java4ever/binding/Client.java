@@ -11,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
- *  <h1>Module "client"</h1>
+ *  <h1>client</h1>
+ *  Contains methods of "client" module.
+
  *  Provides information about library.
  *  @version EVER-SDK 1.34.2
  */
@@ -104,14 +106,20 @@ public class Client {
     * Error occurred during request processing
     * @param text Error description
     */
-    public record Error(@NonNull String text) implements AppRequestResult {}
+    public record Error(@NonNull String text) implements AppRequestResult {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
     * Request processed successfully
     * @param result Request processing result
     */
-    public record Ok(@NonNull Map<String,Object> result) implements AppRequestResult {}
+    public record Ok(@NonNull Map<String,Object> result) implements AppRequestResult {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 }
 
     /**
@@ -142,6 +150,7 @@ public class Client {
     /**
     * <h2>client.get_api_reference</h2>
     * Returns Core Library API reference
+    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
     public static CompletableFuture<ResultOfGetApiReference> getApiReference(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.get_api_reference", null, ResultOfGetApiReference.class);
@@ -150,6 +159,7 @@ public class Client {
     /**
     * <h2>client.version</h2>
     * Returns Core Library version
+    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
     public static CompletableFuture<ResultOfVersion> version(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.version", null, ResultOfVersion.class);
@@ -158,6 +168,7 @@ public class Client {
     /**
     * <h2>client.config</h2>
     * Returns Core Library API reference
+    * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
     public static CompletableFuture<ClientConfig> config(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.config", null, ClientConfig.class);
@@ -166,6 +177,7 @@ public class Client {
     /**
     * <h2>client.build_info</h2>
     * Returns detailed information about this build.
+    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
     public static CompletableFuture<ResultOfBuildInfo> buildInfo(@NonNull Context context)  throws JsonProcessingException {
         return context.future("client.build_info", null, ResultOfBuildInfo.class);
@@ -176,6 +188,7 @@ public class Client {
     * Resolves application request processing result
     * @param appRequestId Request ID received from SDK 
     * @param result Result of request processing 
+    * @return {@link tech.deplant.java4ever.binding.Client.Void}
     */
     public static CompletableFuture<Void> resolveAppRequest(@NonNull Context context, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
         return context.future("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result), Void.class);

@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- *  <h1>Module "processing"</h1>
+ *  <h1>processing</h1>
+ *  Contains methods of "processing" module.
+
  *  Message processing module. This module incorporates functions related to complex messageprocessing scenarios.
  *  @version EVER-SDK 1.34.2
  */
@@ -72,6 +74,7 @@ public class Processing {
     * @param message Message BOC. 
     * @param abi Optional message ABI. If this parameter is specified and the message has the`expire` header then expiration time will be checked againstthe current time to prevent unnecessary sending of already expired message.<p>The `message already expired` error will be returned in thiscase.<p>Note, that specifying `abi` for ABI compliant contracts isstrongly recommended, so that proper processing strategy can bechosen.
     * @param sendEvents Flag for requesting events sending 
+    * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfSendMessage}
     */
     public static CompletableFuture<ResultOfSendMessage> sendMessage(@NonNull Context context, @NonNull String message,  Abi.ABI abi, @NonNull Boolean sendEvents, Consumer<SendMessageEvent> consumer)  throws JsonProcessingException {
         return context.futureEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
@@ -85,6 +88,7 @@ public class Processing {
     * @param shardBlockId The last generated block id of the destination account shard before the message was sent. You must provide the same value as the `send_message` has returned.
     * @param sendEvents Flag that enables/disables intermediate events 
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
+    * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
     public static CompletableFuture<ResultOfProcessMessage> waitForTransaction(@NonNull Context context,  Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer)  throws JsonProcessingException {
         return context.futureEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
@@ -100,9 +104,10 @@ public class Processing {
     * @param signer Signing parameters. 
     * @param processingTryIndex Processing try index. Used in message processing with retries (if contract's ABI includes "expire" header).<p>Encoder uses the provided try index to calculate messageexpiration time. The 1st message expiration time is specified inClient config.<p>Expiration timeouts will grow with every retry.Retry grow factor is set in Client config:&lt;.....add config parameter with default value here&gt;<p>Default value is 0.
     * @param sendEvents Flag for requesting events sending 
+    * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
     public static CompletableFuture<ResultOfProcessMessage> processMessage(@NonNull Context context, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
+        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(abi, address, deploySet, callSet, signer, processingTryIndex, sendEvents), consumer, ResultOfProcessMessage.class);
     }
 
 }

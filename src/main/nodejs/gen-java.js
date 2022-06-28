@@ -298,6 +298,10 @@ api.modules.forEach(mod => {
         let params = flatMap(f=> isFlattable(f.type)?types[f.type].fields:[f], fields)
             .map(p=> ({type:setTypeExported(p).getType(), name:toCamelCase(p.name), desc:p.desc,
             summary:p.summary, deprecated:p.deprecated, optional: (p.isOptional?'':'@NonNull') }));
+
+        //let paramsInner = fields.map(p=> ({type:setTypeExported(p).getType(), name:toCamelCase(p.name), desc:p.desc,
+        //    summary:p.summary, deprecated:p.deprecated, optional: (p.isOptional?'':'@NonNull') }));
+
         if (appObject)
             params.push({type:appObject.type, name:'appObject', optional:''});
         // TODO temporary removed app objects
@@ -305,9 +309,9 @@ api.modules.forEach(mod => {
             body += `    * <h2>${mod.name}.${f.name}</h2>\n`;
             body += `    * ${toJavadoc(f.summary,f.description)}\n`;
             body += params.map(p => `    * @param ${p.name} ${toHTML(p.summary)} ${toHTML(p.desc)}\n`).join('');
-            let rDesc = rField.desc || (((type)=>{return type&&type.desc})(types[rField.getType()]));
-            if (rDesc)
-            body += `    * @return ${toHTML(rDesc)}\n`;
+        // let rDesc = rField.desc || (((type)=>{return type&&type.desc})(types[rField.getType()]));
+        // if (rDesc)
+            body += `    * @return {@link ${packageName}.${toCapitalCase(mod.name)}.${rField.getType(mod.name)}}\n`;
             body += `    */\n`;
             body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static CompletableFuture<${rField.getType(mod.name).replace('Map<String,Object>','Map')}> ${toCamelCase(f.name)}(@NonNull Context context${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
             body += `        return context.future${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
@@ -322,7 +326,8 @@ api.modules.forEach(mod => {
 ${Object.keys(imports).map(i=>`import ${i};`).join('\n')}
 
 /**
- *  <h1>Module "${mod.name}"</h1>
+ *  <h1>${mod.name}</h1>
+ *  Contains methods of "${mod.name}" module.\n
  *  ${toJavadoc(mod.summary,mod.description)}
  *  @version EVER-SDK ${api.version}
  */
@@ -360,7 +365,12 @@ ${t.fields.filter(f=>f.name).map(f=>
     */
     public record ${cName}(${t.fields.filter(f=>f.name).map(f=> {
                            return `${f.isOptional && isDeprecated(f.summary,f.desc)?`@Deprecated `:``}${!f.isOptional?`@NonNull `:``}${reserved.hasOwnProperty(f.name)?`@JsonProperty("${f.name}") `:``}${f.getType()} ${toCamelCase(f.name)}`
-                           }).join(', ')}) ${sClass?`implements ${sClass} `:``}{}`
+                           }).join(', ')}) ${sClass?`implements ${sClass} `:``}${sClass?`{
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }`:`{}`}`
+
+
 }
 
 function getEnumSource(cName, t) {
@@ -380,7 +390,7 @@ function getEnumOfTypesSource(cName, t) {
 ${t.variants.map(v => {
 
     return (v.fields.length?'':`
-        public static final ${v.name} ${v.name} = new ${v.name}();
+        public static final ${v.name} ${v.name.toUpperCase()} = new ${v.name}();
 `) + getStructSource(v.name,v,cName);
 }).join('\n')}
 }`;

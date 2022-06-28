@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- *  <h1>Module "net"</h1>
+ *  <h1>net</h1>
+ *  Contains methods of "net" module.
+
  *  Network access.
  *  @version EVER-SDK 1.34.2
  */
@@ -44,7 +46,10 @@ public class Net {
     * @param order Sorting order
     * @param limit Number of documents to return
     */
-    public record QueryCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, OrderBy[] order, Number limit) implements ParamsOfQueryOperation {}
+    public record QueryCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, OrderBy[] order, Number limit) implements ParamsOfQueryOperation {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
@@ -54,7 +59,10 @@ public class Net {
     * @param result Projection (result) string
     * @param timeout Query timeout
     */
-    public record WaitForCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, Number timeout) implements ParamsOfQueryOperation {}
+    public record WaitForCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, Number timeout) implements ParamsOfQueryOperation {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
@@ -63,7 +71,10 @@ public class Net {
     * @param filter Collection filter
     * @param fields Projection (result) string
     */
-    public record AggregateCollection(@NonNull String collection, Map<String,Object> filter, FieldAggregation[] fields) implements ParamsOfQueryOperation {}
+    public record AggregateCollection(@NonNull String collection, Map<String,Object> filter, FieldAggregation[] fields) implements ParamsOfQueryOperation {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 
 
     /**
@@ -73,7 +84,10 @@ public class Net {
     * @param first Number of counterparties to return
     * @param after `cursor` field of the last received result
     */
-    public record QueryCounterparties(@NonNull String account, @NonNull String result, Number first, String after) implements ParamsOfQueryOperation {}
+    public record QueryCounterparties(@NonNull String account, @NonNull String result, Number first, String after) implements ParamsOfQueryOperation {
+                               @JsonProperty("type")
+                               public String type() { return getClass().getSimpleName(); }
+                           }
 }
 
     /**
@@ -334,6 +348,7 @@ public class Net {
     * Performs DAppServer GraphQL query.
     * @param query GraphQL query text. 
     * @param variables Variables used in query. Must be a map with named values that can be used in query.
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQuery}
     */
     public static CompletableFuture<ResultOfQuery> query(@NonNull Context context, @NonNull String query,  Map<String,Object> variables)  throws JsonProcessingException {
         return context.future("net.query", new ParamsOfQuery(query, variables), ResultOfQuery.class);
@@ -343,6 +358,7 @@ public class Net {
     * <h2>net.batch_query</h2>
     * Performs multiple queries per single fetch.
     * @param operations List of query operations that must be performed per single fetch. 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfBatchQuery}
     */
     public static CompletableFuture<ResultOfBatchQuery> batchQuery(@NonNull Context context, @NonNull ParamsOfQueryOperation[] operations)  throws JsonProcessingException {
         return context.future("net.batch_query", new ParamsOfBatchQuery(operations), ResultOfBatchQuery.class);
@@ -356,6 +372,7 @@ public class Net {
     * @param result Projection (result) string 
     * @param order Sorting order 
     * @param limit Number of documents to return 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
     public static CompletableFuture<ResultOfQueryCollection> queryCollection(@NonNull Context context, @NonNull String collection,  Map<String,Object> filter, @NonNull String result,  OrderBy[] order,  Number limit)  throws JsonProcessingException {
         return context.future("net.query_collection", new ParamsOfQueryCollection(collection, filter, result, order, limit), ResultOfQueryCollection.class);
@@ -367,6 +384,7 @@ public class Net {
     * @param collection Collection name (accounts, blocks, transactions, messages, block_signatures) 
     * @param filter Collection filter 
     * @param fields Projection (result) string 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfAggregateCollection}
     */
     public static CompletableFuture<ResultOfAggregateCollection> aggregateCollection(@NonNull Context context, @NonNull String collection,  Map<String,Object> filter,  FieldAggregation[] fields)  throws JsonProcessingException {
         return context.future("net.aggregate_collection", new ParamsOfAggregateCollection(collection, filter, fields), ResultOfAggregateCollection.class);
@@ -379,6 +397,7 @@ public class Net {
     * @param filter Collection filter 
     * @param result Projection (result) string 
     * @param timeout Query timeout 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfWaitForCollection}
     */
     public static CompletableFuture<ResultOfWaitForCollection> waitForCollection(@NonNull Context context, @NonNull String collection,  Map<String,Object> filter, @NonNull String result,  Number timeout)  throws JsonProcessingException {
         return context.future("net.wait_for_collection", new ParamsOfWaitForCollection(collection, filter, result, timeout), ResultOfWaitForCollection.class);
@@ -388,6 +407,7 @@ public class Net {
     * <h2>net.unsubscribe</h2>
     * Cancels a subscription Cancels a subscription specified by its handle.
     * @param handle Subscription handle. Must be closed with `unsubscribe`
+    * @return {@link tech.deplant.java4ever.binding.Net.Void}
     */
     public static CompletableFuture<Void> unsubscribe(@NonNull Context context, @NonNull Number handle)  throws JsonProcessingException {
         return context.future("net.unsubscribe", new ResultOfSubscribeCollection(handle), Void.class);
@@ -399,6 +419,7 @@ public class Net {
     * @param collection Collection name (accounts, blocks, transactions, messages, block_signatures) 
     * @param filter Collection filter 
     * @param result Projection (result) string 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
     public static CompletableFuture<ResultOfSubscribeCollection> subscribeCollection(@NonNull Context context, @NonNull String collection,  Map<String,Object> filter, @NonNull String result, Consumer<SubscribeCollectionEvent> consumer)  throws JsonProcessingException {
         return context.futureEvent("net.subscribe_collection", new ParamsOfSubscribeCollection(collection, filter, result), consumer, ResultOfSubscribeCollection.class);
@@ -409,6 +430,7 @@ public class Net {
     * Creates a subscription The subscription is a persistent communication channel betweenclient and Everscale Network.<p>### Important Notes on Subscriptions<p>Unfortunately sometimes the connection with the network brakes down.In this situation the library attempts to reconnect to the network.This reconnection sequence can take significant time.All of this time the client is disconnected from the network.<p>Bad news is that all changes that happened whilethe client was disconnected are lost.<p>Good news is that the client report errors to the callback whenit loses and resumes connection.<p>So, if the lost changes are important to the application thenthe application must handle these error reports.<p>Library reports errors with `responseType` == 101and the error object passed via `params`.<p>When the library has successfully reconnectedthe application receives callback with`responseType` == 101 and `params.code` == 614 (NetworkModuleResumed).<p>Application can use several ways to handle this situation:- If application monitors changes for the singleobject (for example specific account):  applicationcan perform a query for this object and handle actual data as aregular data from the subscription.- If application monitors sequence of some objects(for example transactions of the specific account): application mustrefresh all cached (or visible to user) lists where this sequences presents.
     * @param subscription GraphQL subscription text. 
     * @param variables Variables used in subscription. Must be a map with named values that can be used in query.
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
     public static CompletableFuture<ResultOfSubscribeCollection> subscribe(@NonNull Context context, @NonNull String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer)  throws JsonProcessingException {
         return context.futureEvent("net.subscribe", new ParamsOfSubscribe(subscription, variables), consumer, ResultOfSubscribeCollection.class);
@@ -417,6 +439,7 @@ public class Net {
     /**
     * <h2>net.suspend</h2>
     * Suspends network module to stop any network activity
+    * @return {@link tech.deplant.java4ever.binding.Net.Void}
     */
     public static CompletableFuture<Void> suspend(@NonNull Context context)  throws JsonProcessingException {
         return context.future("net.suspend", null, Void.class);
@@ -425,6 +448,7 @@ public class Net {
     /**
     * <h2>net.resume</h2>
     * Resumes network module to enable network activity
+    * @return {@link tech.deplant.java4ever.binding.Net.Void}
     */
     public static CompletableFuture<Void> resume(@NonNull Context context)  throws JsonProcessingException {
         return context.future("net.resume", null, Void.class);
@@ -434,6 +458,7 @@ public class Net {
     * <h2>net.find_last_shard_block</h2>
     * Returns ID of the last block in a specified account shard
     * @param address Account address 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfFindLastShardBlock}
     */
     public static CompletableFuture<ResultOfFindLastShardBlock> findLastShardBlock(@NonNull Context context, @NonNull String address)  throws JsonProcessingException {
         return context.future("net.find_last_shard_block", new ParamsOfFindLastShardBlock(address), ResultOfFindLastShardBlock.class);
@@ -442,6 +467,7 @@ public class Net {
     /**
     * <h2>net.fetch_endpoints</h2>
     * Requests the list of alternative endpoints from server
+    * @return {@link tech.deplant.java4ever.binding.Net.EndpointsSet}
     */
     public static CompletableFuture<EndpointsSet> fetchEndpoints(@NonNull Context context)  throws JsonProcessingException {
         return context.future("net.fetch_endpoints", null, EndpointsSet.class);
@@ -451,6 +477,7 @@ public class Net {
     * <h2>net.set_endpoints</h2>
     * Sets the list of endpoints to use on reinit
     * @param endpoints List of endpoints provided by server 
+    * @return {@link tech.deplant.java4ever.binding.Net.Void}
     */
     public static CompletableFuture<Void> setEndpoints(@NonNull Context context, @NonNull String[] endpoints)  throws JsonProcessingException {
         return context.future("net.set_endpoints", new EndpointsSet(endpoints), Void.class);
@@ -459,6 +486,7 @@ public class Net {
     /**
     * <h2>net.get_endpoints</h2>
     * Requests the list of alternative endpoints from server
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfGetEndpoints}
     */
     public static CompletableFuture<ResultOfGetEndpoints> getEndpoints(@NonNull Context context)  throws JsonProcessingException {
         return context.future("net.get_endpoints", null, ResultOfGetEndpoints.class);
@@ -471,6 +499,7 @@ public class Net {
     * @param result Projection (result) string 
     * @param first Number of counterparties to return 
     * @param after `cursor` field of the last received result 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
     public static CompletableFuture<ResultOfQueryCollection> queryCounterparties(@NonNull Context context, @NonNull String account, @NonNull String result,  Number first,  String after)  throws JsonProcessingException {
         return context.future("net.query_counterparties", new ParamsOfQueryCounterparties(account, result, first, after), ResultOfQueryCollection.class);
@@ -482,6 +511,7 @@ public class Net {
     * @param inMsg Input message id. 
     * @param abiRegistry List of contract ABIs that will be used to decode message bodies. Library will try to decode each returned message body using any ABI from the registry. 
     * @param timeout Timeout used to limit waiting time for the missing messages and transaction. If some of the following messages and transactions are missing yetThe maximum waiting time is regulated by this option.<p>Default value is 60000 (1 min).
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryTransactionTree}
     */
     public static CompletableFuture<ResultOfQueryTransactionTree> queryTransactionTree(@NonNull Context context, @NonNull String inMsg,  Abi.ABI[] abiRegistry,  Number timeout)  throws JsonProcessingException {
         return context.future("net.query_transaction_tree", new ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout), ResultOfQueryTransactionTree.class);
@@ -494,6 +524,7 @@ public class Net {
     * @param endTime Optional end time to iterate for. If the application specifies this parameter then the iterationincludes blocks with `gen_utime` &lt; `end_time`.Otherwise the iteration never stops.<p>Must be specified in seconds.
     * @param shardFilter Shard prefix filter. If the application specifies this parameter and it is not the empty arraythen the iteration will include items related to accounts that belongs tothe specified shard prefixes.Shard prefix must be represented as a string "workchain:prefix".Where `workchain` is a signed integer and the `prefix` if a hexadecimalrepresentation if the 64-bit unsigned integer with tagged shard prefix.For example: "0:3800000000000000".
     * @param result Projection (result) string. List of the fields that must be returned for iterated items.This field is the same as the `result` parameter ofthe `query_collection` function.Note that iterated items can contains additional fields that arenot requested in the `result`.
+    * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
     public static CompletableFuture<RegisteredIterator> createBlockIterator(@NonNull Context context,  Number startTime,  Number endTime,  String[] shardFilter,  String result)  throws JsonProcessingException {
         return context.future("net.create_block_iterator", new ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), RegisteredIterator.class);
@@ -503,6 +534,7 @@ public class Net {
     * <h2>net.resume_block_iterator</h2>
     * Resumes block iterator. The iterator stays exactly at the same position where the `resume_state` was catched.<p>Application should call the `remove_iterator` when iterator is no longer required.
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
+    * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
     public static CompletableFuture<RegisteredIterator> resumeBlockIterator(@NonNull Context context, @NonNull Map<String,Object> resumeState)  throws JsonProcessingException {
         return context.future("net.resume_block_iterator", new ParamsOfResumeBlockIterator(resumeState), RegisteredIterator.class);
@@ -517,6 +549,7 @@ public class Net {
     * @param accountsFilter Account address filter. Application can specify the list of accounts for whichit wants to iterate transactions.<p>If this parameter is missing or an empty list then the library iteratestransactions for all accounts that pass the shard filter.<p>Note that the library doesn't detect conflicts between the account filter and the shard filterif both are specified.So it is an application responsibility to specify the correct filter combination.
     * @param result Projection (result) string. List of the fields that must be returned for iterated items.This field is the same as the `result` parameter ofthe `query_collection` function.Note that iterated items can contain additional fields that arenot requested in the `result`.
     * @param includeTransfers Include `transfers` field in iterated transactions. If this parameter is `true` then each transaction contains field`transfers` with list of transfer. See more about this structure in function description.
+    * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
     public static CompletableFuture<RegisteredIterator> createTransactionIterator(@NonNull Context context,  Number startTime,  Number endTime,  String[] shardFilter,  String[] accountsFilter,  String result,  Boolean includeTransfers)  throws JsonProcessingException {
         return context.future("net.create_transaction_iterator", new ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), RegisteredIterator.class);
@@ -527,6 +560,7 @@ public class Net {
     * Resumes transaction iterator. The iterator stays exactly at the same position where the `resume_state` was caught.Note that `resume_state` doesn't store the account filter. If the application requiresto use the same account filter as it was when the iterator was created then the applicationmust pass the account filter again in `accounts_filter` parameter.<p>Application should call the `remove_iterator` when iterator is no longer required.
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
     * @param accountsFilter Account address filter. Application can specify the list of accounts for whichit wants to iterate transactions.<p>If this parameter is missing or an empty list then the library iteratestransactions for all accounts that passes the shard filter.<p>Note that the library doesn't detect conflicts between the account filter and the shard filterif both are specified.So it is the application's responsibility to specify the correct filter combination.
+    * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
     public static CompletableFuture<RegisteredIterator> resumeTransactionIterator(@NonNull Context context, @NonNull Map<String,Object> resumeState,  String[] accountsFilter)  throws JsonProcessingException {
         return context.future("net.resume_transaction_iterator", new ParamsOfResumeTransactionIterator(resumeState, accountsFilter), RegisteredIterator.class);
@@ -538,6 +572,7 @@ public class Net {
     * @param iterator Iterator handle 
     * @param limit Maximum count of the returned items. If value is missing or is less than 1 the library uses 1.
     * @param returnResumeState Indicates that function must return the iterator state that can be used for resuming iteration. 
+    * @return {@link tech.deplant.java4ever.binding.Net.ResultOfIteratorNext}
     */
     public static CompletableFuture<ResultOfIteratorNext> iteratorNext(@NonNull Context context, @NonNull Number iterator,  Number limit,  Boolean returnResumeState)  throws JsonProcessingException {
         return context.future("net.iterator_next", new ParamsOfIteratorNext(iterator, limit, returnResumeState), ResultOfIteratorNext.class);
@@ -547,6 +582,7 @@ public class Net {
     * <h2>net.remove_iterator</h2>
     * Removes an iterator Frees all resources allocated in library to serve iterator.<p>Application always should call the `remove_iterator` when iteratoris no longer required.
     * @param handle Iterator handle. Must be removed using `remove_iterator`when it is no more needed for the application.
+    * @return {@link tech.deplant.java4ever.binding.Net.Void}
     */
     public static CompletableFuture<Void> removeIterator(@NonNull Context context, @NonNull Number handle)  throws JsonProcessingException {
         return context.future("net.remove_iterator", new RegisteredIterator(handle), Void.class);

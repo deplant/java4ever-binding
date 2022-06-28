@@ -33,4 +33,13 @@ public class AsyncTests {
 		log.debug(result.network().endpoints()[0]);
 	}
 
+	@Test
+	public void testGo2() throws com.fasterxml.jackson.core.JsonProcessingException {
+		log.debug(tech.deplant.java4ever.binding.JsonContext.MAPPER.writeValueAsString(new tech.deplant.java4ever.binding.Abi.Signer.Keys(
+				new tech.deplant.java4ever.binding.Crypto.KeyPair("pk", "sk"))));
+		log.debug(tech.deplant.java4ever.binding.JsonContext.MAPPER.writeValueAsString(new tech.deplant.java4ever.binding.Abi.Signer.External(
+				"pk")));
+		log.debug(tech.deplant.java4ever.binding.JsonContext.MAPPER.writeValueAsString(tech.deplant.java4ever.binding.Abi.MessageBodyType.InternalOutput));
+	}
+
 }
