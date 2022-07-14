@@ -107,7 +107,7 @@ public class Processing {
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
     public static CompletableFuture<ResultOfProcessMessage> processMessage(@NonNull Context context, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(abi, address, deploySet, callSet, signer, processingTryIndex, sendEvents), consumer, ResultOfProcessMessage.class);
+        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
     }
 
 }
