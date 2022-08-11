@@ -7,7 +7,7 @@
 
 **[GOSH Mirror](gosh://0:078d7efa815982bb5622065e7658f89b29ce8a24bce90e5ca0906cdfd2cc6358/deplant/java4ever-binding)**
 
-**java4ever:binding** is a Java Binding library for
+**java4ever-binding** is a Java Binding library for
 [EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of
 [Everscale](https://everscale.network/) network via
 [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface.
@@ -59,3 +59,22 @@ dependencies {
 
 You can use TON-SDK 1.33.0+ for your project or even load multiple libraries with different versions. You can use your
 custom TON-SDK fork if you like. You can use even lower versions, but we will not fix any issues with it.
+
+### Logging
+
+java4ever-binding uses the [SLF4J](https://www.slf4j.org/) logging facade.
+Users should therefore adopt a logging implementation like [Log4j](https://logging.apache.org/log4j/2.x/) or any other.
+
+```xml
+
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.13.0</version>
+</dependency>
+<dependency>
+<groupId>org.apache.logging.log4j</groupId>
+<artifactId>log4j-slf4j-impl</artifactId>
+<version>2.13.0</version>
+</dependency>
+```
