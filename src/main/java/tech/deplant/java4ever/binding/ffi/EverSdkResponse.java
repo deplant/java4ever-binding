@@ -1,17 +1,14 @@
-package tech.deplant.java4ever.binding.response;
+package tech.deplant.java4ever.binding.ffi;
 
-import jdk.incubator.foreign.MemorySegment;
-import jdk.incubator.foreign.ResourceScope;
 import lombok.extern.log4j.Log4j2;
-import tech.deplant.java4ever.ffi.tc_response_handler_t;
-import tech.deplant.java4ever.ffi.tc_string_data_t;
 
-import java.util.concurrent.CompletableFuture;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.MemorySession;
 
 @Log4j2
-public class EverResponse implements tc_response_handler_t {
+public class EverSdkResponse implements tc_response_handler_t {
 
-    final private CompletableFuture<String> result = new CompletableFuture<>();
+    private String result;
 
     /**
      * @param x0 uint32_t request_id
@@ -20,13 +17,13 @@ public class EverResponse implements tc_response_handler_t {
      * @param x3 bool finished
      */
     @Override
-    public void apply(int x0, MemorySegment x1, int x2, byte x3) {
-        try (ResourceScope scope = ResourceScope.newSharedScope()) {
+    public void apply(int x0, MemorySegment x1, int x2, boolean x3) {
+        try (MemorySession scope = MemorySession.openShared()) {
             if (x2 == 0) {
-                this.result.complete(tc_string_data_t.toString(x1, scope));
+                this.result = EverSdkBridge.toString(x1);
                 //log.trace("REQID:" + x0 + " returned RESULT");
             } else if (x2 == 1) {
-                this.result.completeExceptionally(new RuntimeException(tc_string_data_t.toString(x1, scope)));
+                throw new RuntimeException(EverSdkBridge.toString(x1));
                 //this.result.complete(tc_string_data_t.toString(x1, scope));
                 //log.warn("REQID:" + x0 + " returned ERROR");
             } else if (x2 == 2) {
@@ -41,15 +38,15 @@ public class EverResponse implements tc_response_handler_t {
             } else if (x2 >= 5 && x2 <= 99) {
                 // RESERVED = 5..99 – reserved for protocol internal purposes. Application (or binding) must ignore this response.
                 // Nevertheless the binding must check the finished flag to release data, associated with request.
-                log.trace("REQID:" + x0 + " returned RESERVED");
+                //log.trace("REQID:" + x0 + " returned RESERVED");
             } else {
                 // CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
-                log.trace("REQID:" + x0 + " returned CUSTOM");
+                //log.trace("REQID:" + x0 + " returned CUSTOM");
             }
         }
     }
 
-    public CompletableFuture<String> result() {
+    public String result() {
         return this.result;
     }
 }

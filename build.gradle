@@ -8,7 +8,7 @@ plugins {
 
 // Global variables for all modules
 ext {
-    slf4jVersion = "2.0.0-beta1" // <2.15="CVE-2021-44228 Log4j 2 Vulnerability"
+    slf4jVersion = "2.0.0-beta1"
     junitVersion = "5.8.+"
     jacksonVersion = "2.13.+"
     v_groupRepo = "deplant"
@@ -40,9 +40,8 @@ dependencies {
     //implementation "org.apache.logging.log4j:log4j-core:$lo4jVersion"
     //implementation "org.apache.logging.log4j:log4j-api:$lo4jVersion"
     //implementation "com.lmax:disruptor:3.4.4" // required for log4j2 async logging
-    
+
     // JSON
-    implementation "com.google.code.gson:gson:2.8.9"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-parameter-names:$jacksonVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
@@ -134,7 +133,7 @@ tasks.withType(Test) {
 }
 tasks.withType(JavaExec) {
     jvmArgs += "--enable-preview"
-    jvmArgs += "--add-modules=jdk.incubator.foreign"
+    //jvmArgs += "--add-modules=jdk.incubator.foreign"
     jvmArgs += "--enable-native-access=java4ever.binding"
     jvmArgs += "-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
 }
@@ -142,29 +141,29 @@ tasks.withType(JavaExec) {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(19)
     }
     withJavadocJar()
     withSourcesJar()
 }
 
 compileJava {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
 }
 
 tasks.withType(JavaCompile).configureEach {
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(19)
     }
-    options.compilerArgs += "--enable-preview"
+    //options.compilerArgs += "--enable-preview"
 }
 
 tasks.withType(JavaExec).configureEach {
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(19)
     }
-    jvmArgs += "--enable-preview"
+    //jvmArgs += "--enable-preview"
 }
 
 sourceSets {
