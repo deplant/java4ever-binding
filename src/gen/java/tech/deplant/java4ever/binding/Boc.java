@@ -9,7 +9,7 @@ import java.util.stream.*;
 import java.util.Arrays;
 
 /**
- *  <h1>boc</h1>
+ *  <strong>boc</strong>
  *  Contains methods of "boc" module.
 
  *  BOC manipulation module.
@@ -305,47 +305,47 @@ public class Boc {
     */
     public record ResultOfGetCompilerVersion(String version) {}
     /**
-    * <h2>boc.parse_message</h2>
+    * <strong>boc.parse_message</strong>
     * Parses message boc into a JSON JSON structure is compatible with GraphQL API message object
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static ResultOfParse parseMessage(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
+        return  ctx.call("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-    * <h2>boc.parse_transaction</h2>
+    * <strong>boc.parse_transaction</strong>
     * Parses transaction boc into a JSON JSON structure is compatible with GraphQL API transaction object
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static ResultOfParse parseTransaction(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
+        return  ctx.call("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-    * <h2>boc.parse_account</h2>
+    * <strong>boc.parse_account</strong>
     * Parses account boc into a JSON JSON structure is compatible with GraphQL API account object
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static ResultOfParse parseAccount(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
+        return  ctx.call("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-    * <h2>boc.parse_block</h2>
+    * <strong>boc.parse_block</strong>
     * Parses block boc into a JSON JSON structure is compatible with GraphQL API block object
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static ResultOfParse parseBlock(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
+        return  ctx.call("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
-    * <h2>boc.parse_shardstate</h2>
+    * <strong>boc.parse_shardstate</strong>
     * Parses shardstate boc into a JSON JSON structure is compatible with GraphQL API shardstate object
     * @param boc BOC encoded as base64 
     * @param id Shardstate identificator 
@@ -353,105 +353,104 @@ public class Boc {
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
     public static ResultOfParse parseShardstate(@NonNull Context ctx, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
-        return ctx.call("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
+        return  ctx.call("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
     }
 
     /**
-    * <h2>boc.get_blockchain_config</h2>
+    * <strong>boc.get_blockchain_config</strong>
     * Extract blockchain configuration from key block and also from zerostate.
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBlockchainConfig}
     */
     public static ResultOfGetBlockchainConfig getBlockchainConfig(@NonNull Context ctx, @NonNull String blockBoc)  throws JsonProcessingException {
-        return ctx.call("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
+        return  ctx.call("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
     }
 
     /**
-    * <h2>boc.get_boc_hash</h2>
+    * <strong>boc.get_boc_hash</strong>
     * Calculates BOC root hash
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocHash}
     */
     public static ResultOfGetBocHash getBocHash(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
+        return  ctx.call("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
     }
 
     /**
-    * <h2>boc.get_boc_depth</h2>
+    * <strong>boc.get_boc_depth</strong>
     * Calculates BOC depth
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocDepth}
     */
     public static ResultOfGetBocDepth getBocDepth(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
-        return ctx.call("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
+        return  ctx.call("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
     }
 
     /**
-    * <h2>boc.get_code_from_tvc</h2>
+    * <strong>boc.get_code_from_tvc</strong>
     * Extracts code from TVC contract image
     * @param tvc Contract TVC image or image BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeFromTvc}
     */
     public static ResultOfGetCodeFromTvc getCodeFromTvc(@NonNull Context ctx, @NonNull String tvc)  throws JsonProcessingException {
-        return ctx.call("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
+        return  ctx.call("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
     }
 
     /**
-    * <h2>boc.cache_get</h2>
+    * <strong>boc.cache_get</strong>
     * Get BOC from cache
     * @param bocRef Reference to the cached BOC 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheGet}
     */
     public static ResultOfBocCacheGet cacheGet(@NonNull Context ctx, @NonNull String bocRef)  throws JsonProcessingException {
-        return ctx.call("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
+        return  ctx.call("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
     }
 
     /**
-    * <h2>boc.cache_set</h2>
+    * <strong>boc.cache_set</strong>
     * Save BOC into cache
     * @param boc BOC encoded as base64 or BOC reference 
     * @param cacheType Cache type 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheSet}
     */
     public static ResultOfBocCacheSet cacheSet(@NonNull Context ctx, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
-        return ctx.call("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
+        return  ctx.call("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
     }
 
     /**
-    * <h2>boc.cache_unpin</h2>
+    * <strong>boc.cache_unpin</strong>
     * Unpin BOCs with specified pin. BOCs which don't have another pins will be removed from cache
     * @param pin Pinned name 
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
-    * @return {@link tech.deplant.java4ever.binding.Boc.Void}
     */
-    public static Void cacheUnpin(@NonNull Context ctx, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
-        return ctx.call("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef), Void.class);
+    public static void cacheUnpin(@NonNull Context ctx, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
+         ctx.callVoid("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef));
     }
 
     /**
-    * <h2>boc.encode_boc</h2>
+    * <strong>boc.encode_boc</strong>
     * Encodes bag of cells (BOC) with builder operations. This method provides the same functionality as Solidity TvmBuilder. Resulting BOC of this method can be passed into Solidity and C++ contracts as TvmCell type.
     * @param builder Cell builder operations. 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeBoc}
     */
     public static ResultOfEncodeBoc encodeBoc(@NonNull Context ctx, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
+        return  ctx.call("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
     }
 
     /**
-    * <h2>boc.get_code_salt</h2>
+    * <strong>boc.get_code_salt</strong>
     * Returns the contract code's salt if it is present.
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeSalt}
     */
     public static ResultOfGetCodeSalt getCodeSalt(@NonNull Context ctx, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
+        return  ctx.call("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
     }
 
     /**
-    * <h2>boc.set_code_salt</h2>
+    * <strong>boc.set_code_salt</strong>
     * Sets new salt to contract code. Returns the new contract code with salt.
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @param salt Code salt to set. BOC encoded as base64 or BOC handle
@@ -459,22 +458,22 @@ public class Boc {
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfSetCodeSalt}
     */
     public static ResultOfSetCodeSalt setCodeSalt(@NonNull Context ctx, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
+        return  ctx.call("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
     }
 
     /**
-    * <h2>boc.decode_tvc</h2>
+    * <strong>boc.decode_tvc</strong>
     * Decodes tvc into code, data, libraries and special options.
     * @param tvc Contract TVC image BOC encoded as base64 or BOC handle 
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfDecodeTvc}
     */
     public static ResultOfDecodeTvc decodeTvc(@NonNull Context ctx, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
+        return  ctx.call("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
     }
 
     /**
-    * <h2>boc.encode_tvc</h2>
+    * <strong>boc.encode_tvc</strong>
     * Encodes tvc from code, data, libraries ans special options (see input params)
     * @param code Contract code BOC encoded as base64 or BOC handle 
     * @param data Contract data BOC encoded as base64 or BOC handle 
@@ -486,11 +485,11 @@ public class Boc {
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeTvc}
     */
     public static ResultOfEncodeTvc encodeTvc(@NonNull Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
+        return  ctx.call("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
     }
 
     /**
-    * <h2>boc.encode_external_in_message</h2>
+    * <strong>boc.encode_external_in_message</strong>
     * Encodes a message Allows to encode any external inbound message.
     * @param src Source address. 
     * @param dst Destination address. 
@@ -500,17 +499,17 @@ public class Boc {
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeExternalInMessage}
     */
     public static ResultOfEncodeExternalInMessage encodeExternalInMessage(@NonNull Context ctx,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
+        return  ctx.call("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
     }
 
     /**
-    * <h2>boc.get_compiler_version</h2>
+    * <strong>boc.get_compiler_version</strong>
     * Returns the compiler version used to compile the code.
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCompilerVersion}
     */
     public static ResultOfGetCompilerVersion getCompilerVersion(@NonNull Context ctx, @NonNull String code)  throws JsonProcessingException {
-        return ctx.call("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
+        return  ctx.call("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
     }
 
 }

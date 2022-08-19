@@ -9,7 +9,7 @@ import java.util.stream.*;
 import java.util.Arrays;
 
 /**
- *  <h1>debot</h1>
+ *  <strong>debot</strong>
  *  Contains methods of "debot" module.
 
  *  <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Module for working with debot.
@@ -239,66 +239,62 @@ public class Debot {
     */
     public record ParamsOfRemove(@NonNull Integer debotHandle) {}
     /**
-    * <h2>debot.init</h2>
+    * <strong>debot.init</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Creates and instance of DeBot. Downloads debot smart contract (code and data) from blockchain and createsan instance of Debot Engine for it.<p># RemarksIt does not switch debot to context 0. Browser Callbacks are not called.
     * @param address Debot smart contract address 
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Debot.RegisteredDebot}
     */
     public static RegisteredDebot init(@NonNull Context ctx, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
-        return ctx.callAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
+        return  ctx.callAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
     }
 
     /**
-    * <h2>debot.start</h2>
+    * <strong>debot.start</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Starts the DeBot. Downloads debot smart contract from blockchain and switches it tocontext zero.<p>This function must be used by Debot Browser to start a dialog with debot.While the function is executing, several Browser Callbacks can be called,since the debot tries to display all actions from the context 0 to the user.<p>When the debot starts SDK registers `BrowserCallbacks` AppObject.Therefore when `debote.remove` is called the debot is being deleted and the callback is calledwith `finish`=`true` which indicates that it will never be used again.
     * @param debotHandle Debot handle which references an instance of debot engine. 
-    * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static Void start(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
-        return ctx.call("debot.start", new ParamsOfStart(debotHandle), Void.class);
+    public static void start(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+         ctx.callVoid("debot.start", new ParamsOfStart(debotHandle));
     }
 
     /**
-    * <h2>debot.fetch</h2>
+    * <strong>debot.fetch</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Fetches DeBot metadata from blockchain. Downloads DeBot from blockchain and creates and fetches its metadata.
     * @param address Debot smart contract address. 
     * @return {@link tech.deplant.java4ever.binding.Debot.ResultOfFetch}
     */
     public static ResultOfFetch fetch(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
-        return ctx.call("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
+        return  ctx.call("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
     }
 
     /**
-    * <h2>debot.execute</h2>
+    * <strong>debot.execute</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Executes debot action. Calls debot engine referenced by debot handle to execute input action.Calls Debot Browser Callbacks if needed.<p># RemarksChain of actions can be executed if input action generates a list of subactions.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param action Debot Action that must be executed. 
-    * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static Void execute(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
-        return ctx.call("debot.execute", new ParamsOfExecute(debotHandle, action), Void.class);
+    public static void execute(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
+         ctx.callVoid("debot.execute", new ParamsOfExecute(debotHandle, action));
     }
 
     /**
-    * <h2>debot.send</h2>
+    * <strong>debot.send</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Sends message to Debot. Used by Debot Browser to send response on Dinterface call or from other Debots.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param message BOC of internal message to debot encoded in base64 format. 
-    * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static Void send(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
-        return ctx.call("debot.send", new ParamsOfSend(debotHandle, message), Void.class);
+    public static void send(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
+         ctx.callVoid("debot.send", new ParamsOfSend(debotHandle, message));
     }
 
     /**
-    * <h2>debot.remove</h2>
+    * <strong>debot.remove</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Destroys debot handle. Removes handle from Client Context and drops debot engine referenced by that handle.
     * @param debotHandle Debot handle which references an instance of debot engine. 
-    * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static Void remove(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
-        return ctx.call("debot.remove", new ParamsOfRemove(debotHandle), Void.class);
+    public static void remove(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+         ctx.callVoid("debot.remove", new ParamsOfRemove(debotHandle));
     }
 
 }

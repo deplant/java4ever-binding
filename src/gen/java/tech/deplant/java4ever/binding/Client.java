@@ -9,7 +9,7 @@ import java.util.stream.*;
 import java.util.Arrays;
 
 /**
- *  <h1>client</h1>
+ *  <strong>client</strong>
  *  Contains methods of "client" module.
 
  *  Provides information about library.
@@ -32,7 +32,7 @@ public class Client {
     /**
     * 
     * @param serverAddress **This field is deprecated, but left for backward-compatibility.** DApp Server public address.
-    * @param endpoints List of DApp Server addresses. Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.Check the full list of <a target="_blank" href="supported network endpoints">supported network endpoints</a>(../ton-os-api/networks.md).
+    * @param endpoints List of DApp Server addresses. Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.Check the full list of supported network endpoints.
     * @param networkRetriesCount Deprecated. You must use `network.max_reconnect_timeout` that allows to specify maximum network resolving timeout.
     * @param maxReconnectTimeout Maximum time for sequential reconnections. Must be specified in milliseconds. Default is 120000 (2 min).
     * @param reconnectTimeout Deprecated
@@ -146,50 +146,49 @@ public class Client {
     */
     public record ParamsOfResolveAppRequest(@NonNull Number appRequestId, @NonNull AppRequestResult result) {}
     /**
-    * <h2>client.get_api_reference</h2>
+    * <strong>client.get_api_reference</strong>
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
     public static ResultOfGetApiReference getApiReference(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
+        return  ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
     /**
-    * <h2>client.version</h2>
+    * <strong>client.version</strong>
     * Returns Core Library version
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
     public static ResultOfVersion version(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("client.version", null, ResultOfVersion.class);
+        return  ctx.call("client.version", null, ResultOfVersion.class);
     }
 
     /**
-    * <h2>client.config</h2>
+    * <strong>client.config</strong>
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
     public static ClientConfig config(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("client.config", null, ClientConfig.class);
+        return  ctx.call("client.config", null, ClientConfig.class);
     }
 
     /**
-    * <h2>client.build_info</h2>
+    * <strong>client.build_info</strong>
     * Returns detailed information about this build.
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
     public static ResultOfBuildInfo buildInfo(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("client.build_info", null, ResultOfBuildInfo.class);
+        return  ctx.call("client.build_info", null, ResultOfBuildInfo.class);
     }
 
     /**
-    * <h2>client.resolve_app_request</h2>
+    * <strong>client.resolve_app_request</strong>
     * Resolves application request processing result
     * @param appRequestId Request ID received from SDK 
     * @param result Result of request processing 
-    * @return {@link tech.deplant.java4ever.binding.Client.Void}
     */
-    public static Void resolveAppRequest(@NonNull Context ctx, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
-        return ctx.call("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result), Void.class);
+    public static void resolveAppRequest(@NonNull Context ctx, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
+         ctx.callVoid("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result));
     }
 
 }

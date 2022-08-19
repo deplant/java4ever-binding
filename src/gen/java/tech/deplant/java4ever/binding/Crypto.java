@@ -9,7 +9,7 @@ import java.util.stream.*;
 import java.util.Arrays;
 
 /**
- *  <h1>crypto</h1>
+ *  <strong>crypto</strong>
  *  Contains methods of "crypto" module.
 
  *  Crypto functions.
@@ -744,111 +744,111 @@ public class Crypto {
     */
     public record ParamsOfCreateEncryptionBox(@NonNull EncryptionAlgorithm algorithm) {}
     /**
-    * <h2>crypto.factorize</h2>
-    * Integer factorization Performs prime factorization – decomposition of a composite numberinto a product of smaller prime integers (factors).See <a target="_blank" href="https://en.wikipedia.org/wiki/Integer_factorization">https://en.wikipedia.org/wiki/Integer_factorization</a>
+    * <strong>crypto.factorize</strong>
+    * Integer factorization Performs prime factorization – decomposition of a composite numberinto a product of smaller prime integers (factors).
     * @param composite Hexadecimal representation of u64 composite number. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfFactorize}
     */
     public static ResultOfFactorize factorize(@NonNull Context ctx, @NonNull String composite)  throws JsonProcessingException {
-        return ctx.call("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
+        return  ctx.call("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
     }
 
     /**
-    * <h2>crypto.modular_power</h2>
-    * Modular exponentiation Performs modular exponentiation for big integers (`base`^`exponent` mod `modulus`).See <a target="_blank" href="https://en.wikipedia.org/wiki/Modular_exponentiation">https://en.wikipedia.org/wiki/Modular_exponentiation</a>
+    * <strong>crypto.modular_power</strong>
+    * Modular exponentiation Performs modular exponentiation for big integers (`base`^`exponent` mod `modulus`).
     * @param base `base` argument of calculation. 
     * @param exponent `exponent` argument of calculation. 
     * @param modulus `modulus` argument of calculation. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfModularPower}
     */
     public static ResultOfModularPower modularPower(@NonNull Context ctx, @NonNull String base, @NonNull String exponent, @NonNull String modulus)  throws JsonProcessingException {
-        return ctx.call("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
+        return  ctx.call("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
     }
 
     /**
-    * <h2>crypto.ton_crc16</h2>
+    * <strong>crypto.ton_crc16</strong>
     * Calculates CRC16 using TON algorithm.
     * @param data Input data for CRC calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfTonCrc16}
     */
     public static ResultOfTonCrc16 tonCrc16(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
-        return ctx.call("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
+        return  ctx.call("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
     }
 
     /**
-    * <h2>crypto.generate_random_bytes</h2>
+    * <strong>crypto.generate_random_bytes</strong>
     * Generates random byte array of the specified length and returns it in `base64` format
     * @param length Size of random byte array. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGenerateRandomBytes}
     */
     public static ResultOfGenerateRandomBytes generateRandomBytes(@NonNull Context ctx, @NonNull Number length)  throws JsonProcessingException {
-        return ctx.call("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
+        return  ctx.call("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
     }
 
     /**
-    * <h2>crypto.convert_public_key_to_ton_safe_format</h2>
+    * <strong>crypto.convert_public_key_to_ton_safe_format</strong>
     * Converts public key to ton safe_format
     * @param publicKey Public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfConvertPublicKeyToTonSafeFormat}
     */
     public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(@NonNull Context ctx, @NonNull String publicKey)  throws JsonProcessingException {
-        return ctx.call("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
+        return  ctx.call("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
     }
 
     /**
-    * <h2>crypto.generate_random_sign_keys</h2>
+    * <strong>crypto.generate_random_sign_keys</strong>
     * Generates random ed25519 key pair.
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
     public static KeyPair generateRandomSignKeys(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("crypto.generate_random_sign_keys", null, KeyPair.class);
+        return  ctx.call("crypto.generate_random_sign_keys", null, KeyPair.class);
     }
 
     /**
-    * <h2>crypto.sign</h2>
+    * <strong>crypto.sign</strong>
     * Signs a data using the provided keys.
     * @param unsigned Data that must be signed encoded in `base64`. 
     * @param keys Sign keys. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSign}
     */
     public static ResultOfSign sign(@NonNull Context ctx, @NonNull String unsigned, @NonNull KeyPair keys)  throws JsonProcessingException {
-        return ctx.call("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
+        return  ctx.call("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
     }
 
     /**
-    * <h2>crypto.verify_signature</h2>
+    * <strong>crypto.verify_signature</strong>
     * Verifies signed data using the provided public key. Raises error if verification is failed.
     * @param signed Signed data that must be verified encoded in `base64`. 
     * @param publicKey Signer's public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfVerifySignature}
     */
     public static ResultOfVerifySignature verifySignature(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
-        return ctx.call("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
+        return  ctx.call("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
     }
 
     /**
-    * <h2>crypto.sha256</h2>
+    * <strong>crypto.sha256</strong>
     * Calculates SHA256 hash of the specified data.
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
     public static ResultOfHash sha256(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
-        return ctx.call("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
+        return  ctx.call("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
     }
 
     /**
-    * <h2>crypto.sha512</h2>
+    * <strong>crypto.sha512</strong>
     * Calculates SHA512 hash of the specified data.
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
     public static ResultOfHash sha512(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
-        return ctx.call("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
+        return  ctx.call("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
     }
 
     /**
-    * <h2>crypto.scrypt</h2>
-    * Perform `scrypt` encryption Derives key from `password` and `key` using `scrypt` algorithm.See <a target="_blank" href="https://en.wikipedia.org/wiki/Scrypt">https://en.wikipedia.org/wiki/Scrypt</a>.<p># Arguments- `log_n` - The log2 of the Scrypt parameter `N`- `r` - The Scrypt parameter `r`- `p` - The Scrypt parameter `p`# Conditions- `log_n` must be less than `64`- `r` must be greater than `0` and less than or equal to `4294967295`- `p` must be greater than `0` and less than `4294967295`# Recommended values sufficient for most use-cases- `log_n = 15` (`n = 32768`)- `r = 8`- `p = 1`
+    * <strong>crypto.scrypt</strong>
+    * Perform `scrypt` encryption Derives key from `password` and `key` using `scrypt` algorithm.<p># Arguments- `log_n` - The log2 of the Scrypt parameter `N`- `r` - The Scrypt parameter `r`- `p` - The Scrypt parameter `p`# Conditions- `log_n` must be less than `64`- `r` must be greater than `0` and less than or equal to `4294967295`- `p` must be greater than `0` and less than `4294967295`# Recommended values sufficient for most use-cases- `log_n = 15` (`n = 32768`)- `r = 8`- `p = 1`
     * @param password The password bytes to be hashed. Must be encoded with `base64`. 
     * @param salt Salt bytes that modify the hash to protect against Rainbow table attacks. Must be encoded with `base64`. 
     * @param logN CPU/memory cost parameter 
@@ -858,54 +858,54 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfScrypt}
     */
     public static ResultOfScrypt scrypt(@NonNull Context ctx, @NonNull String password, @NonNull String salt, @NonNull Number logN, @NonNull Number r, @NonNull Number p, @NonNull Number dkLen)  throws JsonProcessingException {
-        return ctx.call("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
+        return  ctx.call("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
     }
 
     /**
-    * <h2>crypto.nacl_sign_keypair_from_secret_key</h2>
-    * Generates a key pair for signing from the secret key **NOTE:** In the result the secret key is actually the concatenationof secret and public keys (128 symbols hex string) by design of <a target="_blank" href="NaCL](http://nacl.cr.yp.to/sign.html).See also [the stackexchange question">NaCL](http://nacl.cr.yp.to/sign.html).See also [the stackexchange question</a>(https://crypto.stackexchange.com/questions/54353/).
+    * <strong>crypto.nacl_sign_keypair_from_secret_key</strong>
+    * Generates a key pair for signing from the secret key **NOTE:** In the result the secret key is actually the concatenationof secret and public keys (128 symbols hex string) by design of NaCL
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
     public static KeyPair naclSignKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
+        return  ctx.call("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
     /**
-    * <h2>crypto.nacl_sign</h2>
+    * <strong>crypto.nacl_sign</strong>
     * Signs data using the signer's secret key.
     * @param unsigned Data that must be signed encoded in `base64`. 
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSign}
     */
     public static ResultOfNaclSign naclSign(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
+        return  ctx.call("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
     }
 
     /**
-    * <h2>crypto.nacl_sign_open</h2>
+    * <strong>crypto.nacl_sign_open</strong>
     * Verifies the signature and returns the unsigned message Verifies the signature in `signed` using the signer's public key `public`and returns the message `unsigned`.<p>If the signature fails verification, crypto_sign_open raises an exception.
     * @param signed Signed data that must be unsigned. Encoded with `base64`.
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignOpen}
     */
     public static ResultOfNaclSignOpen naclSignOpen(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
+        return  ctx.call("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
     }
 
     /**
-    * <h2>crypto.nacl_sign_detached</h2>
+    * <strong>crypto.nacl_sign_detached</strong>
     * Signs the message using the secret key and returns a signature. Signs the message `unsigned` using the secret key `secret`and returns a signature `signature`.
     * @param unsigned Data that must be signed encoded in `base64`. 
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetached}
     */
     public static ResultOfNaclSignDetached naclSignDetached(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
+        return  ctx.call("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
     }
 
     /**
-    * <h2>crypto.nacl_sign_detached_verify</h2>
+    * <strong>crypto.nacl_sign_detached_verify</strong>
     * Verifies the signature with public key and `unsigned` data.
     * @param unsigned Unsigned data that must be verified. Encoded with `base64`.
     * @param signature Signature that must be verified. Encoded with `hex`.
@@ -913,30 +913,30 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetachedVerify}
     */
     public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(@NonNull Context ctx, @NonNull String unsigned, @NonNull String signature, @NonNull String publicKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
+        return  ctx.call("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
     }
 
     /**
-    * <h2>crypto.nacl_box_keypair</h2>
+    * <strong>crypto.nacl_box_keypair</strong>
     * Generates a random NaCl key pair
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
     public static KeyPair naclBoxKeypair(@NonNull Context ctx)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_box_keypair", null, KeyPair.class);
+        return  ctx.call("crypto.nacl_box_keypair", null, KeyPair.class);
     }
 
     /**
-    * <h2>crypto.nacl_box_keypair_from_secret_key</h2>
+    * <strong>crypto.nacl_box_keypair_from_secret_key</strong>
     * Generates key pair from a secret key
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
     public static KeyPair naclBoxKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
+        return  ctx.call("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
     /**
-    * <h2>crypto.nacl_box</h2>
+    * <strong>crypto.nacl_box</strong>
     * Public key authenticated encryption Encrypt and authenticate a message using the senders secret key, the receivers publickey, and a nonce.
     * @param decrypted Data that must be encrypted encoded in `base64`. 
     * @param nonce Nonce, encoded in `hex` 
@@ -945,11 +945,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
     public static ResultOfNaclBox naclBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
+        return  ctx.call("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
     }
 
     /**
-    * <h2>crypto.nacl_box_open</h2>
+    * <strong>crypto.nacl_box_open</strong>
     * Decrypt and verify the cipher text using the receivers secret key, the senders public key, and the nonce.
     * @param encrypted Data that must be decrypted. Encoded with `base64`.
     * @param nonce Nonce 
@@ -958,11 +958,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
     public static ResultOfNaclBoxOpen naclBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
+        return  ctx.call("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
     }
 
     /**
-    * <h2>crypto.nacl_secret_box</h2>
+    * <strong>crypto.nacl_secret_box</strong>
     * Encrypt and authenticate message using nonce and secret key.
     * @param decrypted Data that must be encrypted. Encoded with `base64`.
     * @param nonce Nonce in `hex` 
@@ -970,11 +970,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
     public static ResultOfNaclBox naclSecretBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
+        return  ctx.call("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
     }
 
     /**
-    * <h2>crypto.nacl_secret_box_open</h2>
+    * <strong>crypto.nacl_secret_box_open</strong>
     * Decrypts and verifies cipher text using `nonce` and secret `key`.
     * @param encrypted Data that must be decrypted. Encoded with `base64`.
     * @param nonce Nonce in `hex` 
@@ -982,32 +982,32 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
     public static ResultOfNaclBoxOpen naclSecretBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
-        return ctx.call("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
+        return  ctx.call("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
     }
 
     /**
-    * <h2>crypto.mnemonic_words</h2>
+    * <strong>crypto.mnemonic_words</strong>
     * Prints the list of words from the specified dictionary
     * @param dictionary Dictionary identifier 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicWords}
     */
     public static ResultOfMnemonicWords mnemonicWords(@NonNull Context ctx,  Number dictionary)  throws JsonProcessingException {
-        return ctx.call("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
+        return  ctx.call("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
     }
 
     /**
-    * <h2>crypto.mnemonic_from_random</h2>
+    * <strong>crypto.mnemonic_from_random</strong>
     * Generates a random mnemonic Generates a random mnemonic from the specified dictionary and word count
     * @param dictionary Dictionary identifier 
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromRandom}
     */
     public static ResultOfMnemonicFromRandom mnemonicFromRandom(@NonNull Context ctx,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return ctx.call("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
+        return  ctx.call("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
     }
 
     /**
-    * <h2>crypto.mnemonic_from_entropy</h2>
+    * <strong>crypto.mnemonic_from_entropy</strong>
     * Generates mnemonic from pre-generated entropy
     * @param entropy Entropy bytes. Hex encoded.
     * @param dictionary Dictionary identifier 
@@ -1015,11 +1015,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromEntropy}
     */
     public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(@NonNull Context ctx, @NonNull String entropy,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return ctx.call("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
+        return  ctx.call("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
     }
 
     /**
-    * <h2>crypto.mnemonic_verify</h2>
+    * <strong>crypto.mnemonic_verify</strong>
     * Validates a mnemonic phrase The phrase supplied will be checked for word length and validated according to the checksumspecified in BIP0039.
     * @param phrase Phrase 
     * @param dictionary Dictionary identifier 
@@ -1027,11 +1027,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicVerify}
     */
     public static ResultOfMnemonicVerify mnemonicVerify(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return ctx.call("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
+        return  ctx.call("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
     }
 
     /**
-    * <h2>crypto.mnemonic_derive_sign_keys</h2>
+    * <strong>crypto.mnemonic_derive_sign_keys</strong>
     * Derives a key pair for signing from the seed phrase Validates the seed phrase, generates master key and then derivesthe key pair from the master key and the specified path
     * @param phrase Phrase 
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0" 
@@ -1040,11 +1040,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
     public static KeyPair mnemonicDeriveSignKeys(@NonNull Context ctx, @NonNull String phrase,  String path,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return ctx.call("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
+        return  ctx.call("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
     }
 
     /**
-    * <h2>crypto.hdkey_xprv_from_mnemonic</h2>
+    * <strong>crypto.hdkey_xprv_from_mnemonic</strong>
     * Generates an extended master private key that will be the root for all the derived keys
     * @param phrase String with seed phrase 
     * @param dictionary Dictionary identifier 
@@ -1052,11 +1052,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyXPrvFromMnemonic}
     */
     public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return ctx.call("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
+        return  ctx.call("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
     }
 
     /**
-    * <h2>crypto.hdkey_derive_from_xprv</h2>
+    * <strong>crypto.hdkey_derive_from_xprv</strong>
     * Returns extended private key derived from the specified extended private key and child index
     * @param xprv Serialized extended private key 
     * @param childIndex Child index (see BIP-0032) 
@@ -1064,42 +1064,42 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrv}
     */
     public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(@NonNull Context ctx, @NonNull String xprv, @NonNull Number childIndex, @NonNull Boolean hardened)  throws JsonProcessingException {
-        return ctx.call("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
+        return  ctx.call("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
     }
 
     /**
-    * <h2>crypto.hdkey_derive_from_xprv_path</h2>
+    * <strong>crypto.hdkey_derive_from_xprv_path</strong>
     * Derives the extended private key from the specified key and path
     * @param xprv Serialized extended private key 
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0" 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrvPath}
     */
     public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(@NonNull Context ctx, @NonNull String xprv, @NonNull String path)  throws JsonProcessingException {
-        return ctx.call("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
+        return  ctx.call("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
     }
 
     /**
-    * <h2>crypto.hdkey_secret_from_xprv</h2>
+    * <strong>crypto.hdkey_secret_from_xprv</strong>
     * Extracts the private key from the serialized extended private key
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeySecretFromXPrv}
     */
     public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
-        return ctx.call("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
+        return  ctx.call("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
     }
 
     /**
-    * <h2>crypto.hdkey_public_from_xprv</h2>
+    * <strong>crypto.hdkey_public_from_xprv</strong>
     * Extracts the public key from the serialized extended private key
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyPublicFromXPrv}
     */
     public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
-        return ctx.call("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
+        return  ctx.call("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
     }
 
     /**
-    * <h2>crypto.chacha20</h2>
+    * <strong>crypto.chacha20</strong>
     * Performs symmetric `chacha20` encryption.
     * @param data Source data to be encrypted or decrypted. Must be encoded with `base64`.
     * @param key 256-bit key. Must be encoded with `hex`.
@@ -1107,52 +1107,51 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfChaCha20}
     */
     public static ResultOfChaCha20 chacha20(@NonNull Context ctx, @NonNull String data, @NonNull String key, @NonNull String nonce)  throws JsonProcessingException {
-        return ctx.call("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
+        return  ctx.call("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
     }
 
     /**
-    * <h2>crypto.create_crypto_box</h2>
+    * <strong>crypto.create_crypto_box</strong>
     * Creates a Crypto Box instance. Crypto Box is a root crypto object, that encapsulates some secret (seed phrase usually)in encrypted form and acts as a factory for all crypto primitives used in SDK:keys for signing and encryption, derived from this secret.<p>Crypto Box encrypts original Seed Phrase with salt and password that is retrievedfrom `password_provider` callback, implemented on Application side.<p>When used, decrypted secret shows up in core library's memory for a very short periodof time and then is immediately overwritten with zeroes.
     * @param secretEncryptionSalt Salt used for secret encryption. For example, a mobile device can use device ID as salt. 
     * @param secretKey Cryptobox secret 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredCryptoBox}
     */
     public static RegisteredCryptoBox createCryptoBox(@NonNull Context ctx, @NonNull String secretEncryptionSalt, @NonNull CryptoBoxSecret secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
+        return  ctx.call("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
     }
 
     /**
-    * <h2>crypto.remove_crypto_box</h2>
+    * <strong>crypto.remove_crypto_box</strong>
     * Removes Crypto Box. Clears all secret data.
     * @param handle  
-    * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static Void removeCryptoBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.remove_crypto_box", new RegisteredCryptoBox(handle), Void.class);
+    public static void removeCryptoBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+         ctx.callVoid("crypto.remove_crypto_box", new RegisteredCryptoBox(handle));
     }
 
     /**
-    * <h2>crypto.get_crypto_box_info</h2>
+    * <strong>crypto.get_crypto_box_info</strong>
     * Get Crypto Box Info. Used to get `encrypted_secret` that should be used for all the cryptobox initializations except the first one.
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxInfo}
     */
     public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
+        return  ctx.call("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
     }
 
     /**
-    * <h2>crypto.get_crypto_box_seed_phrase</h2>
+    * <strong>crypto.get_crypto_box_seed_phrase</strong>
     * Get Crypto Box Seed Phrase. Attention! Store this data in your application for a very short period of time and overwrite it with zeroes ASAP.
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxSeedPhrase}
     */
     public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
+        return  ctx.call("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
     }
 
     /**
-    * <h2>crypto.get_signing_box_from_crypto_box</h2>
+    * <strong>crypto.get_signing_box_from_crypto_box</strong>
     * Get handle of Signing Box derived from Crypto Box.
     * @param handle Crypto Box Handle. 
     * @param hdpath HD key derivation path. By default, Everscale HD path is used.
@@ -1160,11 +1159,11 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
     public static RegisteredSigningBox getSigningBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath,  Number secretLifetime)  throws JsonProcessingException {
-        return ctx.call("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
+        return  ctx.call("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
     }
 
     /**
-    * <h2>crypto.get_encryption_box_from_crypto_box</h2>
+    * <strong>crypto.get_encryption_box_from_crypto_box</strong>
     * Gets Encryption Box from Crypto Box. Derives encryption keypair from cryptobox secret and hdpath andstores it in cache for `secret_lifetime`or until explicitly cleared by `clear_crypto_box_secret_cache` method.If `secret_lifetime` is not specified - overwrites encryption secret with zeroes immediately afterencryption operation.
     * @param handle Crypto Box Handle. 
     * @param hdpath HD key derivation path. By default, Everscale HD path is used.
@@ -1173,131 +1172,128 @@ public class Crypto {
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
     public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath, @NonNull BoxEncryptionAlgorithm algorithm,  Number secretLifetime)  throws JsonProcessingException {
-        return ctx.call("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
+        return  ctx.call("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
     }
 
     /**
-    * <h2>crypto.clear_crypto_box_secret_cache</h2>
+    * <strong>crypto.clear_crypto_box_secret_cache</strong>
     * Removes cached secrets (overwrites with zeroes) from all signing and encryption boxes, derived from crypto box.
     * @param handle  
-    * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static Void clearCryptoBoxSecretCache(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle), Void.class);
+    public static void clearCryptoBoxSecretCache(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+         ctx.callVoid("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle));
     }
 
     /**
-    * <h2>crypto.register_signing_box</h2>
+    * <strong>crypto.register_signing_box</strong>
     * Register an application implemented signing box.
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
     public static RegisteredSigningBox registerSigningBox(@NonNull Context ctx,  AppSigningBox appObject)  throws JsonProcessingException {
-        return ctx.callAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
+        return  ctx.callAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
     }
 
     /**
-    * <h2>crypto.get_signing_box</h2>
+    * <strong>crypto.get_signing_box</strong>
     * Creates a default signing box implementation.
     * @param publicKey Public key - 64 symbols hex string 
     * @param secretKey Private key - u64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
     public static RegisteredSigningBox getSigningBox(@NonNull Context ctx, @NonNull String publicKey, @NonNull String secretKey)  throws JsonProcessingException {
-        return ctx.call("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
+        return  ctx.call("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
     }
 
     /**
-    * <h2>crypto.signing_box_get_public_key</h2>
+    * <strong>crypto.signing_box_get_public_key</strong>
     * Returns public key of signing key pair.
     * @param handle Handle of the signing box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxGetPublicKey}
     */
     public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
+        return  ctx.call("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
     }
 
     /**
-    * <h2>crypto.signing_box_sign</h2>
+    * <strong>crypto.signing_box_sign</strong>
     * Returns signed user data.
     * @param signingBox Signing Box handle. 
     * @param unsigned Unsigned user data. Must be encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxSign}
     */
     public static ResultOfSigningBoxSign signingBoxSign(@NonNull Context ctx, @NonNull Integer signingBox, @NonNull String unsigned)  throws JsonProcessingException {
-        return ctx.call("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
+        return  ctx.call("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
     }
 
     /**
-    * <h2>crypto.remove_signing_box</h2>
+    * <strong>crypto.remove_signing_box</strong>
     * Removes signing box from SDK.
     * @param handle Handle of the signing box. 
-    * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static Void removeSigningBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.remove_signing_box", new RegisteredSigningBox(handle), Void.class);
+    public static void removeSigningBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+         ctx.callVoid("crypto.remove_signing_box", new RegisteredSigningBox(handle));
     }
 
     /**
-    * <h2>crypto.register_encryption_box</h2>
+    * <strong>crypto.register_encryption_box</strong>
     * Register an application implemented encryption box.
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
     public static RegisteredEncryptionBox registerEncryptionBox(@NonNull Context ctx,  AppEncryptionBox appObject)  throws JsonProcessingException {
-        return ctx.callAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
+        return  ctx.callAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
     }
 
     /**
-    * <h2>crypto.remove_encryption_box</h2>
+    * <strong>crypto.remove_encryption_box</strong>
     * Removes encryption box from SDK
     * @param handle Handle of the encryption box. 
-    * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static Void removeEncryptionBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
-        return ctx.call("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle), Void.class);
+    public static void removeEncryptionBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+         ctx.callVoid("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle));
     }
 
     /**
-    * <h2>crypto.encryption_box_get_info</h2>
+    * <strong>crypto.encryption_box_get_info</strong>
     * Queries info from the given encryption box
     * @param encryptionBox Encryption box handle 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxGetInfo}
     */
     public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(@NonNull Context ctx, @NonNull Integer encryptionBox)  throws JsonProcessingException {
-        return ctx.call("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
+        return  ctx.call("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
     }
 
     /**
-    * <h2>crypto.encryption_box_encrypt</h2>
+    * <strong>crypto.encryption_box_encrypt</strong>
     * Encrypts data using given encryption box Note. Block cipher algorithms pad data to cipher block size so encrypted data can be longer then original data. Client should store the original data size after encryption and use it afterdecryption to retrieve the original data from decrypted data.
     * @param encryptionBox Encryption box handle 
     * @param data Data to be encrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxEncrypt}
     */
     public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
-        return ctx.call("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
+        return  ctx.call("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
     }
 
     /**
-    * <h2>crypto.encryption_box_decrypt</h2>
+    * <strong>crypto.encryption_box_decrypt</strong>
     * Decrypts data using given encryption box Note. Block cipher algorithms pad data to cipher block size so encrypted data can be longer then original data. Client should store the original data size after encryption and use it afterdecryption to retrieve the original data from decrypted data.
     * @param encryptionBox Encryption box handle 
     * @param data Data to be decrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxDecrypt}
     */
     public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
-        return ctx.call("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
+        return  ctx.call("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
     }
 
     /**
-    * <h2>crypto.create_encryption_box</h2>
+    * <strong>crypto.create_encryption_box</strong>
     * Creates encryption box with specified algorithm
     * @param algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
     public static RegisteredEncryptionBox createEncryptionBox(@NonNull Context ctx, @NonNull EncryptionAlgorithm algorithm)  throws JsonProcessingException {
-        return ctx.call("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
+        return  ctx.call("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
     }
 
 }

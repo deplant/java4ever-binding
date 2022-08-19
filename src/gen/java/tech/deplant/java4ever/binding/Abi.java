@@ -9,7 +9,7 @@ import java.util.stream.*;
 import java.util.Arrays;
 
 /**
- *  <h1>abi</h1>
+ *  <strong>abi</strong>
  *  Contains methods of "abi" module.
 
  *  Provides message encoding and decoding according to the ABI specification.
@@ -430,7 +430,7 @@ public class Abi {
     */
     public record ResultOfCalcFunctionId(@NonNull Number functionId) {}
     /**
-    * <h2>abi.encode_message_body</h2>
+    * <strong>abi.encode_message_body</strong>
     * Encodes message body according to ABI function call.
     * @param abi Contract ABI. 
     * @param callSet Function call parameters. Must be specified in non deploy message.<p>In case of deploy message contains parameters of constructor.
@@ -441,11 +441,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeMessageBody}
     */
     public static ResultOfEncodeMessageBody encodeMessageBody(@NonNull Context ctx, @NonNull ABI abi, @NonNull CallSet callSet, @NonNull Boolean isInternal, @NonNull Signer signer,  Number processingTryIndex,  String address)  throws JsonProcessingException {
-        return ctx.call("abi.encode_message_body", new ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address), ResultOfEncodeMessageBody.class);
+        return  ctx.call("abi.encode_message_body", new ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address), ResultOfEncodeMessageBody.class);
     }
 
     /**
-    * <h2>abi.attach_signature_to_message_body</h2>
+    * <strong>abi.attach_signature_to_message_body</strong>
     * 
     * @param abi Contract ABI 
     * @param publicKey Public key. Must be encoded with `hex`.
@@ -454,12 +454,14 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAttachSignatureToMessageBody}
     */
     public static ResultOfAttachSignatureToMessageBody attachSignatureToMessageBody(@NonNull Context ctx, @NonNull ABI abi, @NonNull String publicKey, @NonNull String message, @NonNull String signature)  throws JsonProcessingException {
-        return ctx.call("abi.attach_signature_to_message_body", new ParamsOfAttachSignatureToMessageBody(abi, publicKey, message, signature), ResultOfAttachSignatureToMessageBody.class);
+        return  ctx.call("abi.attach_signature_to_message_body", new ParamsOfAttachSignatureToMessageBody(abi, publicKey, message, signature), ResultOfAttachSignatureToMessageBody.class);
     }
 
     /**
-    * <h2>abi.encode_message</h2>
-    * Encodes an ABI-compatible message Allows to encode deploy and function call messages,both signed and unsigned.<p>Use cases include messages of any possible type:- deploy with initial function call (i.e. `constructor` or any other function that is used for some kindof initialization);- deploy without initial function call;- signed/unsigned + data for signing.<p>`Signer` defines how the message should or shouldn't be signed:<p>`Signer::None` creates an unsigned message. This may be needed in case of some public methods,that do not require authorization by pubkey.<p>`Signer::External` takes public key and returns `data_to_sign` for later signing.Use `attach_signature` method with the result signature to get the signed message.<p>`Signer::Keys` creates a signed message with provided key pair.<p><a target="_blank" href="SOON">SOON</a> `Signer::SigningBox` Allows using a special interface to implement signingwithout private key disclosure to SDK. For instance, in case of using a cold wallet or HSM,when application calls some API to sign data.<p>There is an optional public key can be provided in deploy set in order to substitute onein TVM file.<p>Public key resolving priority:1. Public key from deploy set.2. Public key, specified in TVM file.3. Public key, provided by signer.
+    * <strong>abi.encode_message</strong>
+    * Encodes an ABI-compatible message Allows to encode deploy and function call messages,both signed and unsigned.<p>Use cases include messages of any possible type:- deploy with initial function call (i.e. `constructor` or any other function that is used for some kindof initialization);- deploy without initial function call;- signed/unsigned + data for signing.<p>`Signer` defines how the message should or shouldn't be signed:<p>`Signer::None` creates an unsigned message. This may be needed in case of some public methods,that do not require authorization by pubkey.<p>`Signer::External` takes public key and returns `data_to_sign` for later signing.Use `attach_signature` method with the result signature to get the signed message.<p>`Signer::Keys` creates a signed message with provided key pair.
+     * Soon `Signer::SigningBox` Allows using a special interface to implement signingwithout private key disclosure to SDK. For instance, in case of using a cold wallet or HSM,when application calls some API to sign data.
+     * There is an optional public key can be provided in deploy set in order to substitute onein TVM file.<p>Public key resolving priority:1. Public key from deploy set.2. Public key, specified in TVM file.3. Public key, provided by signer.
     * @param abi Contract ABI. 
     * @param address Target address the message will be sent to. Must be specified in case of non-deploy message.
     * @param deploySet Deploy parameters. Must be specified in case of deploy message.
@@ -469,11 +471,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeMessage}
     */
     public static ResultOfEncodeMessage encodeMessage(@NonNull Context ctx, @NonNull ABI abi,  String address,  DeploySet deploySet,  CallSet callSet, @NonNull Signer signer,  Number processingTryIndex)  throws JsonProcessingException {
-        return ctx.call("abi.encode_message", new ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), ResultOfEncodeMessage.class);
+        return  ctx.call("abi.encode_message", new ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), ResultOfEncodeMessage.class);
     }
 
     /**
-    * <h2>abi.encode_internal_message</h2>
+    * <strong>abi.encode_internal_message</strong>
     * Encodes an internal ABI-compatible message Allows to encode deploy and function call messages.<p>Use cases include messages of any possible type:- deploy with initial function call (i.e. `constructor` or any other function that is used for some kindof initialization);- deploy without initial function call;- simple function call<p>There is an optional public key can be provided in deploy set in order to substitute onein TVM file.<p>Public key resolving priority:1. Public key from deploy set.2. Public key, specified in TVM file.
     * @param abi Contract ABI. Can be None if both deploy_set and call_set are None.
     * @param address Target address the message will be sent to. Must be specified in case of non-deploy message.
@@ -486,11 +488,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeInternalMessage}
     */
     public static ResultOfEncodeInternalMessage encodeInternalMessage(@NonNull Context ctx,  ABI abi,  String address,  String srcAddress,  DeploySet deploySet,  CallSet callSet, @NonNull String value,  Boolean bounce,  Boolean enableIhr)  throws JsonProcessingException {
-        return ctx.call("abi.encode_internal_message", new ParamsOfEncodeInternalMessage(abi, address, srcAddress, deploySet, callSet, value, bounce, enableIhr), ResultOfEncodeInternalMessage.class);
+        return  ctx.call("abi.encode_internal_message", new ParamsOfEncodeInternalMessage(abi, address, srcAddress, deploySet, callSet, value, bounce, enableIhr), ResultOfEncodeInternalMessage.class);
     }
 
     /**
-    * <h2>abi.attach_signature</h2>
+    * <strong>abi.attach_signature</strong>
     * Combines `hex`-encoded `signature` with `base64`-encoded `unsigned_message`. Returns signed message encoded in `base64`.
     * @param abi Contract ABI 
     * @param publicKey Public key encoded in `hex`. 
@@ -499,11 +501,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAttachSignature}
     */
     public static ResultOfAttachSignature attachSignature(@NonNull Context ctx, @NonNull ABI abi, @NonNull String publicKey, @NonNull String message, @NonNull String signature)  throws JsonProcessingException {
-        return ctx.call("abi.attach_signature", new ParamsOfAttachSignature(abi, publicKey, message, signature), ResultOfAttachSignature.class);
+        return  ctx.call("abi.attach_signature", new ParamsOfAttachSignature(abi, publicKey, message, signature), ResultOfAttachSignature.class);
     }
 
     /**
-    * <h2>abi.decode_message</h2>
+    * <strong>abi.decode_message</strong>
     * Decodes message body using provided message BOC and ABI.
     * @param abi contract ABI 
     * @param message Message BOC 
@@ -511,11 +513,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.DecodedMessageBody}
     */
     public static DecodedMessageBody decodeMessage(@NonNull Context ctx, @NonNull ABI abi, @NonNull String message,  Boolean allowPartial)  throws JsonProcessingException {
-        return ctx.call("abi.decode_message", new ParamsOfDecodeMessage(abi, message, allowPartial), DecodedMessageBody.class);
+        return  ctx.call("abi.decode_message", new ParamsOfDecodeMessage(abi, message, allowPartial), DecodedMessageBody.class);
     }
 
     /**
-    * <h2>abi.decode_message_body</h2>
+    * <strong>abi.decode_message_body</strong>
     * Decodes message body using provided body BOC and ABI.
     * @param abi Contract ABI used to decode. 
     * @param body Message body BOC encoded in `base64`. 
@@ -524,11 +526,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.DecodedMessageBody}
     */
     public static DecodedMessageBody decodeMessageBody(@NonNull Context ctx, @NonNull ABI abi, @NonNull String body, @NonNull Boolean isInternal,  Boolean allowPartial)  throws JsonProcessingException {
-        return ctx.call("abi.decode_message_body", new ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial), DecodedMessageBody.class);
+        return  ctx.call("abi.decode_message_body", new ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial), DecodedMessageBody.class);
     }
 
     /**
-    * <h2>abi.encode_account</h2>
+    * <strong>abi.encode_account</strong>
     * Creates account state BOC Creates account state provided with one of these sets of data :1. BOC of code, BOC of data, BOC of library2. TVC (string in `base64`), keys, init params
     * @param stateInit Source of the account state init. 
     * @param balance Initial balance. 
@@ -538,11 +540,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeAccount}
     */
     public static ResultOfEncodeAccount encodeAccount(@NonNull Context ctx, @NonNull StateInitSource stateInit,  Long balance,  Long lastTransLt,  Number lastPaid,  Boc.BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("abi.encode_account", new ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), ResultOfEncodeAccount.class);
+        return  ctx.call("abi.encode_account", new ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), ResultOfEncodeAccount.class);
     }
 
     /**
-    * <h2>abi.decode_account_data</h2>
+    * <strong>abi.decode_account_data</strong>
     * Decodes account data using provided data BOC and ABI. Note: this feature requires ABI 2.1 or higher.
     * @param abi Contract ABI 
     * @param data Data BOC or BOC handle 
@@ -550,11 +552,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeAccountData}
     */
     public static ResultOfDecodeAccountData decodeAccountData(@NonNull Context ctx, @NonNull ABI abi, @NonNull String data,  Boolean allowPartial)  throws JsonProcessingException {
-        return ctx.call("abi.decode_account_data", new ParamsOfDecodeAccountData(abi, data, allowPartial), ResultOfDecodeAccountData.class);
+        return  ctx.call("abi.decode_account_data", new ParamsOfDecodeAccountData(abi, data, allowPartial), ResultOfDecodeAccountData.class);
     }
 
     /**
-    * <h2>abi.update_initial_data</h2>
+    * <strong>abi.update_initial_data</strong>
     * Updates initial account data with initial values for the contract's static variables and owner's public key. This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
     * @param abi Contract ABI 
     * @param data Data BOC or BOC handle 
@@ -564,11 +566,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfUpdateInitialData}
     */
     public static ResultOfUpdateInitialData updateInitialData(@NonNull Context ctx,  ABI abi, @NonNull String data,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("abi.update_initial_data", new ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), ResultOfUpdateInitialData.class);
+        return  ctx.call("abi.update_initial_data", new ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), ResultOfUpdateInitialData.class);
     }
 
     /**
-    * <h2>abi.encode_initial_data</h2>
+    * <strong>abi.encode_initial_data</strong>
     * Encodes initial account data with initial values for the contract's static variables and owner's public key into a data BOC that can be passed to `encode_tvc` function afterwards. This function is analogue of `tvm.buildDataInit` function in Solidity.
     * @param abi Contract ABI 
     * @param initialData List of initial values for contract's static variables. `abi` parameter should be provided to set initial data
@@ -577,11 +579,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeInitialData}
     */
     public static ResultOfEncodeInitialData encodeInitialData(@NonNull Context ctx,  ABI abi,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("abi.encode_initial_data", new ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), ResultOfEncodeInitialData.class);
+        return  ctx.call("abi.encode_initial_data", new ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), ResultOfEncodeInitialData.class);
     }
 
     /**
-    * <h2>abi.decode_initial_data</h2>
+    * <strong>abi.decode_initial_data</strong>
     * Decodes initial values of a contract's static variables and owner's public key from account initial data This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
     * @param abi Contract ABI. Initial data is decoded if this parameter is provided
     * @param data Data BOC or BOC handle 
@@ -589,23 +591,23 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeInitialData}
     */
     public static ResultOfDecodeInitialData decodeInitialData(@NonNull Context ctx,  ABI abi, @NonNull String data,  Boolean allowPartial)  throws JsonProcessingException {
-        return ctx.call("abi.decode_initial_data", new ParamsOfDecodeInitialData(abi, data, allowPartial), ResultOfDecodeInitialData.class);
+        return  ctx.call("abi.decode_initial_data", new ParamsOfDecodeInitialData(abi, data, allowPartial), ResultOfDecodeInitialData.class);
     }
 
     /**
-    * <h2>abi.decode_boc</h2>
-    * Decodes BOC into JSON as a set of provided parameters. Solidity functions use ABI types for <a target="_blank" href="builder encoding">builder encoding</a>(https://github.com/tonlabs/TON-Solidity-Compiler/blob/master/API.md#tvmbuilderstore).The simplest way to decode such a BOC is to use ABI decoding.ABI has it own rules for fields layout in cells so manually encodedBOC can not be described in terms of ABI rules.<p>To solve this problem we introduce a new ABI type `Ref(&lt;ParamType&gt;)`which allows to store `ParamType` ABI parameter in cell reference and, thus,decode manually encoded BOCs. This type is available only in `decode_boc` functionand will not be available in ABI messages encoding until it is included into some ABI revision.<p>Such BOC descriptions covers most users needs. If someone wants to decode some BOC whichcan not be described by these rules (i.e. BOC with TLB containing constructors of flagsdefining some parsing conditions) then they can decode the fields up to fork condition,check the parsed data manually, expand the parsing schema and then decode the whole BOCwith the full schema.
+    * <strong>abi.decode_boc</strong>
+    * Decodes BOC into JSON as a set of provided parameters. Solidity functions use ABI types for builder encoding.The simplest way to decode such a BOC is to use ABI decoding.ABI has it own rules for fields layout in cells so manually encodedBOC can not be described in terms of ABI rules.<p>To solve this problem we introduce a new ABI type `Ref(&lt;ParamType&gt;)`which allows to store `ParamType` ABI parameter in cell reference and, thus,decode manually encoded BOCs. This type is available only in `decode_boc` functionand will not be available in ABI messages encoding until it is included into some ABI revision.<p>Such BOC descriptions covers most users needs. If someone wants to decode some BOC whichcan not be described by these rules (i.e. BOC with TLB containing constructors of flagsdefining some parsing conditions) then they can decode the fields up to fork condition,check the parsed data manually, expand the parsing schema and then decode the whole BOCwith the full schema.
     * @param params Parameters to decode from BOC 
     * @param boc Data BOC or BOC handle 
     * @param allowPartial  
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeBoc}
     */
     public static ResultOfDecodeBoc decodeBoc(@NonNull Context ctx, @NonNull AbiParam[] params, @NonNull String boc, @NonNull Boolean allowPartial)  throws JsonProcessingException {
-        return ctx.call("abi.decode_boc", new ParamsOfDecodeBoc(params, boc, allowPartial), ResultOfDecodeBoc.class);
+        return  ctx.call("abi.decode_boc", new ParamsOfDecodeBoc(params, boc, allowPartial), ResultOfDecodeBoc.class);
     }
 
     /**
-    * <h2>abi.encode_boc</h2>
+    * <strong>abi.encode_boc</strong>
     * Encodes given parameters in JSON into a BOC using param types from ABI.
     * @param params Parameters to encode into BOC 
     * @param data Parameters and values as a JSON structure 
@@ -613,11 +615,11 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAbiEncodeBoc}
     */
     public static ResultOfAbiEncodeBoc encodeBoc(@NonNull Context ctx, @NonNull AbiParam[] params, @NonNull Map<String,Object> data,  Boc.BocCacheType bocCache)  throws JsonProcessingException {
-        return ctx.call("abi.encode_boc", new ParamsOfAbiEncodeBoc(params, data, bocCache), ResultOfAbiEncodeBoc.class);
+        return  ctx.call("abi.encode_boc", new ParamsOfAbiEncodeBoc(params, data, bocCache), ResultOfAbiEncodeBoc.class);
     }
 
     /**
-    * <h2>abi.calc_function_id</h2>
+    * <strong>abi.calc_function_id</strong>
     * Calculates contract function ID by contract ABI
     * @param abi Contract ABI. 
     * @param functionName Contract function name 
@@ -625,7 +627,7 @@ public class Abi {
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfCalcFunctionId}
     */
     public static ResultOfCalcFunctionId calcFunctionId(@NonNull Context ctx, @NonNull ABI abi, @NonNull String functionName,  Boolean output)  throws JsonProcessingException {
-        return ctx.call("abi.calc_function_id", new ParamsOfCalcFunctionId(abi, functionName, output), ResultOfCalcFunctionId.class);
+        return  ctx.call("abi.calc_function_id", new ParamsOfCalcFunctionId(abi, functionName, output), ResultOfCalcFunctionId.class);
     }
 
 }

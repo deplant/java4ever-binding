@@ -76,6 +76,19 @@ public final class Context {
         return JsonContext.MAPPER.readValue(s, clazz);
     }
 
+    public <P> void callVoid(String functionName, P params) throws JsonProcessingException {
+        this.requestCount++;
+        var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
+        log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
+        String s = null;
+        try {
+            s = EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + s);
+    }
+
     public record ResultOfCreateContext(Integer result, String error) {
     }
 

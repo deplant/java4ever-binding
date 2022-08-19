@@ -225,7 +225,7 @@ api.modules.forEach(mod => {
         let rName = f.result.generic_args[0].ref_name;
         let rType = types[rName];
         let origName = f.name
-        let rField = {getType:()=>'Void'};
+        let rField = {getType:()=>'void'};
         let rParamName = '';
         if (rType&&rType.fields.length > 0) { // edited >1 to >0 to export real results
             setTypeExported({type:rName})
@@ -304,18 +304,20 @@ api.modules.forEach(mod => {
 
         if (appObject)
             params.push({type:appObject.type, name:'appObject', optional:''});
+
         // TODO temporary removed app objects
-            body += `    /**\n`;
-            body += `    * <h2>${mod.name}.${f.name}</h2>\n`;
-            body += `    * ${toJavadoc(f.summary,f.description)}\n`;
-            body += params.map(p => `    * @param ${p.name} ${toHTML(p.summary)} ${toHTML(p.desc)}\n`).join('');
+        body += `    /**\n`;
+        body += `    * <strong>${mod.name}.${f.name}</strong>\n`;
+        body += `    * ${toJavadoc(f.summary,f.description)}\n`;
+        body += params.map(p => `    * @param ${p.name} ${toHTML(p.summary)} ${toHTML(p.desc)}\n`).join('');
         // let rDesc = rField.desc || (((type)=>{return type&&type.desc})(types[rField.getType()]));
         // if (rDesc)
+        if (rField.getType(mod.name)!='void')
             body += `    * @return {@link ${packageName}.${toCapitalCase(mod.name)}.${rField.getType(mod.name)}}\n`;
-            body += `    */\n`;
-            body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static ${rField.getType(mod.name).replace('Map<String,Object>','Map')} ${toCamelCase(f.name)}(@NonNull Context ctx${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
-            body += `        return ctx.call${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
-            body += `    }\n\n`;
+        body += `    */\n`;
+        body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static ${rField.getType(mod.name).replace('Map<String,Object>','Map')} ${toCamelCase(f.name)}(@NonNull Context ctx${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
+        body += `        ${rField.getType(mod.name)=='void'?'':'return '} ctx.call${rField.getType(mod.name)=='void'?'Void':''}${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}${rField.getType(mod.name)=='void'?')':', '+rField.getType(mod.name).replace('Map<String,Object>','Map')+'.class)'};\n`;
+        body += `    }\n\n`;
     });
 
     const className = toCapitalCase(mod.name);
@@ -326,7 +328,7 @@ api.modules.forEach(mod => {
 ${Object.keys(imports).map(i=>`import ${i};`).join('\n')}
 
 /**
- *  <h1>${mod.name}</h1>
+ *  <strong>${mod.name}</strong>
  *  Contains methods of "${mod.name}" module.\n
  *  ${toJavadoc(mod.summary,mod.description)}
  *  @version EVER-SDK ${api.version}
@@ -408,7 +410,7 @@ import java.util.Map;
 public interface ${className} {
 ${Object.entries(iface.methods).map(([n,o]) => {
     let name = n.charAt(0).toLowerCase() + n.slice(1);
-    let res = o.result && o.result.length ? o.result[0].getType() : 'Void';
+    let res = o.result && o.result.length ? o.result[0].getType() : 'void';
     return `    ${o.result?`${res}`:'void'} ${dereserve(name)}(${o.params.map(p=>p.getType()+' '+toCamelCase(p.name))});`;
 }).join('\n')}
 }

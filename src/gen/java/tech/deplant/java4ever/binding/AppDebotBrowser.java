@@ -9,7 +9,7 @@ public interface AppDebotBrowser {
     void showAction(Debot.DebotAction action);
     String input(String prompt);
     Integer getSigningBox();
-    Void invokeDebot(String debotAddr,Debot.DebotAction action);
+    void invokeDebot(String debotAddr,Debot.DebotAction action);
     void send(String message);
     Boolean approve(Map<String,Object> activity);
 }
