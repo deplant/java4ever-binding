@@ -218,7 +218,7 @@ setTypeExported({type:'client.ClientConfig'});
 
 api.modules.forEach(mod => {
     currMod = mod;
-    let imports = {'com.fasterxml.jackson.annotation.JsonProperty':true,'com.fasterxml.jackson.core.JsonProcessingException':true,'java.util.Map':true,'java.util.Optional':true,'lombok.*':true,'java.util.concurrent.CompletableFuture':true,'java.util.stream.*':true,'com.google.gson.annotations.SerializedName':true,'java.util.Arrays':true};
+    let imports = {'com.fasterxml.jackson.annotation.JsonProperty':true,'com.fasterxml.jackson.core.JsonProcessingException':true,'java.util.Map':true,'java.util.Optional':true,'lombok.*':true,'java.util.stream.*':true,'java.util.Arrays':true};
     let body = '';
 
     mod.functions.forEach(f => {
@@ -313,8 +313,8 @@ api.modules.forEach(mod => {
         // if (rDesc)
             body += `    * @return {@link ${packageName}.${toCapitalCase(mod.name)}.${rField.getType(mod.name)}}\n`;
             body += `    */\n`;
-            body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static CompletableFuture<${rField.getType(mod.name).replace('Map<String,Object>','Map')}> ${toCamelCase(f.name)}(@NonNull Context context${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
-            body += `        return context.future${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
+            body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static ${rField.getType(mod.name).replace('Map<String,Object>','Map')} ${toCamelCase(f.name)}(@NonNull Context ctx${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
+            body += `        return ctx.call${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}, ${rField.getType(mod.name).replace('Map<String,Object>','Map')}.class);\n`;
             body += `    }\n\n`;
     });
 
@@ -403,14 +403,13 @@ for(let className in appInterfaces) {
     let iface = appInterfaces[className];
     fs.writeFileSync(PATH + className + '.java', `package ${packageName};
 
-import java.util.concurrent.CompletableFuture;
 import java.util.Map;
 
 public interface ${className} {
 ${Object.entries(iface.methods).map(([n,o]) => {
     let name = n.charAt(0).toLowerCase() + n.slice(1);
     let res = o.result && o.result.length ? o.result[0].getType() : 'Void';
-    return `    ${o.result?`CompletableFuture<${res}>`:'void'} ${dereserve(name)}(${o.params.map(p=>p.getType()+' '+toCamelCase(p.name))});`;
+    return `    ${o.result?`${res}`:'void'} ${dereserve(name)}(${o.params.map(p=>p.getType()+' '+toCamelCase(p.name))});`;
 }).join('\n')}
 }
 `);

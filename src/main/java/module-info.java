@@ -1,6 +1,8 @@
 module java4ever.binding {
     requires jdk.unsupported;
     requires java.scripting;
+    requires jdk.incubator.concurrent;
+    requires org.slf4j;
     requires static lombok;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jdk8;
@@ -9,4 +11,5 @@ module java4ever.binding {
     opens tech.deplant.java4ever.binding to com.fasterxml.jackson.databind;
     exports tech.deplant.java4ever.binding;
     exports tech.deplant.java4ever.binding.loader;
+    opens tech.deplant.java4ever.binding.json to com.fasterxml.jackson.databind;
 }

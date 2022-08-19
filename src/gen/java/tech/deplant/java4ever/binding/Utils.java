@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "utils" module.
 
  *  Misc utility Functions.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Utils {
 
@@ -138,8 +136,8 @@ public class Utils {
     * @param outputFormat Specify the format to convert to. 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfConvertAddress}
     */
-    public static CompletableFuture<ResultOfConvertAddress> convertAddress(@NonNull Context context, @NonNull String address, @NonNull AddressStringFormat outputFormat)  throws JsonProcessingException {
-        return context.future("utils.convert_address", new ParamsOfConvertAddress(address, outputFormat), ResultOfConvertAddress.class);
+    public static ResultOfConvertAddress convertAddress(@NonNull Context ctx, @NonNull String address, @NonNull AddressStringFormat outputFormat)  throws JsonProcessingException {
+        return ctx.call("utils.convert_address", new ParamsOfConvertAddress(address, outputFormat), ResultOfConvertAddress.class);
     }
 
     /**
@@ -148,8 +146,8 @@ public class Utils {
     * @param address Account address in any TON format. 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfGetAddressType}
     */
-    public static CompletableFuture<ResultOfGetAddressType> getAddressType(@NonNull Context context, @NonNull String address)  throws JsonProcessingException {
-        return context.future("utils.get_address_type", new ParamsOfGetAddressType(address), ResultOfGetAddressType.class);
+    public static ResultOfGetAddressType getAddressType(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
+        return ctx.call("utils.get_address_type", new ParamsOfGetAddressType(address), ResultOfGetAddressType.class);
     }
 
     /**
@@ -159,8 +157,8 @@ public class Utils {
     * @param period  
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCalcStorageFee}
     */
-    public static CompletableFuture<ResultOfCalcStorageFee> calcStorageFee(@NonNull Context context, @NonNull String account, @NonNull Number period)  throws JsonProcessingException {
-        return context.future("utils.calc_storage_fee", new ParamsOfCalcStorageFee(account, period), ResultOfCalcStorageFee.class);
+    public static ResultOfCalcStorageFee calcStorageFee(@NonNull Context ctx, @NonNull String account, @NonNull Number period)  throws JsonProcessingException {
+        return ctx.call("utils.calc_storage_fee", new ParamsOfCalcStorageFee(account, period), ResultOfCalcStorageFee.class);
     }
 
     /**
@@ -170,8 +168,8 @@ public class Utils {
     * @param level Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`). 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCompressZstd}
     */
-    public static CompletableFuture<ResultOfCompressZstd> compressZstd(@NonNull Context context, @NonNull String uncompressed,  Number level)  throws JsonProcessingException {
-        return context.future("utils.compress_zstd", new ParamsOfCompressZstd(uncompressed, level), ResultOfCompressZstd.class);
+    public static ResultOfCompressZstd compressZstd(@NonNull Context ctx, @NonNull String uncompressed,  Number level)  throws JsonProcessingException {
+        return ctx.call("utils.compress_zstd", new ParamsOfCompressZstd(uncompressed, level), ResultOfCompressZstd.class);
     }
 
     /**
@@ -180,8 +178,8 @@ public class Utils {
     * @param compressed Compressed data. Must be encoded as base64.
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfDecompressZstd}
     */
-    public static CompletableFuture<ResultOfDecompressZstd> decompressZstd(@NonNull Context context, @NonNull String compressed)  throws JsonProcessingException {
-        return context.future("utils.decompress_zstd", new ParamsOfDecompressZstd(compressed), ResultOfDecompressZstd.class);
+    public static ResultOfDecompressZstd decompressZstd(@NonNull Context ctx, @NonNull String compressed)  throws JsonProcessingException {
+        return ctx.call("utils.decompress_zstd", new ParamsOfDecompressZstd(compressed), ResultOfDecompressZstd.class);
     }
 
 }

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -16,7 +14,7 @@ import java.util.function.Consumer;
  *  Contains methods of "processing" module.
 
  *  Message processing module. This module incorporates functions related to complex messageprocessing scenarios.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Processing {
 
@@ -76,8 +74,8 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfSendMessage}
     */
-    public static CompletableFuture<ResultOfSendMessage> sendMessage(@NonNull Context context, @NonNull String message,  Abi.ABI abi, @NonNull Boolean sendEvents, Consumer<SendMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
+    public static ResultOfSendMessage sendMessage(@NonNull Context ctx, @NonNull String message,  Abi.ABI abi, @NonNull Boolean sendEvents, Consumer<SendMessageEvent> consumer)  throws JsonProcessingException {
+        return ctx.callEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
     }
 
     /**
@@ -90,8 +88,8 @@ public class Processing {
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static CompletableFuture<ResultOfProcessMessage> waitForTransaction(@NonNull Context context,  Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer)  throws JsonProcessingException {
-        return context.futureEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
+    public static ResultOfProcessMessage waitForTransaction(@NonNull Context ctx,  Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer)  throws JsonProcessingException {
+        return ctx.callEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
     }
 
     /**
@@ -106,8 +104,8 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static CompletableFuture<ResultOfProcessMessage> processMessage(@NonNull Context context, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
-        return context.futureEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
+    public static ResultOfProcessMessage processMessage(@NonNull Context ctx, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
+        return ctx.callEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
     }
 
 }

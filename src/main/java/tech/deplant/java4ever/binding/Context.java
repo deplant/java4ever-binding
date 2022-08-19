@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import tech.deplant.java4ever.binding.ffi.EverSdkBridge;
+import tech.deplant.java4ever.binding.json.JsonContext;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.lang.foreign.MemorySession;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 //TODO Define rules for responses and exceptions (Timeout & so on)
@@ -20,9 +21,9 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 public final class Context {
     @Getter
-    public int requestCount = 0;
+    private int id;
     @Getter
-    int id;
+    private int requestCount = 0;
 
     //HashMap<Integer, CompletableFuture<String>> responses = new HashMap<>();
     //HashMap<Integer, Callback<?>> callbacks = new HashMap<>();
@@ -39,7 +40,7 @@ public final class Context {
         if (createContextResponse.result() == null || createContextResponse.result() < 1) {
             throw new RuntimeException("sdk.create_context failed!");
         }
-        return new Context(0, createContextResponse.result());
+        return new Context(createContextResponse.result(), 0);
     }
 
     public static Context create(LibraryLoader loader, Client.ClientConfig config) throws JsonProcessingException {
@@ -47,35 +48,32 @@ public final class Context {
     }
 
     private static String tcCreateContext(MemorySession scope, String configJson) {
-        //log.info("FUNC:sdk.create_context CTXID:0 REQID:0 SEND:{}", () -> configJson);
+        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 SEND:" + configJson);
         String s = EverSdkBridge.tcCreateContext(scope, configJson);
-        //log.info("FUNC:sdk.create_context CTXID:0 REQID:0 RESP:{}", () -> result);
+        log.info("FUNC:sdk.create_context CTXID:0 REQID:0 RESP:" + s);
         return s;
     }
 
-    public <T, P, A> CompletableFuture<T> futureAppObject(String functionName, P params, A appObject, Class<T> clazz) throws JsonProcessingException {
-        return future(functionName, params, clazz);
+    public <T, P, A> T callAppObject(String functionName, P params, A appObject, Class<T> clazz) throws JsonProcessingException {
+        return call(functionName, params, clazz);
     }
 
-    public <T, P, E extends ExternalEvent> CompletableFuture<T> futureEvent(String functionName, P params, Consumer<E> consumer, Class<T> clazz) throws JsonProcessingException {
-        return future(functionName, params, clazz);
+    public <T, P, E extends ExternalEvent> T callEvent(String functionName, P params, Consumer<E> consumer, Class<T> clazz) throws JsonProcessingException {
+        return call(functionName, params, clazz);
     }
 
-    public <T, P> CompletableFuture<T> future(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
-        return tcRequest(functionName, params == null ? "" : JsonContext.MAPPER.writeValueAsString(params)).thenApply(json -> {
-            try {
-                return JsonContext.MAPPER.readValue(json, clazz);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    public String tcRequest(String functionName, String params) {
-        //log.trace("FUNC:{} CTXID:{} REQID:{} SEND:{}", () -> functionName, this::id, () -> requestId, () -> params);
-        String s = EverSdkBridge.tcRequest(this.id(), this.requestCount++, functionName, params);
-        //log.trace("FUNC: " + functionName + " CTXID:" + this.id() + " REQID:" + requestId + " RESP:" + res);    }
-        return s;
+    public <T, P> T call(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
+        this.requestCount++;
+        var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
+        log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
+        String s = null;
+        try {
+            s = EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + s);
+        return JsonContext.MAPPER.readValue(s, clazz);
     }
 
     public record ResultOfCreateContext(Integer result, String error) {

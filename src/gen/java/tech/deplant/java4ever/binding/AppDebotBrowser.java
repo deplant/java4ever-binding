@@ -1,6 +1,5 @@
 package tech.deplant.java4ever.binding;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.Map;
 
 public interface AppDebotBrowser {
@@ -8,9 +7,9 @@ public interface AppDebotBrowser {
     void switchTo(Number contextId);
     void switchCompleted();
     void showAction(Debot.DebotAction action);
-    CompletableFuture<String> input(String prompt);
-    CompletableFuture<Integer> getSigningBox();
-    CompletableFuture<Void> invokeDebot(String debotAddr,Debot.DebotAction action);
+    String input(String prompt);
+    Integer getSigningBox();
+    Void invokeDebot(String debotAddr,Debot.DebotAction action);
     void send(String message);
-    CompletableFuture<Boolean> approve(Map<String,Object> activity);
+    Boolean approve(Map<String,Object> activity);
 }

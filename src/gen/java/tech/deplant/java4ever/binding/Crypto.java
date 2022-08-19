@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "crypto" module.
 
  *  Crypto functions.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Crypto {
 
@@ -751,8 +749,8 @@ public class Crypto {
     * @param composite Hexadecimal representation of u64 composite number. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfFactorize}
     */
-    public static CompletableFuture<ResultOfFactorize> factorize(@NonNull Context context, @NonNull String composite)  throws JsonProcessingException {
-        return context.future("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
+    public static ResultOfFactorize factorize(@NonNull Context ctx, @NonNull String composite)  throws JsonProcessingException {
+        return ctx.call("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
     }
 
     /**
@@ -763,8 +761,8 @@ public class Crypto {
     * @param modulus `modulus` argument of calculation. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfModularPower}
     */
-    public static CompletableFuture<ResultOfModularPower> modularPower(@NonNull Context context, @NonNull String base, @NonNull String exponent, @NonNull String modulus)  throws JsonProcessingException {
-        return context.future("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
+    public static ResultOfModularPower modularPower(@NonNull Context ctx, @NonNull String base, @NonNull String exponent, @NonNull String modulus)  throws JsonProcessingException {
+        return ctx.call("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
     }
 
     /**
@@ -773,8 +771,8 @@ public class Crypto {
     * @param data Input data for CRC calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfTonCrc16}
     */
-    public static CompletableFuture<ResultOfTonCrc16> tonCrc16(@NonNull Context context, @NonNull String data)  throws JsonProcessingException {
-        return context.future("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
+    public static ResultOfTonCrc16 tonCrc16(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+        return ctx.call("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
     }
 
     /**
@@ -783,8 +781,8 @@ public class Crypto {
     * @param length Size of random byte array. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGenerateRandomBytes}
     */
-    public static CompletableFuture<ResultOfGenerateRandomBytes> generateRandomBytes(@NonNull Context context, @NonNull Number length)  throws JsonProcessingException {
-        return context.future("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
+    public static ResultOfGenerateRandomBytes generateRandomBytes(@NonNull Context ctx, @NonNull Number length)  throws JsonProcessingException {
+        return ctx.call("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
     }
 
     /**
@@ -793,8 +791,8 @@ public class Crypto {
     * @param publicKey Public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfConvertPublicKeyToTonSafeFormat}
     */
-    public static CompletableFuture<ResultOfConvertPublicKeyToTonSafeFormat> convertPublicKeyToTonSafeFormat(@NonNull Context context, @NonNull String publicKey)  throws JsonProcessingException {
-        return context.future("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
+    public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(@NonNull Context ctx, @NonNull String publicKey)  throws JsonProcessingException {
+        return ctx.call("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
     }
 
     /**
@@ -802,8 +800,8 @@ public class Crypto {
     * Generates random ed25519 key pair.
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static CompletableFuture<KeyPair> generateRandomSignKeys(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("crypto.generate_random_sign_keys", null, KeyPair.class);
+    public static KeyPair generateRandomSignKeys(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("crypto.generate_random_sign_keys", null, KeyPair.class);
     }
 
     /**
@@ -813,8 +811,8 @@ public class Crypto {
     * @param keys Sign keys. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSign}
     */
-    public static CompletableFuture<ResultOfSign> sign(@NonNull Context context, @NonNull String unsigned, @NonNull KeyPair keys)  throws JsonProcessingException {
-        return context.future("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
+    public static ResultOfSign sign(@NonNull Context ctx, @NonNull String unsigned, @NonNull KeyPair keys)  throws JsonProcessingException {
+        return ctx.call("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
     }
 
     /**
@@ -824,8 +822,8 @@ public class Crypto {
     * @param publicKey Signer's public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfVerifySignature}
     */
-    public static CompletableFuture<ResultOfVerifySignature> verifySignature(@NonNull Context context, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
-        return context.future("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
+    public static ResultOfVerifySignature verifySignature(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
+        return ctx.call("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
     }
 
     /**
@@ -834,8 +832,8 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static CompletableFuture<ResultOfHash> sha256(@NonNull Context context, @NonNull String data)  throws JsonProcessingException {
-        return context.future("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
+    public static ResultOfHash sha256(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+        return ctx.call("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
     }
 
     /**
@@ -844,8 +842,8 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static CompletableFuture<ResultOfHash> sha512(@NonNull Context context, @NonNull String data)  throws JsonProcessingException {
-        return context.future("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
+    public static ResultOfHash sha512(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+        return ctx.call("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
     }
 
     /**
@@ -859,8 +857,8 @@ public class Crypto {
     * @param dkLen Intended output length in octets of the derived key. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfScrypt}
     */
-    public static CompletableFuture<ResultOfScrypt> scrypt(@NonNull Context context, @NonNull String password, @NonNull String salt, @NonNull Number logN, @NonNull Number r, @NonNull Number p, @NonNull Number dkLen)  throws JsonProcessingException {
-        return context.future("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
+    public static ResultOfScrypt scrypt(@NonNull Context ctx, @NonNull String password, @NonNull String salt, @NonNull Number logN, @NonNull Number r, @NonNull Number p, @NonNull Number dkLen)  throws JsonProcessingException {
+        return ctx.call("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
     }
 
     /**
@@ -869,8 +867,8 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static CompletableFuture<KeyPair> naclSignKeypairFromSecretKey(@NonNull Context context, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
+    public static KeyPair naclSignKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
     /**
@@ -880,8 +878,8 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSign}
     */
-    public static CompletableFuture<ResultOfNaclSign> naclSign(@NonNull Context context, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
+    public static ResultOfNaclSign naclSign(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
     }
 
     /**
@@ -891,8 +889,8 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignOpen}
     */
-    public static CompletableFuture<ResultOfNaclSignOpen> naclSignOpen(@NonNull Context context, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
+    public static ResultOfNaclSignOpen naclSignOpen(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
     }
 
     /**
@@ -902,8 +900,8 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetached}
     */
-    public static CompletableFuture<ResultOfNaclSignDetached> naclSignDetached(@NonNull Context context, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
+    public static ResultOfNaclSignDetached naclSignDetached(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
     }
 
     /**
@@ -914,8 +912,8 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetachedVerify}
     */
-    public static CompletableFuture<ResultOfNaclSignDetachedVerify> naclSignDetachedVerify(@NonNull Context context, @NonNull String unsigned, @NonNull String signature, @NonNull String publicKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
+    public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(@NonNull Context ctx, @NonNull String unsigned, @NonNull String signature, @NonNull String publicKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
     }
 
     /**
@@ -923,8 +921,8 @@ public class Crypto {
     * Generates a random NaCl key pair
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static CompletableFuture<KeyPair> naclBoxKeypair(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("crypto.nacl_box_keypair", null, KeyPair.class);
+    public static KeyPair naclBoxKeypair(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_box_keypair", null, KeyPair.class);
     }
 
     /**
@@ -933,8 +931,8 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static CompletableFuture<KeyPair> naclBoxKeypairFromSecretKey(@NonNull Context context, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
+    public static KeyPair naclBoxKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
     /**
@@ -946,8 +944,8 @@ public class Crypto {
     * @param secretKey Sender's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static CompletableFuture<ResultOfNaclBox> naclBox(@NonNull Context context, @NonNull String decrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
+    public static ResultOfNaclBox naclBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
     }
 
     /**
@@ -959,8 +957,8 @@ public class Crypto {
     * @param secretKey Receiver's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static CompletableFuture<ResultOfNaclBoxOpen> naclBoxOpen(@NonNull Context context, @NonNull String encrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
+    public static ResultOfNaclBoxOpen naclBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
     }
 
     /**
@@ -971,8 +969,8 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static CompletableFuture<ResultOfNaclBox> naclSecretBox(@NonNull Context context, @NonNull String decrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
-        return context.future("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
+    public static ResultOfNaclBox naclSecretBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
     }
 
     /**
@@ -983,8 +981,8 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static CompletableFuture<ResultOfNaclBoxOpen> naclSecretBoxOpen(@NonNull Context context, @NonNull String encrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
-        return context.future("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
+    public static ResultOfNaclBoxOpen naclSecretBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
+        return ctx.call("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
     }
 
     /**
@@ -993,8 +991,8 @@ public class Crypto {
     * @param dictionary Dictionary identifier 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicWords}
     */
-    public static CompletableFuture<ResultOfMnemonicWords> mnemonicWords(@NonNull Context context,  Number dictionary)  throws JsonProcessingException {
-        return context.future("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
+    public static ResultOfMnemonicWords mnemonicWords(@NonNull Context ctx,  Number dictionary)  throws JsonProcessingException {
+        return ctx.call("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
     }
 
     /**
@@ -1004,8 +1002,8 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromRandom}
     */
-    public static CompletableFuture<ResultOfMnemonicFromRandom> mnemonicFromRandom(@NonNull Context context,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return context.future("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
+    public static ResultOfMnemonicFromRandom mnemonicFromRandom(@NonNull Context ctx,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+        return ctx.call("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
     }
 
     /**
@@ -1016,8 +1014,8 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromEntropy}
     */
-    public static CompletableFuture<ResultOfMnemonicFromEntropy> mnemonicFromEntropy(@NonNull Context context, @NonNull String entropy,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return context.future("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
+    public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(@NonNull Context ctx, @NonNull String entropy,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+        return ctx.call("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
     }
 
     /**
@@ -1028,8 +1026,8 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicVerify}
     */
-    public static CompletableFuture<ResultOfMnemonicVerify> mnemonicVerify(@NonNull Context context, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return context.future("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
+    public static ResultOfMnemonicVerify mnemonicVerify(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+        return ctx.call("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
     }
 
     /**
@@ -1041,8 +1039,8 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static CompletableFuture<KeyPair> mnemonicDeriveSignKeys(@NonNull Context context, @NonNull String phrase,  String path,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return context.future("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
+    public static KeyPair mnemonicDeriveSignKeys(@NonNull Context ctx, @NonNull String phrase,  String path,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+        return ctx.call("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
     }
 
     /**
@@ -1053,8 +1051,8 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyXPrvFromMnemonic}
     */
-    public static CompletableFuture<ResultOfHDKeyXPrvFromMnemonic> hdkeyXprvFromMnemonic(@NonNull Context context, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
-        return context.future("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
+    public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+        return ctx.call("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
     }
 
     /**
@@ -1065,8 +1063,8 @@ public class Crypto {
     * @param hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrv}
     */
-    public static CompletableFuture<ResultOfHDKeyDeriveFromXPrv> hdkeyDeriveFromXprv(@NonNull Context context, @NonNull String xprv, @NonNull Number childIndex, @NonNull Boolean hardened)  throws JsonProcessingException {
-        return context.future("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
+    public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(@NonNull Context ctx, @NonNull String xprv, @NonNull Number childIndex, @NonNull Boolean hardened)  throws JsonProcessingException {
+        return ctx.call("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
     }
 
     /**
@@ -1076,8 +1074,8 @@ public class Crypto {
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0" 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrvPath}
     */
-    public static CompletableFuture<ResultOfHDKeyDeriveFromXPrvPath> hdkeyDeriveFromXprvPath(@NonNull Context context, @NonNull String xprv, @NonNull String path)  throws JsonProcessingException {
-        return context.future("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
+    public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(@NonNull Context ctx, @NonNull String xprv, @NonNull String path)  throws JsonProcessingException {
+        return ctx.call("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
     }
 
     /**
@@ -1086,8 +1084,8 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeySecretFromXPrv}
     */
-    public static CompletableFuture<ResultOfHDKeySecretFromXPrv> hdkeySecretFromXprv(@NonNull Context context, @NonNull String xprv)  throws JsonProcessingException {
-        return context.future("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
+    public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
+        return ctx.call("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
     }
 
     /**
@@ -1096,8 +1094,8 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyPublicFromXPrv}
     */
-    public static CompletableFuture<ResultOfHDKeyPublicFromXPrv> hdkeyPublicFromXprv(@NonNull Context context, @NonNull String xprv)  throws JsonProcessingException {
-        return context.future("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
+    public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
+        return ctx.call("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
     }
 
     /**
@@ -1108,8 +1106,8 @@ public class Crypto {
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfChaCha20}
     */
-    public static CompletableFuture<ResultOfChaCha20> chacha20(@NonNull Context context, @NonNull String data, @NonNull String key, @NonNull String nonce)  throws JsonProcessingException {
-        return context.future("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
+    public static ResultOfChaCha20 chacha20(@NonNull Context ctx, @NonNull String data, @NonNull String key, @NonNull String nonce)  throws JsonProcessingException {
+        return ctx.call("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
     }
 
     /**
@@ -1119,8 +1117,8 @@ public class Crypto {
     * @param secretKey Cryptobox secret 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredCryptoBox}
     */
-    public static CompletableFuture<RegisteredCryptoBox> createCryptoBox(@NonNull Context context, @NonNull String secretEncryptionSalt, @NonNull CryptoBoxSecret secretKey)  throws JsonProcessingException {
-        return context.future("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
+    public static RegisteredCryptoBox createCryptoBox(@NonNull Context ctx, @NonNull String secretEncryptionSalt, @NonNull CryptoBoxSecret secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
     }
 
     /**
@@ -1129,8 +1127,8 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static CompletableFuture<Void> removeCryptoBox(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.remove_crypto_box", new RegisteredCryptoBox(handle), Void.class);
+    public static Void removeCryptoBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.remove_crypto_box", new RegisteredCryptoBox(handle), Void.class);
     }
 
     /**
@@ -1139,8 +1137,8 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxInfo}
     */
-    public static CompletableFuture<ResultOfGetCryptoBoxInfo> getCryptoBoxInfo(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
+    public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
     }
 
     /**
@@ -1149,8 +1147,8 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxSeedPhrase}
     */
-    public static CompletableFuture<ResultOfGetCryptoBoxSeedPhrase> getCryptoBoxSeedPhrase(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
+    public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
     }
 
     /**
@@ -1161,8 +1159,8 @@ public class Crypto {
     * @param secretLifetime Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static CompletableFuture<RegisteredSigningBox> getSigningBoxFromCryptoBox(@NonNull Context context, @NonNull Number handle,  String hdpath,  Number secretLifetime)  throws JsonProcessingException {
-        return context.future("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
+    public static RegisteredSigningBox getSigningBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath,  Number secretLifetime)  throws JsonProcessingException {
+        return ctx.call("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
     }
 
     /**
@@ -1174,8 +1172,8 @@ public class Crypto {
     * @param secretLifetime Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static CompletableFuture<RegisteredEncryptionBox> getEncryptionBoxFromCryptoBox(@NonNull Context context, @NonNull Number handle,  String hdpath, @NonNull BoxEncryptionAlgorithm algorithm,  Number secretLifetime)  throws JsonProcessingException {
-        return context.future("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
+    public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath, @NonNull BoxEncryptionAlgorithm algorithm,  Number secretLifetime)  throws JsonProcessingException {
+        return ctx.call("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
     }
 
     /**
@@ -1184,8 +1182,8 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static CompletableFuture<Void> clearCryptoBoxSecretCache(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle), Void.class);
+    public static Void clearCryptoBoxSecretCache(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle), Void.class);
     }
 
     /**
@@ -1194,8 +1192,8 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static CompletableFuture<RegisteredSigningBox> registerSigningBox(@NonNull Context context,  AppSigningBox appObject)  throws JsonProcessingException {
-        return context.futureAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
+    public static RegisteredSigningBox registerSigningBox(@NonNull Context ctx,  AppSigningBox appObject)  throws JsonProcessingException {
+        return ctx.callAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
     }
 
     /**
@@ -1205,8 +1203,8 @@ public class Crypto {
     * @param secretKey Private key - u64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static CompletableFuture<RegisteredSigningBox> getSigningBox(@NonNull Context context, @NonNull String publicKey, @NonNull String secretKey)  throws JsonProcessingException {
-        return context.future("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
+    public static RegisteredSigningBox getSigningBox(@NonNull Context ctx, @NonNull String publicKey, @NonNull String secretKey)  throws JsonProcessingException {
+        return ctx.call("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
     }
 
     /**
@@ -1215,8 +1213,8 @@ public class Crypto {
     * @param handle Handle of the signing box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxGetPublicKey}
     */
-    public static CompletableFuture<ResultOfSigningBoxGetPublicKey> signingBoxGetPublicKey(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
+    public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
     }
 
     /**
@@ -1226,8 +1224,8 @@ public class Crypto {
     * @param unsigned Unsigned user data. Must be encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxSign}
     */
-    public static CompletableFuture<ResultOfSigningBoxSign> signingBoxSign(@NonNull Context context, @NonNull Integer signingBox, @NonNull String unsigned)  throws JsonProcessingException {
-        return context.future("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
+    public static ResultOfSigningBoxSign signingBoxSign(@NonNull Context ctx, @NonNull Integer signingBox, @NonNull String unsigned)  throws JsonProcessingException {
+        return ctx.call("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
     }
 
     /**
@@ -1236,8 +1234,8 @@ public class Crypto {
     * @param handle Handle of the signing box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static CompletableFuture<Void> removeSigningBox(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.remove_signing_box", new RegisteredSigningBox(handle), Void.class);
+    public static Void removeSigningBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.remove_signing_box", new RegisteredSigningBox(handle), Void.class);
     }
 
     /**
@@ -1246,8 +1244,8 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static CompletableFuture<RegisteredEncryptionBox> registerEncryptionBox(@NonNull Context context,  AppEncryptionBox appObject)  throws JsonProcessingException {
-        return context.futureAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
+    public static RegisteredEncryptionBox registerEncryptionBox(@NonNull Context ctx,  AppEncryptionBox appObject)  throws JsonProcessingException {
+        return ctx.callAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
     }
 
     /**
@@ -1256,8 +1254,8 @@ public class Crypto {
     * @param handle Handle of the encryption box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.Void}
     */
-    public static CompletableFuture<Void> removeEncryptionBox(@NonNull Context context, @NonNull Integer handle)  throws JsonProcessingException {
-        return context.future("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle), Void.class);
+    public static Void removeEncryptionBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+        return ctx.call("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle), Void.class);
     }
 
     /**
@@ -1266,8 +1264,8 @@ public class Crypto {
     * @param encryptionBox Encryption box handle 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxGetInfo}
     */
-    public static CompletableFuture<ResultOfEncryptionBoxGetInfo> encryptionBoxGetInfo(@NonNull Context context, @NonNull Integer encryptionBox)  throws JsonProcessingException {
-        return context.future("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
+    public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(@NonNull Context ctx, @NonNull Integer encryptionBox)  throws JsonProcessingException {
+        return ctx.call("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
     }
 
     /**
@@ -1277,8 +1275,8 @@ public class Crypto {
     * @param data Data to be encrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxEncrypt}
     */
-    public static CompletableFuture<ResultOfEncryptionBoxEncrypt> encryptionBoxEncrypt(@NonNull Context context, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
-        return context.future("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
+    public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
+        return ctx.call("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
     }
 
     /**
@@ -1288,8 +1286,8 @@ public class Crypto {
     * @param data Data to be decrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxDecrypt}
     */
-    public static CompletableFuture<ResultOfEncryptionBoxDecrypt> encryptionBoxDecrypt(@NonNull Context context, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
-        return context.future("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
+    public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
+        return ctx.call("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
     }
 
     /**
@@ -1298,8 +1296,8 @@ public class Crypto {
     * @param algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static CompletableFuture<RegisteredEncryptionBox> createEncryptionBox(@NonNull Context context, @NonNull EncryptionAlgorithm algorithm)  throws JsonProcessingException {
-        return context.future("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
+    public static RegisteredEncryptionBox createEncryptionBox(@NonNull Context ctx, @NonNull EncryptionAlgorithm algorithm)  throws JsonProcessingException {
+        return ctx.call("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
     }
 
 }

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "boc" module.
 
  *  BOC manipulation module.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Boc {
 
@@ -312,8 +310,8 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static CompletableFuture<ResultOfParse> parseMessage(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
+    public static ResultOfParse parseMessage(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
@@ -322,8 +320,8 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static CompletableFuture<ResultOfParse> parseTransaction(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
+    public static ResultOfParse parseTransaction(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
@@ -332,8 +330,8 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static CompletableFuture<ResultOfParse> parseAccount(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
+    public static ResultOfParse parseAccount(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
@@ -342,8 +340,8 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static CompletableFuture<ResultOfParse> parseBlock(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
+    public static ResultOfParse parseBlock(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
     /**
@@ -354,8 +352,8 @@ public class Boc {
     * @param workchainId Workchain shardstate belongs to 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static CompletableFuture<ResultOfParse> parseShardstate(@NonNull Context context, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
-        return context.future("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
+    public static ResultOfParse parseShardstate(@NonNull Context ctx, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
+        return ctx.call("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
     }
 
     /**
@@ -364,8 +362,8 @@ public class Boc {
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBlockchainConfig}
     */
-    public static CompletableFuture<ResultOfGetBlockchainConfig> getBlockchainConfig(@NonNull Context context, @NonNull String blockBoc)  throws JsonProcessingException {
-        return context.future("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
+    public static ResultOfGetBlockchainConfig getBlockchainConfig(@NonNull Context ctx, @NonNull String blockBoc)  throws JsonProcessingException {
+        return ctx.call("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
     }
 
     /**
@@ -374,8 +372,8 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocHash}
     */
-    public static CompletableFuture<ResultOfGetBocHash> getBocHash(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
+    public static ResultOfGetBocHash getBocHash(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
     }
 
     /**
@@ -384,8 +382,8 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocDepth}
     */
-    public static CompletableFuture<ResultOfGetBocDepth> getBocDepth(@NonNull Context context, @NonNull String boc)  throws JsonProcessingException {
-        return context.future("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
+    public static ResultOfGetBocDepth getBocDepth(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+        return ctx.call("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
     }
 
     /**
@@ -394,8 +392,8 @@ public class Boc {
     * @param tvc Contract TVC image or image BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeFromTvc}
     */
-    public static CompletableFuture<ResultOfGetCodeFromTvc> getCodeFromTvc(@NonNull Context context, @NonNull String tvc)  throws JsonProcessingException {
-        return context.future("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
+    public static ResultOfGetCodeFromTvc getCodeFromTvc(@NonNull Context ctx, @NonNull String tvc)  throws JsonProcessingException {
+        return ctx.call("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
     }
 
     /**
@@ -404,8 +402,8 @@ public class Boc {
     * @param bocRef Reference to the cached BOC 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheGet}
     */
-    public static CompletableFuture<ResultOfBocCacheGet> cacheGet(@NonNull Context context, @NonNull String bocRef)  throws JsonProcessingException {
-        return context.future("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
+    public static ResultOfBocCacheGet cacheGet(@NonNull Context ctx, @NonNull String bocRef)  throws JsonProcessingException {
+        return ctx.call("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
     }
 
     /**
@@ -415,8 +413,8 @@ public class Boc {
     * @param cacheType Cache type 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheSet}
     */
-    public static CompletableFuture<ResultOfBocCacheSet> cacheSet(@NonNull Context context, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
-        return context.future("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
+    public static ResultOfBocCacheSet cacheSet(@NonNull Context ctx, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
+        return ctx.call("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
     }
 
     /**
@@ -426,8 +424,8 @@ public class Boc {
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
     * @return {@link tech.deplant.java4ever.binding.Boc.Void}
     */
-    public static CompletableFuture<Void> cacheUnpin(@NonNull Context context, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
-        return context.future("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef), Void.class);
+    public static Void cacheUnpin(@NonNull Context ctx, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
+        return ctx.call("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef), Void.class);
     }
 
     /**
@@ -437,8 +435,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeBoc}
     */
-    public static CompletableFuture<ResultOfEncodeBoc> encodeBoc(@NonNull Context context, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
+    public static ResultOfEncodeBoc encodeBoc(@NonNull Context ctx, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
     }
 
     /**
@@ -448,8 +446,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeSalt}
     */
-    public static CompletableFuture<ResultOfGetCodeSalt> getCodeSalt(@NonNull Context context, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
+    public static ResultOfGetCodeSalt getCodeSalt(@NonNull Context ctx, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
     }
 
     /**
@@ -460,8 +458,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfSetCodeSalt}
     */
-    public static CompletableFuture<ResultOfSetCodeSalt> setCodeSalt(@NonNull Context context, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
+    public static ResultOfSetCodeSalt setCodeSalt(@NonNull Context ctx, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
     }
 
     /**
@@ -471,8 +469,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfDecodeTvc}
     */
-    public static CompletableFuture<ResultOfDecodeTvc> decodeTvc(@NonNull Context context, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
+    public static ResultOfDecodeTvc decodeTvc(@NonNull Context ctx, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
     }
 
     /**
@@ -487,8 +485,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeTvc}
     */
-    public static CompletableFuture<ResultOfEncodeTvc> encodeTvc(@NonNull Context context,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
+    public static ResultOfEncodeTvc encodeTvc(@NonNull Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
     }
 
     /**
@@ -501,8 +499,8 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeExternalInMessage}
     */
-    public static CompletableFuture<ResultOfEncodeExternalInMessage> encodeExternalInMessage(@NonNull Context context,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
-        return context.future("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
+    public static ResultOfEncodeExternalInMessage encodeExternalInMessage(@NonNull Context ctx,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
+        return ctx.call("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
     }
 
     /**
@@ -511,8 +509,8 @@ public class Boc {
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCompilerVersion}
     */
-    public static CompletableFuture<ResultOfGetCompilerVersion> getCompilerVersion(@NonNull Context context, @NonNull String code)  throws JsonProcessingException {
-        return context.future("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
+    public static ResultOfGetCompilerVersion getCompilerVersion(@NonNull Context ctx, @NonNull String code)  throws JsonProcessingException {
+        return ctx.call("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
     }
 
 }

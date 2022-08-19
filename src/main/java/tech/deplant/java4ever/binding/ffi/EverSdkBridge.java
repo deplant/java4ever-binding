@@ -9,11 +9,11 @@ import static tech.deplant.java4ever.binding.ffi.tc_string_data_t.*;
 
 public class EverSdkBridge {
 
-    public static String tcRequest(int contextId, int requestId, String functionName, String params) {
+    public static EverSdkResponse tcRequest(int contextId, int requestId, String functionName, String params) {
         EverSdkResponse response = new EverSdkResponse();
         ton_client.tc_request(contextId, ofString(functionName, MemorySession.openShared()), ofString(params, MemorySession.openShared()),
                 requestId, tc_response_handler_t.allocate(response, MemorySession.openShared()));
-        return response.result();
+        return response;
     }
 
     public static String tcCreateContext(MemorySession scope, String configJson) {
@@ -21,7 +21,8 @@ public class EverSdkBridge {
                 ton_client.tc_read_string(
                         SegmentAllocator.newNativeArena(scope),
                         ton_client.tc_create_context(ofString(configJson, scope))
-                )
+                ),
+                scope
         );
     }
 
@@ -34,22 +35,7 @@ public class EverSdkBridge {
         return stringData;
     }
 
-
     public static String toString(MemorySegment seg, MemorySession scope) {
-        if (len$get(seg) > 0) {
-            return new String(
-                    content$get(seg)
-                            .asSegment(len$get(seg), scope)
-                            .toByteArray(),
-                    CHARSET
-            );
-        } else {
-            return "";
-        }
+        return EverSdkUtils.toJavaString(seg, scope);
     }
-
-    public static String toString(MemorySegment seg) {
-        return EverSdkUtils.toJavaString(seg, len$get(seg));
-    }
-
 }

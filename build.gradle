@@ -130,10 +130,11 @@ tasks.withType(Test) {
     jvmArgs += "--enable-preview"
     jvmArgs += "-Djava.library.path=c:/opt/sdk/"
     jvmArgs += "--enable-native-access=java4ever.binding"
+    jvmArgs += "--add-modules=jdk.incubator.concurrent"
 }
 tasks.withType(JavaExec) {
     jvmArgs += "--enable-preview"
-    //jvmArgs += "--add-modules=jdk.incubator.foreign"
+    jvmArgs += "--add-modules=jdk.incubator.concurrent"
     jvmArgs += "--enable-native-access=java4ever.binding"
     jvmArgs += "-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
 }

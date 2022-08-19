@@ -1,14 +1,12 @@
 package tech.deplant.java4ever.binding.ffi;
 
-import lombok.extern.log4j.Log4j2;
-
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.MemorySession;
+import java.util.concurrent.CompletableFuture;
 
-@Log4j2
 public class EverSdkResponse implements tc_response_handler_t {
 
-    private String result;
+    private CompletableFuture<String> result = new CompletableFuture<>();
 
     /**
      * @param x0 uint32_t request_id
@@ -20,10 +18,10 @@ public class EverSdkResponse implements tc_response_handler_t {
     public void apply(int x0, MemorySegment x1, int x2, boolean x3) {
         try (MemorySession scope = MemorySession.openShared()) {
             if (x2 == 0) {
-                this.result = EverSdkBridge.toString(x1);
+                this.result.complete(EverSdkBridge.toString(x1, scope));
                 //log.trace("REQID:" + x0 + " returned RESULT");
             } else if (x2 == 1) {
-                throw new RuntimeException(EverSdkBridge.toString(x1));
+                throw new RuntimeException(EverSdkBridge.toString(x1, scope));
                 //this.result.complete(tc_string_data_t.toString(x1, scope));
                 //log.warn("REQID:" + x0 + " returned ERROR");
             } else if (x2 == 2) {
@@ -46,7 +44,7 @@ public class EverSdkResponse implements tc_response_handler_t {
         }
     }
 
-    public String result() {
+    public CompletableFuture<String> result() {
         return this.result;
     }
 }

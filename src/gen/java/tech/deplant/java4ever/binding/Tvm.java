@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "tvm" module.
 
  *  
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Tvm {
 
@@ -26,8 +24,9 @@ public class Tvm {
     * @param blockTime time that is used as transaction time
     * @param blockLt block logical time
     * @param transactionLt transaction logical time
+    * @param chksigAlwaysSucceed Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
     */
-    public record ExecutionOptions(String blockchainConfig, Number blockTime, Long blockLt, Long transactionLt) {}
+    public record ExecutionOptions(String blockchainConfig, Number blockTime, Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed) {}
     public interface AccountForExecutor {
 
         public static final None NONE = new None();
@@ -148,8 +147,8 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunExecutor}
     */
-    public static CompletableFuture<ResultOfRunExecutor> runExecutor(@NonNull Context context, @NonNull String message, @NonNull AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
-        return context.future("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
+    public static ResultOfRunExecutor runExecutor(@NonNull Context ctx, @NonNull String message, @NonNull AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
+        return ctx.call("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
     }
 
     /**
@@ -163,8 +162,8 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunTvm}
     */
-    public static CompletableFuture<ResultOfRunTvm> runTvm(@NonNull Context context, @NonNull String message, @NonNull String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
-        return context.future("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
+    public static ResultOfRunTvm runTvm(@NonNull Context ctx, @NonNull String message, @NonNull String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
+        return ctx.call("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
     }
 
     /**
@@ -177,8 +176,8 @@ public class Tvm {
     * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunGet}
     */
-    public static CompletableFuture<ResultOfRunGet> runGet(@NonNull Context context, @NonNull String account, @NonNull String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray)  throws JsonProcessingException {
-        return context.future("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);
+    public static ResultOfRunGet runGet(@NonNull Context ctx, @NonNull String account, @NonNull String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray)  throws JsonProcessingException {
+        return ctx.call("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);
     }
 
 }

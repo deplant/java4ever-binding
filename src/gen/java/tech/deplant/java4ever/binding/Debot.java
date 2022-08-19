@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "debot" module.
 
  *  <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Module for working with debot.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Debot {
 
@@ -247,8 +245,8 @@ public class Debot {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Debot.RegisteredDebot}
     */
-    public static CompletableFuture<RegisteredDebot> init(@NonNull Context context, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
-        return context.futureAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
+    public static RegisteredDebot init(@NonNull Context ctx, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
+        return ctx.callAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
     }
 
     /**
@@ -257,8 +255,8 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static CompletableFuture<Void> start(@NonNull Context context, @NonNull Integer debotHandle)  throws JsonProcessingException {
-        return context.future("debot.start", new ParamsOfStart(debotHandle), Void.class);
+    public static Void start(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+        return ctx.call("debot.start", new ParamsOfStart(debotHandle), Void.class);
     }
 
     /**
@@ -267,8 +265,8 @@ public class Debot {
     * @param address Debot smart contract address. 
     * @return {@link tech.deplant.java4ever.binding.Debot.ResultOfFetch}
     */
-    public static CompletableFuture<ResultOfFetch> fetch(@NonNull Context context, @NonNull String address)  throws JsonProcessingException {
-        return context.future("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
+    public static ResultOfFetch fetch(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
+        return ctx.call("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
     }
 
     /**
@@ -278,8 +276,8 @@ public class Debot {
     * @param action Debot Action that must be executed. 
     * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static CompletableFuture<Void> execute(@NonNull Context context, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
-        return context.future("debot.execute", new ParamsOfExecute(debotHandle, action), Void.class);
+    public static Void execute(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
+        return ctx.call("debot.execute", new ParamsOfExecute(debotHandle, action), Void.class);
     }
 
     /**
@@ -289,8 +287,8 @@ public class Debot {
     * @param message BOC of internal message to debot encoded in base64 format. 
     * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static CompletableFuture<Void> send(@NonNull Context context, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
-        return context.future("debot.send", new ParamsOfSend(debotHandle, message), Void.class);
+    public static Void send(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
+        return ctx.call("debot.send", new ParamsOfSend(debotHandle, message), Void.class);
     }
 
     /**
@@ -299,8 +297,8 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @return {@link tech.deplant.java4ever.binding.Debot.Void}
     */
-    public static CompletableFuture<Void> remove(@NonNull Context context, @NonNull Integer debotHandle)  throws JsonProcessingException {
-        return context.future("debot.remove", new ParamsOfRemove(debotHandle), Void.class);
+    public static Void remove(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+        return ctx.call("debot.remove", new ParamsOfRemove(debotHandle), Void.class);
     }
 
 }

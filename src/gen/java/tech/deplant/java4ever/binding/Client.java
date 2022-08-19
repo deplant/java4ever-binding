@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
 import lombok.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.*;
-import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
@@ -15,7 +13,7 @@ import java.util.Arrays;
  *  Contains methods of "client" module.
 
  *  Provides information about library.
- *  @version EVER-SDK 1.34.2
+ *  @version EVER-SDK 1.37.0
  */
 public class Client {
 
@@ -49,7 +47,7 @@ public class Client {
     * @param queriesProtocol Queries protocol. `HTTP` or `WS`. Default is `HTTP`.
     * @param firstRempStatusTimeout UNSTABLE. First REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 1000 (1 sec).
     * @param nextRempStatusTimeout UNSTABLE. Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 5000 (5 sec).
-    * @param accessKey Access key to GraphQL API. At the moment is not used in production.
+    * @param accessKey Access key to GraphQL API. You can specify here Evercloud project secret ot serialized JWT.
     */
     public record NetworkConfig(@Deprecated String serverAddress, String[] endpoints, @Deprecated Number networkRetriesCount, Number maxReconnectTimeout, @Deprecated Number reconnectTimeout, Number messageRetriesCount, Number messageProcessingTimeout, Number waitForTimeout, Number outOfSyncThreshold, Number sendingEndpointCount, Number latencyDetectionInterval, Number maxLatency, Number queryTimeout, NetworkQueriesProtocol queriesProtocol, Number firstRempStatusTimeout, Number nextRempStatusTimeout, String accessKey) {}
     public enum NetworkQueriesProtocol {
@@ -152,8 +150,8 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
-    public static CompletableFuture<ResultOfGetApiReference> getApiReference(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("client.get_api_reference", null, ResultOfGetApiReference.class);
+    public static ResultOfGetApiReference getApiReference(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
     /**
@@ -161,8 +159,8 @@ public class Client {
     * Returns Core Library version
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
-    public static CompletableFuture<ResultOfVersion> version(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("client.version", null, ResultOfVersion.class);
+    public static ResultOfVersion version(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("client.version", null, ResultOfVersion.class);
     }
 
     /**
@@ -170,8 +168,8 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
-    public static CompletableFuture<ClientConfig> config(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("client.config", null, ClientConfig.class);
+    public static ClientConfig config(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("client.config", null, ClientConfig.class);
     }
 
     /**
@@ -179,8 +177,8 @@ public class Client {
     * Returns detailed information about this build.
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
-    public static CompletableFuture<ResultOfBuildInfo> buildInfo(@NonNull Context context)  throws JsonProcessingException {
-        return context.future("client.build_info", null, ResultOfBuildInfo.class);
+    public static ResultOfBuildInfo buildInfo(@NonNull Context ctx)  throws JsonProcessingException {
+        return ctx.call("client.build_info", null, ResultOfBuildInfo.class);
     }
 
     /**
@@ -190,8 +188,8 @@ public class Client {
     * @param result Result of request processing 
     * @return {@link tech.deplant.java4ever.binding.Client.Void}
     */
-    public static CompletableFuture<Void> resolveAppRequest(@NonNull Context context, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
-        return context.future("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result), Void.class);
+    public static Void resolveAppRequest(@NonNull Context ctx, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
+        return ctx.call("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result), Void.class);
     }
 
 }
