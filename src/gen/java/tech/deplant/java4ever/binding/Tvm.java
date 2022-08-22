@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -59,7 +58,7 @@ public class Tvm {
     * @param boc Account BOC. Encoded as base64.
     * @param unlimitedBalance Flag for running account with the unlimited balance. Can be used to calculate transaction fees without balance check
     */
-    public record Account(@NonNull String boc, Boolean unlimitedBalance) implements AccountForExecutor {
+    public record Account(String boc, Boolean unlimitedBalance) implements AccountForExecutor {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -77,7 +76,7 @@ public class Tvm {
     * @param totalFwdFees Total fees the account pays for message forwarding
     * @param accountFees Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
     */
-    public record TransactionFees(@NonNull Long inMsgFwdFee, @NonNull Long storageFee, @NonNull Long gasFee, @NonNull Long outMsgsFwdFee, @NonNull Long totalAccountFees, @NonNull Long totalOutput, @NonNull Long extInMsgFee, @NonNull Long totalFwdFees, @NonNull Long accountFees) {}
+    public record TransactionFees(Long inMsgFwdFee, Long storageFee, Long gasFee, Long outMsgsFwdFee, Long totalAccountFees, Long totalOutput, Long extInMsgFee, Long totalFwdFees, Long accountFees) {}
 
     /**
     * 
@@ -89,7 +88,7 @@ public class Tvm {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     */
-    public record ParamsOfRunExecutor(@NonNull String message, @NonNull AccountForExecutor account, ExecutionOptions executionOptions, Abi.ABI abi, Boolean skipTransactionCheck, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
+    public record ParamsOfRunExecutor(String message, AccountForExecutor account, ExecutionOptions executionOptions, Abi.ABI abi, Boolean skipTransactionCheck, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
 
     /**
     * 
@@ -99,7 +98,7 @@ public class Tvm {
     * @param account Updated account state BOC. Encoded as `base64`
     * @param fees Transaction fees
     */
-    public record ResultOfRunExecutor(@NonNull Map<String,Object> transaction, @NonNull String[] outMessages, Processing.DecodedOutput decoded, @NonNull String account, @NonNull TransactionFees fees) {}
+    public record ResultOfRunExecutor(Map<String,Object> transaction, String[] outMessages, Processing.DecodedOutput decoded, String account, TransactionFees fees) {}
 
     /**
     * 
@@ -110,7 +109,7 @@ public class Tvm {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     */
-    public record ParamsOfRunTvm(@NonNull String message, @NonNull String account, ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
+    public record ParamsOfRunTvm(String message, String account, ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
 
     /**
     * 
@@ -118,7 +117,7 @@ public class Tvm {
     * @param decoded Optional decoded message bodies according to the optional `abi` parameter.
     * @param account Updated account state BOC. Encoded as `base64`. Attention! Only `account_state.storage.state.data` part of the BOC is updated.
     */
-    public record ResultOfRunTvm(@NonNull String[] outMessages, Processing.DecodedOutput decoded, @NonNull String account) {}
+    public record ResultOfRunTvm(String[] outMessages, Processing.DecodedOutput decoded, String account) {}
 
     /**
     * 
@@ -128,13 +127,13 @@ public class Tvm {
     * @param executionOptions Execution options
     * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
     */
-    public record ParamsOfRunGet(@NonNull String account, @NonNull String functionName, Map<String,Object> input, ExecutionOptions executionOptions, Boolean tupleListAsArray) {}
+    public record ParamsOfRunGet(String account, String functionName, Map<String,Object> input, ExecutionOptions executionOptions, Boolean tupleListAsArray) {}
 
     /**
     * 
     * @param output Values returned by get-method on stack
     */
-    public record ResultOfRunGet(@NonNull Map<String,Object> output) {}
+    public record ResultOfRunGet(Map<String,Object> output) {}
     /**
     * <strong>tvm.run_executor</strong>
     * Emulates all the phases of contract execution locally Performs all the phases of contract execution on Transaction Executor -the same component that is used on Validator Nodes.<p>Can be used for contract debugging, to find out the reason why a message was not delivered successfully.Validators throw away the failed external inbound messages (if they failed bedore `ACCEPT`) in the real network.This is why these messages are impossible to debug in the real network.With the help of run_executor you can do that. In fact, `process_message` functionperforms local check with `run_executor` if there was no transaction as a result of processingand returns the error, if there is one.<p>Another use case to use `run_executor` is to estimate fees for message execution.Set  `AccountForExecutor::Account.unlimited_balance`to `true` so that emulation will not depend on the actual balance.This may be needed to calculate deploy fees for an account that does not exist yet.JSON with fees is in `fees` field of the result.<p>One more use case - you can produce the sequence of operations,thus emulating the sequential contract calls locally.And so on.<p>Transaction executor requires account BOC (bag of cells) as a parameter.To get the account BOC - use `net.query` method to download it from GraphQL API(field `boc` of `account`) or generate it with `abi.encode_account` method.<p>Also it requires message BOC. To get the message BOC - use `abi.encode_message` or `abi.encode_internal_message`.<p>If you need this emulation to be as precise as possible (for instance - emulate transactionwith particular lt in particular block or use particular blockchain config,downloaded from a particular key block - then specify `execution_options` parameter.<p>If you need to see the aborted transaction as a result, not as an error, set `skip_transaction_check` to `true`.
@@ -147,7 +146,7 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunExecutor}
     */
-    public static ResultOfRunExecutor runExecutor(@NonNull Context ctx, @NonNull String message, @NonNull AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
+    public static ResultOfRunExecutor runExecutor(Context ctx, String message, AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) {
         return  ctx.call("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
     }
 
@@ -162,7 +161,7 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunTvm}
     */
-    public static ResultOfRunTvm runTvm(@NonNull Context ctx, @NonNull String message, @NonNull String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount)  throws JsonProcessingException {
+    public static ResultOfRunTvm runTvm(Context ctx, String message, String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) {
         return  ctx.call("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
     }
 
@@ -176,7 +175,7 @@ public class Tvm {
     * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunGet}
     */
-    public static ResultOfRunGet runGet(@NonNull Context ctx, @NonNull String account, @NonNull String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray)  throws JsonProcessingException {
+    public static ResultOfRunGet runGet(Context ctx, String account, String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray) {
         return  ctx.call("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);
     }
 

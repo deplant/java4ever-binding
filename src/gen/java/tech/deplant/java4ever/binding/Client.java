@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -96,7 +95,7 @@ public class Client {
     * @param name Dependency name. Usually it is a crate name.
     * @param gitCommit Git commit hash of the related repository.
     */
-    public record BuildInfoDependency(@NonNull String name, @NonNull String gitCommit) {}
+    public record BuildInfoDependency(String name, String gitCommit) {}
     public interface AppRequestResult {
 
 
@@ -104,7 +103,7 @@ public class Client {
     * Error occurred during request processing
     * @param text Error description
     */
-    public record Error(@NonNull String text) implements AppRequestResult {
+    public record Error(String text) implements AppRequestResult {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -114,7 +113,7 @@ public class Client {
     * Request processed successfully
     * @param result Request processing result
     */
-    public record Ok(@NonNull Map<String,Object> result) implements AppRequestResult {
+    public record Ok(Map<String,Object> result) implements AppRequestResult {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -124,33 +123,33 @@ public class Client {
     * 
     * @param api 
     */
-    public record ResultOfGetApiReference(@NonNull Map<String,Object> api) {}
+    public record ResultOfGetApiReference(Map<String,Object> api) {}
 
     /**
     * 
     * @param version Core Library version
     */
-    public record ResultOfVersion(@NonNull String version) {}
+    public record ResultOfVersion(String version) {}
 
     /**
     * 
     * @param buildNumber Build number assigned to this build by the CI.
     * @param dependencies Fingerprint of the most important dependencies.
     */
-    public record ResultOfBuildInfo(@NonNull Number buildNumber, @NonNull BuildInfoDependency[] dependencies) {}
+    public record ResultOfBuildInfo(Number buildNumber, BuildInfoDependency[] dependencies) {}
 
     /**
     * 
     * @param appRequestId Request ID received from SDK
     * @param result Result of request processing
     */
-    public record ParamsOfResolveAppRequest(@NonNull Number appRequestId, @NonNull AppRequestResult result) {}
+    public record ParamsOfResolveAppRequest(Number appRequestId, AppRequestResult result) {}
     /**
     * <strong>client.get_api_reference</strong>
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
-    public static ResultOfGetApiReference getApiReference(@NonNull Context ctx)  throws JsonProcessingException {
+    public static ResultOfGetApiReference getApiReference(Context ctx) {
         return  ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
@@ -159,7 +158,7 @@ public class Client {
     * Returns Core Library version
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
-    public static ResultOfVersion version(@NonNull Context ctx)  throws JsonProcessingException {
+    public static ResultOfVersion version(Context ctx) {
         return  ctx.call("client.version", null, ResultOfVersion.class);
     }
 
@@ -168,7 +167,7 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
-    public static ClientConfig config(@NonNull Context ctx)  throws JsonProcessingException {
+    public static ClientConfig config(Context ctx) {
         return  ctx.call("client.config", null, ClientConfig.class);
     }
 
@@ -177,7 +176,7 @@ public class Client {
     * Returns detailed information about this build.
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
-    public static ResultOfBuildInfo buildInfo(@NonNull Context ctx)  throws JsonProcessingException {
+    public static ResultOfBuildInfo buildInfo(Context ctx) {
         return  ctx.call("client.build_info", null, ResultOfBuildInfo.class);
     }
 
@@ -187,7 +186,7 @@ public class Client {
     * @param appRequestId Request ID received from SDK 
     * @param result Result of request processing 
     */
-    public static void resolveAppRequest(@NonNull Context ctx, @NonNull Number appRequestId, @NonNull AppRequestResult result)  throws JsonProcessingException {
+    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) {
          ctx.callVoid("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result));
     }
 

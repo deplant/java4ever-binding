@@ -1,9 +1,8 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.ffi.EverSdkBridge;
 import tech.deplant.java4ever.binding.json.JsonContext;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
@@ -17,18 +16,17 @@ import java.util.function.Consumer;
 //TODO Making sure that methods check SDK version
 //TODO Move context creation here
 //TODO In ConfigContext remove all constructors except AllArgs
-@Slf4j
-@AllArgsConstructor
 public final class Context {
-    @Getter
-    private int id;
-    @Getter
-    private int requestCount = 0;
 
-    //HashMap<Integer, CompletableFuture<String>> responses = new HashMap<>();
-    //HashMap<Integer, Callback<?>> callbacks = new HashMap<>();
-    //HashMap<Integer, Object> appObjects = new HashMap<>();
-    //private ResourceScope resourceScopeOfConfig = ResourceScope.newSharedScope();
+    private static Logger log = LoggerFactory.getLogger(Context.class);
+
+    private int id;
+    private int requestCount;
+
+    public Context(int id) {
+        this.id = id;
+        this.requestCount = 0;
+    }
 
     public static Context create(LibraryLoader loader, String configJson) throws JsonProcessingException {
         loader.load();
@@ -40,7 +38,7 @@ public final class Context {
         if (createContextResponse.result() == null || createContextResponse.result() < 1) {
             throw new RuntimeException("sdk.create_context failed!");
         }
-        return new Context(createContextResponse.result(), 0);
+        return new Context(createContextResponse.result());
     }
 
     public static Context create(LibraryLoader loader, Client.ClientConfig config) throws JsonProcessingException {
@@ -54,39 +52,54 @@ public final class Context {
         return s;
     }
 
-    public <T, P, A> T callAppObject(String functionName, P params, A appObject, Class<T> clazz) throws JsonProcessingException {
+    public <T, P, A> T callAppObject(String functionName, P params, A appObject, Class<T> clazz) {
         return call(functionName, params, clazz);
     }
 
-    public <T, P, E extends ExternalEvent> T callEvent(String functionName, P params, Consumer<E> consumer, Class<T> clazz) throws JsonProcessingException {
+    public <T, P, E extends ExternalEvent> T callEvent(String functionName, P params, Consumer<E> consumer, Class<T> clazz) {
         return call(functionName, params, clazz);
     }
 
-    public <T, P> T call(String functionName, P params, Class<T> clazz) throws JsonProcessingException {
+    public <T, P> T call(String functionName, P params, Class<T> clazz) {
         this.requestCount++;
-        var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
-        log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
         String s = null;
         try {
-            s = EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
-        } catch (InterruptedException | ExecutionException e) {
+            var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
+            log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
+            try {
+                s = EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
+                log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + s);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            return JsonContext.MAPPER.readValue(s, clazz);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + s);
-        return JsonContext.MAPPER.readValue(s, clazz);
     }
 
-    public <P> void callVoid(String functionName, P params) throws JsonProcessingException {
+    public <P> void callVoid(String functionName, P params) {
         this.requestCount++;
-        var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
-        log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
-        String s = null;
         try {
-            s = EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
-        } catch (InterruptedException | ExecutionException e) {
+            var paramsChecked = (null == params) ? "" : JsonContext.MAPPER.writeValueAsString(params);
+            log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + paramsChecked);
+            try {
+                EverSdkBridge.tcRequest(id(), requestCount(), functionName, paramsChecked).result().get();
+                log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + s);
+    }
+
+    public int id() {
+        return this.id;
+    }
+
+    public int requestCount() {
+        return this.requestCount;
     }
 
     public record ResultOfCreateContext(Integer result, String error) {

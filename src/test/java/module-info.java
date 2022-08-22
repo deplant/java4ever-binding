@@ -1,5 +1,4 @@
 module java4ever.bindtest {
-    requires static lombok;
     requires org.slf4j;
     requires java4ever.binding;
     requires com.fasterxml.jackson.core;

@@ -3,7 +3,6 @@ module java4ever.binding {
     requires java.scripting;
     requires jdk.incubator.concurrent;
     requires org.slf4j;
-    requires static lombok;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jdk8;
     requires com.fasterxml.jackson.datatype.jsr310;

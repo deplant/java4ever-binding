@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -24,7 +23,7 @@ public class Boc {
     * Pin the BOC with `pin` name. Such BOC will not be removed from cache until it is unpinned
     * @param pin 
     */
-    public record Pinned(@NonNull String pin) implements BocCacheType {
+    public record Pinned(String pin) implements BocCacheType {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -46,13 +45,13 @@ public class Boc {
     * 
     * @param boc BOC encoded as base64
     */
-    public record ParamsOfParse(@NonNull String boc) {}
+    public record ParamsOfParse(String boc) {}
 
     /**
     * 
     * @param parsed JSON containing parsed BOC
     */
-    public record ResultOfParse(@NonNull Map<String,Object> parsed) {}
+    public record ResultOfParse(Map<String,Object> parsed) {}
 
     /**
     * 
@@ -60,61 +59,61 @@ public class Boc {
     * @param id Shardstate identificator
     * @param workchainId Workchain shardstate belongs to
     */
-    public record ParamsOfParseShardstate(@NonNull String boc, @NonNull String id, @NonNull Number workchainId) {}
+    public record ParamsOfParseShardstate(String boc, String id, Number workchainId) {}
 
     /**
     * 
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64
     */
-    public record ParamsOfGetBlockchainConfig(@NonNull String blockBoc) {}
+    public record ParamsOfGetBlockchainConfig(String blockBoc) {}
 
     /**
     * 
     * @param configBoc Blockchain config BOC encoded as base64
     */
-    public record ResultOfGetBlockchainConfig(@NonNull String configBoc) {}
+    public record ResultOfGetBlockchainConfig(String configBoc) {}
 
     /**
     * 
     * @param boc BOC encoded as base64 or BOC handle
     */
-    public record ParamsOfGetBocHash(@NonNull String boc) {}
+    public record ParamsOfGetBocHash(String boc) {}
 
     /**
     * 
     * @param hash BOC root hash encoded with hex
     */
-    public record ResultOfGetBocHash(@NonNull String hash) {}
+    public record ResultOfGetBocHash(String hash) {}
 
     /**
     * 
     * @param boc BOC encoded as base64 or BOC handle
     */
-    public record ParamsOfGetBocDepth(@NonNull String boc) {}
+    public record ParamsOfGetBocDepth(String boc) {}
 
     /**
     * 
     * @param depth BOC root cell depth
     */
-    public record ResultOfGetBocDepth(@NonNull Number depth) {}
+    public record ResultOfGetBocDepth(Number depth) {}
 
     /**
     * 
     * @param tvc Contract TVC image or image BOC handle
     */
-    public record ParamsOfGetCodeFromTvc(@NonNull String tvc) {}
+    public record ParamsOfGetCodeFromTvc(String tvc) {}
 
     /**
     * 
     * @param code Contract code encoded as base64
     */
-    public record ResultOfGetCodeFromTvc(@NonNull String code) {}
+    public record ResultOfGetCodeFromTvc(String code) {}
 
     /**
     * 
     * @param bocRef Reference to the cached BOC
     */
-    public record ParamsOfBocCacheGet(@NonNull String bocRef) {}
+    public record ParamsOfBocCacheGet(String bocRef) {}
 
     /**
     * 
@@ -127,20 +126,20 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC reference
     * @param cacheType Cache type
     */
-    public record ParamsOfBocCacheSet(@NonNull String boc, @NonNull BocCacheType cacheType) {}
+    public record ParamsOfBocCacheSet(String boc, BocCacheType cacheType) {}
 
     /**
     * 
     * @param bocRef Reference to the cached BOC
     */
-    public record ResultOfBocCacheSet(@NonNull String bocRef) {}
+    public record ResultOfBocCacheSet(String bocRef) {}
 
     /**
     * 
     * @param pin Pinned name
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
     */
-    public record ParamsOfBocCacheUnpin(@NonNull String pin, String bocRef) {}
+    public record ParamsOfBocCacheUnpin(String pin, String bocRef) {}
     public interface BuilderOp {
 
 
@@ -149,7 +148,7 @@ public class Boc {
     * @param size Bit size of the value.
     * @param value Value: - `Number` containing integer number. e.g. `123`, `-123`. - Decimal string. e.g. `"123"`, `"-123"`.- `0x` prefixed hexadecimal string.  e.g `0x123`, `0X123`, `-0x123`.
     */
-    public record Integer(@NonNull Number size, @NonNull Map<String,Object> value) implements BuilderOp {
+    public record Integer(Number size, Map<String,Object> value) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -159,7 +158,7 @@ public class Boc {
     * Append bit string to cell data.
     * @param value Bit string content using bitstring notation. See `TON VM specification` 1.0. Contains hexadecimal string representation:- Can end with `_` tag.- Can be prefixed with `x` or `X`.- Can be prefixed with `x{` or `X{` and ended with `}`.<p>Contains binary string represented as a sequenceof `0` and `1` prefixed with `n` or `N`.<p>Examples:`1AB`, `x1ab`, `X1AB`, `x{1abc}`, `X{1ABC}``2D9_`, `x2D9_`, `X2D9_`, `x{2D9_}`, `X{2D9_}``n00101101100`, `N00101101100`
     */
-    public record BitString(@NonNull String value) implements BuilderOp {
+    public record BitString(String value) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -169,7 +168,7 @@ public class Boc {
     * Append ref to nested cells.
     * @param builder Nested cell builder.
     */
-    public record Cell(@NonNull BuilderOp[] builder) implements BuilderOp {
+    public record Cell(BuilderOp[] builder) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -179,7 +178,7 @@ public class Boc {
     * Append ref to nested cell.
     * @param boc Nested cell BOC encoded with `base64` or BOC cache key.
     */
-    public record CellBoc(@NonNull String boc) implements BuilderOp {
+    public record CellBoc(String boc) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -189,7 +188,7 @@ public class Boc {
     * Address.
     * @param address Address in a common `workchain:account` or base64 format.
     */
-    public record Address(@NonNull String address) implements BuilderOp {
+    public record Address(String address) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -200,20 +199,20 @@ public class Boc {
     * @param builder Cell builder operations.
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
     */
-    public record ParamsOfEncodeBoc(@NonNull BuilderOp[] builder, BocCacheType bocCache) {}
+    public record ParamsOfEncodeBoc(BuilderOp[] builder, BocCacheType bocCache) {}
 
     /**
     * 
     * @param boc Encoded cell BOC or BOC cache key.
     */
-    public record ResultOfEncodeBoc(@NonNull String boc) {}
+    public record ResultOfEncodeBoc(String boc) {}
 
     /**
     * 
     * @param code Contract code BOC encoded as base64 or code BOC handle
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
     */
-    public record ParamsOfGetCodeSalt(@NonNull String code, BocCacheType bocCache) {}
+    public record ParamsOfGetCodeSalt(String code, BocCacheType bocCache) {}
 
     /**
     * 
@@ -227,20 +226,20 @@ public class Boc {
     * @param salt Code salt to set. BOC encoded as base64 or BOC handle
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
     */
-    public record ParamsOfSetCodeSalt(@NonNull String code, @NonNull String salt, BocCacheType bocCache) {}
+    public record ParamsOfSetCodeSalt(String code, String salt, BocCacheType bocCache) {}
 
     /**
     * 
     * @param code Contract code with salt set. BOC encoded as base64 or BOC handle
     */
-    public record ResultOfSetCodeSalt(@NonNull String code) {}
+    public record ResultOfSetCodeSalt(String code) {}
 
     /**
     * 
     * @param tvc Contract TVC image BOC encoded as base64 or BOC handle
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided.
     */
-    public record ParamsOfDecodeTvc(@NonNull String tvc, BocCacheType bocCache) {}
+    public record ParamsOfDecodeTvc(String tvc, BocCacheType bocCache) {}
 
     /**
     * 
@@ -274,7 +273,7 @@ public class Boc {
     * 
     * @param tvc Contract TVC image BOC encoded as base64 or BOC handle of boc_cache parameter was specified
     */
-    public record ResultOfEncodeTvc(@NonNull String tvc) {}
+    public record ResultOfEncodeTvc(String tvc) {}
 
     /**
     * 
@@ -284,20 +283,20 @@ public class Boc {
     * @param body Bag of cells with the message body encoded as base64.
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     */
-    public record ParamsOfEncodeExternalInMessage(String src, @NonNull String dst, String init, String body, BocCacheType bocCache) {}
+    public record ParamsOfEncodeExternalInMessage(String src, String dst, String init, String body, BocCacheType bocCache) {}
 
     /**
     * 
     * @param message Message BOC encoded with `base64`.
     * @param messageId Message id.
     */
-    public record ResultOfEncodeExternalInMessage(@NonNull String message, @NonNull String messageId) {}
+    public record ResultOfEncodeExternalInMessage(String message, String messageId) {}
 
     /**
     * 
     * @param code Contract code BOC encoded as base64 or code BOC handle
     */
-    public record ParamsOfGetCompilerVersion(@NonNull String code) {}
+    public record ParamsOfGetCompilerVersion(String code) {}
 
     /**
     * 
@@ -310,7 +309,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseMessage(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfParse parseMessage(Context ctx, String boc) {
         return  ctx.call("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -320,7 +319,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseTransaction(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfParse parseTransaction(Context ctx, String boc) {
         return  ctx.call("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -330,7 +329,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseAccount(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfParse parseAccount(Context ctx, String boc) {
         return  ctx.call("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -340,7 +339,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseBlock(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfParse parseBlock(Context ctx, String boc) {
         return  ctx.call("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -352,7 +351,7 @@ public class Boc {
     * @param workchainId Workchain shardstate belongs to 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseShardstate(@NonNull Context ctx, @NonNull String boc, @NonNull String id, @NonNull Number workchainId)  throws JsonProcessingException {
+    public static ResultOfParse parseShardstate(Context ctx, String boc, String id, Number workchainId) {
         return  ctx.call("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
     }
 
@@ -362,7 +361,7 @@ public class Boc {
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBlockchainConfig}
     */
-    public static ResultOfGetBlockchainConfig getBlockchainConfig(@NonNull Context ctx, @NonNull String blockBoc)  throws JsonProcessingException {
+    public static ResultOfGetBlockchainConfig getBlockchainConfig(Context ctx, String blockBoc) {
         return  ctx.call("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
     }
 
@@ -372,7 +371,7 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocHash}
     */
-    public static ResultOfGetBocHash getBocHash(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfGetBocHash getBocHash(Context ctx, String boc) {
         return  ctx.call("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
     }
 
@@ -382,7 +381,7 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocDepth}
     */
-    public static ResultOfGetBocDepth getBocDepth(@NonNull Context ctx, @NonNull String boc)  throws JsonProcessingException {
+    public static ResultOfGetBocDepth getBocDepth(Context ctx, String boc) {
         return  ctx.call("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
     }
 
@@ -392,7 +391,7 @@ public class Boc {
     * @param tvc Contract TVC image or image BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeFromTvc}
     */
-    public static ResultOfGetCodeFromTvc getCodeFromTvc(@NonNull Context ctx, @NonNull String tvc)  throws JsonProcessingException {
+    public static ResultOfGetCodeFromTvc getCodeFromTvc(Context ctx, String tvc) {
         return  ctx.call("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
     }
 
@@ -402,7 +401,7 @@ public class Boc {
     * @param bocRef Reference to the cached BOC 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheGet}
     */
-    public static ResultOfBocCacheGet cacheGet(@NonNull Context ctx, @NonNull String bocRef)  throws JsonProcessingException {
+    public static ResultOfBocCacheGet cacheGet(Context ctx, String bocRef) {
         return  ctx.call("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
     }
 
@@ -413,7 +412,7 @@ public class Boc {
     * @param cacheType Cache type 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheSet}
     */
-    public static ResultOfBocCacheSet cacheSet(@NonNull Context ctx, @NonNull String boc, @NonNull BocCacheType cacheType)  throws JsonProcessingException {
+    public static ResultOfBocCacheSet cacheSet(Context ctx, String boc, BocCacheType cacheType) {
         return  ctx.call("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
     }
 
@@ -423,7 +422,7 @@ public class Boc {
     * @param pin Pinned name 
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
     */
-    public static void cacheUnpin(@NonNull Context ctx, @NonNull String pin,  String bocRef)  throws JsonProcessingException {
+    public static void cacheUnpin(Context ctx, String pin,  String bocRef) {
          ctx.callVoid("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef));
     }
 
@@ -434,7 +433,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeBoc}
     */
-    public static ResultOfEncodeBoc encodeBoc(@NonNull Context ctx, @NonNull BuilderOp[] builder,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfEncodeBoc encodeBoc(Context ctx, BuilderOp[] builder,  BocCacheType bocCache) {
         return  ctx.call("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
     }
 
@@ -445,7 +444,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeSalt}
     */
-    public static ResultOfGetCodeSalt getCodeSalt(@NonNull Context ctx, @NonNull String code,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfGetCodeSalt getCodeSalt(Context ctx, String code,  BocCacheType bocCache) {
         return  ctx.call("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
     }
 
@@ -457,7 +456,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfSetCodeSalt}
     */
-    public static ResultOfSetCodeSalt setCodeSalt(@NonNull Context ctx, @NonNull String code, @NonNull String salt,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfSetCodeSalt setCodeSalt(Context ctx, String code, String salt,  BocCacheType bocCache) {
         return  ctx.call("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
     }
 
@@ -468,7 +467,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfDecodeTvc}
     */
-    public static ResultOfDecodeTvc decodeTvc(@NonNull Context ctx, @NonNull String tvc,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfDecodeTvc decodeTvc(Context ctx, String tvc,  BocCacheType bocCache) {
         return  ctx.call("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
     }
 
@@ -484,7 +483,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeTvc}
     */
-    public static ResultOfEncodeTvc encodeTvc(@NonNull Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfEncodeTvc encodeTvc(Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache) {
         return  ctx.call("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
     }
 
@@ -498,7 +497,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeExternalInMessage}
     */
-    public static ResultOfEncodeExternalInMessage encodeExternalInMessage(@NonNull Context ctx,  String src, @NonNull String dst,  String init,  String body,  BocCacheType bocCache)  throws JsonProcessingException {
+    public static ResultOfEncodeExternalInMessage encodeExternalInMessage(Context ctx,  String src, String dst,  String init,  String body,  BocCacheType bocCache) {
         return  ctx.call("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
     }
 
@@ -508,7 +507,7 @@ public class Boc {
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCompilerVersion}
     */
-    public static ResultOfGetCompilerVersion getCompilerVersion(@NonNull Context ctx, @NonNull String code)  throws JsonProcessingException {
+    public static ResultOfGetCompilerVersion getCompilerVersion(Context ctx, String code) {
         return  ctx.call("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -50,7 +49,7 @@ public class Utils {
     * @param test 
     * @param bounce 
     */
-    public record Base64(@NonNull Boolean url, @NonNull Boolean test, @NonNull Boolean bounce) implements AddressStringFormat {
+    public record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -72,63 +71,63 @@ public class Utils {
     * @param address Account address in any TON format.
     * @param outputFormat Specify the format to convert to.
     */
-    public record ParamsOfConvertAddress(@NonNull String address, @NonNull AddressStringFormat outputFormat) {}
+    public record ParamsOfConvertAddress(String address, AddressStringFormat outputFormat) {}
 
     /**
     * 
     * @param address Address in the specified format
     */
-    public record ResultOfConvertAddress(@NonNull String address) {}
+    public record ResultOfConvertAddress(String address) {}
 
     /**
     * 
     * @param address Account address in any TON format.
     */
-    public record ParamsOfGetAddressType(@NonNull String address) {}
+    public record ParamsOfGetAddressType(String address) {}
 
     /**
     * 
     * @param addressType Account address type.
     */
-    public record ResultOfGetAddressType(@NonNull AccountAddressType addressType) {}
+    public record ResultOfGetAddressType(AccountAddressType addressType) {}
 
     /**
     * 
     * @param account 
     * @param period 
     */
-    public record ParamsOfCalcStorageFee(@NonNull String account, @NonNull Number period) {}
+    public record ParamsOfCalcStorageFee(String account, Number period) {}
 
     /**
     * 
     * @param fee 
     */
-    public record ResultOfCalcStorageFee(@NonNull String fee) {}
+    public record ResultOfCalcStorageFee(String fee) {}
 
     /**
     * 
     * @param uncompressed Uncompressed data. Must be encoded as base64.
     * @param level Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
     */
-    public record ParamsOfCompressZstd(@NonNull String uncompressed, Number level) {}
+    public record ParamsOfCompressZstd(String uncompressed, Number level) {}
 
     /**
     * 
     * @param compressed Compressed data. Must be encoded as base64.
     */
-    public record ResultOfCompressZstd(@NonNull String compressed) {}
+    public record ResultOfCompressZstd(String compressed) {}
 
     /**
     * 
     * @param compressed Compressed data. Must be encoded as base64.
     */
-    public record ParamsOfDecompressZstd(@NonNull String compressed) {}
+    public record ParamsOfDecompressZstd(String compressed) {}
 
     /**
     * 
     * @param decompressed Decompressed data. Must be encoded as base64.
     */
-    public record ResultOfDecompressZstd(@NonNull String decompressed) {}
+    public record ResultOfDecompressZstd(String decompressed) {}
     /**
     * <strong>utils.convert_address</strong>
     * Converts address from any TON format to any TON format
@@ -136,7 +135,7 @@ public class Utils {
     * @param outputFormat Specify the format to convert to. 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfConvertAddress}
     */
-    public static ResultOfConvertAddress convertAddress(@NonNull Context ctx, @NonNull String address, @NonNull AddressStringFormat outputFormat)  throws JsonProcessingException {
+    public static ResultOfConvertAddress convertAddress(Context ctx, String address, AddressStringFormat outputFormat) {
         return  ctx.call("utils.convert_address", new ParamsOfConvertAddress(address, outputFormat), ResultOfConvertAddress.class);
     }
 
@@ -146,7 +145,7 @@ public class Utils {
     * @param address Account address in any TON format. 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfGetAddressType}
     */
-    public static ResultOfGetAddressType getAddressType(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
+    public static ResultOfGetAddressType getAddressType(Context ctx, String address) {
         return  ctx.call("utils.get_address_type", new ParamsOfGetAddressType(address), ResultOfGetAddressType.class);
     }
 
@@ -157,7 +156,7 @@ public class Utils {
     * @param period  
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCalcStorageFee}
     */
-    public static ResultOfCalcStorageFee calcStorageFee(@NonNull Context ctx, @NonNull String account, @NonNull Number period)  throws JsonProcessingException {
+    public static ResultOfCalcStorageFee calcStorageFee(Context ctx, String account, Number period) {
         return  ctx.call("utils.calc_storage_fee", new ParamsOfCalcStorageFee(account, period), ResultOfCalcStorageFee.class);
     }
 
@@ -168,7 +167,7 @@ public class Utils {
     * @param level Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`). 
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCompressZstd}
     */
-    public static ResultOfCompressZstd compressZstd(@NonNull Context ctx, @NonNull String uncompressed,  Number level)  throws JsonProcessingException {
+    public static ResultOfCompressZstd compressZstd(Context ctx, String uncompressed,  Number level) {
         return  ctx.call("utils.compress_zstd", new ParamsOfCompressZstd(uncompressed, level), ResultOfCompressZstd.class);
     }
 
@@ -178,7 +177,7 @@ public class Utils {
     * @param compressed Compressed data. Must be encoded as base64.
     * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfDecompressZstd}
     */
-    public static ResultOfDecompressZstd decompressZstd(@NonNull Context ctx, @NonNull String compressed)  throws JsonProcessingException {
+    public static ResultOfDecompressZstd decompressZstd(Context ctx, String compressed) {
         return  ctx.call("utils.decompress_zstd", new ParamsOfDecompressZstd(compressed), ResultOfDecompressZstd.class);
     }
 

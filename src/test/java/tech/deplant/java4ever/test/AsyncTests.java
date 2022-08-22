@@ -1,15 +1,16 @@
 package tech.deplant.java4ever.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.Context;
 import tech.deplant.java4ever.binding.loader.JavaLibraryPathLoader;
 
-
-@Slf4j
 public class AsyncTests {
+
+    private static Logger log = LoggerFactory.getLogger(Context.class);
 
     @Test
     public void testGenerics() throws JsonProcessingException {

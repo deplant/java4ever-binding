@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -24,7 +23,7 @@ public class Net {
     * @param path 
     * @param direction 
     */
-    public record OrderBy(@NonNull String path, @NonNull SortDirection direction) {}
+    public record OrderBy(String path, SortDirection direction) {}
     public enum SortDirection {
         
         
@@ -44,7 +43,7 @@ public class Net {
     * @param order Sorting order
     * @param limit Number of documents to return
     */
-    public record QueryCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, OrderBy[] order, Number limit) implements ParamsOfQueryOperation {
+    public record QueryCollection(String collection, Map<String,Object> filter, String result, OrderBy[] order, Number limit) implements ParamsOfQueryOperation {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -57,7 +56,7 @@ public class Net {
     * @param result Projection (result) string
     * @param timeout Query timeout
     */
-    public record WaitForCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, Number timeout) implements ParamsOfQueryOperation {
+    public record WaitForCollection(String collection, Map<String,Object> filter, String result, Number timeout) implements ParamsOfQueryOperation {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -69,7 +68,7 @@ public class Net {
     * @param filter Collection filter
     * @param fields Projection (result) string
     */
-    public record AggregateCollection(@NonNull String collection, Map<String,Object> filter, FieldAggregation[] fields) implements ParamsOfQueryOperation {
+    public record AggregateCollection(String collection, Map<String,Object> filter, FieldAggregation[] fields) implements ParamsOfQueryOperation {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -82,7 +81,7 @@ public class Net {
     * @param first Number of counterparties to return
     * @param after `cursor` field of the last received result
     */
-    public record QueryCounterparties(@NonNull String account, @NonNull String result, Number first, String after) implements ParamsOfQueryOperation {
+    public record QueryCounterparties(String account, String result, Number first, String after) implements ParamsOfQueryOperation {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -93,7 +92,7 @@ public class Net {
     * @param field Dot separated path to the field
     * @param fn Aggregation function that must be applied to field values
     */
-    public record FieldAggregation(@NonNull String field, @NonNull AggregationFn fn) {}
+    public record FieldAggregation(String field, AggregationFn fn) {}
     public enum AggregationFn {
         
         /**
@@ -132,7 +131,7 @@ public class Net {
     * @param aborted Aborted flag.
     * @param exitCode Compute phase exit code.
     */
-    public record TransactionNode(@NonNull String id, @NonNull String inMsg, @NonNull String[] outMsgs, @NonNull String accountAddr, @NonNull String totalFees, @NonNull Boolean aborted, Number exitCode) {}
+    public record TransactionNode(String id, String inMsg, String[] outMsgs, String accountAddr, String totalFees, Boolean aborted, Number exitCode) {}
 
     /**
     * 
@@ -145,32 +144,32 @@ public class Net {
     * @param bounce Bounce flag.
     * @param decodedBody Decoded body. Library tries to decode message body using provided `params.abi_registry`.This field will be missing if none of the provided abi can be used to decode.
     */
-    public record MessageNode(@NonNull String id, String srcTransactionId, String dstTransactionId, String src, String dst, String value, @NonNull Boolean bounce, Abi.DecodedMessageBody decodedBody) {}
+    public record MessageNode(String id, String srcTransactionId, String dstTransactionId, String src, String dst, String value, Boolean bounce, Abi.DecodedMessageBody decodedBody) {}
 
     /**
     * 
     * @param query GraphQL query text.
     * @param variables Variables used in query. Must be a map with named values that can be used in query.
     */
-    public record ParamsOfQuery(@NonNull String query, Map<String,Object> variables) {}
+    public record ParamsOfQuery(String query, Map<String,Object> variables) {}
 
     /**
     * 
     * @param result Result provided by DAppServer.
     */
-    public record ResultOfQuery(@NonNull Map<String,Object> result) {}
+    public record ResultOfQuery(Map<String,Object> result) {}
 
     /**
     * 
     * @param operations List of query operations that must be performed per single fetch.
     */
-    public record ParamsOfBatchQuery(@NonNull ParamsOfQueryOperation[] operations) {}
+    public record ParamsOfBatchQuery(ParamsOfQueryOperation[] operations) {}
 
     /**
     * 
     * @param results Result values for batched queries. Returns an array of values. Each value corresponds to `queries` item.
     */
-    public record ResultOfBatchQuery(@NonNull Map<String,Object>[] results) {}
+    public record ResultOfBatchQuery(Map<String,Object>[] results) {}
 
     /**
     * 
@@ -180,13 +179,13 @@ public class Net {
     * @param order Sorting order
     * @param limit Number of documents to return
     */
-    public record ParamsOfQueryCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, OrderBy[] order, Number limit) {}
+    public record ParamsOfQueryCollection(String collection, Map<String,Object> filter, String result, OrderBy[] order, Number limit) {}
 
     /**
     * 
     * @param result Objects that match the provided criteria
     */
-    public record ResultOfQueryCollection(@NonNull Map<String,Object>[] result) {}
+    public record ResultOfQueryCollection(Map<String,Object>[] result) {}
 
     /**
     * 
@@ -194,13 +193,13 @@ public class Net {
     * @param filter Collection filter
     * @param fields Projection (result) string
     */
-    public record ParamsOfAggregateCollection(@NonNull String collection, Map<String,Object> filter, FieldAggregation[] fields) {}
+    public record ParamsOfAggregateCollection(String collection, Map<String,Object> filter, FieldAggregation[] fields) {}
 
     /**
     * 
     * @param values Values for requested fields. Returns an array of strings. Each string refers to the corresponding `fields` item.Numeric value is returned as a decimal string representations.
     */
-    public record ResultOfAggregateCollection(@NonNull Map<String,Object> values) {}
+    public record ResultOfAggregateCollection(Map<String,Object> values) {}
 
     /**
     * 
@@ -209,19 +208,19 @@ public class Net {
     * @param result Projection (result) string
     * @param timeout Query timeout
     */
-    public record ParamsOfWaitForCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result, Number timeout) {}
+    public record ParamsOfWaitForCollection(String collection, Map<String,Object> filter, String result, Number timeout) {}
 
     /**
     * 
     * @param result First found object that matches the provided criteria
     */
-    public record ResultOfWaitForCollection(@NonNull Map<String,Object> result) {}
+    public record ResultOfWaitForCollection(Map<String,Object> result) {}
 
     /**
     * 
     * @param handle Subscription handle. Must be closed with `unsubscribe`
     */
-    public record ResultOfSubscribeCollection(@NonNull Number handle) {}
+    public record ResultOfSubscribeCollection(Number handle) {}
 
     /**
     * 
@@ -229,39 +228,39 @@ public class Net {
     * @param filter Collection filter
     * @param result Projection (result) string
     */
-    public record ParamsOfSubscribeCollection(@NonNull String collection, Map<String,Object> filter, @NonNull String result) {}
+    public record ParamsOfSubscribeCollection(String collection, Map<String,Object> filter, String result) {}
 
     /**
     * 
     * @param subscription GraphQL subscription text.
     * @param variables Variables used in subscription. Must be a map with named values that can be used in query.
     */
-    public record ParamsOfSubscribe(@NonNull String subscription, Map<String,Object> variables) {}
+    public record ParamsOfSubscribe(String subscription, Map<String,Object> variables) {}
 
     /**
     * 
     * @param address Account address
     */
-    public record ParamsOfFindLastShardBlock(@NonNull String address) {}
+    public record ParamsOfFindLastShardBlock(String address) {}
 
     /**
     * 
     * @param blockId Account shard last block ID
     */
-    public record ResultOfFindLastShardBlock(@NonNull String blockId) {}
+    public record ResultOfFindLastShardBlock(String blockId) {}
 
     /**
     * 
     * @param endpoints List of endpoints provided by server
     */
-    public record EndpointsSet(@NonNull String[] endpoints) {}
+    public record EndpointsSet(String[] endpoints) {}
 
     /**
     * 
     * @param query Current query endpoint
     * @param endpoints List of all endpoints used by client
     */
-    public record ResultOfGetEndpoints(@NonNull String query, @NonNull String[] endpoints) {}
+    public record ResultOfGetEndpoints(String query, String[] endpoints) {}
 
     /**
     * 
@@ -270,7 +269,7 @@ public class Net {
     * @param first Number of counterparties to return
     * @param after `cursor` field of the last received result
     */
-    public record ParamsOfQueryCounterparties(@NonNull String account, @NonNull String result, Number first, String after) {}
+    public record ParamsOfQueryCounterparties(String account, String result, Number first, String after) {}
 
     /**
     * 
@@ -278,14 +277,14 @@ public class Net {
     * @param abiRegistry List of contract ABIs that will be used to decode message bodies. Library will try to decode each returned message body using any ABI from the registry.
     * @param timeout Timeout used to limit waiting time for the missing messages and transaction. If some of the following messages and transactions are missing yetThe maximum waiting time is regulated by this option.<p>Default value is 60000 (1 min).
     */
-    public record ParamsOfQueryTransactionTree(@NonNull String inMsg, Abi.ABI[] abiRegistry, Number timeout) {}
+    public record ParamsOfQueryTransactionTree(String inMsg, Abi.ABI[] abiRegistry, Number timeout) {}
 
     /**
     * 
     * @param messages Messages.
     * @param transactions Transactions.
     */
-    public record ResultOfQueryTransactionTree(@NonNull MessageNode[] messages, @NonNull TransactionNode[] transactions) {}
+    public record ResultOfQueryTransactionTree(MessageNode[] messages, TransactionNode[] transactions) {}
 
     /**
     * 
@@ -300,13 +299,13 @@ public class Net {
     * 
     * @param handle Iterator handle. Must be removed using `remove_iterator`when it is no more needed for the application.
     */
-    public record RegisteredIterator(@NonNull Number handle) {}
+    public record RegisteredIterator(Number handle) {}
 
     /**
     * 
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
     */
-    public record ParamsOfResumeBlockIterator(@NonNull Map<String,Object> resumeState) {}
+    public record ParamsOfResumeBlockIterator(Map<String,Object> resumeState) {}
 
     /**
     * 
@@ -324,7 +323,7 @@ public class Net {
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
     * @param accountsFilter Account address filter. Application can specify the list of accounts for whichit wants to iterate transactions.<p>If this parameter is missing or an empty list then the library iteratestransactions for all accounts that passes the shard filter.<p>Note that the library doesn't detect conflicts between the account filter and the shard filterif both are specified.So it is the application's responsibility to specify the correct filter combination.
     */
-    public record ParamsOfResumeTransactionIterator(@NonNull Map<String,Object> resumeState, String[] accountsFilter) {}
+    public record ParamsOfResumeTransactionIterator(Map<String,Object> resumeState, String[] accountsFilter) {}
 
     /**
     * 
@@ -332,7 +331,7 @@ public class Net {
     * @param limit Maximum count of the returned items. If value is missing or is less than 1 the library uses 1.
     * @param returnResumeState Indicates that function must return the iterator state that can be used for resuming iteration.
     */
-    public record ParamsOfIteratorNext(@NonNull Number iterator, Number limit, Boolean returnResumeState) {}
+    public record ParamsOfIteratorNext(Number iterator, Number limit, Boolean returnResumeState) {}
 
     /**
     * 
@@ -340,7 +339,7 @@ public class Net {
     * @param hasMore Indicates that there are more available items in iterated range.
     * @param resumeState Optional iterator state that can be used for resuming iteration. This field is returned only if the `return_resume_state` parameteris specified.<p>Note that `resume_state` corresponds to the iteration positionafter the returned items.
     */
-    public record ResultOfIteratorNext(@NonNull Map<String,Object>[] items, @NonNull Boolean hasMore, Map<String,Object> resumeState) {}
+    public record ResultOfIteratorNext(Map<String,Object>[] items, Boolean hasMore, Map<String,Object> resumeState) {}
     /**
     * <strong>net.query</strong>
     * Performs DAppServer GraphQL query.
@@ -348,7 +347,7 @@ public class Net {
     * @param variables Variables used in query. Must be a map with named values that can be used in query.
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQuery}
     */
-    public static ResultOfQuery query(@NonNull Context ctx, @NonNull String query,  Map<String,Object> variables)  throws JsonProcessingException {
+    public static ResultOfQuery query(Context ctx, String query,  Map<String,Object> variables) {
         return  ctx.call("net.query", new ParamsOfQuery(query, variables), ResultOfQuery.class);
     }
 
@@ -358,7 +357,7 @@ public class Net {
     * @param operations List of query operations that must be performed per single fetch. 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfBatchQuery}
     */
-    public static ResultOfBatchQuery batchQuery(@NonNull Context ctx, @NonNull ParamsOfQueryOperation[] operations)  throws JsonProcessingException {
+    public static ResultOfBatchQuery batchQuery(Context ctx, ParamsOfQueryOperation[] operations) {
         return  ctx.call("net.batch_query", new ParamsOfBatchQuery(operations), ResultOfBatchQuery.class);
     }
 
@@ -372,7 +371,7 @@ public class Net {
     * @param limit Number of documents to return 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
-    public static ResultOfQueryCollection queryCollection(@NonNull Context ctx, @NonNull String collection,  Map<String,Object> filter, @NonNull String result,  OrderBy[] order,  Number limit)  throws JsonProcessingException {
+    public static ResultOfQueryCollection queryCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  OrderBy[] order,  Number limit) {
         return  ctx.call("net.query_collection", new ParamsOfQueryCollection(collection, filter, result, order, limit), ResultOfQueryCollection.class);
     }
 
@@ -384,7 +383,7 @@ public class Net {
     * @param fields Projection (result) string 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfAggregateCollection}
     */
-    public static ResultOfAggregateCollection aggregateCollection(@NonNull Context ctx, @NonNull String collection,  Map<String,Object> filter,  FieldAggregation[] fields)  throws JsonProcessingException {
+    public static ResultOfAggregateCollection aggregateCollection(Context ctx, String collection,  Map<String,Object> filter,  FieldAggregation[] fields) {
         return  ctx.call("net.aggregate_collection", new ParamsOfAggregateCollection(collection, filter, fields), ResultOfAggregateCollection.class);
     }
 
@@ -397,7 +396,7 @@ public class Net {
     * @param timeout Query timeout 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfWaitForCollection}
     */
-    public static ResultOfWaitForCollection waitForCollection(@NonNull Context ctx, @NonNull String collection,  Map<String,Object> filter, @NonNull String result,  Number timeout)  throws JsonProcessingException {
+    public static ResultOfWaitForCollection waitForCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  Number timeout) {
         return  ctx.call("net.wait_for_collection", new ParamsOfWaitForCollection(collection, filter, result, timeout), ResultOfWaitForCollection.class);
     }
 
@@ -406,7 +405,7 @@ public class Net {
     * Cancels a subscription Cancels a subscription specified by its handle.
     * @param handle Subscription handle. Must be closed with `unsubscribe`
     */
-    public static void unsubscribe(@NonNull Context ctx, @NonNull Number handle)  throws JsonProcessingException {
+    public static void unsubscribe(Context ctx, Number handle) {
          ctx.callVoid("net.unsubscribe", new ResultOfSubscribeCollection(handle));
     }
 
@@ -418,7 +417,7 @@ public class Net {
     * @param result Projection (result) string 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
-    public static ResultOfSubscribeCollection subscribeCollection(@NonNull Context ctx, @NonNull String collection,  Map<String,Object> filter, @NonNull String result, Consumer<SubscribeCollectionEvent> consumer)  throws JsonProcessingException {
+    public static ResultOfSubscribeCollection subscribeCollection(Context ctx, String collection,  Map<String,Object> filter, String result, Consumer<SubscribeCollectionEvent> consumer) {
         return  ctx.callEvent("net.subscribe_collection", new ParamsOfSubscribeCollection(collection, filter, result), consumer, ResultOfSubscribeCollection.class);
     }
 
@@ -429,7 +428,7 @@ public class Net {
     * @param variables Variables used in subscription. Must be a map with named values that can be used in query.
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
-    public static ResultOfSubscribeCollection subscribe(@NonNull Context ctx, @NonNull String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer)  throws JsonProcessingException {
+    public static ResultOfSubscribeCollection subscribe(Context ctx, String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer) {
         return  ctx.callEvent("net.subscribe", new ParamsOfSubscribe(subscription, variables), consumer, ResultOfSubscribeCollection.class);
     }
 
@@ -437,7 +436,7 @@ public class Net {
     * <strong>net.suspend</strong>
     * Suspends network module to stop any network activity
     */
-    public static void suspend(@NonNull Context ctx)  throws JsonProcessingException {
+    public static void suspend(Context ctx) {
          ctx.callVoid("net.suspend", null);
     }
 
@@ -445,7 +444,7 @@ public class Net {
     * <strong>net.resume</strong>
     * Resumes network module to enable network activity
     */
-    public static void resume(@NonNull Context ctx)  throws JsonProcessingException {
+    public static void resume(Context ctx) {
          ctx.callVoid("net.resume", null);
     }
 
@@ -455,7 +454,7 @@ public class Net {
     * @param address Account address 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfFindLastShardBlock}
     */
-    public static ResultOfFindLastShardBlock findLastShardBlock(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
+    public static ResultOfFindLastShardBlock findLastShardBlock(Context ctx, String address) {
         return  ctx.call("net.find_last_shard_block", new ParamsOfFindLastShardBlock(address), ResultOfFindLastShardBlock.class);
     }
 
@@ -464,7 +463,7 @@ public class Net {
     * Requests the list of alternative endpoints from server
     * @return {@link tech.deplant.java4ever.binding.Net.EndpointsSet}
     */
-    public static EndpointsSet fetchEndpoints(@NonNull Context ctx)  throws JsonProcessingException {
+    public static EndpointsSet fetchEndpoints(Context ctx) {
         return  ctx.call("net.fetch_endpoints", null, EndpointsSet.class);
     }
 
@@ -473,7 +472,7 @@ public class Net {
     * Sets the list of endpoints to use on reinit
     * @param endpoints List of endpoints provided by server 
     */
-    public static void setEndpoints(@NonNull Context ctx, @NonNull String[] endpoints)  throws JsonProcessingException {
+    public static void setEndpoints(Context ctx, String[] endpoints) {
          ctx.callVoid("net.set_endpoints", new EndpointsSet(endpoints));
     }
 
@@ -482,7 +481,7 @@ public class Net {
     * Requests the list of alternative endpoints from server
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfGetEndpoints}
     */
-    public static ResultOfGetEndpoints getEndpoints(@NonNull Context ctx)  throws JsonProcessingException {
+    public static ResultOfGetEndpoints getEndpoints(Context ctx) {
         return  ctx.call("net.get_endpoints", null, ResultOfGetEndpoints.class);
     }
 
@@ -495,7 +494,7 @@ public class Net {
     * @param after `cursor` field of the last received result 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
-    public static ResultOfQueryCollection queryCounterparties(@NonNull Context ctx, @NonNull String account, @NonNull String result,  Number first,  String after)  throws JsonProcessingException {
+    public static ResultOfQueryCollection queryCounterparties(Context ctx, String account, String result,  Number first,  String after) {
         return  ctx.call("net.query_counterparties", new ParamsOfQueryCounterparties(account, result, first, after), ResultOfQueryCollection.class);
     }
 
@@ -507,7 +506,7 @@ public class Net {
     * @param timeout Timeout used to limit waiting time for the missing messages and transaction. If some of the following messages and transactions are missing yetThe maximum waiting time is regulated by this option.<p>Default value is 60000 (1 min).
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryTransactionTree}
     */
-    public static ResultOfQueryTransactionTree queryTransactionTree(@NonNull Context ctx, @NonNull String inMsg,  Abi.ABI[] abiRegistry,  Number timeout)  throws JsonProcessingException {
+    public static ResultOfQueryTransactionTree queryTransactionTree(Context ctx, String inMsg,  Abi.ABI[] abiRegistry,  Number timeout) {
         return  ctx.call("net.query_transaction_tree", new ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout), ResultOfQueryTransactionTree.class);
     }
 
@@ -520,7 +519,7 @@ public class Net {
     * @param result Projection (result) string. List of the fields that must be returned for iterated items.This field is the same as the `result` parameter ofthe `query_collection` function.Note that iterated items can contains additional fields that arenot requested in the `result`.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator createBlockIterator(@NonNull Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String result)  throws JsonProcessingException {
+    public static RegisteredIterator createBlockIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String result) {
         return  ctx.call("net.create_block_iterator", new ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), RegisteredIterator.class);
     }
 
@@ -530,7 +529,7 @@ public class Net {
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator resumeBlockIterator(@NonNull Context ctx, @NonNull Map<String,Object> resumeState)  throws JsonProcessingException {
+    public static RegisteredIterator resumeBlockIterator(Context ctx, Map<String,Object> resumeState) {
         return  ctx.call("net.resume_block_iterator", new ParamsOfResumeBlockIterator(resumeState), RegisteredIterator.class);
     }
 
@@ -545,7 +544,7 @@ public class Net {
     * @param includeTransfers Include `transfers` field in iterated transactions. If this parameter is `true` then each transaction contains field`transfers` with list of transfer. See more about this structure in function description.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator createTransactionIterator(@NonNull Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String[] accountsFilter,  String result,  Boolean includeTransfers)  throws JsonProcessingException {
+    public static RegisteredIterator createTransactionIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String[] accountsFilter,  String result,  Boolean includeTransfers) {
         return  ctx.call("net.create_transaction_iterator", new ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), RegisteredIterator.class);
     }
 
@@ -556,7 +555,7 @@ public class Net {
     * @param accountsFilter Account address filter. Application can specify the list of accounts for whichit wants to iterate transactions.<p>If this parameter is missing or an empty list then the library iteratestransactions for all accounts that passes the shard filter.<p>Note that the library doesn't detect conflicts between the account filter and the shard filterif both are specified.So it is the application's responsibility to specify the correct filter combination.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator resumeTransactionIterator(@NonNull Context ctx, @NonNull Map<String,Object> resumeState,  String[] accountsFilter)  throws JsonProcessingException {
+    public static RegisteredIterator resumeTransactionIterator(Context ctx, Map<String,Object> resumeState,  String[] accountsFilter) {
         return  ctx.call("net.resume_transaction_iterator", new ParamsOfResumeTransactionIterator(resumeState, accountsFilter), RegisteredIterator.class);
     }
 
@@ -568,7 +567,7 @@ public class Net {
     * @param returnResumeState Indicates that function must return the iterator state that can be used for resuming iteration. 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfIteratorNext}
     */
-    public static ResultOfIteratorNext iteratorNext(@NonNull Context ctx, @NonNull Number iterator,  Number limit,  Boolean returnResumeState)  throws JsonProcessingException {
+    public static ResultOfIteratorNext iteratorNext(Context ctx, Number iterator,  Number limit,  Boolean returnResumeState) {
         return  ctx.call("net.iterator_next", new ParamsOfIteratorNext(iterator, limit, returnResumeState), ResultOfIteratorNext.class);
     }
 
@@ -577,7 +576,7 @@ public class Net {
     * Removes an iterator Frees all resources allocated in library to serve iterator.<p>Application always should call the `remove_iterator` when iteratoris no longer required.
     * @param handle Iterator handle. Must be removed using `remove_iterator`when it is no more needed for the application.
     */
-    public static void removeIterator(@NonNull Context ctx, @NonNull Number handle)  throws JsonProcessingException {
+    public static void removeIterator(Context ctx, Number handle) {
          ctx.callVoid("net.remove_iterator", new RegisteredIterator(handle));
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -27,7 +26,7 @@ public class Debot {
     * @param attributes Action attributes. In the form of "param=value,flag". attribute example: instant, args, fargs, sign.
     * @param misc Some internal action data. Used by debot only.
     */
-    public record DebotAction(@NonNull String description, @NonNull String name, @NonNull Number actionType, @NonNull Number to, @NonNull String attributes, @NonNull String misc) {}
+    public record DebotAction(String description, String name, Number actionType, Number to, String attributes, String misc) {}
 
     /**
     * 
@@ -44,13 +43,13 @@ public class Debot {
     * @param interfaces Vector with IDs of DInterfaces used by DeBot.
     * @param dabiVersion ABI version ("x.y") supported by DeBot
     */
-    public record DebotInfo(String name, String version, String publisher, String caption, String author, String support, String hello, String language, String dabi, String icon, @NonNull String[] interfaces, @NonNull String dabiVersion) {}
+    public record DebotInfo(String name, String version, String publisher, String caption, String author, String support, String hello, String language, String dabi, String icon, String[] interfaces, String dabiVersion) {}
 
     /**
     * 
     * @param address Debot smart contract address
     */
-    public record ParamsOfInit(@NonNull String address) {}
+    public record ParamsOfInit(String address) {}
 
     /**
     * 
@@ -58,7 +57,7 @@ public class Debot {
     * @param debotAbi Debot abi as json string.
     * @param info Debot metadata.
     */
-    public record RegisteredDebot(@NonNull Integer debotHandle, @NonNull String debotAbi, @NonNull DebotInfo info) {}
+    public record RegisteredDebot(Integer debotHandle, String debotAbi, DebotInfo info) {}
     public interface ParamsOfAppDebotBrowser {
 
 
@@ -66,7 +65,7 @@ public class Debot {
     * Print message to user.
     * @param msg A string that must be printed to user.
     */
-    public record Log(@NonNull String msg) implements ParamsOfAppDebotBrowser {
+    public record Log(String msg) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -76,7 +75,7 @@ public class Debot {
     * Switch debot to another context (menu).
     * @param contextId Debot context ID to which debot is switched.
     */
-    public record Switch(@NonNull Number contextId) implements ParamsOfAppDebotBrowser {
+    public record Switch(Number contextId) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -98,7 +97,7 @@ public class Debot {
     * Show action to the user. Called after `switch` for each action in context.
     * @param action Debot action that must be shown to user as menu item. At least `description` property must be shown from <a target="_blank" href="DebotAction">DebotAction</a> structure.
     */
-    public record ShowAction(@NonNull DebotAction action) implements ParamsOfAppDebotBrowser {
+    public record ShowAction(DebotAction action) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -108,7 +107,7 @@ public class Debot {
     * Request user input.
     * @param prompt A prompt string that must be printed to user before input request.
     */
-    public record Input(@NonNull String prompt) implements ParamsOfAppDebotBrowser {
+    public record Input(String prompt) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -131,7 +130,7 @@ public class Debot {
     * @param debotAddr Address of debot in blockchain.
     * @param action Debot action to execute.
     */
-    public record InvokeDebot(@NonNull String debotAddr, @NonNull DebotAction action) implements ParamsOfAppDebotBrowser {
+    public record InvokeDebot(String debotAddr, DebotAction action) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -141,7 +140,7 @@ public class Debot {
     * Used by Debot to call DInterface implemented by Debot Browser.
     * @param message Internal message to DInterface address. Message body contains interface function and parameters.
     */
-    public record Send(@NonNull String message) implements ParamsOfAppDebotBrowser {
+    public record Send(String message) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -151,7 +150,7 @@ public class Debot {
     * Requests permission from DeBot Browser to execute DeBot operation.
     * @param activity DeBot activity details.
     */
-    public record Approve(@NonNull Map<String,Object> activity) implements ParamsOfAppDebotBrowser {
+    public record Approve(Map<String,Object> activity) implements ParamsOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -163,7 +162,7 @@ public class Debot {
     * Result of user input.
     * @param value String entered by user.
     */
-    public record Input(@NonNull String value) implements ResultOfAppDebotBrowser {
+    public record Input(String value) implements ResultOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -173,7 +172,7 @@ public class Debot {
     * Result of getting signing box.
     * @param signingBox Signing box for signing data requested by debot engine. Signing box is owned and disposed by debot engine
     */
-    public record GetSigningBox(@NonNull Integer signingBox) implements ResultOfAppDebotBrowser {
+    public record GetSigningBox(Integer signingBox) implements ResultOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -195,7 +194,7 @@ public class Debot {
     * Result of `approve` callback.
     * @param approved Indicates whether the DeBot is allowed to perform the specified operation.
     */
-    public record Approve(@NonNull Boolean approved) implements ResultOfAppDebotBrowser {
+    public record Approve(Boolean approved) implements ResultOfAppDebotBrowser {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -205,39 +204,39 @@ public class Debot {
     * 
     * @param debotHandle Debot handle which references an instance of debot engine.
     */
-    public record ParamsOfStart(@NonNull Integer debotHandle) {}
+    public record ParamsOfStart(Integer debotHandle) {}
 
     /**
     * 
     * @param address Debot smart contract address.
     */
-    public record ParamsOfFetch(@NonNull String address) {}
+    public record ParamsOfFetch(String address) {}
 
     /**
     * 
     * @param info Debot metadata.
     */
-    public record ResultOfFetch(@NonNull DebotInfo info) {}
+    public record ResultOfFetch(DebotInfo info) {}
 
     /**
     * 
     * @param debotHandle Debot handle which references an instance of debot engine.
     * @param action Debot Action that must be executed.
     */
-    public record ParamsOfExecute(@NonNull Integer debotHandle, @NonNull DebotAction action) {}
+    public record ParamsOfExecute(Integer debotHandle, DebotAction action) {}
 
     /**
     * 
     * @param debotHandle Debot handle which references an instance of debot engine.
     * @param message BOC of internal message to debot encoded in base64 format.
     */
-    public record ParamsOfSend(@NonNull Integer debotHandle, @NonNull String message) {}
+    public record ParamsOfSend(Integer debotHandle, String message) {}
 
     /**
     * 
     * @param debotHandle Debot handle which references an instance of debot engine.
     */
-    public record ParamsOfRemove(@NonNull Integer debotHandle) {}
+    public record ParamsOfRemove(Integer debotHandle) {}
     /**
     * <strong>debot.init</strong>
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Creates and instance of DeBot. Downloads debot smart contract (code and data) from blockchain and createsan instance of Debot Engine for it.<p># RemarksIt does not switch debot to context 0. Browser Callbacks are not called.
@@ -245,7 +244,7 @@ public class Debot {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Debot.RegisteredDebot}
     */
-    public static RegisteredDebot init(@NonNull Context ctx, @NonNull String address,  AppDebotBrowser appObject)  throws JsonProcessingException {
+    public static RegisteredDebot init(Context ctx, String address,  AppDebotBrowser appObject) {
         return  ctx.callAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
     }
 
@@ -254,7 +253,7 @@ public class Debot {
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Starts the DeBot. Downloads debot smart contract from blockchain and switches it tocontext zero.<p>This function must be used by Debot Browser to start a dialog with debot.While the function is executing, several Browser Callbacks can be called,since the debot tries to display all actions from the context 0 to the user.<p>When the debot starts SDK registers `BrowserCallbacks` AppObject.Therefore when `debote.remove` is called the debot is being deleted and the callback is calledwith `finish`=`true` which indicates that it will never be used again.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     */
-    public static void start(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+    public static void start(Context ctx, Integer debotHandle) {
          ctx.callVoid("debot.start", new ParamsOfStart(debotHandle));
     }
 
@@ -264,7 +263,7 @@ public class Debot {
     * @param address Debot smart contract address. 
     * @return {@link tech.deplant.java4ever.binding.Debot.ResultOfFetch}
     */
-    public static ResultOfFetch fetch(@NonNull Context ctx, @NonNull String address)  throws JsonProcessingException {
+    public static ResultOfFetch fetch(Context ctx, String address) {
         return  ctx.call("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
     }
 
@@ -274,7 +273,7 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param action Debot Action that must be executed. 
     */
-    public static void execute(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull DebotAction action)  throws JsonProcessingException {
+    public static void execute(Context ctx, Integer debotHandle, DebotAction action) {
          ctx.callVoid("debot.execute", new ParamsOfExecute(debotHandle, action));
     }
 
@@ -284,7 +283,7 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param message BOC of internal message to debot encoded in base64 format. 
     */
-    public static void send(@NonNull Context ctx, @NonNull Integer debotHandle, @NonNull String message)  throws JsonProcessingException {
+    public static void send(Context ctx, Integer debotHandle, String message) {
          ctx.callVoid("debot.send", new ParamsOfSend(debotHandle, message));
     }
 
@@ -293,7 +292,7 @@ public class Debot {
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Destroys debot handle. Removes handle from Client Context and drops debot engine referenced by that handle.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     */
-    public static void remove(@NonNull Context ctx, @NonNull Integer debotHandle)  throws JsonProcessingException {
+    public static void remove(Context ctx, Integer debotHandle) {
          ctx.callVoid("debot.remove", new ParamsOfRemove(debotHandle));
     }
 

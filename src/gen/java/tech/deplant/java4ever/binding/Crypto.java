@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -35,7 +34,7 @@ public class Crypto {
     * @param key 
     * @param iv 
     */
-    public record AES(@NonNull Map<String,Object> mode, @NonNull String key, String iv) implements EncryptionAlgorithm {
+    public record AES(Map<String,Object> mode, String key, String iv) implements EncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -46,7 +45,7 @@ public class Crypto {
     * @param key 256-bit key. Must be encoded with `hex`.
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     */
-    public record ChaCha20(@NonNull String key, @NonNull String nonce) implements EncryptionAlgorithm {
+    public record ChaCha20(String key, String nonce) implements EncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -58,7 +57,7 @@ public class Crypto {
     * @param secretKey 256-bit key. Must be encoded with `hex`.
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     */
-    public record NaclBox(@NonNull String theirPublic, @NonNull @JsonProperty("secret") String secretKey, @NonNull String nonce) implements EncryptionAlgorithm {
+    public record NaclBox(String theirPublic, @JsonProperty("secret") String secretKey, String nonce) implements EncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -69,7 +68,7 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string
     * @param nonce Nonce in `hex`
     */
-    public record NaclSecretBox(@NonNull String key, @NonNull String nonce) implements EncryptionAlgorithm {
+    public record NaclSecretBox(String key, String nonce) implements EncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -82,7 +81,7 @@ public class Crypto {
     * @param dictionary 
     * @param wordcount 
     */
-    public record RandomSeedPhrase(@NonNull Number dictionary, @NonNull Number wordcount) implements CryptoBoxSecret {
+    public record RandomSeedPhrase(Number dictionary, Number wordcount) implements CryptoBoxSecret {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -94,7 +93,7 @@ public class Crypto {
     * @param dictionary 
     * @param wordcount 
     */
-    public record PredefinedSeedPhrase(@NonNull String phrase, @NonNull Number dictionary, @NonNull Number wordcount) implements CryptoBoxSecret {
+    public record PredefinedSeedPhrase(String phrase, Number dictionary, Number wordcount) implements CryptoBoxSecret {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -104,7 +103,7 @@ public class Crypto {
     * Use this type for wallet reinitializations, when you already have `encrypted_secret` on hands. To get `encrypted_secret`, use `get_crypto_box_info` function after you initialized your crypto box for the first time. It is an object, containing seed phrase or private key, encrypted with`secret_encryption_salt` and password from `password_provider`.<p>Note that if you want to change salt or password provider, then you need to reinitializethe wallet with `PredefinedSeedPhrase`, then get `EncryptedSecret` via `get_crypto_box_info`,store it somewhere, and only after that initialize the wallet with `EncryptedSecret` type.
     * @param encryptedSecret It is an object, containing encrypted seed phrase or private key (now we support only seed phrase).
     */
-    public record EncryptedSecret(@NonNull String encryptedSecret) implements CryptoBoxSecret {
+    public record EncryptedSecret(String encryptedSecret) implements CryptoBoxSecret {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -116,7 +115,7 @@ public class Crypto {
     * 
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     */
-    public record ChaCha20(@NonNull String nonce) implements BoxEncryptionAlgorithm {
+    public record ChaCha20(String nonce) implements BoxEncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -127,7 +126,7 @@ public class Crypto {
     * @param theirPublic 256-bit key. Must be encoded with `hex`.
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     */
-    public record NaclBox(@NonNull String theirPublic, @NonNull String nonce) implements BoxEncryptionAlgorithm {
+    public record NaclBox(String theirPublic, String nonce) implements BoxEncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -137,7 +136,7 @@ public class Crypto {
     * 
     * @param nonce Nonce in `hex`
     */
-    public record NaclSecretBox(@NonNull String nonce) implements BoxEncryptionAlgorithm {
+    public record NaclSecretBox(String nonce) implements BoxEncryptionAlgorithm {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -147,13 +146,13 @@ public class Crypto {
     * 
     * @param composite Hexadecimal representation of u64 composite number.
     */
-    public record ParamsOfFactorize(@NonNull String composite) {}
+    public record ParamsOfFactorize(String composite) {}
 
     /**
     * 
     * @param factors Two factors of composite or empty if composite can't be factorized.
     */
-    public record ResultOfFactorize(@NonNull String[] factors) {}
+    public record ResultOfFactorize(String[] factors) {}
 
     /**
     * 
@@ -161,95 +160,95 @@ public class Crypto {
     * @param exponent `exponent` argument of calculation.
     * @param modulus `modulus` argument of calculation.
     */
-    public record ParamsOfModularPower(@NonNull String base, @NonNull String exponent, @NonNull String modulus) {}
+    public record ParamsOfModularPower(String base, String exponent, String modulus) {}
 
     /**
     * 
     * @param modularPower Result of modular exponentiation
     */
-    public record ResultOfModularPower(@NonNull String modularPower) {}
+    public record ResultOfModularPower(String modularPower) {}
 
     /**
     * 
     * @param data Input data for CRC calculation. Encoded with `base64`.
     */
-    public record ParamsOfTonCrc16(@NonNull String data) {}
+    public record ParamsOfTonCrc16(String data) {}
 
     /**
     * 
     * @param crc Calculated CRC for input data.
     */
-    public record ResultOfTonCrc16(@NonNull Number crc) {}
+    public record ResultOfTonCrc16(Number crc) {}
 
     /**
     * 
     * @param length Size of random byte array.
     */
-    public record ParamsOfGenerateRandomBytes(@NonNull Number length) {}
+    public record ParamsOfGenerateRandomBytes(Number length) {}
 
     /**
     * 
     * @param bytes Generated bytes encoded in `base64`.
     */
-    public record ResultOfGenerateRandomBytes(@NonNull String bytes) {}
+    public record ResultOfGenerateRandomBytes(String bytes) {}
 
     /**
     * 
     * @param publicKey Public key - 64 symbols hex string
     */
-    public record ParamsOfConvertPublicKeyToTonSafeFormat(@NonNull String publicKey) {}
+    public record ParamsOfConvertPublicKeyToTonSafeFormat(String publicKey) {}
 
     /**
     * 
     * @param tonPublicKey Public key represented in TON safe format.
     */
-    public record ResultOfConvertPublicKeyToTonSafeFormat(@NonNull String tonPublicKey) {}
+    public record ResultOfConvertPublicKeyToTonSafeFormat(String tonPublicKey) {}
 
     /**
     * 
     * @param publicKey Public key - 64 symbols hex string
     * @param secretKey Private key - u64 symbols hex string
     */
-    public record KeyPair(@NonNull @JsonProperty("public") String publicKey, @NonNull @JsonProperty("secret") String secretKey) {}
+    public record KeyPair(@JsonProperty("public") String publicKey, @JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param unsigned Data that must be signed encoded in `base64`.
     * @param keys Sign keys.
     */
-    public record ParamsOfSign(@NonNull String unsigned, @NonNull KeyPair keys) {}
+    public record ParamsOfSign(String unsigned, KeyPair keys) {}
 
     /**
     * 
     * @param signed Signed data combined with signature encoded in `base64`.
     * @param signature Signature encoded in `hex`.
     */
-    public record ResultOfSign(@NonNull String signed, @NonNull String signature) {}
+    public record ResultOfSign(String signed, String signature) {}
 
     /**
     * 
     * @param signed Signed data that must be verified encoded in `base64`.
     * @param publicKey Signer's public key - 64 symbols hex string
     */
-    public record ParamsOfVerifySignature(@NonNull String signed, @NonNull @JsonProperty("public") String publicKey) {}
+    public record ParamsOfVerifySignature(String signed, @JsonProperty("public") String publicKey) {}
 
     /**
     * 
     * @param unsigned Unsigned data encoded in `base64`.
     */
-    public record ResultOfVerifySignature(@NonNull String unsigned) {}
+    public record ResultOfVerifySignature(String unsigned) {}
 
     /**
     * 
     * @param data Input data for hash calculation. Encoded with `base64`.
     */
-    public record ParamsOfHash(@NonNull String data) {}
+    public record ParamsOfHash(String data) {}
 
     /**
     * 
     * @param hash Hash of input `data`. Encoded with 'hex'.
     */
-    public record ResultOfHash(@NonNull String hash) {}
+    public record ResultOfHash(String hash) {}
 
     /**
     * 
@@ -260,51 +259,51 @@ public class Crypto {
     * @param p Parallelization parameter.
     * @param dkLen Intended output length in octets of the derived key.
     */
-    public record ParamsOfScrypt(@NonNull String password, @NonNull String salt, @NonNull Number logN, @NonNull Number r, @NonNull Number p, @NonNull Number dkLen) {}
+    public record ParamsOfScrypt(String password, String salt, Number logN, Number r, Number p, Number dkLen) {}
 
     /**
     * 
     * @param key Derived key. Encoded with `hex`.
     */
-    public record ResultOfScrypt(@NonNull String key) {}
+    public record ResultOfScrypt(String key) {}
 
     /**
     * 
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclSignKeyPairFromSecret(@NonNull @JsonProperty("secret") String secretKey) {}
+    public record ParamsOfNaclSignKeyPairFromSecret(@JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param unsigned Data that must be signed encoded in `base64`.
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`.
     */
-    public record ParamsOfNaclSign(@NonNull String unsigned, @NonNull @JsonProperty("secret") String secretKey) {}
+    public record ParamsOfNaclSign(String unsigned, @JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param signed Signed data, encoded in `base64`.
     */
-    public record ResultOfNaclSign(@NonNull String signed) {}
+    public record ResultOfNaclSign(String signed) {}
 
     /**
     * 
     * @param signed Signed data that must be unsigned. Encoded with `base64`.
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclSignOpen(@NonNull String signed, @NonNull @JsonProperty("public") String publicKey) {}
+    public record ParamsOfNaclSignOpen(String signed, @JsonProperty("public") String publicKey) {}
 
     /**
     * 
     * @param unsigned Unsigned data, encoded in `base64`.
     */
-    public record ResultOfNaclSignOpen(@NonNull String unsigned) {}
+    public record ResultOfNaclSignOpen(String unsigned) {}
 
     /**
     * 
     * @param signature Signature encoded in `hex`.
     */
-    public record ResultOfNaclSignDetached(@NonNull String signature) {}
+    public record ResultOfNaclSignDetached(String signature) {}
 
     /**
     * 
@@ -312,19 +311,19 @@ public class Crypto {
     * @param signature Signature that must be verified. Encoded with `hex`.
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string.
     */
-    public record ParamsOfNaclSignDetachedVerify(@NonNull String unsigned, @NonNull String signature, @NonNull @JsonProperty("public") String publicKey) {}
+    public record ParamsOfNaclSignDetachedVerify(String unsigned, String signature, @JsonProperty("public") String publicKey) {}
 
     /**
     * 
     * @param succeeded `true` if verification succeeded or `false` if it failed
     */
-    public record ResultOfNaclSignDetachedVerify(@NonNull Boolean succeeded) {}
+    public record ResultOfNaclSignDetachedVerify(Boolean succeeded) {}
 
     /**
     * 
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclBoxKeyPairFromSecret(@NonNull @JsonProperty("secret") String secretKey) {}
+    public record ParamsOfNaclBoxKeyPairFromSecret(@JsonProperty("secret") String secretKey) {}
 
     /**
     * 
@@ -333,13 +332,13 @@ public class Crypto {
     * @param theirPublic Receiver's public key - unprefixed 0-padded to 64 symbols hex string
     * @param secretKey Sender's private key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclBox(@NonNull String decrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull @JsonProperty("secret") String secretKey) {}
+    public record ParamsOfNaclBox(String decrypted, String nonce, String theirPublic, @JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param encrypted Encrypted data encoded in `base64`.
     */
-    public record ResultOfNaclBox(@NonNull String encrypted) {}
+    public record ResultOfNaclBox(String encrypted) {}
 
     /**
     * 
@@ -348,13 +347,13 @@ public class Crypto {
     * @param theirPublic Sender's public key - unprefixed 0-padded to 64 symbols hex string
     * @param secretKey Receiver's private key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclBoxOpen(@NonNull String encrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull @JsonProperty("secret") String secretKey) {}
+    public record ParamsOfNaclBoxOpen(String encrypted, String nonce, String theirPublic, @JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param decrypted Decrypted data encoded in `base64`.
     */
-    public record ResultOfNaclBoxOpen(@NonNull String decrypted) {}
+    public record ResultOfNaclBoxOpen(String decrypted) {}
 
     /**
     * 
@@ -362,7 +361,7 @@ public class Crypto {
     * @param nonce Nonce in `hex`
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclSecretBox(@NonNull String decrypted, @NonNull String nonce, @NonNull String key) {}
+    public record ParamsOfNaclSecretBox(String decrypted, String nonce, String key) {}
 
     /**
     * 
@@ -370,7 +369,7 @@ public class Crypto {
     * @param nonce Nonce in `hex`
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string
     */
-    public record ParamsOfNaclSecretBoxOpen(@NonNull String encrypted, @NonNull String nonce, @NonNull String key) {}
+    public record ParamsOfNaclSecretBoxOpen(String encrypted, String nonce, String key) {}
 
     /**
     * 
@@ -382,7 +381,7 @@ public class Crypto {
     * 
     * @param words The list of mnemonic words
     */
-    public record ResultOfMnemonicWords(@NonNull String words) {}
+    public record ResultOfMnemonicWords(String words) {}
 
     /**
     * 
@@ -395,7 +394,7 @@ public class Crypto {
     * 
     * @param phrase String of mnemonic words
     */
-    public record ResultOfMnemonicFromRandom(@NonNull String phrase) {}
+    public record ResultOfMnemonicFromRandom(String phrase) {}
 
     /**
     * 
@@ -403,13 +402,13 @@ public class Crypto {
     * @param dictionary Dictionary identifier
     * @param wordCount Mnemonic word count
     */
-    public record ParamsOfMnemonicFromEntropy(@NonNull String entropy, Number dictionary, Number wordCount) {}
+    public record ParamsOfMnemonicFromEntropy(String entropy, Number dictionary, Number wordCount) {}
 
     /**
     * 
     * @param phrase Phrase
     */
-    public record ResultOfMnemonicFromEntropy(@NonNull String phrase) {}
+    public record ResultOfMnemonicFromEntropy(String phrase) {}
 
     /**
     * 
@@ -417,13 +416,13 @@ public class Crypto {
     * @param dictionary Dictionary identifier
     * @param wordCount Word count
     */
-    public record ParamsOfMnemonicVerify(@NonNull String phrase, Number dictionary, Number wordCount) {}
+    public record ParamsOfMnemonicVerify(String phrase, Number dictionary, Number wordCount) {}
 
     /**
     * 
     * @param valid Flag indicating if the mnemonic is valid or not
     */
-    public record ResultOfMnemonicVerify(@NonNull Boolean valid) {}
+    public record ResultOfMnemonicVerify(Boolean valid) {}
 
     /**
     * 
@@ -432,7 +431,7 @@ public class Crypto {
     * @param dictionary Dictionary identifier
     * @param wordCount Word count
     */
-    public record ParamsOfMnemonicDeriveSignKeys(@NonNull String phrase, String path, Number dictionary, Number wordCount) {}
+    public record ParamsOfMnemonicDeriveSignKeys(String phrase, String path, Number dictionary, Number wordCount) {}
 
     /**
     * 
@@ -440,13 +439,13 @@ public class Crypto {
     * @param dictionary Dictionary identifier
     * @param wordCount Mnemonic word count
     */
-    public record ParamsOfHDKeyXPrvFromMnemonic(@NonNull String phrase, Number dictionary, Number wordCount) {}
+    public record ParamsOfHDKeyXPrvFromMnemonic(String phrase, Number dictionary, Number wordCount) {}
 
     /**
     * 
     * @param xprv Serialized extended master private key
     */
-    public record ResultOfHDKeyXPrvFromMnemonic(@NonNull String xprv) {}
+    public record ResultOfHDKeyXPrvFromMnemonic(String xprv) {}
 
     /**
     * 
@@ -454,50 +453,50 @@ public class Crypto {
     * @param childIndex Child index (see BIP-0032)
     * @param hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032)
     */
-    public record ParamsOfHDKeyDeriveFromXPrv(@NonNull String xprv, @NonNull Number childIndex, @NonNull Boolean hardened) {}
+    public record ParamsOfHDKeyDeriveFromXPrv(String xprv, Number childIndex, Boolean hardened) {}
 
     /**
     * 
     * @param xprv Serialized extended private key
     */
-    public record ResultOfHDKeyDeriveFromXPrv(@NonNull String xprv) {}
+    public record ResultOfHDKeyDeriveFromXPrv(String xprv) {}
 
     /**
     * 
     * @param xprv Serialized extended private key
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0"
     */
-    public record ParamsOfHDKeyDeriveFromXPrvPath(@NonNull String xprv, @NonNull String path) {}
+    public record ParamsOfHDKeyDeriveFromXPrvPath(String xprv, String path) {}
 
     /**
     * 
     * @param xprv Derived serialized extended private key
     */
-    public record ResultOfHDKeyDeriveFromXPrvPath(@NonNull String xprv) {}
+    public record ResultOfHDKeyDeriveFromXPrvPath(String xprv) {}
 
     /**
     * 
     * @param xprv Serialized extended private key
     */
-    public record ParamsOfHDKeySecretFromXPrv(@NonNull String xprv) {}
+    public record ParamsOfHDKeySecretFromXPrv(String xprv) {}
 
     /**
     * 
     * @param secretKey Private key - 64 symbols hex string
     */
-    public record ResultOfHDKeySecretFromXPrv(@NonNull @JsonProperty("secret") String secretKey) {}
+    public record ResultOfHDKeySecretFromXPrv(@JsonProperty("secret") String secretKey) {}
 
     /**
     * 
     * @param xprv Serialized extended private key
     */
-    public record ParamsOfHDKeyPublicFromXPrv(@NonNull String xprv) {}
+    public record ParamsOfHDKeyPublicFromXPrv(String xprv) {}
 
     /**
     * 
     * @param publicKey Public key - 64 symbols hex string
     */
-    public record ResultOfHDKeyPublicFromXPrv(@NonNull @JsonProperty("public") String publicKey) {}
+    public record ResultOfHDKeyPublicFromXPrv(@JsonProperty("public") String publicKey) {}
 
     /**
     * 
@@ -505,32 +504,32 @@ public class Crypto {
     * @param key 256-bit key. Must be encoded with `hex`.
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     */
-    public record ParamsOfChaCha20(@NonNull String data, @NonNull String key, @NonNull String nonce) {}
+    public record ParamsOfChaCha20(String data, String key, String nonce) {}
 
     /**
     * 
     * @param data Encrypted/decrypted data. Encoded with `base64`.
     */
-    public record ResultOfChaCha20(@NonNull String data) {}
+    public record ResultOfChaCha20(String data) {}
 
     /**
     * 
     * @param secretEncryptionSalt Salt used for secret encryption. For example, a mobile device can use device ID as salt.
     * @param secretKey Cryptobox secret
     */
-    public record ParamsOfCreateCryptoBox(@NonNull String secretEncryptionSalt, @NonNull @JsonProperty("secret") CryptoBoxSecret secretKey) {}
+    public record ParamsOfCreateCryptoBox(String secretEncryptionSalt, @JsonProperty("secret") CryptoBoxSecret secretKey) {}
 
     /**
     * 
     * @param handle 
     */
-    public record RegisteredCryptoBox(@NonNull Integer handle) {}
+    public record RegisteredCryptoBox(Integer handle) {}
 
     /**
     * 
     * @param encryptedSecret Secret (seed phrase) encrypted with salt and password.
     */
-    public record ResultOfGetCryptoBoxInfo(@NonNull String encryptedSecret) {}
+    public record ResultOfGetCryptoBoxInfo(String encryptedSecret) {}
 
     /**
     * 
@@ -538,7 +537,7 @@ public class Crypto {
     * @param dictionary 
     * @param wordcount 
     */
-    public record ResultOfGetCryptoBoxSeedPhrase(@NonNull String phrase, @NonNull Number dictionary, @NonNull Number wordcount) {}
+    public record ResultOfGetCryptoBoxSeedPhrase(String phrase, Number dictionary, Number wordcount) {}
 
     /**
     * 
@@ -546,13 +545,13 @@ public class Crypto {
     * @param hdpath HD key derivation path. By default, Everscale HD path is used.
     * @param secretLifetime Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set.
     */
-    public record ParamsOfGetSigningBoxFromCryptoBox(@NonNull Number handle, String hdpath, Number secretLifetime) {}
+    public record ParamsOfGetSigningBoxFromCryptoBox(Number handle, String hdpath, Number secretLifetime) {}
 
     /**
     * 
     * @param handle Handle of the signing box.
     */
-    public record RegisteredSigningBox(@NonNull Integer handle) {}
+    public record RegisteredSigningBox(Integer handle) {}
 
     /**
     * 
@@ -561,13 +560,13 @@ public class Crypto {
     * @param algorithm Encryption algorithm.
     * @param secretLifetime Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set.
     */
-    public record ParamsOfGetEncryptionBoxFromCryptoBox(@NonNull Number handle, String hdpath, @NonNull BoxEncryptionAlgorithm algorithm, Number secretLifetime) {}
+    public record ParamsOfGetEncryptionBoxFromCryptoBox(Number handle, String hdpath, BoxEncryptionAlgorithm algorithm, Number secretLifetime) {}
 
     /**
     * 
     * @param handle Handle of the encryption box.
     */
-    public record RegisteredEncryptionBox(@NonNull Integer handle) {}
+    public record RegisteredEncryptionBox(Integer handle) {}
     public interface ParamsOfAppSigningBox {
 
         public static final GetPublicKey GETPUBLICKEY = new GetPublicKey();
@@ -587,7 +586,7 @@ public class Crypto {
     * Sign data
     * @param unsigned Data to sign encoded as base64
     */
-    public record Sign(@NonNull String unsigned) implements ParamsOfAppSigningBox {
+    public record Sign(String unsigned) implements ParamsOfAppSigningBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -599,7 +598,7 @@ public class Crypto {
     * Result of getting public key
     * @param publicKey Signing box public key
     */
-    public record GetPublicKey(@NonNull String publicKey) implements ResultOfAppSigningBox {
+    public record GetPublicKey(String publicKey) implements ResultOfAppSigningBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -609,7 +608,7 @@ public class Crypto {
     * Result of signing data
     * @param signature Data signature encoded as hex
     */
-    public record Sign(@NonNull String signature) implements ResultOfAppSigningBox {
+    public record Sign(String signature) implements ResultOfAppSigningBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -619,20 +618,20 @@ public class Crypto {
     * 
     * @param pubkey Public key of signing box. Encoded with hex
     */
-    public record ResultOfSigningBoxGetPublicKey(@NonNull String pubkey) {}
+    public record ResultOfSigningBoxGetPublicKey(String pubkey) {}
 
     /**
     * 
     * @param signingBox Signing Box handle.
     * @param unsigned Unsigned user data. Must be encoded with `base64`.
     */
-    public record ParamsOfSigningBoxSign(@NonNull Integer signingBox, @NonNull String unsigned) {}
+    public record ParamsOfSigningBoxSign(Integer signingBox, String unsigned) {}
 
     /**
     * 
     * @param signature Data signature. Encoded with `hex`.
     */
-    public record ResultOfSigningBoxSign(@NonNull String signature) {}
+    public record ResultOfSigningBoxSign(String signature) {}
     public interface ParamsOfAppEncryptionBox {
 
         public static final GetInfo GETINFO = new GetInfo();
@@ -652,7 +651,7 @@ public class Crypto {
     * Encrypt data
     * @param data Data, encoded in Base64
     */
-    public record Encrypt(@NonNull String data) implements ParamsOfAppEncryptionBox {
+    public record Encrypt(String data) implements ParamsOfAppEncryptionBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -662,7 +661,7 @@ public class Crypto {
     * Decrypt data
     * @param data Data, encoded in Base64
     */
-    public record Decrypt(@NonNull String data) implements ParamsOfAppEncryptionBox {
+    public record Decrypt(String data) implements ParamsOfAppEncryptionBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -674,7 +673,7 @@ public class Crypto {
     * Result of getting encryption box info
     * @param info 
     */
-    public record GetInfo(@NonNull EncryptionBoxInfo info) implements ResultOfAppEncryptionBox {
+    public record GetInfo(EncryptionBoxInfo info) implements ResultOfAppEncryptionBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -684,7 +683,7 @@ public class Crypto {
     * Result of encrypting data
     * @param data Encrypted data, encoded in Base64
     */
-    public record Encrypt(@NonNull String data) implements ResultOfAppEncryptionBox {
+    public record Encrypt(String data) implements ResultOfAppEncryptionBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -694,7 +693,7 @@ public class Crypto {
     * Result of decrypting data
     * @param data Decrypted data, encoded in Base64
     */
-    public record Decrypt(@NonNull String data) implements ResultOfAppEncryptionBox {
+    public record Decrypt(String data) implements ResultOfAppEncryptionBox {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
@@ -704,52 +703,52 @@ public class Crypto {
     * 
     * @param encryptionBox Encryption box handle
     */
-    public record ParamsOfEncryptionBoxGetInfo(@NonNull Integer encryptionBox) {}
+    public record ParamsOfEncryptionBoxGetInfo(Integer encryptionBox) {}
 
     /**
     * 
     * @param info Encryption box information
     */
-    public record ResultOfEncryptionBoxGetInfo(@NonNull EncryptionBoxInfo info) {}
+    public record ResultOfEncryptionBoxGetInfo(EncryptionBoxInfo info) {}
 
     /**
     * 
     * @param encryptionBox Encryption box handle
     * @param data Data to be encrypted, encoded in Base64
     */
-    public record ParamsOfEncryptionBoxEncrypt(@NonNull Integer encryptionBox, @NonNull String data) {}
+    public record ParamsOfEncryptionBoxEncrypt(Integer encryptionBox, String data) {}
 
     /**
     * 
     * @param data Encrypted data, encoded in Base64. Padded to cipher block size
     */
-    public record ResultOfEncryptionBoxEncrypt(@NonNull String data) {}
+    public record ResultOfEncryptionBoxEncrypt(String data) {}
 
     /**
     * 
     * @param encryptionBox Encryption box handle
     * @param data Data to be decrypted, encoded in Base64
     */
-    public record ParamsOfEncryptionBoxDecrypt(@NonNull Integer encryptionBox, @NonNull String data) {}
+    public record ParamsOfEncryptionBoxDecrypt(Integer encryptionBox, String data) {}
 
     /**
     * 
     * @param data Decrypted data, encoded in Base64.
     */
-    public record ResultOfEncryptionBoxDecrypt(@NonNull String data) {}
+    public record ResultOfEncryptionBoxDecrypt(String data) {}
 
     /**
     * 
     * @param algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc)
     */
-    public record ParamsOfCreateEncryptionBox(@NonNull EncryptionAlgorithm algorithm) {}
+    public record ParamsOfCreateEncryptionBox(EncryptionAlgorithm algorithm) {}
     /**
     * <strong>crypto.factorize</strong>
     * Integer factorization Performs prime factorization – decomposition of a composite numberinto a product of smaller prime integers (factors).
     * @param composite Hexadecimal representation of u64 composite number. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfFactorize}
     */
-    public static ResultOfFactorize factorize(@NonNull Context ctx, @NonNull String composite)  throws JsonProcessingException {
+    public static ResultOfFactorize factorize(Context ctx, String composite) {
         return  ctx.call("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
     }
 
@@ -761,7 +760,7 @@ public class Crypto {
     * @param modulus `modulus` argument of calculation. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfModularPower}
     */
-    public static ResultOfModularPower modularPower(@NonNull Context ctx, @NonNull String base, @NonNull String exponent, @NonNull String modulus)  throws JsonProcessingException {
+    public static ResultOfModularPower modularPower(Context ctx, String base, String exponent, String modulus) {
         return  ctx.call("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
     }
 
@@ -771,7 +770,7 @@ public class Crypto {
     * @param data Input data for CRC calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfTonCrc16}
     */
-    public static ResultOfTonCrc16 tonCrc16(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+    public static ResultOfTonCrc16 tonCrc16(Context ctx, String data) {
         return  ctx.call("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
     }
 
@@ -781,7 +780,7 @@ public class Crypto {
     * @param length Size of random byte array. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGenerateRandomBytes}
     */
-    public static ResultOfGenerateRandomBytes generateRandomBytes(@NonNull Context ctx, @NonNull Number length)  throws JsonProcessingException {
+    public static ResultOfGenerateRandomBytes generateRandomBytes(Context ctx, Number length) {
         return  ctx.call("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
     }
 
@@ -791,7 +790,7 @@ public class Crypto {
     * @param publicKey Public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfConvertPublicKeyToTonSafeFormat}
     */
-    public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(@NonNull Context ctx, @NonNull String publicKey)  throws JsonProcessingException {
+    public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(Context ctx, String publicKey) {
         return  ctx.call("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
     }
 
@@ -800,7 +799,7 @@ public class Crypto {
     * Generates random ed25519 key pair.
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair generateRandomSignKeys(@NonNull Context ctx)  throws JsonProcessingException {
+    public static KeyPair generateRandomSignKeys(Context ctx) {
         return  ctx.call("crypto.generate_random_sign_keys", null, KeyPair.class);
     }
 
@@ -811,7 +810,7 @@ public class Crypto {
     * @param keys Sign keys. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSign}
     */
-    public static ResultOfSign sign(@NonNull Context ctx, @NonNull String unsigned, @NonNull KeyPair keys)  throws JsonProcessingException {
+    public static ResultOfSign sign(Context ctx, String unsigned, KeyPair keys) {
         return  ctx.call("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
     }
 
@@ -822,7 +821,7 @@ public class Crypto {
     * @param publicKey Signer's public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfVerifySignature}
     */
-    public static ResultOfVerifySignature verifySignature(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
+    public static ResultOfVerifySignature verifySignature(Context ctx, String signed, String publicKey) {
         return  ctx.call("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
     }
 
@@ -832,7 +831,7 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static ResultOfHash sha256(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+    public static ResultOfHash sha256(Context ctx, String data) {
         return  ctx.call("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
     }
 
@@ -842,7 +841,7 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static ResultOfHash sha512(@NonNull Context ctx, @NonNull String data)  throws JsonProcessingException {
+    public static ResultOfHash sha512(Context ctx, String data) {
         return  ctx.call("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
     }
 
@@ -857,7 +856,7 @@ public class Crypto {
     * @param dkLen Intended output length in octets of the derived key. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfScrypt}
     */
-    public static ResultOfScrypt scrypt(@NonNull Context ctx, @NonNull String password, @NonNull String salt, @NonNull Number logN, @NonNull Number r, @NonNull Number p, @NonNull Number dkLen)  throws JsonProcessingException {
+    public static ResultOfScrypt scrypt(Context ctx, String password, String salt, Number logN, Number r, Number p, Number dkLen) {
         return  ctx.call("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
     }
 
@@ -867,7 +866,7 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclSignKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
+    public static KeyPair naclSignKeypairFromSecretKey(Context ctx, String secretKey) {
         return  ctx.call("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
@@ -878,7 +877,7 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSign}
     */
-    public static ResultOfNaclSign naclSign(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
+    public static ResultOfNaclSign naclSign(Context ctx, String unsigned, String secretKey) {
         return  ctx.call("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
     }
 
@@ -889,7 +888,7 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignOpen}
     */
-    public static ResultOfNaclSignOpen naclSignOpen(@NonNull Context ctx, @NonNull String signed, @NonNull String publicKey)  throws JsonProcessingException {
+    public static ResultOfNaclSignOpen naclSignOpen(Context ctx, String signed, String publicKey) {
         return  ctx.call("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
     }
 
@@ -900,7 +899,7 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetached}
     */
-    public static ResultOfNaclSignDetached naclSignDetached(@NonNull Context ctx, @NonNull String unsigned, @NonNull String secretKey)  throws JsonProcessingException {
+    public static ResultOfNaclSignDetached naclSignDetached(Context ctx, String unsigned, String secretKey) {
         return  ctx.call("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
     }
 
@@ -912,7 +911,7 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetachedVerify}
     */
-    public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(@NonNull Context ctx, @NonNull String unsigned, @NonNull String signature, @NonNull String publicKey)  throws JsonProcessingException {
+    public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(Context ctx, String unsigned, String signature, String publicKey) {
         return  ctx.call("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
     }
 
@@ -921,7 +920,7 @@ public class Crypto {
     * Generates a random NaCl key pair
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclBoxKeypair(@NonNull Context ctx)  throws JsonProcessingException {
+    public static KeyPair naclBoxKeypair(Context ctx) {
         return  ctx.call("crypto.nacl_box_keypair", null, KeyPair.class);
     }
 
@@ -931,7 +930,7 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclBoxKeypairFromSecretKey(@NonNull Context ctx, @NonNull String secretKey)  throws JsonProcessingException {
+    public static KeyPair naclBoxKeypairFromSecretKey(Context ctx, String secretKey) {
         return  ctx.call("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
@@ -944,7 +943,7 @@ public class Crypto {
     * @param secretKey Sender's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static ResultOfNaclBox naclBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
+    public static ResultOfNaclBox naclBox(Context ctx, String decrypted, String nonce, String theirPublic, String secretKey) {
         return  ctx.call("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
     }
 
@@ -957,7 +956,7 @@ public class Crypto {
     * @param secretKey Receiver's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static ResultOfNaclBoxOpen naclBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String theirPublic, @NonNull String secretKey)  throws JsonProcessingException {
+    public static ResultOfNaclBoxOpen naclBoxOpen(Context ctx, String encrypted, String nonce, String theirPublic, String secretKey) {
         return  ctx.call("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
     }
 
@@ -969,7 +968,7 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static ResultOfNaclBox naclSecretBox(@NonNull Context ctx, @NonNull String decrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
+    public static ResultOfNaclBox naclSecretBox(Context ctx, String decrypted, String nonce, String key) {
         return  ctx.call("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
     }
 
@@ -981,7 +980,7 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static ResultOfNaclBoxOpen naclSecretBoxOpen(@NonNull Context ctx, @NonNull String encrypted, @NonNull String nonce, @NonNull String key)  throws JsonProcessingException {
+    public static ResultOfNaclBoxOpen naclSecretBoxOpen(Context ctx, String encrypted, String nonce, String key) {
         return  ctx.call("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
     }
 
@@ -991,7 +990,7 @@ public class Crypto {
     * @param dictionary Dictionary identifier 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicWords}
     */
-    public static ResultOfMnemonicWords mnemonicWords(@NonNull Context ctx,  Number dictionary)  throws JsonProcessingException {
+    public static ResultOfMnemonicWords mnemonicWords(Context ctx,  Number dictionary) {
         return  ctx.call("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
     }
 
@@ -1002,7 +1001,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromRandom}
     */
-    public static ResultOfMnemonicFromRandom mnemonicFromRandom(@NonNull Context ctx,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+    public static ResultOfMnemonicFromRandom mnemonicFromRandom(Context ctx,  Number dictionary,  Number wordCount) {
         return  ctx.call("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
     }
 
@@ -1014,7 +1013,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromEntropy}
     */
-    public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(@NonNull Context ctx, @NonNull String entropy,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+    public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(Context ctx, String entropy,  Number dictionary,  Number wordCount) {
         return  ctx.call("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
     }
 
@@ -1026,7 +1025,7 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicVerify}
     */
-    public static ResultOfMnemonicVerify mnemonicVerify(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+    public static ResultOfMnemonicVerify mnemonicVerify(Context ctx, String phrase,  Number dictionary,  Number wordCount) {
         return  ctx.call("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
     }
 
@@ -1039,7 +1038,7 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair mnemonicDeriveSignKeys(@NonNull Context ctx, @NonNull String phrase,  String path,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+    public static KeyPair mnemonicDeriveSignKeys(Context ctx, String phrase,  String path,  Number dictionary,  Number wordCount) {
         return  ctx.call("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
     }
 
@@ -1051,7 +1050,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyXPrvFromMnemonic}
     */
-    public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(@NonNull Context ctx, @NonNull String phrase,  Number dictionary,  Number wordCount)  throws JsonProcessingException {
+    public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(Context ctx, String phrase,  Number dictionary,  Number wordCount) {
         return  ctx.call("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
     }
 
@@ -1063,7 +1062,7 @@ public class Crypto {
     * @param hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrv}
     */
-    public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(@NonNull Context ctx, @NonNull String xprv, @NonNull Number childIndex, @NonNull Boolean hardened)  throws JsonProcessingException {
+    public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(Context ctx, String xprv, Number childIndex, Boolean hardened) {
         return  ctx.call("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
     }
 
@@ -1074,7 +1073,7 @@ public class Crypto {
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0" 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrvPath}
     */
-    public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(@NonNull Context ctx, @NonNull String xprv, @NonNull String path)  throws JsonProcessingException {
+    public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(Context ctx, String xprv, String path) {
         return  ctx.call("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
     }
 
@@ -1084,7 +1083,7 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeySecretFromXPrv}
     */
-    public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
+    public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(Context ctx, String xprv) {
         return  ctx.call("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
     }
 
@@ -1094,7 +1093,7 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyPublicFromXPrv}
     */
-    public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(@NonNull Context ctx, @NonNull String xprv)  throws JsonProcessingException {
+    public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(Context ctx, String xprv) {
         return  ctx.call("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
     }
 
@@ -1106,7 +1105,7 @@ public class Crypto {
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfChaCha20}
     */
-    public static ResultOfChaCha20 chacha20(@NonNull Context ctx, @NonNull String data, @NonNull String key, @NonNull String nonce)  throws JsonProcessingException {
+    public static ResultOfChaCha20 chacha20(Context ctx, String data, String key, String nonce) {
         return  ctx.call("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
     }
 
@@ -1117,7 +1116,7 @@ public class Crypto {
     * @param secretKey Cryptobox secret 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredCryptoBox}
     */
-    public static RegisteredCryptoBox createCryptoBox(@NonNull Context ctx, @NonNull String secretEncryptionSalt, @NonNull CryptoBoxSecret secretKey)  throws JsonProcessingException {
+    public static RegisteredCryptoBox createCryptoBox(Context ctx, String secretEncryptionSalt, CryptoBoxSecret secretKey) {
         return  ctx.call("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
     }
 
@@ -1126,7 +1125,7 @@ public class Crypto {
     * Removes Crypto Box. Clears all secret data.
     * @param handle  
     */
-    public static void removeCryptoBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static void removeCryptoBox(Context ctx, Integer handle) {
          ctx.callVoid("crypto.remove_crypto_box", new RegisteredCryptoBox(handle));
     }
 
@@ -1136,7 +1135,7 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxInfo}
     */
-    public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(Context ctx, Integer handle) {
         return  ctx.call("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
     }
 
@@ -1146,7 +1145,7 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxSeedPhrase}
     */
-    public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(Context ctx, Integer handle) {
         return  ctx.call("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
     }
 
@@ -1158,7 +1157,7 @@ public class Crypto {
     * @param secretLifetime Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox getSigningBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath,  Number secretLifetime)  throws JsonProcessingException {
+    public static RegisteredSigningBox getSigningBoxFromCryptoBox(Context ctx, Number handle,  String hdpath,  Number secretLifetime) {
         return  ctx.call("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
     }
 
@@ -1171,7 +1170,7 @@ public class Crypto {
     * @param secretLifetime Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(@NonNull Context ctx, @NonNull Number handle,  String hdpath, @NonNull BoxEncryptionAlgorithm algorithm,  Number secretLifetime)  throws JsonProcessingException {
+    public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(Context ctx, Number handle,  String hdpath, BoxEncryptionAlgorithm algorithm,  Number secretLifetime) {
         return  ctx.call("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
     }
 
@@ -1180,7 +1179,7 @@ public class Crypto {
     * Removes cached secrets (overwrites with zeroes) from all signing and encryption boxes, derived from crypto box.
     * @param handle  
     */
-    public static void clearCryptoBoxSecretCache(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static void clearCryptoBoxSecretCache(Context ctx, Integer handle) {
          ctx.callVoid("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle));
     }
 
@@ -1190,7 +1189,7 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox registerSigningBox(@NonNull Context ctx,  AppSigningBox appObject)  throws JsonProcessingException {
+    public static RegisteredSigningBox registerSigningBox(Context ctx,  AppSigningBox appObject) {
         return  ctx.callAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
     }
 
@@ -1201,7 +1200,7 @@ public class Crypto {
     * @param secretKey Private key - u64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox getSigningBox(@NonNull Context ctx, @NonNull String publicKey, @NonNull String secretKey)  throws JsonProcessingException {
+    public static RegisteredSigningBox getSigningBox(Context ctx, String publicKey, String secretKey) {
         return  ctx.call("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
     }
 
@@ -1211,7 +1210,7 @@ public class Crypto {
     * @param handle Handle of the signing box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxGetPublicKey}
     */
-    public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(Context ctx, Integer handle) {
         return  ctx.call("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
     }
 
@@ -1222,7 +1221,7 @@ public class Crypto {
     * @param unsigned Unsigned user data. Must be encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxSign}
     */
-    public static ResultOfSigningBoxSign signingBoxSign(@NonNull Context ctx, @NonNull Integer signingBox, @NonNull String unsigned)  throws JsonProcessingException {
+    public static ResultOfSigningBoxSign signingBoxSign(Context ctx, Integer signingBox, String unsigned) {
         return  ctx.call("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
     }
 
@@ -1231,7 +1230,7 @@ public class Crypto {
     * Removes signing box from SDK.
     * @param handle Handle of the signing box. 
     */
-    public static void removeSigningBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static void removeSigningBox(Context ctx, Integer handle) {
          ctx.callVoid("crypto.remove_signing_box", new RegisteredSigningBox(handle));
     }
 
@@ -1241,7 +1240,7 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox registerEncryptionBox(@NonNull Context ctx,  AppEncryptionBox appObject)  throws JsonProcessingException {
+    public static RegisteredEncryptionBox registerEncryptionBox(Context ctx,  AppEncryptionBox appObject) {
         return  ctx.callAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
     }
 
@@ -1250,7 +1249,7 @@ public class Crypto {
     * Removes encryption box from SDK
     * @param handle Handle of the encryption box. 
     */
-    public static void removeEncryptionBox(@NonNull Context ctx, @NonNull Integer handle)  throws JsonProcessingException {
+    public static void removeEncryptionBox(Context ctx, Integer handle) {
          ctx.callVoid("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle));
     }
 
@@ -1260,7 +1259,7 @@ public class Crypto {
     * @param encryptionBox Encryption box handle 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxGetInfo}
     */
-    public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(@NonNull Context ctx, @NonNull Integer encryptionBox)  throws JsonProcessingException {
+    public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(Context ctx, Integer encryptionBox) {
         return  ctx.call("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
     }
 
@@ -1271,7 +1270,7 @@ public class Crypto {
     * @param data Data to be encrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxEncrypt}
     */
-    public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
+    public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(Context ctx, Integer encryptionBox, String data) {
         return  ctx.call("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
     }
 
@@ -1282,7 +1281,7 @@ public class Crypto {
     * @param data Data to be decrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxDecrypt}
     */
-    public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(@NonNull Context ctx, @NonNull Integer encryptionBox, @NonNull String data)  throws JsonProcessingException {
+    public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(Context ctx, Integer encryptionBox, String data) {
         return  ctx.call("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
     }
 
@@ -1292,7 +1291,7 @@ public class Crypto {
     * @param algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox createEncryptionBox(@NonNull Context ctx, @NonNull EncryptionAlgorithm algorithm)  throws JsonProcessingException {
+    public static RegisteredEncryptionBox createEncryptionBox(Context ctx, EncryptionAlgorithm algorithm) {
         return  ctx.call("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
-import lombok.*;
 import java.util.stream.*;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -26,7 +25,7 @@ public class Processing {
     * @param decoded Optional decoded message bodies according to the optional `abi` parameter.
     * @param fees Transaction fees
     */
-    public record ResultOfProcessMessage(@NonNull Map<String,Object> transaction, @NonNull String[] outMessages, DecodedOutput decoded, @NonNull Tvm.TransactionFees fees) {}
+    public record ResultOfProcessMessage(Map<String,Object> transaction, String[] outMessages, DecodedOutput decoded, Tvm.TransactionFees fees) {}
 
     /**
     * 
@@ -41,14 +40,14 @@ public class Processing {
     * @param abi Optional message ABI. If this parameter is specified and the message has the`expire` header then expiration time will be checked againstthe current time to prevent unnecessary sending of already expired message.<p>The `message already expired` error will be returned in thiscase.<p>Note, that specifying `abi` for ABI compliant contracts isstrongly recommended, so that proper processing strategy can bechosen.
     * @param sendEvents Flag for requesting events sending
     */
-    public record ParamsOfSendMessage(@NonNull String message, Abi.ABI abi, @NonNull Boolean sendEvents) {}
+    public record ParamsOfSendMessage(String message, Abi.ABI abi, Boolean sendEvents) {}
 
     /**
     * 
     * @param shardBlockId The last generated shard block of the message destination account before the message was sent. This block id must be used as a parameter of the`wait_for_transaction`.
     * @param sendingEndpoints The list of endpoints to which the message was sent. This list id must be used as a parameter of the`wait_for_transaction`.
     */
-    public record ResultOfSendMessage(@NonNull String shardBlockId, @NonNull String[] sendingEndpoints) {}
+    public record ResultOfSendMessage(String shardBlockId, String[] sendingEndpoints) {}
 
     /**
     * 
@@ -58,14 +57,14 @@ public class Processing {
     * @param sendEvents Flag that enables/disables intermediate events
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
     */
-    public record ParamsOfWaitForTransaction(Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents, String[] sendingEndpoints) {}
+    public record ParamsOfWaitForTransaction(Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents, String[] sendingEndpoints) {}
 
     /**
     * 
     * @param messageEncodeParams Message encode parameters.
     * @param sendEvents Flag for requesting events sending
     */
-    public record ParamsOfProcessMessage(@NonNull Abi.ParamsOfEncodeMessage messageEncodeParams, @NonNull Boolean sendEvents) {}
+    public record ParamsOfProcessMessage(Abi.ParamsOfEncodeMessage messageEncodeParams, Boolean sendEvents) {}
     /**
     * <strong>processing.send_message</strong>
     * Sends message to the network Sends message to the network and returns the last generated shard block of the destination accountbefore the message was sent. It will be required later for message processing.
@@ -74,7 +73,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfSendMessage}
     */
-    public static ResultOfSendMessage sendMessage(@NonNull Context ctx, @NonNull String message,  Abi.ABI abi, @NonNull Boolean sendEvents, Consumer<SendMessageEvent> consumer)  throws JsonProcessingException {
+    public static ResultOfSendMessage sendMessage(Context ctx, String message,  Abi.ABI abi, Boolean sendEvents, Consumer<SendMessageEvent> consumer) {
         return  ctx.callEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
     }
 
@@ -88,7 +87,7 @@ public class Processing {
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static ResultOfProcessMessage waitForTransaction(@NonNull Context ctx,  Abi.ABI abi, @NonNull String message, @NonNull String shardBlockId, @NonNull Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer)  throws JsonProcessingException {
+    public static ResultOfProcessMessage waitForTransaction(Context ctx,  Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer) {
         return  ctx.callEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
     }
 
@@ -104,7 +103,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static ResultOfProcessMessage processMessage(@NonNull Context ctx, @NonNull Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, @NonNull Abi.Signer signer,  Number processingTryIndex, @NonNull Boolean sendEvents, Consumer<ProcessMessageEvent> consumer)  throws JsonProcessingException {
+    public static ResultOfProcessMessage processMessage(Context ctx, Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, Abi.Signer signer,  Number processingTryIndex, Boolean sendEvents, Consumer<ProcessMessageEvent> consumer) {
         return  ctx.callEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
     }
 
