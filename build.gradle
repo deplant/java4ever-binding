@@ -133,9 +133,9 @@ javadoc {
 }
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(19)
-    }
+//    toolchain {
+//        languageVersion = JavaLanguageVersion.of(19)
+//    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -159,16 +159,16 @@ task generateApi(type: NodeTask) {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(19)
-    }
+//    javaCompiler = javaToolchains.compilerFor {
+//        languageVersion = JavaLanguageVersion.of(19)
+//    }
     options.compilerArgs += "--enable-preview"
 }
 
 tasks.withType(JavaExec).configureEach {
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(19)
-    }
+//    javaLauncher = javaToolchains.launcherFor {
+//        languageVersion = JavaLanguageVersion.of(19)
+//    }
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
