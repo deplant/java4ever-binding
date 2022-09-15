@@ -148,7 +148,7 @@ public class Boc {
     * @param size Bit size of the value.
     * @param value Value: - `Number` containing integer number. e.g. `123`, `-123`. - Decimal string. e.g. `"123"`, `"-123"`.- `0x` prefixed hexadecimal string.  e.g `0x123`, `0X123`, `-0x123`.
     */
-    public record Integer(Number size, Map<String,Object> value) implements BuilderOp {
+    public record Integer(Number size, String value) implements BuilderOp {
                                @JsonProperty("type")
                                public String type() { return getClass().getSimpleName(); }
                            }
