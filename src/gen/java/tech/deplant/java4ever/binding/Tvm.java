@@ -147,7 +147,7 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunExecutor}
     */
-    public static ResultOfRunExecutor runExecutor(Context ctx, String message, AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfRunExecutor runExecutor(Context ctx, String message, AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws EverSdkException {
         return  ctx.call("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
     }
 
@@ -162,7 +162,7 @@ public class Tvm {
     * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunTvm}
     */
-    public static ResultOfRunTvm runTvm(Context ctx, String message, String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfRunTvm runTvm(Context ctx, String message, String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws EverSdkException {
         return  ctx.call("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
     }
 
@@ -176,7 +176,7 @@ public class Tvm {
     * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
     * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunGet}
     */
-    public static ResultOfRunGet runGet(Context ctx, String account, String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray) throws ExecutionException, JsonProcessingException {
+    public static ResultOfRunGet runGet(Context ctx, String account, String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray) throws EverSdkException {
         return  ctx.call("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);
     }
 

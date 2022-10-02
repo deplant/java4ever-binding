@@ -348,7 +348,7 @@ public class Net {
     * @param variables Variables used in query. Must be a map with named values that can be used in query.
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQuery}
     */
-    public static ResultOfQuery query(Context ctx, String query,  Map<String,Object> variables) throws ExecutionException, JsonProcessingException {
+    public static ResultOfQuery query(Context ctx, String query,  Map<String,Object> variables) throws EverSdkException {
         return  ctx.call("net.query", new ParamsOfQuery(query, variables), ResultOfQuery.class);
     }
 
@@ -358,7 +358,7 @@ public class Net {
     * @param operations List of query operations that must be performed per single fetch. 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfBatchQuery}
     */
-    public static ResultOfBatchQuery batchQuery(Context ctx, ParamsOfQueryOperation[] operations) throws ExecutionException, JsonProcessingException {
+    public static ResultOfBatchQuery batchQuery(Context ctx, ParamsOfQueryOperation[] operations) throws EverSdkException {
         return  ctx.call("net.batch_query", new ParamsOfBatchQuery(operations), ResultOfBatchQuery.class);
     }
 
@@ -372,7 +372,7 @@ public class Net {
     * @param limit Number of documents to return 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
-    public static ResultOfQueryCollection queryCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  OrderBy[] order,  Number limit) throws ExecutionException, JsonProcessingException {
+    public static ResultOfQueryCollection queryCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  OrderBy[] order,  Number limit) throws EverSdkException {
         return  ctx.call("net.query_collection", new ParamsOfQueryCollection(collection, filter, result, order, limit), ResultOfQueryCollection.class);
     }
 
@@ -384,7 +384,7 @@ public class Net {
     * @param fields Projection (result) string 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfAggregateCollection}
     */
-    public static ResultOfAggregateCollection aggregateCollection(Context ctx, String collection,  Map<String,Object> filter,  FieldAggregation[] fields) throws ExecutionException, JsonProcessingException {
+    public static ResultOfAggregateCollection aggregateCollection(Context ctx, String collection,  Map<String,Object> filter,  FieldAggregation[] fields) throws EverSdkException {
         return  ctx.call("net.aggregate_collection", new ParamsOfAggregateCollection(collection, filter, fields), ResultOfAggregateCollection.class);
     }
 
@@ -397,7 +397,7 @@ public class Net {
     * @param timeout Query timeout 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfWaitForCollection}
     */
-    public static ResultOfWaitForCollection waitForCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  Number timeout) throws ExecutionException, JsonProcessingException {
+    public static ResultOfWaitForCollection waitForCollection(Context ctx, String collection,  Map<String,Object> filter, String result,  Number timeout) throws EverSdkException {
         return  ctx.call("net.wait_for_collection", new ParamsOfWaitForCollection(collection, filter, result, timeout), ResultOfWaitForCollection.class);
     }
 
@@ -406,7 +406,7 @@ public class Net {
     * Cancels a subscription Cancels a subscription specified by its handle.
     * @param handle Subscription handle. Must be closed with `unsubscribe`
     */
-    public static void unsubscribe(Context ctx, Number handle) throws ExecutionException, JsonProcessingException {
+    public static void unsubscribe(Context ctx, Number handle) throws EverSdkException {
          ctx.callVoid("net.unsubscribe", new ResultOfSubscribeCollection(handle));
     }
 
@@ -418,7 +418,7 @@ public class Net {
     * @param result Projection (result) string 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
-    public static ResultOfSubscribeCollection subscribeCollection(Context ctx, String collection,  Map<String,Object> filter, String result, Consumer<SubscribeCollectionEvent> consumer) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSubscribeCollection subscribeCollection(Context ctx, String collection,  Map<String,Object> filter, String result, Consumer<SubscribeCollectionEvent> consumer) throws EverSdkException {
         return  ctx.callEvent("net.subscribe_collection", new ParamsOfSubscribeCollection(collection, filter, result), consumer, ResultOfSubscribeCollection.class);
     }
 
@@ -429,7 +429,7 @@ public class Net {
     * @param variables Variables used in subscription. Must be a map with named values that can be used in query.
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfSubscribeCollection}
     */
-    public static ResultOfSubscribeCollection subscribe(Context ctx, String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSubscribeCollection subscribe(Context ctx, String subscription,  Map<String,Object> variables, Consumer<SubscribeEvent> consumer) throws EverSdkException {
         return  ctx.callEvent("net.subscribe", new ParamsOfSubscribe(subscription, variables), consumer, ResultOfSubscribeCollection.class);
     }
 
@@ -437,7 +437,7 @@ public class Net {
     * <strong>net.suspend</strong>
     * Suspends network module to stop any network activity
     */
-    public static void suspend(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static void suspend(Context ctx) throws EverSdkException {
          ctx.callVoid("net.suspend", null);
     }
 
@@ -445,7 +445,7 @@ public class Net {
     * <strong>net.resume</strong>
     * Resumes network module to enable network activity
     */
-    public static void resume(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static void resume(Context ctx) throws EverSdkException {
          ctx.callVoid("net.resume", null);
     }
 
@@ -455,7 +455,7 @@ public class Net {
     * @param address Account address 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfFindLastShardBlock}
     */
-    public static ResultOfFindLastShardBlock findLastShardBlock(Context ctx, String address) throws ExecutionException, JsonProcessingException {
+    public static ResultOfFindLastShardBlock findLastShardBlock(Context ctx, String address) throws EverSdkException {
         return  ctx.call("net.find_last_shard_block", new ParamsOfFindLastShardBlock(address), ResultOfFindLastShardBlock.class);
     }
 
@@ -464,7 +464,7 @@ public class Net {
     * Requests the list of alternative endpoints from server
     * @return {@link tech.deplant.java4ever.binding.Net.EndpointsSet}
     */
-    public static EndpointsSet fetchEndpoints(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static EndpointsSet fetchEndpoints(Context ctx) throws EverSdkException {
         return  ctx.call("net.fetch_endpoints", null, EndpointsSet.class);
     }
 
@@ -473,7 +473,7 @@ public class Net {
     * Sets the list of endpoints to use on reinit
     * @param endpoints List of endpoints provided by server 
     */
-    public static void setEndpoints(Context ctx, String[] endpoints) throws ExecutionException, JsonProcessingException {
+    public static void setEndpoints(Context ctx, String[] endpoints) throws EverSdkException {
          ctx.callVoid("net.set_endpoints", new EndpointsSet(endpoints));
     }
 
@@ -482,7 +482,7 @@ public class Net {
     * Requests the list of alternative endpoints from server
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfGetEndpoints}
     */
-    public static ResultOfGetEndpoints getEndpoints(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static ResultOfGetEndpoints getEndpoints(Context ctx) throws EverSdkException {
         return  ctx.call("net.get_endpoints", null, ResultOfGetEndpoints.class);
     }
 
@@ -495,7 +495,7 @@ public class Net {
     * @param after `cursor` field of the last received result 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryCollection}
     */
-    public static ResultOfQueryCollection queryCounterparties(Context ctx, String account, String result,  Number first,  String after) throws ExecutionException, JsonProcessingException {
+    public static ResultOfQueryCollection queryCounterparties(Context ctx, String account, String result,  Number first,  String after) throws EverSdkException {
         return  ctx.call("net.query_counterparties", new ParamsOfQueryCounterparties(account, result, first, after), ResultOfQueryCollection.class);
     }
 
@@ -507,7 +507,7 @@ public class Net {
     * @param timeout Timeout used to limit waiting time for the missing messages and transaction. If some of the following messages and transactions are missing yetThe maximum waiting time is regulated by this option.<p>Default value is 60000 (1 min).
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfQueryTransactionTree}
     */
-    public static ResultOfQueryTransactionTree queryTransactionTree(Context ctx, String inMsg,  Abi.ABI[] abiRegistry,  Number timeout) throws ExecutionException, JsonProcessingException {
+    public static ResultOfQueryTransactionTree queryTransactionTree(Context ctx, String inMsg,  Abi.ABI[] abiRegistry,  Number timeout) throws EverSdkException {
         return  ctx.call("net.query_transaction_tree", new ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout), ResultOfQueryTransactionTree.class);
     }
 
@@ -520,7 +520,7 @@ public class Net {
     * @param result Projection (result) string. List of the fields that must be returned for iterated items.This field is the same as the `result` parameter ofthe `query_collection` function.Note that iterated items can contains additional fields that arenot requested in the `result`.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator createBlockIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String result) throws ExecutionException, JsonProcessingException {
+    public static RegisteredIterator createBlockIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String result) throws EverSdkException {
         return  ctx.call("net.create_block_iterator", new ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), RegisteredIterator.class);
     }
 
@@ -530,7 +530,7 @@ public class Net {
     * @param resumeState Iterator state from which to resume. Same as value returned from `iterator_next`.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator resumeBlockIterator(Context ctx, Map<String,Object> resumeState) throws ExecutionException, JsonProcessingException {
+    public static RegisteredIterator resumeBlockIterator(Context ctx, Map<String,Object> resumeState) throws EverSdkException {
         return  ctx.call("net.resume_block_iterator", new ParamsOfResumeBlockIterator(resumeState), RegisteredIterator.class);
     }
 
@@ -545,7 +545,7 @@ public class Net {
     * @param includeTransfers Include `transfers` field in iterated transactions. If this parameter is `true` then each transaction contains field`transfers` with list of transfer. See more about this structure in function description.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator createTransactionIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String[] accountsFilter,  String result,  Boolean includeTransfers) throws ExecutionException, JsonProcessingException {
+    public static RegisteredIterator createTransactionIterator(Context ctx,  Number startTime,  Number endTime,  String[] shardFilter,  String[] accountsFilter,  String result,  Boolean includeTransfers) throws EverSdkException {
         return  ctx.call("net.create_transaction_iterator", new ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), RegisteredIterator.class);
     }
 
@@ -556,7 +556,7 @@ public class Net {
     * @param accountsFilter Account address filter. Application can specify the list of accounts for whichit wants to iterate transactions.<p>If this parameter is missing or an empty list then the library iteratestransactions for all accounts that passes the shard filter.<p>Note that the library doesn't detect conflicts between the account filter and the shard filterif both are specified.So it is the application's responsibility to specify the correct filter combination.
     * @return {@link tech.deplant.java4ever.binding.Net.RegisteredIterator}
     */
-    public static RegisteredIterator resumeTransactionIterator(Context ctx, Map<String,Object> resumeState,  String[] accountsFilter) throws ExecutionException, JsonProcessingException {
+    public static RegisteredIterator resumeTransactionIterator(Context ctx, Map<String,Object> resumeState,  String[] accountsFilter) throws EverSdkException {
         return  ctx.call("net.resume_transaction_iterator", new ParamsOfResumeTransactionIterator(resumeState, accountsFilter), RegisteredIterator.class);
     }
 
@@ -568,7 +568,7 @@ public class Net {
     * @param returnResumeState Indicates that function must return the iterator state that can be used for resuming iteration. 
     * @return {@link tech.deplant.java4ever.binding.Net.ResultOfIteratorNext}
     */
-    public static ResultOfIteratorNext iteratorNext(Context ctx, Number iterator,  Number limit,  Boolean returnResumeState) throws ExecutionException, JsonProcessingException {
+    public static ResultOfIteratorNext iteratorNext(Context ctx, Number iterator,  Number limit,  Boolean returnResumeState) throws EverSdkException {
         return  ctx.call("net.iterator_next", new ParamsOfIteratorNext(iterator, limit, returnResumeState), ResultOfIteratorNext.class);
     }
 
@@ -577,7 +577,7 @@ public class Net {
     * Removes an iterator Frees all resources allocated in library to serve iterator.<p>Application always should call the `remove_iterator` when iteratoris no longer required.
     * @param handle Iterator handle. Must be removed using `remove_iterator`when it is no more needed for the application.
     */
-    public static void removeIterator(Context ctx, Number handle) throws ExecutionException, JsonProcessingException {
+    public static void removeIterator(Context ctx, Number handle) throws EverSdkException {
          ctx.callVoid("net.remove_iterator", new RegisteredIterator(handle));
     }
 

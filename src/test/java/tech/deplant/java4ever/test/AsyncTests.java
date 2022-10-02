@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.Context;
 import tech.deplant.java4ever.binding.ContextBuilder;
+import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.loader.JavaLibraryPathLoader;
-
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +17,7 @@ public class AsyncTests {
 	private static Logger log = LoggerFactory.getLogger(Context.class);
 
 	@Test
-	public void equals_endpoints_in_context() throws JsonProcessingException, ExecutionException {
+	public void equals_endpoints_in_context() throws JsonProcessingException, EverSdkException {
 		var endpoint = "https://net.ton.dev/graphql";
 		var configJson = "{\"network\":{\"endpoints\":[\"" + endpoint + "\"]}}";
 		var ctx = new ContextBuilder()

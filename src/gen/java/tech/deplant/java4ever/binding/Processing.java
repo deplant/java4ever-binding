@@ -74,7 +74,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfSendMessage}
     */
-    public static ResultOfSendMessage sendMessage(Context ctx, String message,  Abi.ABI abi, Boolean sendEvents, Consumer<SendMessageEvent> consumer) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSendMessage sendMessage(Context ctx, String message,  Abi.ABI abi, Boolean sendEvents, Consumer<SendMessageEvent> consumer) throws EverSdkException {
         return  ctx.callEvent("processing.send_message", new ParamsOfSendMessage(message, abi, sendEvents), consumer, ResultOfSendMessage.class);
     }
 
@@ -88,7 +88,7 @@ public class Processing {
     * @param sendingEndpoints The list of endpoints to which the message was sent. Use this field to get more informative errors.Provide the same value as the `send_message` has returned.If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending.
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static ResultOfProcessMessage waitForTransaction(Context ctx,  Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer) throws ExecutionException, JsonProcessingException {
+    public static ResultOfProcessMessage waitForTransaction(Context ctx,  Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,  String[] sendingEndpoints, Consumer<WaitForTransactionEvent> consumer) throws EverSdkException {
         return  ctx.callEvent("processing.wait_for_transaction", new ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), consumer, ResultOfProcessMessage.class);
     }
 
@@ -104,7 +104,7 @@ public class Processing {
     * @param sendEvents Flag for requesting events sending 
     * @return {@link tech.deplant.java4ever.binding.Processing.ResultOfProcessMessage}
     */
-    public static ResultOfProcessMessage processMessage(Context ctx, Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, Abi.Signer signer,  Number processingTryIndex, Boolean sendEvents, Consumer<ProcessMessageEvent> consumer) throws ExecutionException, JsonProcessingException {
+    public static ResultOfProcessMessage processMessage(Context ctx, Abi.ABI abi,  String address,  Abi.DeploySet deploySet,  Abi.CallSet callSet, Abi.Signer signer,  Number processingTryIndex, Boolean sendEvents, Consumer<ProcessMessageEvent> consumer) throws EverSdkException {
         return  ctx.callEvent("processing.process_message", new ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), sendEvents), consumer, ResultOfProcessMessage.class);
     }
 

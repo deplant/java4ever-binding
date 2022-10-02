@@ -150,7 +150,7 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
-    public static ResultOfGetApiReference getApiReference(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static ResultOfGetApiReference getApiReference(Context ctx) throws EverSdkException {
         return  ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
@@ -159,7 +159,7 @@ public class Client {
     * Returns Core Library version
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
-    public static ResultOfVersion version(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static ResultOfVersion version(Context ctx) throws EverSdkException {
         return  ctx.call("client.version", null, ResultOfVersion.class);
     }
 
@@ -168,7 +168,7 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
-    public static ClientConfig config(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static ClientConfig config(Context ctx) throws EverSdkException {
         return  ctx.call("client.config", null, ClientConfig.class);
     }
 
@@ -177,7 +177,7 @@ public class Client {
     * Returns detailed information about this build.
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
-    public static ResultOfBuildInfo buildInfo(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static ResultOfBuildInfo buildInfo(Context ctx) throws EverSdkException {
         return  ctx.call("client.build_info", null, ResultOfBuildInfo.class);
     }
 
@@ -187,7 +187,7 @@ public class Client {
     * @param appRequestId Request ID received from SDK 
     * @param result Result of request processing 
     */
-    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) throws ExecutionException, JsonProcessingException {
+    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) throws EverSdkException {
          ctx.callVoid("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result));
     }
 

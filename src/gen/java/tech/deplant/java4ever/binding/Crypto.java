@@ -749,7 +749,7 @@ public class Crypto {
     * @param composite Hexadecimal representation of u64 composite number. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfFactorize}
     */
-    public static ResultOfFactorize factorize(Context ctx, String composite) throws ExecutionException, JsonProcessingException {
+    public static ResultOfFactorize factorize(Context ctx, String composite) throws EverSdkException {
         return  ctx.call("crypto.factorize", new ParamsOfFactorize(composite), ResultOfFactorize.class);
     }
 
@@ -761,7 +761,7 @@ public class Crypto {
     * @param modulus `modulus` argument of calculation. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfModularPower}
     */
-    public static ResultOfModularPower modularPower(Context ctx, String base, String exponent, String modulus) throws ExecutionException, JsonProcessingException {
+    public static ResultOfModularPower modularPower(Context ctx, String base, String exponent, String modulus) throws EverSdkException {
         return  ctx.call("crypto.modular_power", new ParamsOfModularPower(base, exponent, modulus), ResultOfModularPower.class);
     }
 
@@ -771,7 +771,7 @@ public class Crypto {
     * @param data Input data for CRC calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfTonCrc16}
     */
-    public static ResultOfTonCrc16 tonCrc16(Context ctx, String data) throws ExecutionException, JsonProcessingException {
+    public static ResultOfTonCrc16 tonCrc16(Context ctx, String data) throws EverSdkException {
         return  ctx.call("crypto.ton_crc16", new ParamsOfTonCrc16(data), ResultOfTonCrc16.class);
     }
 
@@ -781,7 +781,7 @@ public class Crypto {
     * @param length Size of random byte array. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGenerateRandomBytes}
     */
-    public static ResultOfGenerateRandomBytes generateRandomBytes(Context ctx, Number length) throws ExecutionException, JsonProcessingException {
+    public static ResultOfGenerateRandomBytes generateRandomBytes(Context ctx, Number length) throws EverSdkException {
         return  ctx.call("crypto.generate_random_bytes", new ParamsOfGenerateRandomBytes(length), ResultOfGenerateRandomBytes.class);
     }
 
@@ -791,7 +791,7 @@ public class Crypto {
     * @param publicKey Public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfConvertPublicKeyToTonSafeFormat}
     */
-    public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(Context ctx, String publicKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(Context ctx, String publicKey) throws EverSdkException {
         return  ctx.call("crypto.convert_public_key_to_ton_safe_format", new ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), ResultOfConvertPublicKeyToTonSafeFormat.class);
     }
 
@@ -800,7 +800,7 @@ public class Crypto {
     * Generates random ed25519 key pair.
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair generateRandomSignKeys(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static KeyPair generateRandomSignKeys(Context ctx) throws EverSdkException {
         return  ctx.call("crypto.generate_random_sign_keys", null, KeyPair.class);
     }
 
@@ -811,7 +811,7 @@ public class Crypto {
     * @param keys Sign keys. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSign}
     */
-    public static ResultOfSign sign(Context ctx, String unsigned, KeyPair keys) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSign sign(Context ctx, String unsigned, KeyPair keys) throws EverSdkException {
         return  ctx.call("crypto.sign", new ParamsOfSign(unsigned, keys), ResultOfSign.class);
     }
 
@@ -822,7 +822,7 @@ public class Crypto {
     * @param publicKey Signer's public key - 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfVerifySignature}
     */
-    public static ResultOfVerifySignature verifySignature(Context ctx, String signed, String publicKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfVerifySignature verifySignature(Context ctx, String signed, String publicKey) throws EverSdkException {
         return  ctx.call("crypto.verify_signature", new ParamsOfVerifySignature(signed, publicKey), ResultOfVerifySignature.class);
     }
 
@@ -832,7 +832,7 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static ResultOfHash sha256(Context ctx, String data) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHash sha256(Context ctx, String data) throws EverSdkException {
         return  ctx.call("crypto.sha256", new ParamsOfHash(data), ResultOfHash.class);
     }
 
@@ -842,7 +842,7 @@ public class Crypto {
     * @param data Input data for hash calculation. Encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHash}
     */
-    public static ResultOfHash sha512(Context ctx, String data) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHash sha512(Context ctx, String data) throws EverSdkException {
         return  ctx.call("crypto.sha512", new ParamsOfHash(data), ResultOfHash.class);
     }
 
@@ -857,7 +857,7 @@ public class Crypto {
     * @param dkLen Intended output length in octets of the derived key. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfScrypt}
     */
-    public static ResultOfScrypt scrypt(Context ctx, String password, String salt, Number logN, Number r, Number p, Number dkLen) throws ExecutionException, JsonProcessingException {
+    public static ResultOfScrypt scrypt(Context ctx, String password, String salt, Number logN, Number r, Number p, Number dkLen) throws EverSdkException {
         return  ctx.call("crypto.scrypt", new ParamsOfScrypt(password, salt, logN, r, p, dkLen), ResultOfScrypt.class);
     }
 
@@ -867,7 +867,7 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclSignKeypairFromSecretKey(Context ctx, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static KeyPair naclSignKeypairFromSecretKey(Context ctx, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_sign_keypair_from_secret_key", new ParamsOfNaclSignKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
@@ -878,7 +878,7 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSign}
     */
-    public static ResultOfNaclSign naclSign(Context ctx, String unsigned, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclSign naclSign(Context ctx, String unsigned, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_sign", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSign.class);
     }
 
@@ -889,7 +889,7 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignOpen}
     */
-    public static ResultOfNaclSignOpen naclSignOpen(Context ctx, String signed, String publicKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclSignOpen naclSignOpen(Context ctx, String signed, String publicKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_sign_open", new ParamsOfNaclSignOpen(signed, publicKey), ResultOfNaclSignOpen.class);
     }
 
@@ -900,7 +900,7 @@ public class Crypto {
     * @param secretKey Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetached}
     */
-    public static ResultOfNaclSignDetached naclSignDetached(Context ctx, String unsigned, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclSignDetached naclSignDetached(Context ctx, String unsigned, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_sign_detached", new ParamsOfNaclSign(unsigned, secretKey), ResultOfNaclSignDetached.class);
     }
 
@@ -912,7 +912,7 @@ public class Crypto {
     * @param publicKey Signer's public key - unprefixed 0-padded to 64 symbols hex string. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclSignDetachedVerify}
     */
-    public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(Context ctx, String unsigned, String signature, String publicKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclSignDetachedVerify naclSignDetachedVerify(Context ctx, String unsigned, String signature, String publicKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_sign_detached_verify", new ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), ResultOfNaclSignDetachedVerify.class);
     }
 
@@ -921,7 +921,7 @@ public class Crypto {
     * Generates a random NaCl key pair
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclBoxKeypair(Context ctx) throws ExecutionException, JsonProcessingException {
+    public static KeyPair naclBoxKeypair(Context ctx) throws EverSdkException {
         return  ctx.call("crypto.nacl_box_keypair", null, KeyPair.class);
     }
 
@@ -931,7 +931,7 @@ public class Crypto {
     * @param secretKey Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair naclBoxKeypairFromSecretKey(Context ctx, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static KeyPair naclBoxKeypairFromSecretKey(Context ctx, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_box_keypair_from_secret_key", new ParamsOfNaclBoxKeyPairFromSecret(secretKey), KeyPair.class);
     }
 
@@ -944,7 +944,7 @@ public class Crypto {
     * @param secretKey Sender's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static ResultOfNaclBox naclBox(Context ctx, String decrypted, String nonce, String theirPublic, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclBox naclBox(Context ctx, String decrypted, String nonce, String theirPublic, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_box", new ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), ResultOfNaclBox.class);
     }
 
@@ -957,7 +957,7 @@ public class Crypto {
     * @param secretKey Receiver's private key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static ResultOfNaclBoxOpen naclBoxOpen(Context ctx, String encrypted, String nonce, String theirPublic, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclBoxOpen naclBoxOpen(Context ctx, String encrypted, String nonce, String theirPublic, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.nacl_box_open", new ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), ResultOfNaclBoxOpen.class);
     }
 
@@ -969,7 +969,7 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBox}
     */
-    public static ResultOfNaclBox naclSecretBox(Context ctx, String decrypted, String nonce, String key) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclBox naclSecretBox(Context ctx, String decrypted, String nonce, String key) throws EverSdkException {
         return  ctx.call("crypto.nacl_secret_box", new ParamsOfNaclSecretBox(decrypted, nonce, key), ResultOfNaclBox.class);
     }
 
@@ -981,7 +981,7 @@ public class Crypto {
     * @param key Secret key - unprefixed 0-padded to 64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfNaclBoxOpen}
     */
-    public static ResultOfNaclBoxOpen naclSecretBoxOpen(Context ctx, String encrypted, String nonce, String key) throws ExecutionException, JsonProcessingException {
+    public static ResultOfNaclBoxOpen naclSecretBoxOpen(Context ctx, String encrypted, String nonce, String key) throws EverSdkException {
         return  ctx.call("crypto.nacl_secret_box_open", new ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), ResultOfNaclBoxOpen.class);
     }
 
@@ -991,7 +991,7 @@ public class Crypto {
     * @param dictionary Dictionary identifier 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicWords}
     */
-    public static ResultOfMnemonicWords mnemonicWords(Context ctx,  Number dictionary) throws ExecutionException, JsonProcessingException {
+    public static ResultOfMnemonicWords mnemonicWords(Context ctx,  Number dictionary) throws EverSdkException {
         return  ctx.call("crypto.mnemonic_words", new ParamsOfMnemonicWords(dictionary), ResultOfMnemonicWords.class);
     }
 
@@ -1002,7 +1002,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromRandom}
     */
-    public static ResultOfMnemonicFromRandom mnemonicFromRandom(Context ctx,  Number dictionary,  Number wordCount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfMnemonicFromRandom mnemonicFromRandom(Context ctx,  Number dictionary,  Number wordCount) throws EverSdkException {
         return  ctx.call("crypto.mnemonic_from_random", new ParamsOfMnemonicFromRandom(dictionary, wordCount), ResultOfMnemonicFromRandom.class);
     }
 
@@ -1014,7 +1014,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicFromEntropy}
     */
-    public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(Context ctx, String entropy,  Number dictionary,  Number wordCount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfMnemonicFromEntropy mnemonicFromEntropy(Context ctx, String entropy,  Number dictionary,  Number wordCount) throws EverSdkException {
         return  ctx.call("crypto.mnemonic_from_entropy", new ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), ResultOfMnemonicFromEntropy.class);
     }
 
@@ -1026,7 +1026,7 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfMnemonicVerify}
     */
-    public static ResultOfMnemonicVerify mnemonicVerify(Context ctx, String phrase,  Number dictionary,  Number wordCount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfMnemonicVerify mnemonicVerify(Context ctx, String phrase,  Number dictionary,  Number wordCount) throws EverSdkException {
         return  ctx.call("crypto.mnemonic_verify", new ParamsOfMnemonicVerify(phrase, dictionary, wordCount), ResultOfMnemonicVerify.class);
     }
 
@@ -1039,7 +1039,7 @@ public class Crypto {
     * @param wordCount Word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.KeyPair}
     */
-    public static KeyPair mnemonicDeriveSignKeys(Context ctx, String phrase,  String path,  Number dictionary,  Number wordCount) throws ExecutionException, JsonProcessingException {
+    public static KeyPair mnemonicDeriveSignKeys(Context ctx, String phrase,  String path,  Number dictionary,  Number wordCount) throws EverSdkException {
         return  ctx.call("crypto.mnemonic_derive_sign_keys", new ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), KeyPair.class);
     }
 
@@ -1051,7 +1051,7 @@ public class Crypto {
     * @param wordCount Mnemonic word count 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyXPrvFromMnemonic}
     */
-    public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(Context ctx, String phrase,  Number dictionary,  Number wordCount) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(Context ctx, String phrase,  Number dictionary,  Number wordCount) throws EverSdkException {
         return  ctx.call("crypto.hdkey_xprv_from_mnemonic", new ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), ResultOfHDKeyXPrvFromMnemonic.class);
     }
 
@@ -1063,7 +1063,7 @@ public class Crypto {
     * @param hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrv}
     */
-    public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(Context ctx, String xprv, Number childIndex, Boolean hardened) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(Context ctx, String xprv, Number childIndex, Boolean hardened) throws EverSdkException {
         return  ctx.call("crypto.hdkey_derive_from_xprv", new ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), ResultOfHDKeyDeriveFromXPrv.class);
     }
 
@@ -1074,7 +1074,7 @@ public class Crypto {
     * @param path Derivation path, for instance "m/44'/396'/0'/0/0" 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyDeriveFromXPrvPath}
     */
-    public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(Context ctx, String xprv, String path) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(Context ctx, String xprv, String path) throws EverSdkException {
         return  ctx.call("crypto.hdkey_derive_from_xprv_path", new ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), ResultOfHDKeyDeriveFromXPrvPath.class);
     }
 
@@ -1084,7 +1084,7 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeySecretFromXPrv}
     */
-    public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(Context ctx, String xprv) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(Context ctx, String xprv) throws EverSdkException {
         return  ctx.call("crypto.hdkey_secret_from_xprv", new ParamsOfHDKeySecretFromXPrv(xprv), ResultOfHDKeySecretFromXPrv.class);
     }
 
@@ -1094,7 +1094,7 @@ public class Crypto {
     * @param xprv Serialized extended private key 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfHDKeyPublicFromXPrv}
     */
-    public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(Context ctx, String xprv) throws ExecutionException, JsonProcessingException {
+    public static ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(Context ctx, String xprv) throws EverSdkException {
         return  ctx.call("crypto.hdkey_public_from_xprv", new ParamsOfHDKeyPublicFromXPrv(xprv), ResultOfHDKeyPublicFromXPrv.class);
     }
 
@@ -1106,7 +1106,7 @@ public class Crypto {
     * @param nonce 96-bit nonce. Must be encoded with `hex`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfChaCha20}
     */
-    public static ResultOfChaCha20 chacha20(Context ctx, String data, String key, String nonce) throws ExecutionException, JsonProcessingException {
+    public static ResultOfChaCha20 chacha20(Context ctx, String data, String key, String nonce) throws EverSdkException {
         return  ctx.call("crypto.chacha20", new ParamsOfChaCha20(data, key, nonce), ResultOfChaCha20.class);
     }
 
@@ -1117,7 +1117,7 @@ public class Crypto {
     * @param secretKey Cryptobox secret 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredCryptoBox}
     */
-    public static RegisteredCryptoBox createCryptoBox(Context ctx, String secretEncryptionSalt, CryptoBoxSecret secretKey) throws ExecutionException, JsonProcessingException {
+    public static RegisteredCryptoBox createCryptoBox(Context ctx, String secretEncryptionSalt, CryptoBoxSecret secretKey) throws EverSdkException {
         return  ctx.call("crypto.create_crypto_box", new ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), RegisteredCryptoBox.class);
     }
 
@@ -1126,7 +1126,7 @@ public class Crypto {
     * Removes Crypto Box. Clears all secret data.
     * @param handle  
     */
-    public static void removeCryptoBox(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static void removeCryptoBox(Context ctx, Integer handle) throws EverSdkException {
          ctx.callVoid("crypto.remove_crypto_box", new RegisteredCryptoBox(handle));
     }
 
@@ -1136,7 +1136,7 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxInfo}
     */
-    public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static ResultOfGetCryptoBoxInfo getCryptoBoxInfo(Context ctx, Integer handle) throws EverSdkException {
         return  ctx.call("crypto.get_crypto_box_info", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxInfo.class);
     }
 
@@ -1146,7 +1146,7 @@ public class Crypto {
     * @param handle  
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfGetCryptoBoxSeedPhrase}
     */
-    public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(Context ctx, Integer handle) throws EverSdkException {
         return  ctx.call("crypto.get_crypto_box_seed_phrase", new RegisteredCryptoBox(handle), ResultOfGetCryptoBoxSeedPhrase.class);
     }
 
@@ -1158,7 +1158,7 @@ public class Crypto {
     * @param secretLifetime Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox getSigningBoxFromCryptoBox(Context ctx, Number handle,  String hdpath,  Number secretLifetime) throws ExecutionException, JsonProcessingException {
+    public static RegisteredSigningBox getSigningBoxFromCryptoBox(Context ctx, Number handle,  String hdpath,  Number secretLifetime) throws EverSdkException {
         return  ctx.call("crypto.get_signing_box_from_crypto_box", new ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), RegisteredSigningBox.class);
     }
 
@@ -1171,7 +1171,7 @@ public class Crypto {
     * @param secretLifetime Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(Context ctx, Number handle,  String hdpath, BoxEncryptionAlgorithm algorithm,  Number secretLifetime) throws ExecutionException, JsonProcessingException {
+    public static RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(Context ctx, Number handle,  String hdpath, BoxEncryptionAlgorithm algorithm,  Number secretLifetime) throws EverSdkException {
         return  ctx.call("crypto.get_encryption_box_from_crypto_box", new ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), RegisteredEncryptionBox.class);
     }
 
@@ -1180,7 +1180,7 @@ public class Crypto {
     * Removes cached secrets (overwrites with zeroes) from all signing and encryption boxes, derived from crypto box.
     * @param handle  
     */
-    public static void clearCryptoBoxSecretCache(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static void clearCryptoBoxSecretCache(Context ctx, Integer handle) throws EverSdkException {
          ctx.callVoid("crypto.clear_crypto_box_secret_cache", new RegisteredCryptoBox(handle));
     }
 
@@ -1190,7 +1190,7 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox registerSigningBox(Context ctx,  AppSigningBox appObject) throws ExecutionException, JsonProcessingException {
+    public static RegisteredSigningBox registerSigningBox(Context ctx,  AppSigningBox appObject) throws EverSdkException {
         return  ctx.callAppObject("crypto.register_signing_box", null, appObject, RegisteredSigningBox.class);
     }
 
@@ -1201,7 +1201,7 @@ public class Crypto {
     * @param secretKey Private key - u64 symbols hex string 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredSigningBox}
     */
-    public static RegisteredSigningBox getSigningBox(Context ctx, String publicKey, String secretKey) throws ExecutionException, JsonProcessingException {
+    public static RegisteredSigningBox getSigningBox(Context ctx, String publicKey, String secretKey) throws EverSdkException {
         return  ctx.call("crypto.get_signing_box", new KeyPair(publicKey, secretKey), RegisteredSigningBox.class);
     }
 
@@ -1211,7 +1211,7 @@ public class Crypto {
     * @param handle Handle of the signing box. 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxGetPublicKey}
     */
-    public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(Context ctx, Integer handle) throws EverSdkException {
         return  ctx.call("crypto.signing_box_get_public_key", new RegisteredSigningBox(handle), ResultOfSigningBoxGetPublicKey.class);
     }
 
@@ -1222,7 +1222,7 @@ public class Crypto {
     * @param unsigned Unsigned user data. Must be encoded with `base64`.
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfSigningBoxSign}
     */
-    public static ResultOfSigningBoxSign signingBoxSign(Context ctx, Integer signingBox, String unsigned) throws ExecutionException, JsonProcessingException {
+    public static ResultOfSigningBoxSign signingBoxSign(Context ctx, Integer signingBox, String unsigned) throws EverSdkException {
         return  ctx.call("crypto.signing_box_sign", new ParamsOfSigningBoxSign(signingBox, unsigned), ResultOfSigningBoxSign.class);
     }
 
@@ -1231,7 +1231,7 @@ public class Crypto {
     * Removes signing box from SDK.
     * @param handle Handle of the signing box. 
     */
-    public static void removeSigningBox(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static void removeSigningBox(Context ctx, Integer handle) throws EverSdkException {
          ctx.callVoid("crypto.remove_signing_box", new RegisteredSigningBox(handle));
     }
 
@@ -1241,7 +1241,7 @@ public class Crypto {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox registerEncryptionBox(Context ctx,  AppEncryptionBox appObject) throws ExecutionException, JsonProcessingException {
+    public static RegisteredEncryptionBox registerEncryptionBox(Context ctx,  AppEncryptionBox appObject) throws EverSdkException {
         return  ctx.callAppObject("crypto.register_encryption_box", null, appObject, RegisteredEncryptionBox.class);
     }
 
@@ -1250,7 +1250,7 @@ public class Crypto {
     * Removes encryption box from SDK
     * @param handle Handle of the encryption box. 
     */
-    public static void removeEncryptionBox(Context ctx, Integer handle) throws ExecutionException, JsonProcessingException {
+    public static void removeEncryptionBox(Context ctx, Integer handle) throws EverSdkException {
          ctx.callVoid("crypto.remove_encryption_box", new RegisteredEncryptionBox(handle));
     }
 
@@ -1260,7 +1260,7 @@ public class Crypto {
     * @param encryptionBox Encryption box handle 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxGetInfo}
     */
-    public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(Context ctx, Integer encryptionBox) throws ExecutionException, JsonProcessingException {
+    public static ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(Context ctx, Integer encryptionBox) throws EverSdkException {
         return  ctx.call("crypto.encryption_box_get_info", new ParamsOfEncryptionBoxGetInfo(encryptionBox), ResultOfEncryptionBoxGetInfo.class);
     }
 
@@ -1271,7 +1271,7 @@ public class Crypto {
     * @param data Data to be encrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxEncrypt}
     */
-    public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(Context ctx, Integer encryptionBox, String data) throws ExecutionException, JsonProcessingException {
+    public static ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(Context ctx, Integer encryptionBox, String data) throws EverSdkException {
         return  ctx.call("crypto.encryption_box_encrypt", new ParamsOfEncryptionBoxEncrypt(encryptionBox, data), ResultOfEncryptionBoxEncrypt.class);
     }
 
@@ -1282,7 +1282,7 @@ public class Crypto {
     * @param data Data to be decrypted, encoded in Base64 
     * @return {@link tech.deplant.java4ever.binding.Crypto.ResultOfEncryptionBoxDecrypt}
     */
-    public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(Context ctx, Integer encryptionBox, String data) throws ExecutionException, JsonProcessingException {
+    public static ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(Context ctx, Integer encryptionBox, String data) throws EverSdkException {
         return  ctx.call("crypto.encryption_box_decrypt", new ParamsOfEncryptionBoxDecrypt(encryptionBox, data), ResultOfEncryptionBoxDecrypt.class);
     }
 
@@ -1292,7 +1292,7 @@ public class Crypto {
     * @param algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc) 
     * @return {@link tech.deplant.java4ever.binding.Crypto.RegisteredEncryptionBox}
     */
-    public static RegisteredEncryptionBox createEncryptionBox(Context ctx, EncryptionAlgorithm algorithm) throws ExecutionException, JsonProcessingException {
+    public static RegisteredEncryptionBox createEncryptionBox(Context ctx, EncryptionAlgorithm algorithm) throws EverSdkException {
         return  ctx.call("crypto.create_encryption_box", new ParamsOfCreateEncryptionBox(algorithm), RegisteredEncryptionBox.class);
     }
 

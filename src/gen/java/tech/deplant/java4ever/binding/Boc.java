@@ -310,7 +310,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseMessage(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfParse parseMessage(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.parse_message", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -321,7 +321,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseTransaction(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfParse parseTransaction(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.parse_transaction", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -331,7 +331,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseAccount(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfParse parseAccount(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.parse_account", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -341,7 +341,7 @@ public class Boc {
     * @param boc BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseBlock(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfParse parseBlock(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.parse_block", new ParamsOfParse(boc), ResultOfParse.class);
     }
 
@@ -353,7 +353,7 @@ public class Boc {
     * @param workchainId Workchain shardstate belongs to 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfParse}
     */
-    public static ResultOfParse parseShardstate(Context ctx, String boc, String id, Number workchainId) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfParse parseShardstate(Context ctx, String boc, String id, Number workchainId) throws EverSdkException {
         return  ctx.call("boc.parse_shardstate", new ParamsOfParseShardstate(boc, id, workchainId), ResultOfParse.class);
     }
 
@@ -363,7 +363,7 @@ public class Boc {
     * @param blockBoc Key block BOC or zerostate BOC encoded as base64 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBlockchainConfig}
     */
-    public static ResultOfGetBlockchainConfig getBlockchainConfig(Context ctx, String blockBoc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetBlockchainConfig getBlockchainConfig(Context ctx, String blockBoc) throws EverSdkException {
         return  ctx.call("boc.get_blockchain_config", new ParamsOfGetBlockchainConfig(blockBoc), ResultOfGetBlockchainConfig.class);
     }
 
@@ -373,7 +373,7 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocHash}
     */
-    public static ResultOfGetBocHash getBocHash(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetBocHash getBocHash(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.get_boc_hash", new ParamsOfGetBocHash(boc), ResultOfGetBocHash.class);
     }
 
@@ -383,7 +383,7 @@ public class Boc {
     * @param boc BOC encoded as base64 or BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetBocDepth}
     */
-    public static ResultOfGetBocDepth getBocDepth(Context ctx, String boc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetBocDepth getBocDepth(Context ctx, String boc) throws EverSdkException {
         return  ctx.call("boc.get_boc_depth", new ParamsOfGetBocDepth(boc), ResultOfGetBocDepth.class);
     }
 
@@ -393,7 +393,7 @@ public class Boc {
     * @param tvc Contract TVC image or image BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeFromTvc}
     */
-    public static ResultOfGetCodeFromTvc getCodeFromTvc(Context ctx, String tvc) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetCodeFromTvc getCodeFromTvc(Context ctx, String tvc) throws EverSdkException {
         return  ctx.call("boc.get_code_from_tvc", new ParamsOfGetCodeFromTvc(tvc), ResultOfGetCodeFromTvc.class);
     }
 
@@ -403,7 +403,7 @@ public class Boc {
     * @param bocRef Reference to the cached BOC 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheGet}
     */
-    public static ResultOfBocCacheGet cacheGet(Context ctx, String bocRef) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfBocCacheGet cacheGet(Context ctx, String bocRef) throws EverSdkException {
         return  ctx.call("boc.cache_get", new ParamsOfBocCacheGet(bocRef), ResultOfBocCacheGet.class);
     }
 
@@ -414,7 +414,7 @@ public class Boc {
     * @param cacheType Cache type 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfBocCacheSet}
     */
-    public static ResultOfBocCacheSet cacheSet(Context ctx, String boc, BocCacheType cacheType) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfBocCacheSet cacheSet(Context ctx, String boc, BocCacheType cacheType) throws EverSdkException {
         return  ctx.call("boc.cache_set", new ParamsOfBocCacheSet(boc, cacheType), ResultOfBocCacheSet.class);
     }
 
@@ -424,7 +424,7 @@ public class Boc {
     * @param pin Pinned name 
     * @param bocRef Reference to the cached BOC. If it is provided then only referenced BOC is unpinned
     */
-    public static void cacheUnpin(Context ctx, String pin,  String bocRef) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static void cacheUnpin(Context ctx, String pin,  String bocRef) throws EverSdkException {
          ctx.callVoid("boc.cache_unpin", new ParamsOfBocCacheUnpin(pin, bocRef));
     }
 
@@ -435,7 +435,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeBoc}
     */
-    public static ResultOfEncodeBoc encodeBoc(Context ctx, BuilderOp[] builder,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfEncodeBoc encodeBoc(Context ctx, BuilderOp[] builder,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.encode_boc", new ParamsOfEncodeBoc(builder, bocCache), ResultOfEncodeBoc.class);
     }
 
@@ -446,7 +446,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCodeSalt}
     */
-    public static ResultOfGetCodeSalt getCodeSalt(Context ctx, String code,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetCodeSalt getCodeSalt(Context ctx, String code,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.get_code_salt", new ParamsOfGetCodeSalt(code, bocCache), ResultOfGetCodeSalt.class);
     }
 
@@ -458,7 +458,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfSetCodeSalt}
     */
-    public static ResultOfSetCodeSalt setCodeSalt(Context ctx, String code, String salt,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfSetCodeSalt setCodeSalt(Context ctx, String code, String salt,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.set_code_salt", new ParamsOfSetCodeSalt(code, salt, bocCache), ResultOfSetCodeSalt.class);
     }
 
@@ -469,7 +469,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfDecodeTvc}
     */
-    public static ResultOfDecodeTvc decodeTvc(Context ctx, String tvc,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfDecodeTvc decodeTvc(Context ctx, String tvc,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.decode_tvc", new ParamsOfDecodeTvc(tvc, bocCache), ResultOfDecodeTvc.class);
     }
 
@@ -485,7 +485,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeTvc}
     */
-    public static ResultOfEncodeTvc encodeTvc(Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfEncodeTvc encodeTvc(Context ctx,  String code,  String data,  String library,  Boolean tick,  Boolean tock,  Number splitDepth,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.encode_tvc", new ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), ResultOfEncodeTvc.class);
     }
 
@@ -499,7 +499,7 @@ public class Boc {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfEncodeExternalInMessage}
     */
-    public static ResultOfEncodeExternalInMessage encodeExternalInMessage(Context ctx,  String src, String dst,  String init,  String body,  BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfEncodeExternalInMessage encodeExternalInMessage(Context ctx,  String src, String dst,  String init,  String body,  BocCacheType bocCache) throws EverSdkException {
         return  ctx.call("boc.encode_external_in_message", new ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), ResultOfEncodeExternalInMessage.class);
     }
 
@@ -509,7 +509,7 @@ public class Boc {
     * @param code Contract code BOC encoded as base64 or code BOC handle 
     * @return {@link tech.deplant.java4ever.binding.Boc.ResultOfGetCompilerVersion}
     */
-    public static ResultOfGetCompilerVersion getCompilerVersion(Context ctx, String code) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public static ResultOfGetCompilerVersion getCompilerVersion(Context ctx, String code) throws EverSdkException {
         return  ctx.call("boc.get_compiler_version", new ParamsOfGetCompilerVersion(code), ResultOfGetCompilerVersion.class);
     }
 

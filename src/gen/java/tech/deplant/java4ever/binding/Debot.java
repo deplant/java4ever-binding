@@ -245,7 +245,7 @@ public class Debot {
     * @param appObject  
     * @return {@link tech.deplant.java4ever.binding.Debot.RegisteredDebot}
     */
-    public static RegisteredDebot init(Context ctx, String address,  AppDebotBrowser appObject) throws ExecutionException, JsonProcessingException {
+    public static RegisteredDebot init(Context ctx, String address,  AppDebotBrowser appObject) throws EverSdkException {
         return  ctx.callAppObject("debot.init", new ParamsOfInit(address), appObject, RegisteredDebot.class);
     }
 
@@ -254,7 +254,7 @@ public class Debot {
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Starts the DeBot. Downloads debot smart contract from blockchain and switches it tocontext zero.<p>This function must be used by Debot Browser to start a dialog with debot.While the function is executing, several Browser Callbacks can be called,since the debot tries to display all actions from the context 0 to the user.<p>When the debot starts SDK registers `BrowserCallbacks` AppObject.Therefore when `debote.remove` is called the debot is being deleted and the callback is calledwith `finish`=`true` which indicates that it will never be used again.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     */
-    public static void start(Context ctx, Integer debotHandle) throws ExecutionException, JsonProcessingException {
+    public static void start(Context ctx, Integer debotHandle) throws EverSdkException {
          ctx.callVoid("debot.start", new ParamsOfStart(debotHandle));
     }
 
@@ -264,7 +264,7 @@ public class Debot {
     * @param address Debot smart contract address. 
     * @return {@link tech.deplant.java4ever.binding.Debot.ResultOfFetch}
     */
-    public static ResultOfFetch fetch(Context ctx, String address) throws ExecutionException, JsonProcessingException {
+    public static ResultOfFetch fetch(Context ctx, String address) throws EverSdkException {
         return  ctx.call("debot.fetch", new ParamsOfFetch(address), ResultOfFetch.class);
     }
 
@@ -274,7 +274,7 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param action Debot Action that must be executed. 
     */
-    public static void execute(Context ctx, Integer debotHandle, DebotAction action) throws ExecutionException, JsonProcessingException {
+    public static void execute(Context ctx, Integer debotHandle, DebotAction action) throws EverSdkException {
          ctx.callVoid("debot.execute", new ParamsOfExecute(debotHandle, action));
     }
 
@@ -284,7 +284,7 @@ public class Debot {
     * @param debotHandle Debot handle which references an instance of debot engine. 
     * @param message BOC of internal message to debot encoded in base64 format. 
     */
-    public static void send(Context ctx, Integer debotHandle, String message) throws ExecutionException, JsonProcessingException {
+    public static void send(Context ctx, Integer debotHandle, String message) throws EverSdkException {
          ctx.callVoid("debot.send", new ParamsOfSend(debotHandle, message));
     }
 
@@ -293,7 +293,7 @@ public class Debot {
     * <a target="_blank" href="UNSTABLE">UNSTABLE</a>(UNSTABLE.md) Destroys debot handle. Removes handle from Client Context and drops debot engine referenced by that handle.
     * @param debotHandle Debot handle which references an instance of debot engine. 
     */
-    public static void remove(Context ctx, Integer debotHandle) throws ExecutionException, JsonProcessingException {
+    public static void remove(Context ctx, Integer debotHandle) throws EverSdkException {
          ctx.callVoid("debot.remove", new ParamsOfRemove(debotHandle));
     }
 
