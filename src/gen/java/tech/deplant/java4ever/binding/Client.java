@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -149,7 +150,7 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
     */
-    public static ResultOfGetApiReference getApiReference(Context ctx) {
+    public static ResultOfGetApiReference getApiReference(Context ctx) throws ExecutionException, JsonProcessingException {
         return  ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
     }
 
@@ -158,7 +159,7 @@ public class Client {
     * Returns Core Library version
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
     */
-    public static ResultOfVersion version(Context ctx) {
+    public static ResultOfVersion version(Context ctx) throws ExecutionException, JsonProcessingException {
         return  ctx.call("client.version", null, ResultOfVersion.class);
     }
 
@@ -167,7 +168,7 @@ public class Client {
     * Returns Core Library API reference
     * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
     */
-    public static ClientConfig config(Context ctx) {
+    public static ClientConfig config(Context ctx) throws ExecutionException, JsonProcessingException {
         return  ctx.call("client.config", null, ClientConfig.class);
     }
 
@@ -176,7 +177,7 @@ public class Client {
     * Returns detailed information about this build.
     * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
     */
-    public static ResultOfBuildInfo buildInfo(Context ctx) {
+    public static ResultOfBuildInfo buildInfo(Context ctx) throws ExecutionException, JsonProcessingException {
         return  ctx.call("client.build_info", null, ResultOfBuildInfo.class);
     }
 
@@ -186,7 +187,7 @@ public class Client {
     * @param appRequestId Request ID received from SDK 
     * @param result Result of request processing 
     */
-    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) {
+    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) throws ExecutionException, JsonProcessingException {
          ctx.callVoid("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result));
     }
 

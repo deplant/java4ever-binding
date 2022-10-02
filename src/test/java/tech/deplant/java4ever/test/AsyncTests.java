@@ -6,33 +6,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.Context;
+import tech.deplant.java4ever.binding.ContextBuilder;
 import tech.deplant.java4ever.binding.loader.JavaLibraryPathLoader;
+
+import java.util.concurrent.ExecutionException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AsyncTests {
 
-    private static Logger log = LoggerFactory.getLogger(Context.class);
+	private static Logger log = LoggerFactory.getLogger(Context.class);
 
-    @Test
-    public void testGenerics() throws JsonProcessingException {
-        var ctx = Context.create(JavaLibraryPathLoader.TON_CLIENT,
-                new Client.ClientConfig(
-                        new Client.NetworkConfig(null, new String[]{"http://80.78.241.3/"}, null,
-                                null, null, null,
-                                null, null, null,
-                                null, null, null,
-                                null, null, null, null, null
-                        ),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                )
-        );
-
-        var result = Client.config(ctx);
-        log.debug(result.network().endpoints()[0]);
-    }
+	@Test
+	public void equals_endpoints_in_context() throws JsonProcessingException, ExecutionException {
+		var endpoint = "https://net.ton.dev/graphql";
+		var configJson = "{\"network\":{\"endpoints\":[\"" + endpoint + "\"]}}";
+		var ctx = new ContextBuilder()
+				.setConfigJson(configJson)
+				.buildNew(JavaLibraryPathLoader.TON_CLIENT);
+		assertEquals(Client.config(ctx).network().endpoints()[0], endpoint);
+	}
 
 //    @Test
 //    public void testGo2() throws com.fasterxml.jackson.core.JsonProcessingException {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.*;
 import java.util.Arrays;
 
@@ -439,7 +440,7 @@ public class Abi {
     * @param address Destination address of the message Since ABI version 2.3 destination address of external inbound message is used in messagebody signature calculation. Should be provided when signed external inbound message body iscreated. Otherwise can be omitted.
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeMessageBody}
     */
-    public static ResultOfEncodeMessageBody encodeMessageBody(Context ctx, ABI abi, CallSet callSet, Boolean isInternal, Signer signer,  Number processingTryIndex,  String address) {
+    public static ResultOfEncodeMessageBody encodeMessageBody(Context ctx, ABI abi, CallSet callSet, Boolean isInternal, Signer signer,  Number processingTryIndex,  String address) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_message_body", new ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address), ResultOfEncodeMessageBody.class);
     }
 
@@ -452,7 +453,7 @@ public class Abi {
     * @param signature Signature. Must be encoded with `hex`.
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAttachSignatureToMessageBody}
     */
-    public static ResultOfAttachSignatureToMessageBody attachSignatureToMessageBody(Context ctx, ABI abi, String publicKey, String message, String signature) {
+    public static ResultOfAttachSignatureToMessageBody attachSignatureToMessageBody(Context ctx, ABI abi, String publicKey, String message, String signature) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.attach_signature_to_message_body", new ParamsOfAttachSignatureToMessageBody(abi, publicKey, message, signature), ResultOfAttachSignatureToMessageBody.class);
     }
 
@@ -469,7 +470,7 @@ public class Abi {
     * @param processingTryIndex Processing try index. Used in message processing with retries (if contract's ABI includes "expire" header).<p>Encoder uses the provided try index to calculate messageexpiration time. The 1st message expiration time is specified inClient config.<p>Expiration timeouts will grow with every retry.Retry grow factor is set in Client config:&lt;.....add config parameter with default value here&gt;<p>Default value is 0.
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeMessage}
     */
-    public static ResultOfEncodeMessage encodeMessage(Context ctx, ABI abi,  String address,  DeploySet deploySet,  CallSet callSet, Signer signer,  Number processingTryIndex) {
+    public static ResultOfEncodeMessage encodeMessage(Context ctx, ABI abi,  String address,  DeploySet deploySet,  CallSet callSet, Signer signer,  Number processingTryIndex) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_message", new ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), ResultOfEncodeMessage.class);
     }
 
@@ -486,7 +487,7 @@ public class Abi {
     * @param enableIhr Enable Instant Hypercube Routing for the message. Default is false.
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeInternalMessage}
     */
-    public static ResultOfEncodeInternalMessage encodeInternalMessage(Context ctx,  ABI abi,  String address,  String srcAddress,  DeploySet deploySet,  CallSet callSet, String value,  Boolean bounce,  Boolean enableIhr) {
+    public static ResultOfEncodeInternalMessage encodeInternalMessage(Context ctx,  ABI abi,  String address,  String srcAddress,  DeploySet deploySet,  CallSet callSet, String value,  Boolean bounce,  Boolean enableIhr) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_internal_message", new ParamsOfEncodeInternalMessage(abi, address, srcAddress, deploySet, callSet, value, bounce, enableIhr), ResultOfEncodeInternalMessage.class);
     }
 
@@ -499,7 +500,7 @@ public class Abi {
     * @param signature Signature encoded in `hex`. 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAttachSignature}
     */
-    public static ResultOfAttachSignature attachSignature(Context ctx, ABI abi, String publicKey, String message, String signature) {
+    public static ResultOfAttachSignature attachSignature(Context ctx, ABI abi, String publicKey, String message, String signature) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.attach_signature", new ParamsOfAttachSignature(abi, publicKey, message, signature), ResultOfAttachSignature.class);
     }
 
@@ -511,7 +512,7 @@ public class Abi {
     * @param allowPartial Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default) 
     * @return {@link tech.deplant.java4ever.binding.Abi.DecodedMessageBody}
     */
-    public static DecodedMessageBody decodeMessage(Context ctx, ABI abi, String message,  Boolean allowPartial) {
+    public static DecodedMessageBody decodeMessage(Context ctx, ABI abi, String message,  Boolean allowPartial) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.decode_message", new ParamsOfDecodeMessage(abi, message, allowPartial), DecodedMessageBody.class);
     }
 
@@ -524,7 +525,7 @@ public class Abi {
     * @param allowPartial Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default) 
     * @return {@link tech.deplant.java4ever.binding.Abi.DecodedMessageBody}
     */
-    public static DecodedMessageBody decodeMessageBody(Context ctx, ABI abi, String body, Boolean isInternal,  Boolean allowPartial) {
+    public static DecodedMessageBody decodeMessageBody(Context ctx, ABI abi, String body, Boolean isInternal,  Boolean allowPartial) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.decode_message_body", new ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial), DecodedMessageBody.class);
     }
 
@@ -538,7 +539,7 @@ public class Abi {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeAccount}
     */
-    public static ResultOfEncodeAccount encodeAccount(Context ctx, StateInitSource stateInit,  Long balance,  Long lastTransLt,  Number lastPaid,  Boc.BocCacheType bocCache) {
+    public static ResultOfEncodeAccount encodeAccount(Context ctx, StateInitSource stateInit,  Long balance,  Long lastTransLt,  Number lastPaid,  Boc.BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_account", new ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), ResultOfEncodeAccount.class);
     }
 
@@ -550,7 +551,7 @@ public class Abi {
     * @param allowPartial Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default) 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeAccountData}
     */
-    public static ResultOfDecodeAccountData decodeAccountData(Context ctx, ABI abi, String data,  Boolean allowPartial) {
+    public static ResultOfDecodeAccountData decodeAccountData(Context ctx, ABI abi, String data,  Boolean allowPartial) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.decode_account_data", new ParamsOfDecodeAccountData(abi, data, allowPartial), ResultOfDecodeAccountData.class);
     }
 
@@ -564,7 +565,7 @@ public class Abi {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfUpdateInitialData}
     */
-    public static ResultOfUpdateInitialData updateInitialData(Context ctx,  ABI abi, String data,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache) {
+    public static ResultOfUpdateInitialData updateInitialData(Context ctx,  ABI abi, String data,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.update_initial_data", new ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), ResultOfUpdateInitialData.class);
     }
 
@@ -577,7 +578,7 @@ public class Abi {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided. 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfEncodeInitialData}
     */
-    public static ResultOfEncodeInitialData encodeInitialData(Context ctx,  ABI abi,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache) {
+    public static ResultOfEncodeInitialData encodeInitialData(Context ctx,  ABI abi,  Map<String,Object> initialData,  String initialPubkey,  Boc.BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_initial_data", new ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), ResultOfEncodeInitialData.class);
     }
 
@@ -589,7 +590,7 @@ public class Abi {
     * @param allowPartial Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default) 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeInitialData}
     */
-    public static ResultOfDecodeInitialData decodeInitialData(Context ctx,  ABI abi, String data,  Boolean allowPartial) {
+    public static ResultOfDecodeInitialData decodeInitialData(Context ctx,  ABI abi, String data,  Boolean allowPartial) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.decode_initial_data", new ParamsOfDecodeInitialData(abi, data, allowPartial), ResultOfDecodeInitialData.class);
     }
 
@@ -601,7 +602,7 @@ public class Abi {
     * @param allowPartial  
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfDecodeBoc}
     */
-    public static ResultOfDecodeBoc decodeBoc(Context ctx, AbiParam[] params, String boc, Boolean allowPartial) {
+    public static ResultOfDecodeBoc decodeBoc(Context ctx, AbiParam[] params, String boc, Boolean allowPartial) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.decode_boc", new ParamsOfDecodeBoc(params, boc, allowPartial), ResultOfDecodeBoc.class);
     }
 
@@ -613,7 +614,7 @@ public class Abi {
     * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfAbiEncodeBoc}
     */
-    public static ResultOfAbiEncodeBoc encodeBoc(Context ctx, AbiParam[] params, Map<String,Object> data,  Boc.BocCacheType bocCache) {
+    public static ResultOfAbiEncodeBoc encodeBoc(Context ctx, AbiParam[] params, Map<String,Object> data,  Boc.BocCacheType bocCache) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.encode_boc", new ParamsOfAbiEncodeBoc(params, data, bocCache), ResultOfAbiEncodeBoc.class);
     }
 
@@ -625,7 +626,7 @@ public class Abi {
     * @param output If set to `true` output function ID will be returned which is used in contract response. Default is `false` 
     * @return {@link tech.deplant.java4ever.binding.Abi.ResultOfCalcFunctionId}
     */
-    public static ResultOfCalcFunctionId calcFunctionId(Context ctx, ABI abi, String functionName,  Boolean output) {
+    public static ResultOfCalcFunctionId calcFunctionId(Context ctx, ABI abi, String functionName,  Boolean output) throws ExecutionException, InterruptedException, JsonProcessingException {
         return  ctx.call("abi.calc_function_id", new ParamsOfCalcFunctionId(abi, functionName, output), ResultOfCalcFunctionId.class);
     }
 
