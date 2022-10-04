@@ -68,7 +68,24 @@ public class EverSdkException extends Exception {
 		return this.errorResponse;
 	}
 
-	public record ErrorResult(int code, String message) {
+	public record ErrorResultData(String coreVersion,
+	                              String phase,
+	                              int exitCode,
+	                              int exitArg,
+	                              String accountAddress,
+	                              int gasUsed,
+	                              String description,
+	                              String contractError,
+	                              String[] configServers,
+	                              String queryUrl,
+	                              String queryIpAddress,
+	                              String transactionId) {
+	}
+
+	public record ErrorResult(int code, String message, ErrorResultData data) {
+		public ErrorResult(int code, String message) {
+			this(code, message, null);
+		}
 	}
 
 

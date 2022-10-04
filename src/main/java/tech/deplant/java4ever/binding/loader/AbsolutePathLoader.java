@@ -1,9 +1,14 @@
 package tech.deplant.java4ever.binding.loader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public record AbsolutePathLoader(Path filepath) implements LibraryLoader {
+
+	private static Logger log = LoggerFactory.getLogger(AbsolutePathLoader.class);
 
 	public AbsolutePathLoader {
 		if (!filepath.isAbsolute()) {
@@ -16,12 +21,14 @@ public record AbsolutePathLoader(Path filepath) implements LibraryLoader {
 		this(Paths.get(filePathString));
 	}
 
-	public AbsolutePathLoader ofUserDir(String fileName) {
+	public static AbsolutePathLoader ofUserDir(String fileName) {
 		return new AbsolutePathLoader(System.getProperty("user.dir"));
 	}
 
-	public AbsolutePathLoader ofSystemEnv(String envName) {
-		return new AbsolutePathLoader(System.getenv(envName));
+	public static AbsolutePathLoader ofSystemEnv(String envName) {
+		String path = System.getenv(envName);
+		log.trace("Path from ENV: " + path);
+		return new AbsolutePathLoader(path);
 	}
 
 	@Override

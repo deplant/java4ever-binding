@@ -38,6 +38,14 @@ public final class Context {
 		this.mapper = mapper;
 	}
 
+	public ObjectMapper mapper() {
+		return this.mapper;
+	}
+
+	public long timeout() {
+		return this.timeout;
+	}
+
 	public <T, P, A> T callAppObject(String functionName,
 	                                 P params,
 	                                 A appObject,
@@ -84,32 +92,33 @@ public final class Context {
 	                              String params) throws EverSdkException {
 		this.requestCount++;
 		try {
-			log.info("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + params);
+			log.trace("FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " SEND:" + params);
 			final String result = EverSdkBridge
 					.tcRequest(id(), requestCount(), functionName, params)
 					.result()
 					.get(this.timeout, TimeUnit.MILLISECONDS);
-			log.info("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + result);
+			log.trace("FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestCount() + " RESP:" + result);
 			return result;
-		} catch (CompletionException e) {
+		} catch (CompletionException | ExecutionException e) {
 			// These errors are sent by SDK, response_type=1
 			EverSdkException.ErrorResult sdkResponse = null;
 			try {
-				sdkResponse = this.mapper.readValue(e.getMessage(), EverSdkException.ErrorResult.class);
+				sdkResponse = this.mapper.readValue(e.getCause().getMessage(), EverSdkException.ErrorResult.class);
 				log.warn("Error from SDK. Code: " + sdkResponse.code() + ", Message: " + sdkResponse.message());
 				throw new EverSdkException(sdkResponse, e);
 			} catch (JsonProcessingException ex) {
-				log.error("SDK Error Response deserialization failed!");
+				log.error("SDK Error Response deserialization failed! Response: " + e.getCause().getMessage() +
+				          ex.getMessage());
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                            "SDK Error Response deserialization failed! Check getCause() for actual response."),
-				                           e);
+				                           ex);
 			}
 		} catch (InterruptedException e) {
 			log.error("EVER-SDK call interrupted!" + e.getCause());
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
-		} catch (ExecutionException e) {
-			log.error("EVER-SDK execution exception!" + e.getCause());
-			throw new EverSdkException(new EverSdkException.ErrorResult(-401, "EVER-SDK execution exception!"), e);
+//		} catch (ExecutionException e) {
+//			log.error("EVER-SDK execution exception!" + e.getCause());
+//			throw new EverSdkException(new EverSdkException.ErrorResult(-401, "EVER-SDK execution exception!"), e);
 		} catch (TimeoutException e) {
 			log.error("EVER-SDK Execution expired on Timeout! Current timeout: " + this.timeout + " Message: " +
 			          e.getMessage());
