@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Remove when the following issue is resolved:
  * <a href="https://github.com/FasterXML/jackson-databind/issues/2992">Properties naming strategy do not work with Record #2992</a>
  */
-public class RecordNamingStrategyPatchModule extends SimpleModule {
+class RecordNamingStrategyPatchModule extends SimpleModule {
 
 	@Override
 	public void setupModule(SetupContext context) {
@@ -56,7 +56,7 @@ public class RecordNamingStrategyPatchModule extends SimpleModule {
 
 		protected PatchedValueInstantiator(StdValueInstantiator src, SettableBeanProperty[] constructorArguments) {
 			super(src);
-            this._constructorArguments = constructorArguments;
+			this._constructorArguments = constructorArguments;
 		}
 	}
 }

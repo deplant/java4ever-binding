@@ -7,17 +7,15 @@ plugins {
 
 // Global variables for all modules
 ext {
-    slf4jVersion = "1.7.36"
+    // dependencies
+    slf4jVersion = "1.7.+"
     junitVersion = "5.9.+"
-    jacksonVersion = "2.13.3"
+    jacksonVersion = "2.13.4"
+    // details
     v_version = "1.2.0"
-
-    v_groupRepo = "deplant"
     v_groupId = "tech.deplant.java4ever"
-    v_bindingName = "java4ever-binding"
-    v_bindingRepo = "java4ever-binding"
-    v_frameworkName = "java4ever-framework"
-    v_frameworkRepo = "java4ever-framework"
+    v_artifactId = "java4ever-binding"
+    v_repository = "deplant/java4ever-binding"
     v_developerId = "cassandrus"
     v_developerName = "Dmitriy Yankin"
     v_developerEmail = "cassandrus@protonmail.com"
@@ -66,7 +64,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/deplant/java4ever-binding")
+            url = uri("https://maven.pkg.github.com/" + v_repository)
             credentials {
                 username = System.getenv("USERNAME")
                 password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
@@ -77,7 +75,7 @@ publishing {
             url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
                 username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD ")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }
@@ -86,21 +84,21 @@ publishing {
             from components.java
 
             groupId = v_groupId
-            artifactId = v_bindingName
+            artifactId = v_artifactId
             version = v_version
 
             pom {
-                name = 'java4ever/Binding'
-                description = 'Binding library for Everscale DApp development'
-                url = "https://github.com/deplant/" + v_bindingRepo
+                name = v_artifactId
+                description = "Binding library for Everscale DApp development"
+                url = "https://github.com/" + v_repository
 //                properties = [
 //                        myProp          : "value",
 //                        "prop.with.dots": "anotherValue"
 //                ]
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
                 developers {
@@ -113,9 +111,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/deplant/java4ever-binding.git'
-                    developerConnection = 'scm:git:ssh://github.com/deplant/java4ever-binding.git'
-                    url = 'http://github.com/deplant/java4ever-binding'
+                    connection = "scm:git:git://github.com/" + v_repository + ".git"
+                    developerConnection = "scm:git:ssh://github.com/" + v_repository + ".git"
+                    url = "http://github.com/" + v_repository
                 }
             }
         }
@@ -133,9 +131,6 @@ javadoc {
 }
 
 java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(19)
-//    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -148,9 +143,7 @@ compileJava {
 test {
     useJUnitPlatform()
     jvmArgs += "--enable-preview"
-    jvmArgs += "--add-modules=jdk.incubator.concurrent"
     jvmArgs += "--enable-native-access=java4ever.binding"
-    jvmArgs += "-Djava.library.path=c:/opt/sdk/"
 }
 
 task generateApi(type: NodeTask) {
@@ -159,23 +152,16 @@ task generateApi(type: NodeTask) {
 }
 
 tasks.withType(JavaCompile).configureEach {
-//    javaCompiler = javaToolchains.compilerFor {
-//        languageVersion = JavaLanguageVersion.of(19)
-//    }
     options.compilerArgs += "--enable-preview"
 }
 
 tasks.withType(JavaExec).configureEach {
-//    javaLauncher = javaToolchains.launcherFor {
-//        languageVersion = JavaLanguageVersion.of(19)
-//    }
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
 
 tasks.withType(Test) {
     jvmArgs += "--enable-preview"
-    jvmArgs += "-Djava.library.path=c:/opt/sdk/"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
 
