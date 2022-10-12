@@ -195,6 +195,21 @@ public class Abi {
     */
     public record AbiParam(String name, String type, AbiParam[] components) {}
 
+    public record AbiEvent(String name, AbiParam[] inputs, String id) {}
+
+    public record AbiData(Number key, String name, String type, AbiParam[] components) {}
+
+    public record AbiFunction(String name,  AbiParam[] inputs,  AbiParam[] outputs, String id) {}
+
+    public record AbiContract(@JsonProperty("ABI version") Number abiVersion,
+                              @JsonProperty("abi_version") Number abiVersionOld,
+                              String version,
+                              String[] header,
+                              AbiFunction[] functions,
+                              AbiEvent[] events,
+                              AbiData[] data,
+                              AbiParam[] fields) {}
+
     /**
     * 
     * @param abi Contract ABI.

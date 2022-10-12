@@ -12,11 +12,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
-//TODO Define rules for responses and exceptions (Timeout & so on)
-//TODO Methods for map of contexts
-//TODO Making sure that methods check SDK version
-//TODO Move context creation here
-//TODO In ConfigContext remove all constructors except AllArgs
+/**
+ * Class that represents the established environment inside EVER-SDK and
+ * is identified by id number. Holds last request id and functions to
+ * call SDK methods.
+ */
 public final class Context {
 
 
@@ -28,6 +28,14 @@ public final class Context {
 
 	private int requestCount;
 
+	/**
+	 * Constructo of EVER-SDK context
+	 *
+	 * @param id           number of context received from EVER-SDK, it's provided in contextBuilder.buildNew(loader). You can call it manually from EverSdkBridge.tcCreateContext(), but it's recommended to use ContextBuilder.
+	 * @param requestCount it's 0 for new contexts or last request id for 'loaded' ones
+	 * @param timeout      timeout for operations in milliseconds
+	 * @param mapper       Jackson's ObjectMapper, ContextBuilder have correctly preconfigured one.
+	 */
 	public Context(int id,
 	               int requestCount,
 	               long timeout,
@@ -46,6 +54,19 @@ public final class Context {
 		return this.timeout;
 	}
 
+	/**
+	 * Call for methods that use app_object as one of params
+	 *
+	 * @param functionName
+	 * @param params
+	 * @param appObject
+	 * @param clazz
+	 * @param <T>
+	 * @param <P>
+	 * @param <A>
+	 * @return
+	 * @throws EverSdkException
+	 */
 	public <T, P, A> T callAppObject(String functionName,
 	                                 P params,
 	                                 A appObject,
@@ -53,6 +74,19 @@ public final class Context {
 		return call(functionName, params, clazz);
 	}
 
+	/**
+	 * Call that uses event as consumer param
+	 *
+	 * @param functionName
+	 * @param params
+	 * @param consumer
+	 * @param clazz
+	 * @param <T>
+	 * @param <P>
+	 * @param <E>
+	 * @return
+	 * @throws EverSdkException
+	 */
 	public <T, P, E extends ExternalEvent> T callEvent(String functionName,
 	                                                   P params,
 	                                                   Consumer<E> consumer,
@@ -60,6 +94,17 @@ public final class Context {
 		return call(functionName, params, clazz);
 	}
 
+	/**
+	 * Most used call to EVER-SDK with some output object
+	 *
+	 * @param functionName
+	 * @param params       record of input type, usually ParamsOf...
+	 * @param clazz        class of output type record, usually ResultOf...class
+	 * @param <T>
+	 * @param <P>
+	 * @return output type record, usually ResultOf...
+	 * @throws EverSdkException
+	 */
 	public <T, P> T call(String functionName,
 	                     P params,
 	                     Class<T> clazz) throws EverSdkException {
@@ -73,6 +118,14 @@ public final class Context {
 		}
 	}
 
+	/**
+	 * Calls to EVER-SDK without outputs
+	 *
+	 * @param functionName
+	 * @param params
+	 * @param <P>
+	 * @throws EverSdkException
+	 */
 	public <P> void callVoid(String functionName,
 	                         P params) throws EverSdkException {
 		processRequest(functionName, processParams(params));
@@ -116,9 +169,6 @@ public final class Context {
 		} catch (InterruptedException e) {
 			log.error("EVER-SDK call interrupted!" + e.getCause());
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
-//		} catch (ExecutionException e) {
-//			log.error("EVER-SDK execution exception!" + e.getCause());
-//			throw new EverSdkException(new EverSdkException.ErrorResult(-401, "EVER-SDK execution exception!"), e);
 		} catch (TimeoutException e) {
 			log.error("EVER-SDK Execution expired on Timeout! Current timeout: " + this.timeout + " Message: " +
 			          e.getMessage());

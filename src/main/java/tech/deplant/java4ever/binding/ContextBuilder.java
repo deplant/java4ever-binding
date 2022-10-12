@@ -12,6 +12,9 @@ import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.lang.foreign.MemorySession;
 
+/**
+ * Builder to correctly request & create Context object
+ */
 public class ContextBuilder {
 
 	public static final ObjectMapper DEFAULT_MAPPER = JsonMapper.builder() // or different mapper for other format
@@ -52,10 +55,27 @@ public class ContextBuilder {
 		return this;
 	}
 
+	/**
+	 * If you, for some reason, can't directly access already created Context object, but you're sure that
+	 * it is created, loaded and you know it's id and last request count, you should use this method to
+	 * load Context object out of this data.
+	 * It's up to you if id and request count are correct, it will not be checked until you start calls with Context.
+	 *
+	 * @param existingContextId           id of existing, previously created Context in EVER-SDK
+	 * @param existingContextRequestCount last request number of previously created Context in EVER-SDK
+	 * @return Context object made of provided data
+	 */
 	public Context buildFromExisting(int existingContextId, int existingContextRequestCount) {
 		return new Context(existingContextId, existingContextRequestCount, this.timeout, this.jsonMapper);
 	}
 
+	/**
+	 * Terminal builder method to create new Context
+	 *
+	 * @param loader Specify how exactly ton_client library will be found and loaded
+	 * @return Context object that can be used in calls to EVER-SDK, ton_client library is loaded and called in the process
+	 * @throws JsonProcessingException
+	 */
 	public Context buildNew(LibraryLoader loader) throws JsonProcessingException {
 		loader.load();
 		try (MemorySession scope = MemorySession.openShared()) {
