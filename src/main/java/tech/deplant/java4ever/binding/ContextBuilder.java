@@ -13,7 +13,7 @@ import tech.deplant.java4ever.binding.loader.LibraryLoader;
 import java.lang.foreign.MemorySession;
 
 /**
- * Builder to correctly request & create Context object
+ * Builder to correctly request and create Context object
  */
 public class ContextBuilder {
 
