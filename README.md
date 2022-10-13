@@ -1,12 +1,13 @@
 # java4ever-binding
 
-[![javadoc](https://javadoc.io/badge2/tech.deplant.java4ever/java4ever-binding/javadoc.svg)](https://javadoc.io/doc/tech.deplant.java4ever/java4ever-binding)
 [![JDK version](https://img.shields.io/badge/Java-19+-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.36+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
-**Get quick help in our telegram
-channel:** [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/deplant\_chat)
+* Discuss in
+  Telegram: [![Channel on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/deplant\_chat\_en)
+* Read full
+  docs: [![javadoc](https://javadoc.io/badge2/tech.deplant.java4ever/java4ever-binding/javadoc.svg)](https://javadoc.io/doc/tech.deplant.java4ever/java4ever-binding)
 
 **java4ever-binding** is a Java Binding library for
 [EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of
@@ -38,7 +39,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.1.2'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.2.0'
 }
 ```
 

@@ -195,7 +195,7 @@ public class Abi {
     */
     public record AbiParam(String name, String type, AbiParam[] components) {}
 
-    public record AbiEvent(String name, AbiParam[] inputs, String id) {}
+    public record AbiEvent(String name, AbiParam[] inputs,  AbiParam[] outputs, String id) {}
 
     public record AbiData(Number key, String name, String type, AbiParam[] components) {}
 
