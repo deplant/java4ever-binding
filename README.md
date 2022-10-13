@@ -57,4 +57,3 @@ dependencies {
 ### Logging
 
 java4ever-binding uses the [SLF4J](https://www.slf4j.org/) logging facade.
-Users should therefore adopt a logging implementation like [Log4j](https://logging.apache.org/log4j/2.x/) or any other.
