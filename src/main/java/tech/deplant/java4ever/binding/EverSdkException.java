@@ -79,7 +79,12 @@ public class EverSdkException extends Exception {
 	                              String[] configServers,
 	                              String queryUrl,
 	                              String queryIpAddress,
-	                              String transactionId) {
+	                              String transactionId,
+	                              String messageId,
+	                              String shardBlockId,
+	                              String waitingExpirationTime,
+	                              String blockTime,
+	                              ErrorResult localError) {
 	}
 
 	public record ErrorResult(int code, String message, ErrorResultData data) {

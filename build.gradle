@@ -12,12 +12,12 @@ ext {
     junitVersion = "5.9.1"
     jacksonVersion = "2.13.4"
     // details
-    v_version = "1.2.0"
+    v_version = "1.2.1"
     v_groupId = "tech.deplant.java4ever"
     v_artifactId = "java4ever-binding"
     v_repository = "deplant/java4ever-binding"
     v_developerId = "cassandrus"
-    v_developerName = "Dmitriy Yankin"
+    v_developerName = "Dima Yankin"
     v_developerEmail = "cassandrus@protonmail.com"
 }
 

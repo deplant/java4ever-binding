@@ -156,10 +156,28 @@ public final class Context {
 			// These errors are sent by SDK, response_type=1
 			EverSdkException.ErrorResult sdkResponse = null;
 			try {
+				// try to parse error response
 				sdkResponse = this.mapper.readValue(e.getCause().getMessage(), EverSdkException.ErrorResult.class);
-				log.warn("Error from SDK. Code: " + sdkResponse.code() + ", Message: " + sdkResponse.message());
-				throw new EverSdkException(sdkResponse, e);
+				if (sdkResponse.data().localError() != null && sdkResponse.data().localError().data().exitCode() > 0) {
+					// in case of contract code custom exit code
+					log.warn("Error from SDK. Code: " + sdkResponse.data().localError().code() + ", Message: " +
+					         sdkResponse.data().localError().message());
+					throw new EverSdkException(new EverSdkException.ErrorResult(sdkResponse.data()
+					                                                                       .localError()
+					                                                                       .data()
+					                                                                       .exitCode(),
+					                                                            "Contract did not accept message. For more information about exit code check the contract source code or ask the contract developer",
+					                                                            sdkResponse.data()
+					                                                                       .localError()
+					                                                                       .data()), e);
+				} else {
+					// on other errors just rethrow
+					log.warn("Error from SDK. Code: " + sdkResponse.code() + ", Message: " + sdkResponse.message());
+					throw new EverSdkException(sdkResponse, e);
+				}
+
 			} catch (JsonProcessingException ex) {
+				// if error response parsing fails...
 				log.error("SDK Error Response deserialization failed! Response: " + e.getCause().getMessage() +
 				          ex.getMessage());
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
