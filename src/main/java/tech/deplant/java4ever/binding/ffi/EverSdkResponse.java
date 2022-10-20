@@ -33,6 +33,9 @@ public class EverSdkResponse implements tc_response_handler_t {
 				// NOP = 2, no operation. In combination with finished = true signals that the request handling was finished.
 				logger.log(System.Logger.Level.TRACE,
 				           () -> "REQID:" + x0 + ", NOP");
+				if (x3) {
+					this.result.complete(EverSdkBridge.toString(x1, scope));
+				}
 			} else if (x2 == 3) {
 				// APP_REQUEST = 3, request some data from application. See Application objects
 				logger.log(System.Logger.Level.TRACE,
@@ -46,6 +49,9 @@ public class EverSdkResponse implements tc_response_handler_t {
 				// Nevertheless the binding must check the finished flag to release data, associated with request.
 				logger.log(System.Logger.Level.TRACE,
 				           () -> "REQID:" + x0 + ", RESERVED");
+				if (x3) {
+					this.result.complete(EverSdkBridge.toString(x1, scope));
+				}
 			} else {
 				// CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
 				logger.log(System.Logger.Level.TRACE,

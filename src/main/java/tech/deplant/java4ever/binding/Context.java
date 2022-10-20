@@ -144,7 +144,7 @@ public record Context(int id, ObjectMapper mapper, long timeout, AtomicInteger r
 			try {
 				sdkResponse = mapper().readValue(e.getCause().getMessage(), EverSdkException.ErrorResult.class);
 				// in case of contract custom exit code ("require" error)
-				final var responseCopy = sdkResponse;
+				final EverSdkException.ErrorResult responseCopy = sdkResponse;
 				if (responseCopy.data().localError() != null &&
 				    responseCopy.data().localError().data().exitCode() > 0) {
 					logger.log(System.Logger.Level.WARNING,
