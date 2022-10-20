@@ -8,7 +8,7 @@ plugins {
 // Global variables for all modules
 ext {
     // dependencies
-    slf4jVersion = "1.7.36"
+    slf4jVersion = "2.0.3"
     junitVersion = "5.9.1"
     jacksonVersion = "2.13.4"
     // details
@@ -40,8 +40,8 @@ dependencies {
 
     // RUNTIME **************************
 
-    // SLF4J Logging Framework
-    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    // SLF4J Implementation of System.Logger (JEP 264: Platform Logging API and Service)
+    implementation "org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion"
 
     // JSON
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"

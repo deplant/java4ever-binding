@@ -1,8 +1,5 @@
 module java4ever.binding {
-	requires jdk.unsupported;
-	requires java.scripting;
-	requires jdk.incubator.concurrent;
-	requires org.slf4j;
+	requires org.slf4j.jdk.platform.logging;
 	requires com.fasterxml.jackson.databind;
 	requires com.fasterxml.jackson.datatype.jdk8;
 	requires com.fasterxml.jackson.datatype.jsr310;

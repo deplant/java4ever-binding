@@ -15,7 +15,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Remove when the following issue is resolved:
+ * Patch for Jackson mapping of records.
+ * Can be removed when the following issue is resolved:
  * <a href="https://github.com/FasterXML/jackson-databind/issues/2992">Properties naming strategy do not work with Record #2992</a>
  */
 class RecordNamingStrategyPatchModule extends SimpleModule {
@@ -37,7 +38,7 @@ class RecordNamingStrategyPatchModule extends SimpleModule {
 			}
 			Map<String, BeanPropertyDefinition> map = beanDesc.findProperties()
 			                                                  .stream()
-			                                                  .collect(Collectors.toMap(p -> p.getInternalName(),
+			                                                  .collect(Collectors.toMap(BeanPropertyDefinition::getInternalName,
 			                                                                            Function.identity()));
 			SettableBeanProperty[] renamedConstructorArgs = Arrays.stream(defaultInstantiator.getFromObjectArguments(
 					                                                      config))

@@ -1,14 +1,11 @@
 package tech.deplant.java4ever.binding.loader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public record AbsolutePathLoader(Path filepath) implements LibraryLoader {
 
-	private static Logger log = LoggerFactory.getLogger(AbsolutePathLoader.class);
+	private final static System.Logger logger = System.getLogger(AbsolutePathLoader.class.getName());
 
 	public AbsolutePathLoader {
 		if (!filepath.isAbsolute()) {
@@ -27,7 +24,8 @@ public record AbsolutePathLoader(Path filepath) implements LibraryLoader {
 
 	public static AbsolutePathLoader ofSystemEnv(String envName) {
 		String path = System.getenv(envName);
-		log.trace("Path from ENV: " + path);
+		logger.log(System.Logger.Level.TRACE,
+		           () -> "Path from ENV: " + path);
 		return new AbsolutePathLoader(path);
 	}
 

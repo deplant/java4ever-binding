@@ -8,13 +8,13 @@ import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.Context;
 import tech.deplant.java4ever.binding.ContextBuilder;
 import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.loader.JavaLibraryPathLoader;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AsyncTests {
 
-	private static Logger log = LoggerFactory.getLogger(Context.class);
+	private static final Logger log = LoggerFactory.getLogger(Context.class);
 
 	@Test
 	public void equals_endpoints_in_context() throws JsonProcessingException, EverSdkException {
@@ -22,7 +22,7 @@ public class AsyncTests {
 		var configJson = "{\"network\":{\"endpoints\":[\"" + endpoint + "\"]}}";
 		var ctx = new ContextBuilder()
 				.setConfigJson(configJson)
-				.buildNew(JavaLibraryPathLoader.TON_CLIENT);
+				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
 		assertEquals(Client.config(ctx).network().endpoints()[0], endpoint);
 	}
 
