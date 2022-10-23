@@ -20,7 +20,7 @@ public class EverSdkException extends Exception {
 	 * The cause is not initialized, and may subsequently be
 	 * initialized by a call to {@link #initCause(Throwable) initCause}.
 	 */
-	protected EverSdkException(ErrorResult errorResponse) {
+	public EverSdkException(ErrorResult errorResponse) {
 		super();
 		this.errorResponse = errorResponse;
 	}
@@ -32,7 +32,7 @@ public class EverSdkException extends Exception {
 	 *
 	 * @param message the detail message
 	 */
-	protected EverSdkException(ErrorResult errorResponse, String message) {
+	public EverSdkException(ErrorResult errorResponse, String message) {
 		super(message);
 		this.errorResponse = errorResponse;
 	}

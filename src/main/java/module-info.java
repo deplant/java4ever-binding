@@ -1,6 +1,6 @@
 module java4ever.binding {
 	requires org.slf4j.jdk.platform.logging;
-	requires com.fasterxml.jackson.databind;
+	requires transitive com.fasterxml.jackson.databind;
 	requires com.fasterxml.jackson.datatype.jdk8;
 	requires com.fasterxml.jackson.datatype.jsr310;
 	requires com.fasterxml.jackson.module.paramnames;
