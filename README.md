@@ -39,7 +39,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.2.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.3.0'
 }
 ```
 
@@ -50,10 +50,10 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
 ### Logging
 
-java4ever-binding uses the [SLF4J](https://www.slf4j.org/) logging facade.
+java4ever-binding uses the JDK Platform Loggging (JEP 264: Platform Logging API and Service).
