@@ -2,7 +2,7 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import tech.deplant.java4ever.binding.ffi.EverSdkBridge;
+import tech.deplant.java4ever.binding.ffi.SdkBridge;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -130,7 +130,7 @@ public record Context(int id, ObjectMapper mapper, long timeout, AtomicInteger r
 		try {
 			logger.log(System.Logger.Level.TRACE,
 			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " SEND:" + params);
-			final String result = EverSdkBridge
+			final String result = SdkBridge
 					.tcRequest(id(), requestId, functionName, params)
 					.result()
 					.get(timeout(), TimeUnit.MILLISECONDS);

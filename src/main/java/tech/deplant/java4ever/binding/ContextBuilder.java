@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import tech.deplant.java4ever.binding.ffi.EverSdkBridge;
+import tech.deplant.java4ever.binding.ffi.SdkBridge;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
-
-import java.lang.foreign.MemorySession;
 
 /**
  * Builder to correctly request and create Context object
@@ -77,17 +75,15 @@ public class ContextBuilder {
 	 * @throws JsonProcessingException
 	 */
 	public Context buildNew(LibraryLoader loader) throws JsonProcessingException {
-		loader.load();
-		try (MemorySession scope = MemorySession.openShared()) {
-			final String response = EverSdkBridge.tcCreateContext(scope, this.configJson);
-			final var createContextResponse = this.jsonMapper.readValue(response,
-			                                                            ContextBuilder.ResultOfCreateContext.class);
-			if (createContextResponse.result() == null || createContextResponse.result() < 1) {
-				throw new RuntimeException("sdk.create_context failed!");
-			}
-			return new Context(createContextResponse.result(), 0, this.timeout, this.jsonMapper);
+		final var createContextResponse = this.jsonMapper.readValue(SdkBridge.tcCreateContext(loader, this.configJson),
+		                                                            ResultOfCreateContext.class);
+		if (createContextResponse.result() == null || createContextResponse.result() < 1) {
+			throw new RuntimeException("sdk.create_context failed!");
 		}
-
+		return new Context(createContextResponse.result(),
+		                   0,
+		                   this.timeout,
+		                   this.jsonMapper);
 	}
 
 	public record ResultOfCreateContext(Integer result, String error) {
