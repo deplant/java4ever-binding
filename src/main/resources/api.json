@@ -1,5 +1,5 @@
 {
-  "version": "1.37.0",
+  "version": "1.38.0",
   "modules": [
     {
       "name": "client",
@@ -365,7 +365,7 @@
               "optional_inner": {
                 "type": "String"
               },
-              "summary": "**This field is deprecated, but left for backward-compatibility.** DApp Server public address.",
+              "summary": "**This field is deprecated, but left for backward-compatibility.** Evernode endpoint.",
               "description": null
             },
             {
@@ -377,8 +377,8 @@
                   "type": "String"
                 }
               },
-              "summary": "List of DApp Server addresses.",
-              "description": "Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.\nCheck the full list of [supported network endpoints](../ton-os-api/networks.md)."
+              "summary": "List of Evernode endpoints.",
+              "description": "Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.\nCheck the full list of [supported network endpoints](https://docs.everos.dev/ever-sdk/reference/ever-os-api/networks)."
             },
             {
               "name": "network_retries_count",
@@ -539,8 +539,8 @@
               "optional_inner": {
                 "type": "String"
               },
-              "summary": "Access key to GraphQL API.",
-              "description": "You can specify here Evercloud project secret ot serialized JWT."
+              "summary": "Access key to GraphQL API (Project secret)",
+              "description": null
             }
           ],
           "summary": null,
@@ -1310,29 +1310,61 @@
           "enum_types": [
             {
               "name": "AES",
-              "type": "Ref",
-              "ref_name": "crypto.AesParamsEB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.AesParamsEB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             },
             {
               "name": "ChaCha20",
-              "type": "Ref",
-              "ref_name": "crypto.ChaCha20ParamsEB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.ChaCha20ParamsEB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             },
             {
               "name": "NaclBox",
-              "type": "Ref",
-              "ref_name": "crypto.NaclBoxParamsEB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.NaclBoxParamsEB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             },
             {
               "name": "NaclSecretBox",
-              "type": "Ref",
-              "ref_name": "crypto.NaclSecretBoxParamsEB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.NaclSecretBoxParamsEB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             }
@@ -1588,22 +1620,46 @@
           "enum_types": [
             {
               "name": "ChaCha20",
-              "type": "Ref",
-              "ref_name": "crypto.ChaCha20ParamsCB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.ChaCha20ParamsCB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             },
             {
               "name": "NaclBox",
-              "type": "Ref",
-              "ref_name": "crypto.NaclBoxParamsCB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.NaclBoxParamsCB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             },
             {
               "name": "NaclSecretBox",
-              "type": "Ref",
-              "ref_name": "crypto.NaclSecretBoxParamsCB",
+              "type": "Struct",
+              "struct_fields": [
+                {
+                  "name": "value",
+                  "type": "Ref",
+                  "ref_name": "crypto.NaclSecretBoxParamsCB",
+                  "summary": null,
+                  "description": null
+                }
+              ],
               "summary": null,
               "description": null
             }
@@ -7608,14 +7664,14 @@
                 }
               ],
               "summary": "Pin the BOC with `pin` name.",
-              "description": "Such BOC will not be removed from cache until it is unpinned"
+              "description": "Such BOC will not be removed from cache until it is unpinned BOCs can have several pins and each of the pins has reference counter indicating how many\ntimes the BOC was pinned with the pin. BOC is removed from cache after all references for all\npins are unpinned with `cache_unpin` function calls."
             },
             {
               "name": "Unpinned",
               "type": "Struct",
               "struct_fields": [],
-              "summary": " ",
-              "description": null
+              "summary": "BOC is placed into a common BOC pool with limited size regulated by LRU (least recently used) cache lifecycle.",
+              "description": "BOC resides there until it is replaced with other BOCs if it is not used"
             }
           ],
           "summary": null,
@@ -8867,7 +8923,7 @@
         },
         {
           "name": "cache_set",
-          "summary": "Save BOC into cache",
+          "summary": "Save BOC into cache or increase pin counter for existing pinned BOC",
           "description": null,
           "params": [
             {
@@ -8905,8 +8961,8 @@
         },
         {
           "name": "cache_unpin",
-          "summary": "Unpin BOCs with specified pin.",
-          "description": "BOCs which don't have another pins will be removed from cache",
+          "summary": "Unpin BOCs with specified pin defined in the `cache_set`. Decrease pin reference counter for BOCs with specified pin defined in the `cache_set`. BOCs which have only 1 pin and its reference counter become 0 will be removed from cache",
+          "description": null,
           "params": [
             {
               "name": "context",
@@ -10681,7 +10737,7 @@
               "number_type": "UInt",
               "number_size": 64,
               "summary": "Deprecated.",
-              "description": "Left for backward compatibility. Does not participate in account transaction fees calculation."
+              "description": "Contains the same data as ext_in_msg_fee field"
             },
             {
               "name": "storage_fee",
@@ -10713,7 +10769,7 @@
               "number_type": "UInt",
               "number_size": 64,
               "summary": "Deprecated.",
-              "description": "This is the field that is named as `total_fees` in GraphQL API Transaction type. `total_account_fees` name is misleading, because it does not mean account fees, instead it means\nvalidators total fees received for the transaction execution. It does not include some forward fees that account\nactually pays now, but validators will receive later during value delivery to another account (not even in the receiving\ntransaction).\nBecause of all of this, this field is not interesting for those who wants to understand\nthe real account fees, this is why it is deprecated and left for backward compatibility."
+              "description": "Contains the same data as account_fees field"
             },
             {
               "name": "total_output",
@@ -11245,6 +11301,13 @@
               "name": "NetworkModuleResumed",
               "type": "Number",
               "value": "614",
+              "summary": null,
+              "description": null
+            },
+            {
+              "name": "Unauthorized",
+              "type": "Number",
+              "value": "615",
               "summary": null,
               "description": null
             }
@@ -12554,7 +12617,7 @@
         {
           "name": "subscribe",
           "summary": "Creates a subscription",
-          "description": "The subscription is a persistent communication channel between\nclient and Everscale Network.\n\n### Important Notes on Subscriptions\n\nUnfortunately sometimes the connection with the network brakes down.\nIn this situation the library attempts to reconnect to the network.\nThis reconnection sequence can take significant time.\nAll of this time the client is disconnected from the network.\n\nBad news is that all changes that happened while\nthe client was disconnected are lost.\n\nGood news is that the client report errors to the callback when\nit loses and resumes connection.\n\nSo, if the lost changes are important to the application then\nthe application must handle these error reports.\n\nLibrary reports errors with `responseType` == 101\nand the error object passed via `params`.\n\nWhen the library has successfully reconnected\nthe application receives callback with\n`responseType` == 101 and `params.code` == 614 (NetworkModuleResumed).\n\nApplication can use several ways to handle this situation:\n- If application monitors changes for the single\nobject (for example specific account):  application\ncan perform a query for this object and handle actual data as a\nregular data from the subscription.\n- If application monitors sequence of some objects\n(for example transactions of the specific account): application must\nrefresh all cached (or visible to user) lists where this sequences presents.",
+          "description": "The subscription is a persistent communication channel between\nclient and Everscale Network.\n\n### Important Notes on Subscriptions\n\nUnfortunately sometimes the connection with the network breakes down.\nIn this situation the library attempts to reconnect to the network.\nThis reconnection sequence can take significant time.\nAll of this time the client is disconnected from the network.\n\nBad news is that all changes that happened while\nthe client was disconnected are lost.\n\nGood news is that the client report errors to the callback when\nit loses and resumes connection.\n\nSo, if the lost changes are important to the application then\nthe application must handle these error reports.\n\nLibrary reports errors with `responseType` == 101\nand the error object passed via `params`.\n\nWhen the library has successfully reconnected\nthe application receives callback with\n`responseType` == 101 and `params.code` == 614 (NetworkModuleResumed).\n\nApplication can use several ways to handle this situation:\n- If application monitors changes for the single\nobject (for example specific account):  application\ncan perform a query for this object and handle actual data as a\nregular data from the subscription.\n- If application monitors sequence of some objects\n(for example transactions of the specific account): application must\nrefresh all cached (or visible to user) lists where this sequences presents.",
           "params": [
             {
               "name": "context",

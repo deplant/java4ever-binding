@@ -1,20 +1,21 @@
 package tech.deplant.java4ever.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import tech.deplant.java4ever.binding.Client;
-import tech.deplant.java4ever.binding.Context;
 import tech.deplant.java4ever.binding.ContextBuilder;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@Execution(ExecutionMode.CONCURRENT)
 public class AsyncTests {
-
-	private static final Logger log = LoggerFactory.getLogger(Context.class);
 
 	@Test
 	public void equals_endpoints_in_context() throws JsonProcessingException, EverSdkException {

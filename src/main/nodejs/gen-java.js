@@ -218,7 +218,7 @@ setTypeExported({type:'client.ClientConfig'});
 
 api.modules.forEach(mod => {
     currMod = mod;
-    let imports = {'com.fasterxml.jackson.annotation.JsonProperty':true,'com.fasterxml.jackson.core.JsonProcessingException':true,'java.util.Map':true,'java.util.Optional':true,'lombok.*':true,'java.util.stream.*':true,'java.util.Arrays':true};
+    let imports = {'com.fasterxml.jackson.annotation.JsonProperty':true,'com.fasterxml.jackson.core.JsonProcessingException':true,'java.util.Map':true,'java.util.Optional':true,'java.util.stream.*':true,'java.util.Arrays':true};
     let body = '';
 
     mod.functions.forEach(f => {
@@ -305,7 +305,7 @@ api.modules.forEach(mod => {
         if (appObject)
             params.push({type:appObject.type, name:'appObject', optional:''});
 
-        // TODO temporary removed app objects
+        // temporary removed app objects
         body += `    /**\n`;
         body += `    * <strong>${mod.name}.${f.name}</strong>\n`;
         body += `    * ${toJavadoc(f.summary,f.description)}\n`;
@@ -315,7 +315,8 @@ api.modules.forEach(mod => {
         if (rField.getType(mod.name)!='void')
             body += `    * @return {@link ${packageName}.${toCapitalCase(mod.name)}.${rField.getType(mod.name)}}\n`;
         body += `    */\n`;
-        body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static ${rField.getType(mod.name).replace('Map<String,Object>','Map')} ${toCamelCase(f.name)}(Context ctx${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws JsonProcessingException {\n`
+        body += `    ${isDeprecated(f.summary,f.description)?'@Deprecated ':''}public static ${rField.getType(mod.name).replace('Map<String,Object>','Map')} ${toCamelCase(f.name)}(Context ctx${params.map(p=>', '+p.optional+' '+p.type+' '+p.name).join('')}${event?`, Consumer<${event}> consumer`:''})  throws EverSdkException {\n`
+        body += `        }\n\n`;
         body += `        ${rField.getType(mod.name)=='void'?'':'return '} ctx.call${rField.getType(mod.name)=='void'?'Void':''}${appObject?'AppObject':''}${event?'Event':''}("${mod.name}.${f.name}", ${rParamName?'new ' + rParamName + '(':''}${(params.filter(p=>p.name!='appObject').length > 0)?params.filter(p=>p.name!='appObject').map(p=>p.name).join(', '):'null'}${rParamName?')':''}${event?`, consumer`:''}${appObject?`, appObject`:''}${rField.getType(mod.name)=='void'?')':', '+rField.getType(mod.name).replace('Map<String,Object>','Map')+'.class)'};\n`;
         body += `    }\n\n`;
     });
