@@ -12,6 +12,8 @@ import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.reference.ApiReference;
 import tech.deplant.java4ever.binding.io.JsonResource;
 
+import java.io.IOException;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Execution(ExecutionMode.CONCURRENT)
 public class GeneratorTests {
@@ -29,7 +31,7 @@ public class GeneratorTests {
 	}
 
 	@Test
-	public void generate_api() throws JsonProcessingException {
+	public void generate_api() throws IOException {
 		ParserEngine.parse();
 		//System.out.println(helloWorld.toString());
 	}

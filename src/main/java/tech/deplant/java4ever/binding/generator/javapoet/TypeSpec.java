@@ -40,7 +40,7 @@ public final class TypeSpec {
 	public final CodeBlock javadoc;
 	public final List<AnnotationSpec> annotations;
 
-	public final Map<String, TypeName> recordComponents;
+	public final List<ParameterSpec> recordComponents;
 	public final Set<Modifier> modifiers;
 	public final List<TypeVariableName> typeVariables;
 	public final TypeName superclass;
@@ -61,7 +61,7 @@ public final class TypeSpec {
 		this.anonymousTypeArguments = builder.anonymousTypeArguments;
 		this.javadoc = builder.javadoc.build();
 		this.annotations = Util.immutableList(builder.annotations);
-		this.recordComponents = Util.immutableMap(builder.recordComponents);
+		this.recordComponents = Util.immutableList(builder.recordComponents);
 		this.modifiers = Util.immutableSet(builder.modifiers);
 		this.typeVariables = Util.immutableList(builder.typeVariables);
 		this.superclass = builder.superclass;
@@ -96,7 +96,7 @@ public final class TypeSpec {
 		this.anonymousTypeArguments = null;
 		this.javadoc = type.javadoc;
 		this.annotations = Collections.emptyList();
-		this.recordComponents = Collections.emptyMap();
+		this.recordComponents = Collections.emptyList();
 		this.modifiers = Collections.emptySet();
 		this.typeVariables = Collections.emptyList();
 		this.superclass = null;
@@ -164,6 +164,16 @@ public final class TypeSpec {
 		return this.modifiers.contains(modifier);
 	}
 
+	private CodeBlock javadocWithRecordComponents() {
+		final CodeBlock.Builder builder = this.javadoc.toBuilder();
+		for (ParameterSpec component : this.recordComponents) {
+			if (!component.javadoc.isEmpty()) {
+				builder.add("\n@param $L $L", component.name, component.javadoc);
+			}
+		}
+		return builder.build();
+	}
+
 	public Builder toBuilder() {
 		Builder builder = new Builder(this.kind, this.name, this.anonymousTypeArguments);
 		builder.javadoc.add(this.javadoc);
@@ -174,6 +184,7 @@ public final class TypeSpec {
 		builder.superinterfaces.addAll(this.superinterfaces);
 		builder.enumConstants.putAll(this.enumConstants);
 		builder.fieldSpecs.addAll(this.fieldSpecs);
+		builder.recordComponents.addAll(this.recordComponents);
 		builder.methodSpecs.addAll(this.methodSpecs);
 		builder.typeSpecs.addAll(this.typeSpecs);
 		builder.initializerBlock.add(this.initializerBlock);
@@ -192,6 +203,7 @@ public final class TypeSpec {
 
 		try {
 			if (enumName != null) {
+
 				codeWriter.emitJavadoc(this.javadoc);
 				codeWriter.emitAnnotations(this.annotations, false);
 				codeWriter.emit("$L", enumName);
@@ -213,7 +225,11 @@ public final class TypeSpec {
 				// Push an empty type (specifically without nested types) for type-resolution.
 				codeWriter.pushType(new TypeSpec(this));
 
-				codeWriter.emitJavadoc(this.javadoc);
+				if (this.kind == Kind.RECORD) {
+					codeWriter.emitJavadoc(javadocWithRecordComponents());
+				} else {
+					codeWriter.emitJavadoc(this.javadoc);
+				}
 				codeWriter.emitAnnotations(this.annotations, false);
 				codeWriter.emitModifiers(this.modifiers, Util.union(implicitModifiers, this.kind.asMemberModifiers));
 				if (this.kind == Kind.ANNOTATION) {
@@ -263,17 +279,16 @@ public final class TypeSpec {
 
 				if (this.kind == Kind.RECORD) {
 					codeWriter.emit("(");
-					boolean firstMember = true;
-					for (Iterator<Map.Entry<String, TypeName>> i = this.recordComponents.entrySet()
-					                                                                    .iterator(); i.hasNext(); ) {
-//                  for (FieldSpec fieldSpec : fieldSpecs) {
-						Map.Entry<String, TypeName> entry = i.next();
-						codeWriter.emit(CodeBlock.builder().add("$T " + entry.getKey(), entry.getValue()).build());
-//                      fieldSpec.emit(codeWriter, kind.implicitFieldModifiers);
-						if (i.hasNext()) {
-							codeWriter.emit(", ");
+					boolean firstComponent = true;
+
+					for (Iterator<ParameterSpec> i = this.recordComponents.iterator(); i.hasNext(); ) {
+						ParameterSpec parameter = i.next();
+						if (!firstComponent) {
+							codeWriter.emit(",").emitWrappingSpace();
 						}
-						firstMember = false;
+						//TODO remove modifiers
+						parameter.emit(codeWriter, false);
+						firstComponent = false;
 					}
 					codeWriter.emit(")");
 				}
@@ -474,7 +489,7 @@ public final class TypeSpec {
 		public final Map<String, TypeSpec> enumConstants = new LinkedHashMap<>();
 		public final List<AnnotationSpec> annotations = new ArrayList<>();
 
-		public final Map<String, TypeName> recordComponents = new LinkedHashMap<>();
+		public final List<ParameterSpec> recordComponents = new ArrayList<>();
 		public final List<Modifier> modifiers = new ArrayList<>();
 		public final List<TypeVariableName> typeVariables = new ArrayList<>();
 		public final List<TypeName> superinterfaces = new ArrayList<>();
@@ -714,14 +729,25 @@ public final class TypeSpec {
 			return this;
 		}
 
-		public Builder addRecordComponent(TypeName type, String name) {
-			this.recordComponents.put(name, type);
+		public TypeSpec.Builder addRecordComponent(Iterable<ParameterSpec> parameterSpecs) {
+			Util.checkArgument(parameterSpecs != null, "parameterSpecs == null");
+			for (ParameterSpec parameterSpec : parameterSpecs) {
+				this.recordComponents.add(parameterSpec);
+			}
 			return this;
 		}
 
-		public Builder addRecordComponent(Type type, String name) {
-			this.recordComponents.put(name, TypeName.get(type));
+		public TypeSpec.Builder addRecordComponent(ParameterSpec parameterSpec) {
+			this.recordComponents.add(parameterSpec);
 			return this;
+		}
+
+		public TypeSpec.Builder addRecordComponent(TypeName type, String name) {
+			return addRecordComponent(ParameterSpec.builder(type, name).build());
+		}
+
+		public TypeSpec.Builder addRecordComponent(Type type, String name) {
+			return addRecordComponent(TypeName.get(type), name);
 		}
 
 		public Builder addOriginatingElement(Element originatingElement) {

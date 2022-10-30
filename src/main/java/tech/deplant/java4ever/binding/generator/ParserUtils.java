@@ -34,11 +34,11 @@ public class ParserUtils {
 		return new String(newCodePoints, 0, outOffset);
 	}
 
-	public static String toCamelCase(final String str) {
-		String[] wordArray = str.toLowerCase().split("_");
-		StringBuilder builder = new StringBuilder();
+	public static String toParameterCase(final String str) {
+		final String[] wordArray = str.split("_");
+		final StringBuilder builder = new StringBuilder();
 		builder.append(wordArray[0].toLowerCase());
-		Arrays.stream(str.toLowerCase().split("_"))
+		Arrays.stream(wordArray)
 		      .skip(1)
 		      .forEach(w -> {
 			      builder.append(w.substring(0, 1).toUpperCase());
