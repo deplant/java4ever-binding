@@ -20,16 +20,25 @@ public class ParserEngine {
 
 	public static String generateTypeName(String moduleName, ApiType apiType) {
 		final String typeName = switch (apiType) {
+			case GenericType gen -> generateTypeName(moduleName, gen.generic_args()[0]);
 			case OptionalType opt -> generateTypeName(moduleName, opt.optional_inner());
 			case ArrayType arr -> generateTypeName(moduleName, arr.array_item()) + "[]";
 			case RefType ref -> ref.ref_name();
+			case NoneType none -> null;
 			default -> apiType.type();
 		};
-		String typeCleaned = typeName.replaceAll(moduleName + "\\.", "");
-		if ("Value".equals(typeCleaned)) {
-			return "Map<String,Object>";
+		if (typeName != null) {
+			String typeCleaned = typeName.replaceAll(moduleName + "\\.", "");
+			if ("Value".equals(typeCleaned)) {
+				return "Map<String,Object>";
+			}
+			if ("ClientContext".equals(typeCleaned)) {
+				return "Context";
+			}
+			return ParserUtils.capitalize(typeCleaned);
+		} else {
+			return null;
 		}
-		return ParserUtils.capitalize(typeCleaned);
 	}
 
 	public static String generateParamName(String paramName) {
@@ -77,14 +86,14 @@ public class ParserEngine {
 					.addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
 			var codeBuilder = CodeBlock.builder();
-			String resultTypeName = getTypeName(function.result());
+			String resultTypeName = generateTypeName(moduleCapitalizedName, function.result());
 			if (resultTypeName != null) {
 				methodBuilder.returns(ClassName.bestGuess(resultTypeName));
 				codeBuilder.addStatement(
 						// $S - "crypto.nacl_box_open"
 						// $T - TypeName
 						// $L - paramList
-						"return  ctx.call($S, new $T($L), $T.class)",
+						"return  context.call($S, new $T($L), $T.class)",
 						"crypto.nacl_box_open",
 						TypeVariableName.get(resultTypeName),
 						"encrypted, nonce, theirPublic, secretKey",
@@ -96,7 +105,7 @@ public class ParserEngine {
 			}
 			moduleBuilder.addMethod(methodBuilder.build());
 		}
-		JavaFile javaFile = JavaFile.builder("tech.deplant.java4ever.binding2", moduleBuilder.build())
+		JavaFile javaFile = JavaFile.builder("tech.deplant.java4ever.binding", moduleBuilder.build())
 		                            .build();
 
 		javaFile.writeTo(Paths.get("src/gen/java"));
