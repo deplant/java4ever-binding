@@ -133,6 +133,7 @@ javadoc {
     options.addBooleanOption('html5', true)
     options.addBooleanOption('-enable-preview', true)
     options.addStringOption('-release', '19')
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 java {
@@ -149,6 +150,7 @@ test {
     useJUnitPlatform()
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
+
 }
 
 task generateApi(type: NodeTask) {
