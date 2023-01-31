@@ -42,7 +42,7 @@ import static tech.deplant.java4ever.binding.generator.javapoet.Util.checkArgume
  *   <li>{@code $L} emits a <em>literal</em> value with no escaping. Arguments for literals may be
  *       strings, primitives, {@linkplain TypeSpec type declarations}, {@linkplain AnnotationSpec
  *       annotations} and even other code blocks.
- *   <li>{@code $N} emits a <em>name</em>, using name collision avoidance where necessary. Arguments
+ *   <li>{@code $N} emits a <em>parameterName</em>, using parameterName collision avoidance where necessary. Arguments
  *       for names may be strings (actually any {@linkplain CharSequence character sequence}),
  *       {@linkplain ParameterSpec parameters}, {@linkplain FieldSpec fields}, {@linkplain
  *       MethodSpec methods}, and {@linkplain TypeSpec types}.
@@ -137,15 +137,15 @@ public final class CodeBlock {
 
 	@Override
 	public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null) {
-        return false;
-      }
-      if (getClass() != o.getClass()) {
-        return false;
-      }
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}
 		return toString().equals(o.toString());
 	}
 
@@ -181,11 +181,11 @@ public final class CodeBlock {
 		/**
 		 * Adds code using named arguments.
 		 *
-		 * <p>Named arguments specify their name after the '$' followed by : and the corresponding type
+		 * <p>Named arguments specify their parameterName after the '$' followed by : and the corresponding type
 		 * character. Argument names consist of characters in {@code a-z, A-Z, 0-9, and _} and must
 		 * start with a lowercase character.
 		 *
-		 * <p>For example, to refer to the type {@link java.lang.Integer} with the argument name {@code
+		 * <p>For example, to refer to the type {@link java.lang.Integer} with the argument parameterName {@code
 		 * clazz} use a format string containing {@code $clazz:T} and include the key {@code clazz} with
 		 * value {@code java.lang.Integer.class} in the argument map.
 		 */
@@ -194,18 +194,18 @@ public final class CodeBlock {
 
 			for (String argument : arguments.keySet()) {
 				checkArgument(CodeBlock.LOWERCASE.matcher(argument).matches(),
-                              "argument '%s' must start with a lowercase character", argument);
+				              "argument '%s' must start with a lowercase character", argument);
 			}
 
 			while (p < format.length()) {
 				int nextP = format.indexOf("$", p);
 				if (nextP == -1) {
-                  this.formatParts.add(format.substring(p));
+					this.formatParts.add(format.substring(p));
 					break;
 				}
 
 				if (p != nextP) {
-                  this.formatParts.add(format.substring(p, nextP));
+					this.formatParts.add(format.substring(p, nextP));
 					p = nextP;
 				}
 
@@ -221,13 +221,13 @@ public final class CodeBlock {
 					              argumentName);
 					char formatChar = matcher.group("typeChar").charAt(0);
 					addArgument(format, formatChar, arguments.get(argumentName));
-                  this.formatParts.add("$" + formatChar);
+					this.formatParts.add("$" + formatChar);
 					p += matcher.regionEnd();
 				} else {
 					checkArgument(p < format.length() - 1, "dangling $ at end");
 					checkArgument(isNoArgPlaceholder(format.charAt(p + 1)),
 					              "unknown format $%s at %s in '%s'", format.charAt(p + 1), p + 1, format);
-                  this.formatParts.add(format.substring(p, p + 2));
+					this.formatParts.add(format.substring(p, p + 2));
 					p += 2;
 				}
 			}
@@ -256,10 +256,10 @@ public final class CodeBlock {
 			for (int p = 0; p < format.length(); ) {
 				if (format.charAt(p) != '$') {
 					int nextP = format.indexOf('$', p + 1);
-                  if (nextP == -1) {
-                    nextP = format.length();
-                  }
-                  this.formatParts.add(format.substring(p, nextP));
+					if (nextP == -1) {
+						nextP = format.length();
+					}
+					this.formatParts.add(format.substring(p, nextP));
 					p = nextP;
 					continue;
 				}
@@ -279,7 +279,7 @@ public final class CodeBlock {
 				if (isNoArgPlaceholder(c)) {
 					checkArgument(
 							indexStart == indexEnd, "$$, $>, $<, $[, $], $W, and $Z may not have an index");
-                  this.formatParts.add("$" + c);
+					this.formatParts.add("$" + c);
 					continue;
 				}
 
@@ -304,7 +304,7 @@ public final class CodeBlock {
 
 				addArgument(format, c, args[index]);
 
-              this.formatParts.add("$" + c);
+				this.formatParts.add("$" + c);
 			}
 
 			if (hasRelative) {
@@ -349,22 +349,22 @@ public final class CodeBlock {
 		}
 
 		private String argToName(Object o) {
-          if (o instanceof CharSequence) {
-            return o.toString();
-          }
-          if (o instanceof ParameterSpec) {
-            return ((ParameterSpec) o).name;
-          }
-          if (o instanceof FieldSpec) {
-            return ((FieldSpec) o).name;
-          }
-          if (o instanceof MethodSpec) {
-            return ((MethodSpec) o).name;
-          }
-          if (o instanceof TypeSpec) {
-            return ((TypeSpec) o).name;
-          }
-			throw new IllegalArgumentException("expected name but was " + o);
+			if (o instanceof CharSequence) {
+				return o.toString();
+			}
+			if (o instanceof ParameterSpec) {
+				return ((ParameterSpec) o).name;
+			}
+			if (o instanceof FieldSpec) {
+				return ((FieldSpec) o).name;
+			}
+			if (o instanceof MethodSpec) {
+				return ((MethodSpec) o).name;
+			}
+			if (o instanceof TypeSpec) {
+				return ((TypeSpec) o).name;
+			}
+			throw new IllegalArgumentException("expected parameterName but was " + o);
 		}
 
 		private Object argToLiteral(Object o) {
@@ -376,18 +376,18 @@ public final class CodeBlock {
 		}
 
 		private TypeName argToType(Object o) {
-          if (o instanceof TypeName) {
-            return (TypeName) o;
-          }
-          if (o instanceof TypeMirror) {
-            return TypeName.get((TypeMirror) o);
-          }
-          if (o instanceof Element) {
-            return TypeName.get(((Element) o).asType());
-          }
-          if (o instanceof Type) {
-            return TypeName.get((Type) o);
-          }
+			if (o instanceof TypeName) {
+				return (TypeName) o;
+			}
+			if (o instanceof TypeMirror) {
+				return TypeName.get((TypeMirror) o);
+			}
+			if (o instanceof Element) {
+				return TypeName.get(((Element) o).asType());
+			}
+			if (o instanceof Type) {
+				return TypeName.get((Type) o);
+			}
 			throw new IllegalArgumentException("expected type but was " + o);
 		}
 
@@ -440,8 +440,8 @@ public final class CodeBlock {
 		}
 
 		public Builder add(CodeBlock codeBlock) {
-          this.formatParts.addAll(codeBlock.formatParts);
-          this.args.addAll(codeBlock.args);
+			this.formatParts.addAll(codeBlock.formatParts);
+			this.args.addAll(codeBlock.args);
 			return this;
 		}
 
@@ -456,8 +456,8 @@ public final class CodeBlock {
 		}
 
 		public Builder clear() {
-          this.formatParts.clear();
-          this.args.clear();
+			this.formatParts.clear();
+			this.args.clear();
 			return this;
 		}
 
@@ -478,11 +478,11 @@ public final class CodeBlock {
 
 		CodeBlockJoiner add(CodeBlock codeBlock) {
 			if (!this.first) {
-              this.builder.add(this.delimiter);
+				this.builder.add(this.delimiter);
 			}
-          this.first = false;
+			this.first = false;
 
-          this.builder.add(codeBlock);
+			this.builder.add(codeBlock);
 			return this;
 		}
 

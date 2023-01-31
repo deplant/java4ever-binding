@@ -1,185 +1,169 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.*;
-import java.util.Arrays;
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.String;
 
 /**
- *  <strong>utils</strong>
- *  Contains methods of "utils" module.
-
- *  Misc utility Functions.
- *  @version EVER-SDK 1.37.0
+ * <strong>Utils</strong>
+ * Contains methods of "utils" module of EVER-SDK API
+ *
+ * Misc utility Functions. 
+ * @version 1.38.0
  */
-public class Utils {
+public final class Utils {
+  /**
+   *  Converts address from any TON format to any TON format
+   *
+   * @param address  Account address in any TON format.
+   * @param outputFormat  Specify the format to convert to.
+   */
+  public static Utils.ResultOfConvertAddress convertAddress(Context ctx, String address,
+      Utils.AddressStringFormat outputFormat) throws EverSdkException {
+    return ctx.call("utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
+  }
 
-    public interface AddressStringFormat {
+  /**
+   * Address types are the following
+   *
+   * `0:919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7` - standard TON address most
+   * commonly used in all cases. Also called as hex address
+   * `919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7` - account ID. A part of full
+   * address. Identifies account inside particular workchain
+   * `EQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H9wam` - base64 address. Also called "user-friendly".
+   * Was used at the beginning of TON. Now it is supported for compatibility Validates and returns the type of any TON address.
+   *
+   * @param address  Account address in any TON format.
+   */
+  public static Utils.ResultOfGetAddressType getAddressType(Context ctx, String address) throws
+      EverSdkException {
+    return ctx.call("utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
+  }
 
-        public static final AccountId ACCOUNTID = new AccountId();
+  /**
+   *  Calculates storage fee for an account over a specified time period
+   */
+  public static Utils.ResultOfCalcStorageFee calcStorageFee(Context ctx, String account,
+      Integer period) throws EverSdkException {
+    return ctx.call("utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
+  }
 
+  /**
+   *  Compresses data using Zstandard algorithm
+   *
+   * @param uncompressed Must be encoded as base64. Uncompressed data.
+   * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
+   */
+  public static Utils.ResultOfCompressZstd compressZstd(Context ctx, String uncompressed,
+      Integer level) throws EverSdkException {
+    return ctx.call("utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
+  }
 
+  /**
+   *  Decompresses data using Zstandard algorithm
+   *
+   * @param compressed Must be encoded as base64. Compressed data.
+   */
+  public static Utils.ResultOfDecompressZstd decompressZstd(Context ctx, String compressed) throws
+      EverSdkException {
+    return ctx.call("utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
+  }
+
+  public static final record ParamsOfCalcStorageFee(String account, Integer period) {
+  }
+
+  public static final record ResultOfCalcStorageFee(String fee) {
+  }
+
+  /**
+   * @param compressed Must be encoded as base64. Compressed data.
+   */
+  public static final record ParamsOfDecompressZstd(String compressed) {
+  }
+
+  /**
+   * @param addressType  Account address type.
+   */
+  public static final record ResultOfGetAddressType(Utils.AccountAddressType addressType) {
+  }
+
+  public enum AccountAddressType {
+    AccountId,
+
+    Hex,
+
+    Base64
+  }
+
+  /**
+   * @param address  Account address in any TON format.
+   * @param outputFormat  Specify the format to convert to.
+   */
+  public static final record ParamsOfConvertAddress(String address,
+      Utils.AddressStringFormat outputFormat) {
+  }
+
+  /**
+   * @param uncompressed Must be encoded as base64. Uncompressed data.
+   * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
+   */
+  public static final record ParamsOfCompressZstd(String uncompressed, Integer level) {
+  }
+
+  /**
+   * @param decompressed Must be encoded as base64. Decompressed data.
+   */
+  public static final record ResultOfDecompressZstd(String decompressed) {
+  }
+
+  /**
+   * @param address  Address in the specified format
+   */
+  public static final record ResultOfConvertAddress(String address) {
+  }
+
+  public sealed interface AddressStringFormat {
     /**
-    * 
-
-    */
-    public record AccountId() implements AddressStringFormat {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-
-        public static final Hex HEX = new Hex();
-
-
-    /**
-    * 
-
-    */
-    public record Hex() implements AddressStringFormat {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-
-
-    /**
-    * 
-    * @param url 
-    * @param test 
-    * @param bounce 
-    */
-    public record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-}
-    public enum AccountAddressType {
-        
-        
-        AccountId,
-
-        
-        Hex,
-
-        
-        Base64
+     * {@inheritDoc}
+     */
+    final record AccountId() implements AddressStringFormat {
+      @JsonProperty("type")
+      public String type() {
+        return "AccountId";
+      }
     }
 
     /**
-    * 
-    * @param address Account address in any TON format.
-    * @param outputFormat Specify the format to convert to.
-    */
-    public record ParamsOfConvertAddress(String address, AddressStringFormat outputFormat) {}
-
-    /**
-    * 
-    * @param address Address in the specified format
-    */
-    public record ResultOfConvertAddress(String address) {}
-
-    /**
-    * 
-    * @param address Account address in any TON format.
-    */
-    public record ParamsOfGetAddressType(String address) {}
-
-    /**
-    * 
-    * @param addressType Account address type.
-    */
-    public record ResultOfGetAddressType(AccountAddressType addressType) {}
-
-    /**
-    * 
-    * @param account 
-    * @param period 
-    */
-    public record ParamsOfCalcStorageFee(String account, Number period) {}
-
-    /**
-    * 
-    * @param fee 
-    */
-    public record ResultOfCalcStorageFee(String fee) {}
-
-    /**
-    * 
-    * @param uncompressed Uncompressed data. Must be encoded as base64.
-    * @param level Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
-    */
-    public record ParamsOfCompressZstd(String uncompressed, Number level) {}
-
-    /**
-    * 
-    * @param compressed Compressed data. Must be encoded as base64.
-    */
-    public record ResultOfCompressZstd(String compressed) {}
-
-    /**
-    * 
-    * @param compressed Compressed data. Must be encoded as base64.
-    */
-    public record ParamsOfDecompressZstd(String compressed) {}
-
-    /**
-    * 
-    * @param decompressed Decompressed data. Must be encoded as base64.
-    */
-    public record ResultOfDecompressZstd(String decompressed) {}
-    /**
-    * <strong>utils.convert_address</strong>
-    * Converts address from any TON format to any TON format
-    * @param address Account address in any TON format. 
-    * @param outputFormat Specify the format to convert to. 
-    * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfConvertAddress}
-    */
-    public static ResultOfConvertAddress convertAddress(Context ctx, String address, AddressStringFormat outputFormat) throws EverSdkException {
-        return  ctx.call("utils.convert_address", new ParamsOfConvertAddress(address, outputFormat), ResultOfConvertAddress.class);
+     * {@inheritDoc}
+     */
+    final record Hex() implements AddressStringFormat {
+      @JsonProperty("type")
+      public String type() {
+        return "Hex";
+      }
     }
 
     /**
-    * <strong>utils.get_address_type</strong>
-    * Validates and returns the type of any TON address. Address types are the following<p>`0:919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7` - standard TON address mostcommonly used in all cases. Also called as hex address`919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7` - account ID. A part of fulladdress. Identifies account inside particular workchain`EQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H9wam` - base64 address. Also called "user-friendly".Was used at the beginning of TON. Now it is supported for compatibility
-    * @param address Account address in any TON format. 
-    * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfGetAddressType}
-    */
-    public static ResultOfGetAddressType getAddressType(Context ctx, String address) throws EverSdkException {
-        return  ctx.call("utils.get_address_type", new ParamsOfGetAddressType(address), ResultOfGetAddressType.class);
+     * {@inheritDoc}
+     */
+    final record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
+      @JsonProperty("type")
+      public String type() {
+        return "Base64";
+      }
     }
+  }
 
-    /**
-    * <strong>utils.calc_storage_fee</strong>
-    * Calculates storage fee for an account over a specified time period
-    * @param account  
-    * @param period  
-    * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCalcStorageFee}
-    */
-    public static ResultOfCalcStorageFee calcStorageFee(Context ctx, String account, Number period) throws EverSdkException {
-        return  ctx.call("utils.calc_storage_fee", new ParamsOfCalcStorageFee(account, period), ResultOfCalcStorageFee.class);
-    }
+  /**
+   * @param compressed Must be encoded as base64. Compressed data.
+   */
+  public static final record ResultOfCompressZstd(String compressed) {
+  }
 
-    /**
-    * <strong>utils.compress_zstd</strong>
-    * Compresses data using Zstandard algorithm
-    * @param uncompressed Uncompressed data. Must be encoded as base64.
-    * @param level Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`). 
-    * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfCompressZstd}
-    */
-    public static ResultOfCompressZstd compressZstd(Context ctx, String uncompressed,  Number level) throws EverSdkException {
-        return  ctx.call("utils.compress_zstd", new ParamsOfCompressZstd(uncompressed, level), ResultOfCompressZstd.class);
-    }
-
-    /**
-    * <strong>utils.decompress_zstd</strong>
-    * Decompresses data using Zstandard algorithm
-    * @param compressed Compressed data. Must be encoded as base64.
-    * @return {@link tech.deplant.java4ever.binding.Utils.ResultOfDecompressZstd}
-    */
-    public static ResultOfDecompressZstd decompressZstd(Context ctx, String compressed) throws EverSdkException {
-        return  ctx.call("utils.decompress_zstd", new ParamsOfDecompressZstd(compressed), ResultOfDecompressZstd.class);
-    }
-
+  /**
+   * @param address  Account address in any TON format.
+   */
+  public static final record ParamsOfGetAddressType(String address) {
+  }
 }

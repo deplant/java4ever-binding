@@ -77,7 +77,7 @@ final class CodeWriter {
 		this.alwaysQualify = checkNotNull(alwaysQualify, "alwaysQualify == null");
 		this.staticImportClassNames = new LinkedHashSet<>();
 		for (String signature : staticImports) {
-          this.staticImportClassNames.add(signature.substring(0, signature.lastIndexOf('.')));
+			this.staticImportClassNames.add(signature.substring(0, signature.lastIndexOf('.')));
 		}
 	}
 
@@ -100,7 +100,7 @@ final class CodeWriter {
 	}
 
 	public CodeWriter indent(int levels) {
-      this.indentLevel += levels;
+		this.indentLevel += levels;
 		return this;
 	}
 
@@ -110,7 +110,7 @@ final class CodeWriter {
 
 	public CodeWriter unindent(int levels) {
 		checkArgument(this.indentLevel - levels >= 0, "cannot unindent %s from %s", levels, this.indentLevel);
-      this.indentLevel -= levels;
+		this.indentLevel -= levels;
 		return this;
 	}
 
@@ -137,27 +137,27 @@ final class CodeWriter {
 	}
 
 	public void emitComment(CodeBlock codeBlock) throws IOException {
-      this.trailingNewline = true; // Force the '//' prefix for the comment.
-      this.comment = true;
+		this.trailingNewline = true; // Force the '//' prefix for the comment.
+		this.comment = true;
 		try {
 			emit(codeBlock);
 			emit("\n");
 		} finally {
-          this.comment = false;
+			this.comment = false;
 		}
 	}
 
 	public void emitJavadoc(CodeBlock javadocCodeBlock) throws IOException {
-      if (javadocCodeBlock.isEmpty()) {
-        return;
-      }
+		if (javadocCodeBlock.isEmpty()) {
+			return;
+		}
 
 		emit("/**\n");
-      this.javadoc = true;
+		this.javadoc = true;
 		try {
 			emit(javadocCodeBlock, true);
 		} finally {
-          this.javadoc = false;
+			this.javadoc = false;
 		}
 		emit(" */\n");
 	}
@@ -175,13 +175,13 @@ final class CodeWriter {
 	 */
 	public void emitModifiers(Set<Modifier> modifiers, Set<Modifier> implicitModifiers)
 			throws IOException {
-      if (modifiers.isEmpty()) {
-        return;
-      }
+		if (modifiers.isEmpty()) {
+			return;
+		}
 		for (Modifier modifier : EnumSet.copyOf(modifiers)) {
-          if (implicitModifiers.contains(modifier)) {
-            continue;
-          }
+			if (implicitModifiers.contains(modifier)) {
+				continue;
+			}
 			emitAndIndent(modifier.name().toLowerCase(Locale.US));
 			emitAndIndent(" ");
 		}
@@ -196,18 +196,18 @@ final class CodeWriter {
 	 * everywhere else bounds are omitted.
 	 */
 	public void emitTypeVariables(List<TypeVariableName> typeVariables) throws IOException {
-      if (typeVariables.isEmpty()) {
-        return;
-      }
+		if (typeVariables.isEmpty()) {
+			return;
+		}
 
 		typeVariables.forEach(typeVariable -> this.currentTypeVariables.add(typeVariable.name));
 
 		emit("<");
 		boolean firstTypeVariable = true;
 		for (TypeVariableName typeVariable : typeVariables) {
-          if (!firstTypeVariable) {
-            emit(", ");
-          }
+			if (!firstTypeVariable) {
+				emit(", ");
+			}
 			emitAnnotations(typeVariable.annotations, true);
 			emit("$L", typeVariable.name);
 			boolean firstBound = true;
@@ -289,7 +289,7 @@ final class CodeWriter {
 
 				case "$[":
 					checkState(this.statementLine == -1, "statement enter $[ followed by statement enter $[");
-                  this.statementLine = 0;
+					this.statementLine = 0;
 					break;
 
 				case "$]":
@@ -297,15 +297,15 @@ final class CodeWriter {
 					if (this.statementLine > 0) {
 						unindent(2); // End a multi-line statement. Decrease the indentation level.
 					}
-                  this.statementLine = -1;
+					this.statementLine = -1;
 					break;
 
 				case "$W":
-                  this.out.wrappingSpace(this.indentLevel + 2);
+					this.out.wrappingSpace(this.indentLevel + 2);
 					break;
 
 				case "$Z":
-                  this.out.zeroWidthSpace(this.indentLevel + 2);
+					this.out.zeroWidthSpace(this.indentLevel + 2);
 					break;
 
 				default:
@@ -332,19 +332,19 @@ final class CodeWriter {
 	}
 
 	public CodeWriter emitWrappingSpace() throws IOException {
-      this.out.wrappingSpace(this.indentLevel + 2);
+		this.out.wrappingSpace(this.indentLevel + 2);
 		return this;
 	}
 
 	private boolean emitStaticImportMember(String canonical, String part) throws IOException {
 		String partWithoutLeadingDot = part.substring(1);
-      if (partWithoutLeadingDot.isEmpty()) {
-        return false;
-      }
+		if (partWithoutLeadingDot.isEmpty()) {
+			return false;
+		}
 		char first = partWithoutLeadingDot.charAt(0);
-      if (!Character.isJavaIdentifierStart(first)) {
-        return false;
-      }
+		if (!Character.isJavaIdentifierStart(first)) {
+			return false;
+		}
 		String explicit = canonical + "." + extractMemberName(partWithoutLeadingDot);
 		String wildcard = canonical + ".*";
 		if (this.staticImports.contains(explicit) || this.staticImports.contains(wildcard)) {
@@ -370,12 +370,12 @@ final class CodeWriter {
 	}
 
 	/**
-	 * Returns the best name to identify {@code className} with in the current context. This uses the
-	 * available imports and the current scope to find the shortest name available. It does not honor
+	 * Returns the best parameterName to identify {@code className} with in the current context. This uses the
+	 * available imports and the current scope to find the shortest parameterName available. It does not honor
 	 * names visible due to inheritance.
 	 */
 	String lookupName(ClassName className) {
-		// If the top level simple name is masked by a current type variable, use the canonical name.
+		// If the top level simple parameterName is masked by a current type variable, use the canonical parameterName.
 		String topLevelSimpleName = className.topLevelClassName().simpleName();
 		if (this.currentTypeVariables.contains(topLevelSimpleName)) {
 			return className.canonicalName;
@@ -395,18 +395,18 @@ final class CodeWriter {
 			}
 		}
 
-		// If the name resolved but wasn't a match, we're stuck with the fully qualified name.
+		// If the parameterName resolved but wasn't a match, we're stuck with the fully qualified parameterName.
 		if (nameResolved) {
 			return className.canonicalName;
 		}
 
 		// If the class is in the same package, we're done.
 		if (Objects.equals(this.packageName, className.packageName())) {
-          this.referencedNames.add(topLevelSimpleName);
+			this.referencedNames.add(topLevelSimpleName);
 			return join(".", className.simpleNames());
 		}
 
-		// We'll have to use the fully-qualified name. Mark the type as importable for a future pass.
+		// We'll have to use the fully-qualified parameterName. Mark the type as importable for a future pass.
 		if (!this.javadoc) {
 			importableType(className);
 		}
@@ -425,7 +425,7 @@ final class CodeWriter {
 		String simpleName = topLevelClassName.simpleName();
 		ClassName replaced = this.importableTypes.put(simpleName, topLevelClassName);
 		if (replaced != null) {
-          this.importableTypes.put(simpleName, replaced); // On collision, prefer the first inserted.
+			this.importableTypes.put(simpleName, replaced); // On collision, prefer the first inserted.
 		}
 	}
 
@@ -450,9 +450,9 @@ final class CodeWriter {
 
 		// Match an imported type.
 		ClassName importedType = this.importedTypes.get(simpleName);
-      if (importedType != null) {
-        return importedType;
-      }
+		if (importedType != null) {
+			return importedType;
+		}
 
 		// No match.
 		return null;
@@ -481,47 +481,47 @@ final class CodeWriter {
 			if (!first) {
 				if ((this.javadoc || this.comment) && this.trailingNewline) {
 					emitIndentation();
-                  this.out.append(this.javadoc ? " *" : "//");
+					this.out.append(this.javadoc ? " *" : "//");
 				}
-              this.out.append("\n");
-              this.trailingNewline = true;
+				this.out.append("\n");
+				this.trailingNewline = true;
 				if (this.statementLine != -1) {
 					if (this.statementLine == 0) {
 						indent(2); // Begin multiple-line statement. Increase the indentation level.
 					}
-                  this.statementLine++;
+					this.statementLine++;
 				}
 			}
 
 			first = false;
-          if (line.isEmpty()) {
-            continue; // Don't indent empty lines.
-          }
+			if (line.isEmpty()) {
+				continue; // Don't indent empty lines.
+			}
 
 			// Emit indentation and comment prefix if necessary.
 			if (this.trailingNewline) {
 				emitIndentation();
 				if (this.javadoc) {
-                  this.out.append(" * ");
+					this.out.append(" * ");
 				} else if (this.comment) {
-                  this.out.append("// ");
+					this.out.append("// ");
 				}
 			}
 
-          this.out.append(line);
-          this.trailingNewline = false;
+			this.out.append(line);
+			this.trailingNewline = false;
 		}
 		return this;
 	}
 
 	private void emitIndentation() throws IOException {
 		for (int j = 0; j < this.indentLevel; j++) {
-          this.out.append(this.indent);
+			this.out.append(this.indent);
 		}
 	}
 
 	/**
-	 * Returns the types that should have been imported for this code. If there were any simple name
+	 * Returns the types that should have been imported for this code. If there were any simple parameterName
 	 * collisions, that type's first use is imported.
 	 */
 	Map<String, ClassName> suggestedImports() {
@@ -536,7 +536,7 @@ final class CodeWriter {
 
 		void add(T t) {
 			int count = this.map.getOrDefault(t, 0);
-          this.map.put(t, count + 1);
+			this.map.put(t, count + 1);
 		}
 
 		void remove(T t) {
@@ -544,7 +544,7 @@ final class CodeWriter {
 			if (count == 0) {
 				throw new IllegalStateException(t + " is not in the multiset");
 			}
-          this.map.put(t, count - 1);
+			this.map.put(t, count - 1);
 		}
 
 		boolean contains(T t) {

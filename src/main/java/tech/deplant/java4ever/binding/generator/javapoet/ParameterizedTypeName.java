@@ -84,19 +84,19 @@ public final class ParameterizedTypeName extends TypeName {
 	@Override
 	public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
 		return new ParameterizedTypeName(
-                this.enclosingType, this.rawType, this.typeArguments, concatAnnotations(annotations));
+				this.enclosingType, this.rawType, this.typeArguments, concatAnnotations(annotations));
 	}
 
 	@Override
 	public TypeName withoutAnnotations() {
 		return new ParameterizedTypeName(
-                this.enclosingType, this.rawType.withoutAnnotations(), this.typeArguments, new ArrayList<>());
+				this.enclosingType, this.rawType.withoutAnnotations(), this.typeArguments, new ArrayList<>());
 	}
 
 	@Override
 	CodeWriter emit(CodeWriter out) throws IOException {
 		if (this.enclosingType != null) {
-          this.enclosingType.emit(out);
+			this.enclosingType.emit(out);
 			out.emit(".");
 			if (isAnnotated()) {
 				out.emit(" ");
@@ -104,15 +104,15 @@ public final class ParameterizedTypeName extends TypeName {
 			}
 			out.emit(this.rawType.simpleName());
 		} else {
-          this.rawType.emit(out);
+			this.rawType.emit(out);
 		}
 		if (!this.typeArguments.isEmpty()) {
 			out.emitAndIndent("<");
 			boolean firstParameter = true;
 			for (TypeName parameter : this.typeArguments) {
-              if (!firstParameter) {
-                out.emitAndIndent(", ");
-              }
+				if (!firstParameter) {
+					out.emitAndIndent(", ");
+				}
 				parameter.emit(out);
 				firstParameter = false;
 			}
@@ -122,22 +122,22 @@ public final class ParameterizedTypeName extends TypeName {
 	}
 
 	/**
-	 * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
+	 * Returns a new {@link ParameterizedTypeName} instance for the specified {@code parameterName} as nested
 	 * inside this class.
 	 */
 	public ParameterizedTypeName nestedClass(String name) {
-		Util.checkNotNull(name, "name == null");
+		Util.checkNotNull(name, "parameterName == null");
 		return new ParameterizedTypeName(this, this.rawType.nestedClass(name), new ArrayList<>(),
-                                         new ArrayList<>());
+		                                 new ArrayList<>());
 	}
 
 	/**
-	 * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
+	 * Returns a new {@link ParameterizedTypeName} instance for the specified {@code parameterName} as nested
 	 * inside this class, with the specified {@code typeArguments}.
 	 */
 	public ParameterizedTypeName nestedClass(String name, List<TypeName> typeArguments) {
-		Util.checkNotNull(name, "name == null");
+		Util.checkNotNull(name, "parameterName == null");
 		return new ParameterizedTypeName(this, this.rawType.nestedClass(name), typeArguments,
-                                         new ArrayList<>());
+		                                 new ArrayList<>());
 	}
 }

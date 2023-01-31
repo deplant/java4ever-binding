@@ -56,7 +56,7 @@ public final class MethodSpec {
 		Util.checkArgument(!builder.varargs || lastParameterIsArray(builder.parameters),
 		                   "last parameter of varargs method %s must be an array", builder.name);
 
-		this.name = Util.checkNotNull(builder.name, "name == null");
+		this.name = Util.checkNotNull(builder.name, "parameterName == null");
 		this.javadoc = builder.javadoc.build();
 		this.annotations = Util.immutableList(builder.annotations);
 		this.modifiers = Util.immutableSet(builder.modifiers);
@@ -84,7 +84,7 @@ public final class MethodSpec {
 	/**
 	 * Returns a new method spec builder that overrides {@code method}.
 	 *
-	 * <p>This will copy its visibility modifiers, type parameters, return type, name, parameters, and
+	 * <p>This will copy its visibility modifiers, type parameters, return type, parameterName, parameters, and
 	 * throws declarations. An {@link Override} annotation will be added.
 	 *
 	 * <p>Note that in JavaPoet 1.2 through 1.7 this method retained annotations from the method and
@@ -137,7 +137,7 @@ public final class MethodSpec {
 	 * Comparable#compareTo} in a type that implements {@code Comparable<Movie>}, the {@code T}
 	 * parameter will be resolved to {@code Movie}.
 	 *
-	 * <p>This will copy its visibility modifiers, type parameters, return type, name, parameters, and
+	 * <p>This will copy its visibility modifiers, type parameters, return type, parameterName, parameters, and
 	 * throws declarations. An {@link Override} annotation will be added.
 	 *
 	 * <p>Note that in JavaPoet 1.2 through 1.7 this method retained annotations from the method and
@@ -330,9 +330,9 @@ public final class MethodSpec {
 		}
 
 		public Builder setName(String name) {
-			Util.checkNotNull(name, "name == null");
+			Util.checkNotNull(name, "parameterName == null");
 			Util.checkArgument(name.equals(MethodSpec.CONSTRUCTOR) || SourceVersion.isName(name),
-			                   "not a valid name: %s", name);
+			                   "not a valid parameterName: %s", name);
 			this.name = name;
 			this.returnType = name.equals(MethodSpec.CONSTRUCTOR) ? null : TypeName.VOID;
 			return this;

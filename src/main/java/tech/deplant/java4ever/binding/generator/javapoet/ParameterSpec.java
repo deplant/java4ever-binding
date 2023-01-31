@@ -38,7 +38,7 @@ public final class ParameterSpec {
 	public final CodeBlock javadoc;
 
 	private ParameterSpec(Builder builder) {
-		this.name = Util.checkNotNull(builder.name, "name == null");
+		this.name = Util.checkNotNull(builder.name, "parameterName == null");
 		this.annotations = Util.immutableList(builder.annotations);
 		this.modifiers = Util.immutableSet(builder.modifiers);
 		this.type = Util.checkNotNull(builder.type, "type == null");
@@ -76,7 +76,7 @@ public final class ParameterSpec {
 
 	public static Builder builder(TypeName type, String name, Modifier... modifiers) {
 		Util.checkNotNull(type, "type == null");
-		Util.checkArgument(isValidParameterName(name), "not a valid name: %s", name);
+		Util.checkArgument(isValidParameterName(name), "not a valid parameterName: %s", name);
 		return new Builder(type, name)
 				.addModifiers(modifiers);
 	}
@@ -95,7 +95,7 @@ public final class ParameterSpec {
 		if (varargs) {
 			TypeName.asArray(this.type).emit(codeWriter, true);
 		} else {
-          this.type.emit(codeWriter);
+			this.type.emit(codeWriter);
 		}
 		codeWriter.emit(" $L", this.name);
 	}
@@ -107,15 +107,15 @@ public final class ParameterSpec {
 
 	@Override
 	public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null) {
-        return false;
-      }
-      if (getClass() != o.getClass()) {
-        return false;
-      }
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}
 		return toString().equals(o.toString());
 	}
 
@@ -155,12 +155,12 @@ public final class ParameterSpec {
 		}
 
 		public Builder addJavadoc(String format, Object... args) {
-          this.javadoc.add(format, args);
+			this.javadoc.add(format, args);
 			return this;
 		}
 
 		public Builder addJavadoc(CodeBlock block) {
-          this.javadoc.add(block);
+			this.javadoc.add(block);
 			return this;
 		}
 

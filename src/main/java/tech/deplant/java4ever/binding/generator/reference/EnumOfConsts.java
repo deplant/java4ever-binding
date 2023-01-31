@@ -5,10 +5,10 @@ public record EnumOfConsts(String name,
                            Const[] enum_consts,
                            String summary,
                            String description) implements ApiType {
-	record Const(String name,
-	             String type,
-	             String value,
-	             String summary,
-	             String description) {
+	public record Const(String name,
+	                    String type,
+	                    String value,
+	                    String summary,
+	                    String description) {
 	}
 }

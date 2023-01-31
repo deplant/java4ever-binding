@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNullElse;
 public class ParserOfModule {
 	public static TypeSpec.Builder classOfModule(ApiModule module, String moduleNameCapitalized, String version) {
 		TypeSpec.Builder moduleBuilder = TypeSpec
-				.classBuilder(moduleNameCapitalized + "_new")
+				.classBuilder(moduleNameCapitalized)
 				.addJavadoc(javadocOfModule(module, moduleNameCapitalized, version).build())
 				.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 		return moduleBuilder;

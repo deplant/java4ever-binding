@@ -25,13 +25,13 @@ import java.util.*;
  *
  *   NameAllocator nameAllocator = new NameAllocator();
  *   for (MyProperty property : properties) {
- *     nameAllocator.newName(property.name(), property);
+ *     nameAllocator.newName(property.parameterName(), property);
  *   }
  *   nameAllocator.newName("sb", "string builder");
  * }</pre>
  * <p>
- * Pass a unique tag object to each allocation. The tag scopes the name, and can be used to look up
- * the allocated name later. Typically the tag is the object that is being named. In the above
+ * Pass a unique tag object to each allocation. The tag scopes the parameterName, and can be used to look up
+ * the allocated parameterName later. Typically the tag is the object that is being named. In the above
  * example we use {@code property} for the user-supplied property names, and {@code "string
  * builder"} for our constant string builder.
  *
@@ -66,10 +66,10 @@ import java.util.*;
  * <p>
  * The underscore is appended to {@code sb} to avoid conflicting with the user-supplied {@code sb}
  * property. Underscores are also prefixed for names that start with a digit, and used to replace
- * name-unsafe characters like space or dash.
+ * parameterName-unsafe characters like space or dash.
  *
  * <p>When dealing with multiple independent inner scopes, use a {@link #clone()} of the
- * NameAllocator used for the outer scope to further refine name allocation for a specific inner
+ * NameAllocator used for the outer scope to further refine parameterName allocation for a specific inner
  * scope.
  */
 public final class NameAllocator implements Cloneable {
@@ -104,7 +104,7 @@ public final class NameAllocator implements Cloneable {
 	}
 
 	/**
-	 * Return a new name using {@code suggestion} that will not be a Java identifier or clash with
+	 * Return a new parameterName using {@code suggestion} that will not be a Java identifier or clash with
 	 * other names.
 	 */
 	public String newName(String suggestion) {
@@ -112,7 +112,7 @@ public final class NameAllocator implements Cloneable {
 	}
 
 	/**
-	 * Return a new name using {@code suggestion} that will not be a Java identifier or clash with
+	 * Return a new parameterName using {@code suggestion} that will not be a Java identifier or clash with
 	 * other names. The returned value can be queried multiple times by passing {@code tag} to
 	 * {@link #get(Object)}.
 	 */
@@ -128,7 +128,7 @@ public final class NameAllocator implements Cloneable {
 
 		String replaced = this.tagToName.put(tag, suggestion);
 		if (replaced != null) {
-          this.tagToName.put(tag, replaced); // Put things back as they were!
+			this.tagToName.put(tag, replaced); // Put things back as they were!
 			throw new IllegalArgumentException("tag " + tag + " cannot be used for both '" + replaced
 			                                   + "' and '" + suggestion + "'");
 		}
@@ -137,7 +137,7 @@ public final class NameAllocator implements Cloneable {
 	}
 
 	/**
-	 * Retrieve a name created with {@link #newName(String, Object)}.
+	 * Retrieve a parameterName created with {@link #newName(String, Object)}.
 	 */
 	public String get(Object tag) {
 		String result = this.tagToName.get(tag);

@@ -30,6 +30,8 @@ import java.util.*;
 
 import static tech.deplant.java4ever.binding.generator.javapoet.Util.*;
 
+//TODO Add permits list (for sealed types)
+
 /**
  * A generated class, interface, or enum declaration.
  */
@@ -113,7 +115,7 @@ public final class TypeSpec {
 	}
 
 	public static Builder classBuilder(String name) {
-		return new Builder(Kind.CLASS, checkNotNull(name, "name == null"), null);
+		return new Builder(Kind.CLASS, checkNotNull(name, "parameterName == null"), null);
 	}
 
 	public static Builder classBuilder(ClassName className) {
@@ -121,7 +123,7 @@ public final class TypeSpec {
 	}
 
 	public static Builder interfaceBuilder(String name) {
-		return new Builder(Kind.INTERFACE, checkNotNull(name, "name == null"), null);
+		return new Builder(Kind.INTERFACE, checkNotNull(name, "parameterName == null"), null);
 	}
 
 	public static Builder interfaceBuilder(ClassName className) {
@@ -129,7 +131,7 @@ public final class TypeSpec {
 	}
 
 	public static Builder enumBuilder(String name) {
-		return new Builder(Kind.ENUM, checkNotNull(name, "name == null"), null);
+		return new Builder(Kind.ENUM, checkNotNull(name, "parameterName == null"), null);
 	}
 
 	public static Builder enumBuilder(ClassName className) {
@@ -145,7 +147,7 @@ public final class TypeSpec {
 	}
 
 	public static Builder recordBuilder(String name) {
-		return new Builder(Kind.RECORD, checkNotNull(name, "name == null"), null);
+		return new Builder(Kind.RECORD, checkNotNull(name, "parameterName == null"), null);
 	}
 
 	public static Builder recordBuilder(ClassName className) {
@@ -153,7 +155,7 @@ public final class TypeSpec {
 	}
 
 	public static Builder annotationBuilder(String name) {
-		return new Builder(Kind.ANNOTATION, checkNotNull(name, "name == null"), null);
+		return new Builder(Kind.ANNOTATION, checkNotNull(name, "parameterName == null"), null);
 	}
 
 	public static Builder annotationBuilder(ClassName className) {
@@ -166,9 +168,15 @@ public final class TypeSpec {
 
 	private CodeBlock javadocWithRecordComponents() {
 		final CodeBlock.Builder builder = this.javadoc.toBuilder();
-		for (ParameterSpec component : this.recordComponents) {
-			if (!component.javadoc.isEmpty()) {
-				builder.add("\n@param $L $L", component.name, component.javadoc);
+		boolean emitTagNewline = true;
+		for (ParameterSpec parameterSpec : this.recordComponents) {
+			if (!parameterSpec.javadoc.isEmpty()) {
+				// Emit a new line before @param section only if the method javadoc is present.
+				if (emitTagNewline && !this.javadoc.isEmpty()) {
+					builder.add("\n");
+				}
+				emitTagNewline = false;
+				builder.add("@param $L $L", parameterSpec.name, parameterSpec.javadoc);
 			}
 		}
 		return builder.build();
@@ -251,6 +259,22 @@ public final class TypeSpec {
 					implementsTypes = this.superinterfaces;
 				}
 
+				if (this.kind == Kind.RECORD) {
+					codeWriter.emit("(");
+					boolean firstComponent = true;
+
+					for (Iterator<ParameterSpec> i = this.recordComponents.iterator(); i.hasNext(); ) {
+						ParameterSpec parameter = i.next();
+						if (!firstComponent) {
+							codeWriter.emit(",").emitWrappingSpace();
+						}
+						//TODO remove modifiers (can be "final" as param, cannot be "final" as a record component)
+						parameter.emit(codeWriter, false);
+						firstComponent = false;
+					}
+					codeWriter.emit(")");
+				}
+
 				if (!extendsTypes.isEmpty()) {
 					codeWriter.emit(" extends");
 					boolean firstType = true;
@@ -276,22 +300,6 @@ public final class TypeSpec {
 				}
 
 				codeWriter.popType();
-
-				if (this.kind == Kind.RECORD) {
-					codeWriter.emit("(");
-					boolean firstComponent = true;
-
-					for (Iterator<ParameterSpec> i = this.recordComponents.iterator(); i.hasNext(); ) {
-						ParameterSpec parameter = i.next();
-						if (!firstComponent) {
-							codeWriter.emit(",").emitWrappingSpace();
-						}
-						//TODO remove modifiers
-						parameter.emit(codeWriter, false);
-						firstComponent = false;
-					}
-					codeWriter.emit(")");
-				}
 				codeWriter.emit(" {\n");
 			}
 
@@ -508,7 +516,7 @@ public final class TypeSpec {
 
 		private Builder(Kind kind, String name,
 		                CodeBlock anonymousTypeArguments) {
-			checkArgument(name == null || SourceVersion.isName(name), "not a valid name: %s", name);
+			checkArgument(name == null || SourceVersion.isName(name), "not a valid parameterName: %s", name);
 			this.kind = kind;
 			this.name = name;
 			this.anonymousTypeArguments = anonymousTypeArguments;

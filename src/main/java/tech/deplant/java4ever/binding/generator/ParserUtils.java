@@ -34,7 +34,7 @@ public class ParserUtils {
 		return new String(newCodePoints, 0, outOffset);
 	}
 
-	public static String toParameterCase(final String str) {
+	public static String camelCase(final String str) {
 		final String[] wordArray = str.split("_");
 		final StringBuilder builder = new StringBuilder();
 		builder.append(wordArray[0].toLowerCase());
@@ -45,5 +45,9 @@ public class ParserUtils {
 			      builder.append(w.substring(1).toLowerCase());
 		      });
 		return builder.toString();
+	}
+
+	public static String toCapitalCase(final String str) {
+		return capitalize(camelCase(str));
 	}
 }

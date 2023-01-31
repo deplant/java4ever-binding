@@ -26,16 +26,16 @@ import static tech.deplant.java4ever.binding.generator.javapoet.Util.checkArgume
 import static tech.deplant.java4ever.binding.generator.javapoet.Util.checkNotNull;
 
 /**
- * A fully-qualified class name for top-level and member classes.
+ * A fully-qualified class parameterName for top-level and member classes.
  */
 public final class ClassName extends TypeName implements Comparable<ClassName> {
 	/**
-	 * The name representing the default Java package.
+	 * The parameterName representing the default Java package.
 	 */
 	private static final String NO_PACKAGE = "";
 	public static final ClassName OBJECT = ClassName.get(Object.class);
 	/**
-	 * The package name of this class, or "" if this is in the default package.
+	 * The package parameterName of this class, or "" if this is in the default package.
 	 */
 	final String packageName;
 
@@ -45,11 +45,11 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	final ClassName enclosingClassName;
 
 	/**
-	 * This class name, like "Entry" for java.util.Map.Entry.
+	 * This class parameterName, like "Entry" for java.util.Map.Entry.
 	 */
 	final String simpleName;
 	/**
-	 * The full class name like "java.util.Map.Entry".
+	 * The full class parameterName like "java.util.Map.Entry".
 	 */
 	final String canonicalName;
 	private List<String> simpleNames;
@@ -94,7 +94,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Returns a new {@link ClassName} instance for the given fully-qualified class name string. This
+	 * Returns a new {@link ClassName} instance for the given fully-qualified class parameterName string. This
 	 * method assumes that the input is ASCII and follows typical Java style (lowercase package
 	 * names, UpperCamelCase class names) and may produce incorrect results or throw
 	 * {@link IllegalArgumentException} otherwise. For that reason, {@link #get(Class)} and
@@ -102,7 +102,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	 * instances without such restrictions.
 	 */
 	public static ClassName bestGuess(String classNameString) {
-		// Add the package name, like "java.util.concurrent", or "" for no package.
+		// Add the package parameterName, like "java.util.concurrent", or "" for no package.
 		int p = 0;
 		while (p < classNameString.length() && Character.isLowerCase(classNameString.codePointAt(p))) {
 			p = classNameString.indexOf('.', p) + 1;
@@ -122,7 +122,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Returns a class name created from the given parts. For example, calling this with package name
+	 * Returns a class parameterName created from the given parts. For example, calling this with package parameterName
 	 * {@code "java.util"} and simple names {@code "Map"}, {@code "Entry"} yields {@link Map.Entry}.
 	 */
 	public static ClassName get(String packageName, String simpleName, String... simpleNames) {
@@ -134,7 +134,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Returns the class name for {@code element}.
+	 * Returns the class parameterName for {@code element}.
 	 */
 	public static ClassName get(TypeElement element) {
 		checkNotNull(element, "element == null");
@@ -166,14 +166,14 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	@Override
 	public ClassName annotated(List<AnnotationSpec> annotations) {
 		return new ClassName(this.packageName, this.enclosingClassName, this.simpleName,
-                             concatAnnotations(annotations));
+		                     concatAnnotations(annotations));
 	}
 
 	@Override
 	public ClassName withoutAnnotations() {
-      if (!isAnnotated()) {
-        return this;
-      }
+		if (!isAnnotated()) {
+			return this;
+		}
 		ClassName resultEnclosingClassName = this.enclosingClassName != null
 				? this.enclosingClassName.withoutAnnotations()
 				: null;
@@ -213,9 +213,9 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 			}
 
 			if (className.isAnnotated()) {
-              if (charsEmitted) {
-                out.emit(" ");
-              }
+				if (charsEmitted) {
+					out.emit(" ");
+				}
 				className.emitAnnotations(out);
 			}
 
@@ -227,7 +227,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Returns the package name, like {@code "java.util"} for {@code Map.Entry}. Returns the empty
+	 * Returns the package parameterName, like {@code "java.util"} for {@code Map.Entry}. Returns the empty
 	 * string for the default package.
 	 */
 	public String packageName() {
@@ -251,7 +251,7 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Return the binary name of a class.
+	 * Return the binary parameterName of a class.
 	 */
 	public String reflectionName() {
 		return this.enclosingClassName != null
@@ -265,27 +265,27 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 		}
 
 		if (this.enclosingClassName == null) {
-          this.simpleNames = Collections.singletonList(this.simpleName);
+			this.simpleNames = Collections.singletonList(this.simpleName);
 		} else {
 			List<String> mutableNames = new ArrayList<>();
 			mutableNames.addAll(enclosingClassName().simpleNames());
 			mutableNames.add(this.simpleName);
-          this.simpleNames = Collections.unmodifiableList(mutableNames);
+			this.simpleNames = Collections.unmodifiableList(mutableNames);
 		}
 		return this.simpleNames;
 	}
 
 	/**
 	 * Returns a class that shares the same enclosing package or class. If this class is enclosed by
-	 * another class, this is equivalent to {@code enclosingClassName().nestedClass(name)}. Otherwise
-	 * it is equivalent to {@code get(packageName(), name)}.
+	 * another class, this is equivalent to {@code enclosingClassName().nestedClass(parameterName)}. Otherwise
+	 * it is equivalent to {@code get(packageName(), parameterName)}.
 	 */
 	public ClassName peerClass(String name) {
 		return new ClassName(this.packageName, this.enclosingClassName, name);
 	}
 
 	/**
-	 * Returns a new {@link ClassName} instance for the specified {@code name} as nested inside this
+	 * Returns a new {@link ClassName} instance for the specified {@code parameterName} as nested inside this
 	 * class.
 	 */
 	public ClassName nestedClass(String name) {
@@ -293,14 +293,14 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 	}
 
 	/**
-	 * Returns the simple name of this class, like {@code "Entry"} for {@link Map.Entry}.
+	 * Returns the simple parameterName of this class, like {@code "Entry"} for {@link Map.Entry}.
 	 */
 	public String simpleName() {
 		return this.simpleName;
 	}
 
 	/**
-	 * Returns the full class name of this class.
+	 * Returns the full class parameterName of this class.
 	 * Like {@code "java.util.Map.Entry"} for {@link Map.Entry}.
 	 */
 	public String canonicalName() {

@@ -1,183 +1,286 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.Long;
+import java.lang.Object;
+import java.lang.String;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.*;
-import java.util.Arrays;
 
 /**
- *  <strong>tvm</strong>
- *  Contains methods of "tvm" module.
-
+ * <strong>Tvm</strong>
+ * Contains methods of "tvm" module of EVER-SDK API
+ *
  *  
- *  @version EVER-SDK 1.37.0
+ * @version 1.38.0
  */
-public class Tvm {
+public final class Tvm {
+  /**
+   * Performs all the phases of contract execution on Transaction Executor -
+   * the same component that is used on Validator Nodes.
+   *
+   * Can be used for contract debugging, to find out the reason why a message was not delivered successfully.
+   * Validators throw away the failed external inbound messages (if they failed bedore `ACCEPT`) in the real network.
+   * This is why these messages are impossible to debug in the real network.
+   * With the help of run_executor you can do that. In fact, `process_message` function
+   * performs local check with `run_executor` if there was no transaction as a result of processing
+   * and returns the error, if there is one.
+   *
+   * Another use case to use `run_executor` is to estimate fees for message execution.
+   * Set  `AccountForExecutor::Account.unlimited_balance`
+   * to `true` so that emulation will not depend on the actual balance.
+   * This may be needed to calculate deploy fees for an account that does not exist yet.
+   * JSON with fees is in `fees` field of the result.
+   *
+   * One more use case - you can produce the sequence of operations,
+   * thus emulating the sequential contract calls locally.
+   * And so on.
+   *
+   * Transaction executor requires account BOC (bag of cells) as a parameter.
+   * To get the account BOC - use `net.query` method to download it from GraphQL API
+   * (field `boc` of `account`) or generate it with `abi.encode_account` method.
+   *
+   * Also it requires message BOC. To get the message BOC - use `abi.encode_message` or `abi.encode_internal_message`.
+   *
+   * If you need this emulation to be as precise as possible (for instance - emulate transaction
+   * with particular lt in particular block or use particular blockchain config,
+   * downloaded from a particular key block - then specify `execution_options` parameter.
+   *
+   * If you need to see the aborted transaction as a result, not as an error, set `skip_transaction_check` to `true`. Emulates all the phases of contract execution locally
+   *
+   * @param message Must be encoded as base64. Input message BOC.
+   * @param account  Account to run on executor
+   * @param executionOptions  Execution options.
+   * @param abi  Contract ABI for decoding output messages
+   * @param skipTransactionCheck  Skip transaction check flag
+   * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
+   * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
+   */
+  public static Tvm.ResultOfRunExecutor runExecutor(Context ctx, String message,
+      Tvm.AccountForExecutor account, Tvm.ExecutionOptions executionOptions, Abi.ABI abi,
+      Boolean skipTransactionCheck, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) throws
+      EverSdkException {
+    return ctx.call("tvm.run_executor", new Tvm.ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), Tvm.ResultOfRunExecutor.class);
+  }
 
+  /**
+   * Performs only a part of compute phase of transaction execution
+   * that is used to run get-methods of ABI-compatible contracts.
+   *
+   * If you try to run get-methods with `run_executor` you will get an error, because it checks ACCEPT and exits
+   * if there is none, which is actually true for get-methods.
+   *
+   *  To get the account BOC (bag of cells) - use `net.query` method to download it from GraphQL API
+   * (field `boc` of `account`) or generate it with `abi.encode_account method`.
+   * To get the message BOC - use `abi.encode_message` or prepare it any other way, for instance, with FIFT script.
+   *
+   * Attention! Updated account state is produces as well, but only
+   * `account_state.storage.state.data`  part of the BOC is updated. Executes get-methods of ABI-compatible contracts
+   *
+   * @param message Must be encoded as base64. Input message BOC.
+   * @param account Must be encoded as base64. Account BOC.
+   * @param executionOptions  Execution options.
+   * @param abi  Contract ABI for decoding output messages
+   * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
+   * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
+   */
+  public static Tvm.ResultOfRunTvm runTvm(Context ctx, String message, String account,
+      Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache,
+      Boolean returnUpdatedAccount) throws EverSdkException {
+    return ctx.call("tvm.run_tvm", new Tvm.ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), Tvm.ResultOfRunTvm.class);
+  }
 
+  /**
+   * Executes a get-method of FIFT contract that fulfills the smc-guidelines https://test.ton.org/smc-guidelines.txt
+   * and returns the result data from TVM's stack Executes a get-method of FIFT contract
+   *
+   * @param account  Account BOC in `base64`
+   * @param functionName  Function name
+   * @param input  Input parameters
+   * @param executionOptions  Execution options
+   * @param tupleListAsArray Default is `false`. Input parameters may use any of lists representations
+   * If you receive this error on Web: "Runtime error. Unreachable code should not be executed...",
+   * set this flag to true.
+   * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
+   */
+  public static Tvm.ResultOfRunGet runGet(Context ctx, String account, String functionName,
+      Map<String, Object> input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray)
+      throws EverSdkException {
+    return ctx.call("tvm.run_get", new Tvm.ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), Tvm.ResultOfRunGet.class);
+  }
+
+  /**
+   * @param blockchainConfig  boc with config
+   * @param blockTime  time that is used as transaction time
+   * @param blockLt  block logical time
+   * @param transactionLt  transaction logical time
+   * @param chksigAlwaysSucceed  Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
+   */
+  public static final record ExecutionOptions(String blockchainConfig, Integer blockTime,
+      Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed) {
+  }
+
+  /**
+   * @param transaction In addition to the regular transaction fields there is a
+   * `boc` field encoded with `base64` which contains source
+   * transaction BOC. Parsed transaction.
+   * @param outMessages Encoded as `base64` List of output messages' BOCs.
+   * @param decoded  Optional decoded message bodies according to the optional `abi` parameter.
+   * @param account Encoded as `base64` Updated account state BOC.
+   * @param fees  Transaction fees
+   */
+  public static final record ResultOfRunExecutor(Map<String, Object> transaction,
+      String[] outMessages, Processing.DecodedOutput decoded, String account,
+      Tvm.TransactionFees fees) {
+  }
+
+  /**
+   * @param output  Values returned by get-method on stack
+   */
+  public static final record ResultOfRunGet(Map<String, Object> output) {
+  }
+
+  /**
+   * @param message Must be encoded as base64. Input message BOC.
+   * @param account Must be encoded as base64. Account BOC.
+   * @param executionOptions  Execution options.
+   * @param abi  Contract ABI for decoding output messages
+   * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
+   * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
+   */
+  public static final record ParamsOfRunTvm(String message, String account,
+      Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache,
+      Boolean returnUpdatedAccount) {
+  }
+
+  /**
+   * @param inMsgFwdFee Contains the same data as ext_in_msg_fee field Deprecated.
+   * @param storageFee  Fee for account storage
+   * @param gasFee  Fee for processing
+   * @param outMsgsFwdFee Contains the same data as total_fwd_fees field. Deprecated because of its confusing name, that is not the same with GraphQL API Transaction type's field. Deprecated.
+   * @param totalAccountFees Contains the same data as account_fees field Deprecated.
+   * @param totalOutput  Deprecated because it means total value sent in the transaction, which does not relate to any fees.
+   * @param extInMsgFee  Fee for inbound external message import.
+   * @param totalFwdFees  Total fees the account pays for message forwarding
+   * @param accountFees  Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
+   */
+  public static final record TransactionFees(Long inMsgFwdFee, Long storageFee, Long gasFee,
+      Long outMsgsFwdFee, Long totalAccountFees, Long totalOutput, Long extInMsgFee,
+      Long totalFwdFees, Long accountFees) {
+  }
+
+  /**
+   * @param account  Account BOC in `base64`
+   * @param functionName  Function name
+   * @param input  Input parameters
+   * @param executionOptions  Execution options
+   * @param tupleListAsArray Default is `false`. Input parameters may use any of lists representations
+   * If you receive this error on Web: "Runtime error. Unreachable code should not be executed...",
+   * set this flag to true.
+   * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
+   */
+  public static final record ParamsOfRunGet(String account, String functionName,
+      Map<String, Object> input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray) {
+  }
+
+  public enum TvmErrorCode {
+    CanNotReadTransaction(401),
+
+    CanNotReadBlockchainConfig(402),
+
+    TransactionAborted(403),
+
+    InternalError(404),
+
+    ActionPhaseFailed(405),
+
+    AccountCodeMissing(406),
+
+    LowBalance(407),
+
+    AccountFrozenOrDeleted(408),
+
+    AccountMissing(409),
+
+    UnknownExecutionError(410),
+
+    InvalidInputStack(411),
+
+    InvalidAccountBoc(412),
+
+    InvalidMessageType(413),
+
+    ContractExecutionError(414);
+
+    private final Integer value;
+
+    TvmErrorCode(Integer value) {
+      this.value = value;
+    }
+
+    public Integer value() {
+      return this.value;
+    }
+  }
+
+  /**
+   * @param message Must be encoded as base64. Input message BOC.
+   * @param account  Account to run on executor
+   * @param executionOptions  Execution options.
+   * @param abi  Contract ABI for decoding output messages
+   * @param skipTransactionCheck  Skip transaction check flag
+   * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
+   * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
+   */
+  public static final record ParamsOfRunExecutor(String message, Tvm.AccountForExecutor account,
+      Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boolean skipTransactionCheck,
+      Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {
+  }
+
+  public sealed interface AccountForExecutor {
     /**
-    * 
-    * @param blockchainConfig boc with config
-    * @param blockTime time that is used as transaction time
-    * @param blockLt block logical time
-    * @param transactionLt transaction logical time
-    * @param chksigAlwaysSucceed Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
-    */
-    public record ExecutionOptions(String blockchainConfig, Number blockTime, Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed) {}
-    public interface AccountForExecutor {
-
-        public static final None NONE = new None();
-
-
-    /**
-    * Non-existing account to run a creation internal message. Should be used with `skip_transaction_check = true` if the message has no deploy data since transactions on the uninitialized account are always aborted
-
-    */
-    public record None() implements AccountForExecutor {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-
-        public static final Uninit UNINIT = new Uninit();
-
-
-    /**
-    * Emulate uninitialized account to run deploy message
-
-    */
-    public record Uninit() implements AccountForExecutor {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-
-
-    /**
-    * Account state to run message
-    * @param boc Account BOC. Encoded as base64.
-    * @param unlimitedBalance Flag for running account with the unlimited balance. Can be used to calculate transaction fees without balance check
-    */
-    public record Account(String boc, Boolean unlimitedBalance) implements AccountForExecutor {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-}
-
-    /**
-    * 
-    * @param inMsgFwdFee Deprecated. Left for backward compatibility. Does not participate in account transaction fees calculation.
-    * @param storageFee Fee for account storage
-    * @param gasFee Fee for processing
-    * @param outMsgsFwdFee Deprecated. Contains the same data as total_fwd_fees field. Deprecated because of its confusing name, that is not the same with GraphQL API Transaction type's field.
-    * @param totalAccountFees Deprecated. This is the field that is named as `total_fees` in GraphQL API Transaction type. `total_account_fees` name is misleading, because it does not mean account fees, instead it meansvalidators total fees received for the transaction execution. It does not include some forward fees that accountactually pays now, but validators will receive later during value delivery to another account (not even in the receivingtransaction).Because of all of this, this field is not interesting for those who wants to understandthe real account fees, this is why it is deprecated and left for backward compatibility.
-    * @param totalOutput Deprecated because it means total value sent in the transaction, which does not relate to any fees.
-    * @param extInMsgFee Fee for inbound external message import.
-    * @param totalFwdFees Total fees the account pays for message forwarding
-    * @param accountFees Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
-    */
-    public record TransactionFees(Long inMsgFwdFee, Long storageFee, Long gasFee, Long outMsgsFwdFee, Long totalAccountFees, Long totalOutput, Long extInMsgFee, Long totalFwdFees, Long accountFees) {}
-
-    /**
-    * 
-    * @param message Input message BOC. Must be encoded as base64.
-    * @param account Account to run on executor
-    * @param executionOptions Execution options.
-    * @param abi Contract ABI for decoding output messages
-    * @param skipTransactionCheck Skip transaction check flag
-    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
-    * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
-    */
-    public record ParamsOfRunExecutor(String message, AccountForExecutor account, ExecutionOptions executionOptions, Abi.ABI abi, Boolean skipTransactionCheck, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
-
-    /**
-    * 
-    * @param transaction Parsed transaction. In addition to the regular transaction fields there is a`boc` field encoded with `base64` which contains sourcetransaction BOC.
-    * @param outMessages List of output messages' BOCs. Encoded as `base64`
-    * @param decoded Optional decoded message bodies according to the optional `abi` parameter.
-    * @param account Updated account state BOC. Encoded as `base64`
-    * @param fees Transaction fees
-    */
-    public record ResultOfRunExecutor(Map<String,Object> transaction, String[] outMessages, Processing.DecodedOutput decoded, String account, TransactionFees fees) {}
-
-    /**
-    * 
-    * @param message Input message BOC. Must be encoded as base64.
-    * @param account Account BOC. Must be encoded as base64.
-    * @param executionOptions Execution options.
-    * @param abi Contract ABI for decoding output messages
-    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
-    * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
-    */
-    public record ParamsOfRunTvm(String message, String account, ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {}
-
-    /**
-    * 
-    * @param outMessages List of output messages' BOCs. Encoded as `base64`
-    * @param decoded Optional decoded message bodies according to the optional `abi` parameter.
-    * @param account Updated account state BOC. Encoded as `base64`. Attention! Only `account_state.storage.state.data` part of the BOC is updated.
-    */
-    public record ResultOfRunTvm(String[] outMessages, Processing.DecodedOutput decoded, String account) {}
-
-    /**
-    * 
-    * @param account Account BOC in `base64`
-    * @param functionName Function name
-    * @param input Input parameters
-    * @param executionOptions Execution options
-    * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
-    */
-    public record ParamsOfRunGet(String account, String functionName, Map<String,Object> input, ExecutionOptions executionOptions, Boolean tupleListAsArray) {}
-
-    /**
-    * 
-    * @param output Values returned by get-method on stack
-    */
-    public record ResultOfRunGet(Map<String,Object> output) {}
-    /**
-    * <strong>tvm.run_executor</strong>
-    * Emulates all the phases of contract execution locally Performs all the phases of contract execution on Transaction Executor -the same component that is used on Validator Nodes.<p>Can be used for contract debugging, to find out the reason why a message was not delivered successfully.Validators throw away the failed external inbound messages (if they failed bedore `ACCEPT`) in the real network.This is why these messages are impossible to debug in the real network.With the help of run_executor you can do that. In fact, `process_message` functionperforms local check with `run_executor` if there was no transaction as a result of processingand returns the error, if there is one.<p>Another use case to use `run_executor` is to estimate fees for message execution.Set  `AccountForExecutor::Account.unlimited_balance`to `true` so that emulation will not depend on the actual balance.This may be needed to calculate deploy fees for an account that does not exist yet.JSON with fees is in `fees` field of the result.<p>One more use case - you can produce the sequence of operations,thus emulating the sequential contract calls locally.And so on.<p>Transaction executor requires account BOC (bag of cells) as a parameter.To get the account BOC - use `net.query` method to download it from GraphQL API(field `boc` of `account`) or generate it with `abi.encode_account` method.<p>Also it requires message BOC. To get the message BOC - use `abi.encode_message` or `abi.encode_internal_message`.<p>If you need this emulation to be as precise as possible (for instance - emulate transactionwith particular lt in particular block or use particular blockchain config,downloaded from a particular key block - then specify `execution_options` parameter.<p>If you need to see the aborted transaction as a result, not as an error, set `skip_transaction_check` to `true`.
-    * @param message Input message BOC. Must be encoded as base64.
-    * @param account Account to run on executor 
-    * @param executionOptions Execution options. 
-    * @param abi Contract ABI for decoding output messages 
-    * @param skipTransactionCheck Skip transaction check flag 
-    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
-    * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
-    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunExecutor}
-    */
-    public static ResultOfRunExecutor runExecutor(Context ctx, String message, AccountForExecutor account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boolean skipTransactionCheck,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws EverSdkException {
-        return  ctx.call("tvm.run_executor", new ParamsOfRunExecutor(message, account, executionOptions, abi, skipTransactionCheck, bocCache, returnUpdatedAccount), ResultOfRunExecutor.class);
+     *  Non-existing account to run a creation internal message. Should be used with `skip_transaction_check = true` if the message has no deploy data since transactions on the uninitialized account are always aborted
+     * {@inheritDoc}
+     */
+    final record None() implements AccountForExecutor {
+      @JsonProperty("type")
+      public String type() {
+        return "None";
+      }
     }
 
     /**
-    * <strong>tvm.run_tvm</strong>
-    * Executes get-methods of ABI-compatible contracts Performs only a part of compute phase of transaction executionthat is used to run get-methods of ABI-compatible contracts.<p>If you try to run get-methods with `run_executor` you will get an error, because it checks ACCEPT and exitsif there is none, which is actually true for get-methods.<p> To get the account BOC (bag of cells) - use `net.query` method to download it from GraphQL API(field `boc` of `account`) or generate it with `abi.encode_account method`.To get the message BOC - use `abi.encode_message` or prepare it any other way, for instance, with FIFT script.<p>Attention! Updated account state is produces as well, but only`account_state.storage.state.data`  part of the BOC is updated.
-    * @param message Input message BOC. Must be encoded as base64.
-    * @param account Account BOC. Must be encoded as base64.
-    * @param executionOptions Execution options. 
-    * @param abi Contract ABI for decoding output messages 
-    * @param bocCache Cache type to put the result. The BOC itself returned if no cache type provided
-    * @param returnUpdatedAccount Return updated account flag. Empty string is returned if the flag is `false`
-    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunTvm}
-    */
-    public static ResultOfRunTvm runTvm(Context ctx, String message, String account,  ExecutionOptions executionOptions,  Abi.ABI abi,  Boc.BocCacheType bocCache,  Boolean returnUpdatedAccount) throws EverSdkException {
-        return  ctx.call("tvm.run_tvm", new ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), ResultOfRunTvm.class);
+     *  Emulate uninitialized account to run deploy message
+     * {@inheritDoc}
+     */
+    final record Uninit() implements AccountForExecutor {
+      @JsonProperty("type")
+      public String type() {
+        return "Uninit";
+      }
     }
 
     /**
-    * <strong>tvm.run_get</strong>
-    * Executes a get-method of FIFT contract Executes a get-method of FIFT contract that fulfills the smc-guidelines https://test.ton.org/smc-guidelines.txtand returns the result data from TVM's stack
-    * @param account Account BOC in `base64` 
-    * @param functionName Function name 
-    * @param input Input parameters 
-    * @param executionOptions Execution options 
-    * @param tupleListAsArray Convert lists based on nested tuples in the **result** into plain arrays. Default is `false`. Input parameters may use any of lists representationsIf you receive this error on Web: "Runtime error. Unreachable code should not be executed...",set this flag to true.This may happen, for example, when elector contract contains too many participants
-    * @return {@link tech.deplant.java4ever.binding.Tvm.ResultOfRunGet}
-    */
-    public static ResultOfRunGet runGet(Context ctx, String account, String functionName,  Map<String,Object> input,  ExecutionOptions executionOptions,  Boolean tupleListAsArray) throws EverSdkException {
-        return  ctx.call("tvm.run_get", new ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), ResultOfRunGet.class);
+     *  Account state to run message
+     * {@inheritDoc}
+     * @param boc Encoded as base64. Account BOC.
+     * @param unlimitedBalance Can be used to calculate transaction fees without balance check Flag for running account with the unlimited balance.
+     */
+    final record Account(String boc, Boolean unlimitedBalance) implements AccountForExecutor {
+      @JsonProperty("type")
+      public String type() {
+        return "Account";
+      }
     }
+  }
 
+  /**
+   * @param outMessages Encoded as `base64` List of output messages' BOCs.
+   * @param decoded  Optional decoded message bodies according to the optional `abi` parameter.
+   * @param account Encoded as `base64`. Attention! Only `account_state.storage.state.data` part of the BOC is updated. Updated account state BOC.
+   */
+  public static final record ResultOfRunTvm(String[] outMessages, Processing.DecodedOutput decoded,
+      String account) {
+  }
 }

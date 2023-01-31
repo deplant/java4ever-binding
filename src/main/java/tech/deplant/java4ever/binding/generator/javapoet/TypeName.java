@@ -31,8 +31,8 @@ import java.util.*;
  * types like {@code int} and raw reference types like {@code String} and {@code List}. It also
  * identifies composite types like {@code char[]} and {@code Set<Long>}.
  *
- * <p>Type names are dumb identifiers only and do not model the values they name. For example, the
- * type name for {@code java.util.List} doesn't know about the {@code size()} method, the fact that
+ * <p>Type names are dumb identifiers only and do not model the values they parameterName. For example, the
+ * type parameterName for {@code java.util.List} doesn't know about the {@code size()} method, the fact that
  * lists are collections, or even that it accepts a single type parameter.
  *
  * <p>Instances of this class are immutable value objects that implement {@code equals()} and {@code
@@ -43,7 +43,7 @@ import java.util.*;
  * <p>Primitives and void are constants that you can reference directly: see {@link #INT}, {@link
  * #DOUBLE}, and {@link #VOID}.
  *
- * <p>In an annotation processor you can get a type name instance for a type mirror by calling
+ * <p>In an annotation processor you can get a type parameterName instance for a type mirror by calling
  * {@link #get(TypeMirror)}. In reflection code, you can use {@link #get(Type)}.
  *
  * <h3>Defining new types</h3>
@@ -65,6 +65,10 @@ public class TypeName {
 	public static final TypeName DOUBLE = new TypeName("double");
 	public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
 
+	public static final ClassName STRING = ClassName.get("java.lang", "String");
+
+	public static final ClassName MAP = ClassName.get("java.util", "Map");
+
 	private static final ClassName BOXED_VOID = ClassName.get("java.lang", "Void");
 	private static final ClassName BOXED_BOOLEAN = ClassName.get("java.lang", "Boolean");
 	private static final ClassName BOXED_BYTE = ClassName.get("java.lang", "Byte");
@@ -74,13 +78,14 @@ public class TypeName {
 	private static final ClassName BOXED_CHAR = ClassName.get("java.lang", "Character");
 	private static final ClassName BOXED_FLOAT = ClassName.get("java.lang", "Float");
 	private static final ClassName BOXED_DOUBLE = ClassName.get("java.lang", "Double");
+
 	public final List<AnnotationSpec> annotations;
 	/**
-	 * The name of this type if it is a keyword, or null.
+	 * The parameterName of this type if it is a keyword, or null.
 	 */
 	private final String keyword;
 	/**
-	 * Lazily-initialized toString of this type name.
+	 * Lazily-initialized toString of this type parameterName.
 	 */
 	private String cachedString;
 
@@ -99,7 +104,7 @@ public class TypeName {
 	}
 
 	/**
-	 * Returns a type name equivalent to {@code mirror}.
+	 * Returns a type parameterName equivalent to {@code mirror}.
 	 */
 	public static TypeName get(TypeMirror mirror) {
 		return get(mirror, new LinkedHashMap<>());
@@ -182,7 +187,7 @@ public class TypeName {
 	}
 
 	/**
-	 * Returns a type name equivalent to {@code type}.
+	 * Returns a type parameterName equivalent to {@code type}.
 	 */
 	public static TypeName get(Type type) {
 		return get(type, new LinkedHashMap<>());

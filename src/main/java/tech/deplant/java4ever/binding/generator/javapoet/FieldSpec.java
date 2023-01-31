@@ -39,7 +39,7 @@ public final class FieldSpec {
 
 	private FieldSpec(Builder builder) {
 		this.type = checkNotNull(builder.type, "type == null");
-		this.name = checkNotNull(builder.name, "name == null");
+		this.name = checkNotNull(builder.name, "parameterName == null");
 		this.javadoc = builder.javadoc.build();
 		this.annotations = Util.immutableList(builder.annotations);
 		this.modifiers = Util.immutableSet(builder.modifiers);
@@ -50,7 +50,7 @@ public final class FieldSpec {
 
 	public static Builder builder(TypeName type, String name, Modifier... modifiers) {
 		checkNotNull(type, "type == null");
-		checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
+		checkArgument(SourceVersion.isName(name), "not a valid parameterName: %s", name);
 		return new Builder(type, name)
 				.addModifiers(modifiers);
 	}
@@ -82,15 +82,15 @@ public final class FieldSpec {
 
 	@Override
 	public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null) {
-        return false;
-      }
-      if (getClass() != o.getClass()) {
-        return false;
-      }
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}
 		return toString().equals(o.toString());
 	}
 
@@ -129,12 +129,12 @@ public final class FieldSpec {
 		}
 
 		public Builder addJavadoc(String format, Object... args) {
-          this.javadoc.add(format, args);
+			this.javadoc.add(format, args);
 			return this;
 		}
 
 		public Builder addJavadoc(CodeBlock block) {
-          this.javadoc.add(block);
+			this.javadoc.add(block);
 			return this;
 		}
 

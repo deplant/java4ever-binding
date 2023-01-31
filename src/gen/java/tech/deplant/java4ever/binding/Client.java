@@ -1,194 +1,303 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.*;
-import java.util.Arrays;
 
 /**
- *  <strong>client</strong>
- *  Contains methods of "client" module.
-
- *  Provides information about library.
- *  @version EVER-SDK 1.37.0
+ * <strong>Client</strong>
+ * Contains methods of "client" module of EVER-SDK API
+ *
+ * Provides information about library. 
+ * @version 1.38.0
  */
-public class Client {
+public final class Client {
+  /**
+   *  Returns Core Library API reference
+   */
+  public static Client.ResultOfGetApiReference getApiReference(Context ctx) throws
+      EverSdkException {
+    return ctx.call("client.get_api_reference", null, Client.ResultOfGetApiReference.class);
+  }
 
+  /**
+   *  Returns Core Library version
+   */
+  public static Client.ResultOfVersion version(Context ctx) throws EverSdkException {
+    return ctx.call("client.version", null, Client.ResultOfVersion.class);
+  }
 
+  /**
+   *  Returns Core Library API reference
+   */
+  public static Client.ClientConfig config(Context ctx) throws EverSdkException {
+    return ctx.call("client.config", null, Client.ClientConfig.class);
+  }
+
+  /**
+   *  Returns detailed information about this build.
+   */
+  public static Client.ResultOfBuildInfo buildInfo(Context ctx) throws EverSdkException {
+    return ctx.call("client.build_info", null, Client.ResultOfBuildInfo.class);
+  }
+
+  /**
+   *  Resolves application request processing result
+   *
+   * @param appRequestId  Request ID received from SDK
+   * @param result  Result of request processing
+   */
+  public static void resolveAppRequest(Context ctx, Integer appRequestId,
+      Client.AppRequestResult result) throws EverSdkException {
+    ctx.callVoid("client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
+  }
+
+  public enum ClientErrorCode {
+    NotImplemented(1),
+
+    InvalidHex(2),
+
+    InvalidBase64(3),
+
+    InvalidAddress(4),
+
+    CallbackParamsCantBeConvertedToJson(5),
+
+    WebsocketConnectError(6),
+
+    WebsocketReceiveError(7),
+
+    WebsocketSendError(8),
+
+    HttpClientCreateError(9),
+
+    HttpRequestCreateError(10),
+
+    HttpRequestSendError(11),
+
+    HttpRequestParseError(12),
+
+    CallbackNotRegistered(13),
+
+    NetModuleNotInit(14),
+
+    InvalidConfig(15),
+
+    CannotCreateRuntime(16),
+
+    InvalidContextHandle(17),
+
+    CannotSerializeResult(18),
+
+    CannotSerializeError(19),
+
+    CannotConvertJsValueToJson(20),
+
+    CannotReceiveSpawnedResult(21),
+
+    SetTimerError(22),
+
+    InvalidParams(23),
+
+    ContractsAddressConversionFailed(24),
+
+    UnknownFunction(25),
+
+    AppRequestError(26),
+
+    NoSuchRequest(27),
+
+    CanNotSendRequestResult(28),
+
+    CanNotReceiveRequestResult(29),
+
+    CanNotParseRequestResult(30),
+
+    UnexpectedCallbackResponse(31),
+
+    CanNotParseNumber(32),
+
+    InternalError(33),
+
+    InvalidHandle(34),
+
+    LocalStorageError(35);
+
+    private final Integer value;
+
+    ClientErrorCode(Integer value) {
+      this.value = value;
+    }
+
+    public Integer value() {
+      return this.value;
+    }
+  }
+
+  /**
+   * @param workchain  Workchain id that is used by default in DeploySet
+   * @param messageExpirationTimeout  Message lifetime for contracts which ABI includes "expire" header. The default value is 40 sec.
+   * @param messageExpirationTimeoutGrowFactor  Factor that increases the expiration timeout for each retry The default value is 1.5
+   */
+  public static final record AbiConfig(Integer workchain, Integer messageExpirationTimeout,
+      Integer messageExpirationTimeoutGrowFactor) {
+  }
+
+  /**
+   * @param name Usually it is a crate name. Dependency name.
+   * @param gitCommit  Git commit hash of the related repository.
+   */
+  public static final record BuildInfoDependency(String name, String gitCommit) {
+  }
+
+  /**
+   * @param cacheInLocalStorage Default is `true`. If this value is set to `true`, downloaded proofs and master-chain BOCs are saved into the
+   * persistent local storage (e.g. file system for native environments or browser's IndexedDB
+   * for the web); otherwise all the data is cached only in memory in current client's context
+   * and will be lost after destruction of the client. Cache proofs in the local storage.
+   */
+  public static final record ProofsConfig(Boolean cacheInLocalStorage) {
+  }
+
+  public static final record ClientError(Integer code, String message, Map<String, Object> data) {
+  }
+
+  /**
+   * @param serverAddress  **This field is deprecated, but left for backward-compatibility.** Evernode endpoint.
+   * @param endpoints Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.
+   * Check the full list of [supported network endpoints](https://docs.everos.dev/ever-sdk/reference/ever-os-api/networks). List of Evernode endpoints.
+   * @param networkRetriesCount You must use `network.max_reconnect_timeout` that allows to specify maximum network resolving timeout. Deprecated.
+   * @param maxReconnectTimeout Must be specified in milliseconds. Default is 120000 (2 min). Maximum time for sequential reconnections.
+   * @param reconnectTimeout  Deprecated
+   * @param messageRetriesCount Default is 5. The number of automatic message processing retries that SDK performs in case of `Message Expired (507)` error - but only for those messages which local emulation was successful or failed with replay protection error.
+   * @param messageProcessingTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Timeout that is used to process message delivery for the contracts which ABI does not include "expire" header. If the message is not delivered within the specified timeout the appropriate error occurs.
+   * @param waitForTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Maximum timeout that is used for query response.
+   * @param outOfSyncThreshold If client's device time is out of sync and difference is more than the threshold then error will occur. Also an error will occur if the specified threshold is more than
+   * `message_processing_timeout/2`.
+   *
+   * Must be specified in milliseconds. Default is 15000 (15 sec). Maximum time difference between server and client.
+   * @param sendingEndpointCount Default is 1. Maximum number of randomly chosen endpoints the library uses to broadcast a message.
+   * @param latencyDetectionInterval Library periodically checks the current endpoint for blockchain data syncronization latency.
+   * If the latency (time-lag) is less then `NetworkConfig.max_latency`
+   * then library selects another endpoint.
+   *
+   * Must be specified in milliseconds. Default is 60000 (1 min). Frequency of sync latency detection.
+   * @param maxLatency Must be specified in milliseconds. Default is 60000 (1 min). Maximum value for the endpoint's blockchain data syncronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint.
+   * @param queryTimeout Is is used when no timeout specified for the request to limit the answer waiting time. If no answer received during the timeout requests ends with
+   * error.
+   *
+   * Must be specified in milliseconds. Default is 60000 (1 min). Default timeout for http requests.
+   * @param queriesProtocol `HTTP` or `WS`. 
+   * Default is `HTTP`. Queries protocol.
+   * @param firstRempStatusTimeout First REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.
+   *
+   * Must be specified in milliseconds. Default is 1000 (1 sec). UNSTABLE.
+   * @param nextRempStatusTimeout Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.
+   *
+   * Must be specified in milliseconds. Default is 5000 (5 sec). UNSTABLE.
+   * @param accessKey  Access key to GraphQL API (Project secret)
+   */
+  public static final record NetworkConfig(String serverAddress, String[] endpoints,
+      Integer networkRetriesCount, Integer maxReconnectTimeout, Integer reconnectTimeout,
+      Integer messageRetriesCount, Integer messageProcessingTimeout, Integer waitForTimeout,
+      Integer outOfSyncThreshold, Integer sendingEndpointCount, Integer latencyDetectionInterval,
+      Integer maxLatency, Integer queryTimeout, Client.NetworkQueriesProtocol queriesProtocol,
+      Integer firstRempStatusTimeout, Integer nextRempStatusTimeout, String accessKey) {
+  }
+
+  /**
+   * @param appRequestId Should be used in `resolve_app_request` call Request ID.
+   * @param requestData  Request describing data
+   */
+  public static final record ParamsOfAppRequest(Integer appRequestId,
+      Map<String, Object> requestData) {
+  }
+
+  public sealed interface AppRequestResult {
     /**
-    * 
-    * @param network 
-    * @param crypto 
-    * @param abi 
-    * @param boc 
-    * @param proofs 
-    * @param localStoragePath For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
-    */
-    public record ClientConfig(NetworkConfig network, CryptoConfig crypto, AbiConfig abi, BocConfig boc, ProofsConfig proofs, String localStoragePath) {}
-
-    /**
-    * 
-    * @param serverAddress **This field is deprecated, but left for backward-compatibility.** DApp Server public address.
-    * @param endpoints List of DApp Server addresses. Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.Check the full list of supported network endpoints.
-    * @param networkRetriesCount Deprecated. You must use `network.max_reconnect_timeout` that allows to specify maximum network resolving timeout.
-    * @param maxReconnectTimeout Maximum time for sequential reconnections. Must be specified in milliseconds. Default is 120000 (2 min).
-    * @param reconnectTimeout Deprecated
-    * @param messageRetriesCount The number of automatic message processing retries that SDK performs in case of `Message Expired (507)` error - but only for those messages which local emulation was successful or failed with replay protection error. Default is 5.
-    * @param messageProcessingTimeout Timeout that is used to process message delivery for the contracts which ABI does not include "expire" header. If the message is not delivered within the specified timeout the appropriate error occurs. Must be specified in milliseconds. Default is 40000 (40 sec).
-    * @param waitForTimeout Maximum timeout that is used for query response. Must be specified in milliseconds. Default is 40000 (40 sec).
-    * @param outOfSyncThreshold Maximum time difference between server and client. If client's device time is out of sync and difference is more than the threshold then error will occur. Also an error will occur if the specified threshold is more than`message_processing_timeout/2`.<p>Must be specified in milliseconds. Default is 15000 (15 sec).
-    * @param sendingEndpointCount Maximum number of randomly chosen endpoints the library uses to broadcast a message. Default is 1.
-    * @param latencyDetectionInterval Frequency of sync latency detection. Library periodically checks the current endpoint for blockchain data syncronization latency.If the latency (time-lag) is less then `NetworkConfig.max_latency`then library selects another endpoint.<p>Must be specified in milliseconds. Default is 60000 (1 min).
-    * @param maxLatency Maximum value for the endpoint's blockchain data syncronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint. Must be specified in milliseconds. Default is 60000 (1 min).
-    * @param queryTimeout Default timeout for http requests. Is is used when no timeout specified for the request to limit the answer waiting time. If no answer received during the timeout requests ends witherror.<p>Must be specified in milliseconds. Default is 60000 (1 min).
-    * @param queriesProtocol Queries protocol. `HTTP` or `WS`. Default is `HTTP`.
-    * @param firstRempStatusTimeout UNSTABLE. First REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 1000 (1 sec).
-    * @param nextRempStatusTimeout UNSTABLE. Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.<p>Must be specified in milliseconds. Default is 5000 (5 sec).
-    * @param accessKey Access key to GraphQL API. You can specify here Evercloud project secret ot serialized JWT.
-    */
-    public record NetworkConfig(@Deprecated String serverAddress, String[] endpoints, @Deprecated Number networkRetriesCount, Number maxReconnectTimeout, @Deprecated Number reconnectTimeout, Number messageRetriesCount, Number messageProcessingTimeout, Number waitForTimeout, Number outOfSyncThreshold, Number sendingEndpointCount, Number latencyDetectionInterval, Number maxLatency, Number queryTimeout, NetworkQueriesProtocol queriesProtocol, Number firstRempStatusTimeout, Number nextRempStatusTimeout, String accessKey) {}
-    public enum NetworkQueriesProtocol {
-        
-        /**
-        * Each GraphQL query uses separate HTTP request.
-        */
-        HTTP,
-
-        /**
-        * All GraphQL queries will be served using single web socket connection.
-        */
-        WS
+     *  Error occurred during request processing
+     * {@inheritDoc}
+     * @param text  Error description
+     */
+    final record Error(String text) implements AppRequestResult {
+      @JsonProperty("type")
+      public String type() {
+        return "Error";
+      }
     }
 
     /**
-    * 
-    * @param mnemonicDictionary Mnemonic dictionary that will be used by default in crypto functions. If not specified, 1 dictionary will be used.
-    * @param mnemonicWordCount Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
-    * @param hdkeyDerivationPath Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
-    */
-    public record CryptoConfig(Number mnemonicDictionary, Number mnemonicWordCount, String hdkeyDerivationPath) {}
-
-    /**
-    * 
-    * @param workchain Workchain id that is used by default in DeploySet
-    * @param messageExpirationTimeout Message lifetime for contracts which ABI includes "expire" header. The default value is 40 sec.
-    * @param messageExpirationTimeoutGrowFactor Factor that increases the expiration timeout for each retry The default value is 1.5
-    */
-    public record AbiConfig(Number workchain, Number messageExpirationTimeout, Number messageExpirationTimeoutGrowFactor) {}
-
-    /**
-    * 
-    * @param cacheMaxSize Maximum BOC cache size in kilobytes. Default is 10 MB
-    */
-    public record BocConfig(Number cacheMaxSize) {}
-
-    /**
-    * 
-    * @param cacheInLocalStorage Cache proofs in the local storage. Default is `true`. If this value is set to `true`, downloaded proofs and master-chain BOCs are saved into thepersistent local storage (e.g. file system for native environments or browser's IndexedDBfor the web); otherwise all the data is cached only in memory in current client's contextand will be lost after destruction of the client.
-    */
-    public record ProofsConfig(Boolean cacheInLocalStorage) {}
-
-    /**
-    * 
-    * @param name Dependency name. Usually it is a crate name.
-    * @param gitCommit Git commit hash of the related repository.
-    */
-    public record BuildInfoDependency(String name, String gitCommit) {}
-    public interface AppRequestResult {
-
-
-    /**
-    * Error occurred during request processing
-    * @param text Error description
-    */
-    public record Error(String text) implements AppRequestResult {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-
-
-    /**
-    * Request processed successfully
-    * @param result Request processing result
-    */
-    public record Ok(Map<String,Object> result) implements AppRequestResult {
-                               @JsonProperty("type")
-                               public String type() { return getClass().getSimpleName(); }
-                           }
-}
-
-    /**
-    * 
-    * @param api 
-    */
-    public record ResultOfGetApiReference(Map<String,Object> api) {}
-
-    /**
-    * 
-    * @param version Core Library version
-    */
-    public record ResultOfVersion(String version) {}
-
-    /**
-    * 
-    * @param buildNumber Build number assigned to this build by the CI.
-    * @param dependencies Fingerprint of the most important dependencies.
-    */
-    public record ResultOfBuildInfo(Number buildNumber, BuildInfoDependency[] dependencies) {}
-
-    /**
-    * 
-    * @param appRequestId Request ID received from SDK
-    * @param result Result of request processing
-    */
-    public record ParamsOfResolveAppRequest(Number appRequestId, AppRequestResult result) {}
-    /**
-    * <strong>client.get_api_reference</strong>
-    * Returns Core Library API reference
-    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfGetApiReference}
-    */
-    public static ResultOfGetApiReference getApiReference(Context ctx) throws EverSdkException {
-        return  ctx.call("client.get_api_reference", null, ResultOfGetApiReference.class);
+     *  Request processed successfully
+     * {@inheritDoc}
+     * @param result  Request processing result
+     */
+    final record Ok(Map<String, Object> result) implements AppRequestResult {
+      @JsonProperty("type")
+      public String type() {
+        return "Ok";
+      }
     }
+  }
 
-    /**
-    * <strong>client.version</strong>
-    * Returns Core Library version
-    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfVersion}
-    */
-    public static ResultOfVersion version(Context ctx) throws EverSdkException {
-        return  ctx.call("client.version", null, ResultOfVersion.class);
-    }
+  public static final record ResultOfGetApiReference(Map<String, Object> api) {
+  }
 
-    /**
-    * <strong>client.config</strong>
-    * Returns Core Library API reference
-    * @return {@link tech.deplant.java4ever.binding.Client.ClientConfig}
-    */
-    public static ClientConfig config(Context ctx) throws EverSdkException {
-        return  ctx.call("client.config", null, ClientConfig.class);
-    }
+  /**
+   * @param appRequestId  Request ID received from SDK
+   * @param result  Result of request processing
+   */
+  public static final record ParamsOfResolveAppRequest(Integer appRequestId,
+      Client.AppRequestResult result) {
+  }
 
-    /**
-    * <strong>client.build_info</strong>
-    * Returns detailed information about this build.
-    * @return {@link tech.deplant.java4ever.binding.Client.ResultOfBuildInfo}
-    */
-    public static ResultOfBuildInfo buildInfo(Context ctx) throws EverSdkException {
-        return  ctx.call("client.build_info", null, ResultOfBuildInfo.class);
-    }
+  /**
+   * @param cacheMaxSize Default is 10 MB Maximum BOC cache size in kilobytes.
+   */
+  public static final record BocConfig(Integer cacheMaxSize) {
+  }
 
-    /**
-    * <strong>client.resolve_app_request</strong>
-    * Resolves application request processing result
-    * @param appRequestId Request ID received from SDK 
-    * @param result Result of request processing 
-    */
-    public static void resolveAppRequest(Context ctx, Number appRequestId, AppRequestResult result) throws EverSdkException {
-         ctx.callVoid("client.resolve_app_request", new ParamsOfResolveAppRequest(appRequestId, result));
-    }
+  /**
+   * @param version  Core Library version
+   */
+  public static final record ResultOfVersion(String version) {
+  }
 
+  /**
+   *  Network protocol used to perform GraphQL queries.
+   */
+  public enum NetworkQueriesProtocol {
+    HTTP,
+
+    WS
+  }
+
+  /**
+   * @param localStoragePath  For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
+   */
+  public static final record ClientConfig(Client.NetworkConfig network, Client.CryptoConfig crypto,
+      Client.AbiConfig abi, Client.BocConfig boc, Client.ProofsConfig proofs,
+      String localStoragePath) {
+  }
+
+  /**
+   * @param buildNumber  Build number assigned to this build by the CI.
+   * @param dependencies  Fingerprint of the most important dependencies.
+   */
+  public static final record ResultOfBuildInfo(Integer buildNumber,
+      Client.BuildInfoDependency[] dependencies) {
+  }
+
+  /**
+   *  Crypto config.
+   *
+   * @param mnemonicDictionary  Mnemonic dictionary that will be used by default in crypto functions. If not specified, 1 dictionary will be used.
+   * @param mnemonicWordCount  Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
+   * @param hdkeyDerivationPath  Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
+   */
+  public static final record CryptoConfig(Integer mnemonicDictionary, Integer mnemonicWordCount,
+      String hdkeyDerivationPath) {
+  }
 }

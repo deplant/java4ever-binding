@@ -109,23 +109,23 @@ public final class AnnotationSpec {
 			codeWriter.emit(")");
 		} else {
 			// Inline:
-			//   @Column(name = "updated_at", nullable = false)
+			//   @Column(parameterName = "updated_at", nullable = false)
 			//
 			// Not inline:
 			//   @Column(
-			//       name = "updated_at",
+			//       parameterName = "updated_at",
 			//       nullable = false
 			//   )
 			codeWriter.emit("@$T(" + whitespace, this.type);
 			codeWriter.indent(2);
 			for (Iterator<Map.Entry<String, List<CodeBlock>>> i
-                 = this.members.entrySet().iterator(); i.hasNext(); ) {
+			     = this.members.entrySet().iterator(); i.hasNext(); ) {
 				Map.Entry<String, List<CodeBlock>> entry = i.next();
 				codeWriter.emit("$L = ", entry.getKey());
 				emitAnnotationValues(codeWriter, whitespace, memberSeparator, entry.getValue());
-              if (i.hasNext()) {
-                codeWriter.emit(memberSeparator);
-              }
+				if (i.hasNext()) {
+					codeWriter.emit(memberSeparator);
+				}
 			}
 			codeWriter.unindent(2);
 			codeWriter.emit(whitespace + ")");
@@ -145,9 +145,9 @@ public final class AnnotationSpec {
 		codeWriter.indent(2);
 		boolean first = true;
 		for (CodeBlock codeBlock : values) {
-          if (!first) {
-            codeWriter.emit(memberSeparator);
-          }
+			if (!first) {
+				codeWriter.emit(memberSeparator);
+			}
 			codeWriter.emit(codeBlock);
 			first = false;
 		}
@@ -170,15 +170,15 @@ public final class AnnotationSpec {
 
 	@Override
 	public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null) {
-        return false;
-      }
-      if (getClass() != o.getClass()) {
-        return false;
-      }
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+		if (getClass() != o.getClass()) {
+			return false;
+		}
 		return toString().equals(o.toString());
 	}
 
@@ -220,7 +220,7 @@ public final class AnnotationSpec {
 		Builder addMemberForValue(String memberName, Object value) {
 			checkNotNull(memberName, "memberName == null");
 			checkNotNull(value, "value == null, constant non-null value expected for %s", memberName);
-			checkArgument(SourceVersion.isName(memberName), "not a valid name: %s", memberName);
+			checkArgument(SourceVersion.isName(memberName), "not a valid parameterName: %s", memberName);
 			if (value instanceof Class<?>) {
 				return addMember(memberName, "$T.class", value);
 			}
@@ -241,8 +241,8 @@ public final class AnnotationSpec {
 
 		public AnnotationSpec build() {
 			for (String name : this.members.keySet()) {
-				checkNotNull(name, "name == null");
-				checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
+				checkNotNull(name, "parameterName == null");
+				checkArgument(SourceVersion.isName(name), "not a valid parameterName: %s", name);
 			}
 			return new AnnotationSpec(this);
 		}
