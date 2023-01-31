@@ -124,9 +124,6 @@ public final class Utils {
   }
 
   public sealed interface AddressStringFormat {
-    /**
-     * {@inheritDoc}
-     */
     final record AccountId() implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {
@@ -134,9 +131,6 @@ public final class Utils {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record Hex() implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {
@@ -144,9 +138,6 @@ public final class Utils {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {

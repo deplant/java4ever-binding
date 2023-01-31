@@ -608,7 +608,6 @@ public final class Crypto {
   public sealed interface ParamsOfAppSigningBox {
     /**
      *  Get signing box public key
-     * {@inheritDoc}
      */
     final record GetPublicKey() implements ParamsOfAppSigningBox {
       @JsonProperty("type")
@@ -619,7 +618,7 @@ public final class Crypto {
 
     /**
      *  Sign data
-     * {@inheritDoc}
+     *
      * @param unsigned  Data to sign encoded as base64
      */
     final record Sign(String unsigned) implements ParamsOfAppSigningBox {
@@ -658,7 +657,6 @@ public final class Crypto {
      * should use `EncryptedSecret` type instead.
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Creates Crypto Box from a random seed phrase. This option can be used if a developer doesn't want the seed phrase to leave the core library's memory, where it is stored encrypted.
-     * {@inheritDoc}
      */
     final record RandomSeedPhrase(Integer dictionary,
         Integer wordcount) implements CryptoBoxSecret {
@@ -673,7 +671,6 @@ public final class Crypto {
      * initializations should use `EncryptedSecret` type instead.
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Restores crypto box instance from an existing seed phrase. This type should be used when Crypto Box is initialized from a seed phrase, entered by a user.
-     * {@inheritDoc}
      */
     final record PredefinedSeedPhrase(String phrase, Integer dictionary,
         Integer wordcount) implements CryptoBoxSecret {
@@ -690,7 +687,7 @@ public final class Crypto {
      * Note that if you want to change salt or password provider, then you need to reinitialize
      * the wallet with `PredefinedSeedPhrase`, then get `EncryptedSecret` via `get_crypto_box_info`,
      * store it somewhere, and only after that initialize the wallet with `EncryptedSecret` type. Use this type for wallet reinitializations, when you already have `encrypted_secret` on hands. To get `encrypted_secret`, use `get_crypto_box_info` function after you initialized your crypto box for the first time.
-     * {@inheritDoc}
+     *
      * @param encryptedSecret  It is an object, containing encrypted seed phrase or private key (now we support only seed phrase).
      */
     final record EncryptedSecret(String encryptedSecret) implements CryptoBoxSecret {
@@ -887,7 +884,6 @@ public final class Crypto {
   public sealed interface ResultOfAppEncryptionBox {
     /**
      *  Result of getting encryption box info
-     * {@inheritDoc}
      */
     final record GetInfo(Crypto.EncryptionBoxInfo info) implements ResultOfAppEncryptionBox {
       @JsonProperty("type")
@@ -898,7 +894,7 @@ public final class Crypto {
 
     /**
      *  Result of encrypting data
-     * {@inheritDoc}
+     *
      * @param data  Encrypted data, encoded in Base64
      */
     final record Encrypt(String data) implements ResultOfAppEncryptionBox {
@@ -910,7 +906,7 @@ public final class Crypto {
 
     /**
      *  Result of decrypting data
-     * {@inheritDoc}
+     *
      * @param data  Decrypted data, encoded in Base64
      */
     final record Decrypt(String data) implements ResultOfAppEncryptionBox {
@@ -990,9 +986,6 @@ public final class Crypto {
   }
 
   public sealed interface BoxEncryptionAlgorithm {
-    /**
-     * {@inheritDoc}
-     */
     final record ChaCha20(Crypto.ChaCha20ParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1000,9 +993,6 @@ public final class Crypto {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record NaclBox(Crypto.NaclBoxParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1010,9 +1000,6 @@ public final class Crypto {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record NaclSecretBox(Crypto.NaclSecretBoxParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1152,9 +1139,6 @@ public final class Crypto {
   }
 
   public sealed interface EncryptionAlgorithm {
-    /**
-     * {@inheritDoc}
-     */
     final record AES(Crypto.AesParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1162,9 +1146,6 @@ public final class Crypto {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record ChaCha20(Crypto.ChaCha20ParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1172,9 +1153,6 @@ public final class Crypto {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record NaclBox(Crypto.NaclBoxParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1182,9 +1160,6 @@ public final class Crypto {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record NaclSecretBox(Crypto.NaclSecretBoxParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
@@ -1199,7 +1174,6 @@ public final class Crypto {
   public sealed interface ParamsOfAppEncryptionBox {
     /**
      *  Get encryption box info
-     * {@inheritDoc}
      */
     final record GetInfo() implements ParamsOfAppEncryptionBox {
       @JsonProperty("type")
@@ -1210,7 +1184,7 @@ public final class Crypto {
 
     /**
      *  Encrypt data
-     * {@inheritDoc}
+     *
      * @param data  Data, encoded in Base64
      */
     final record Encrypt(String data) implements ParamsOfAppEncryptionBox {
@@ -1222,7 +1196,7 @@ public final class Crypto {
 
     /**
      *  Decrypt data
-     * {@inheritDoc}
+     *
      * @param data  Data, encoded in Base64
      */
     final record Decrypt(String data) implements ParamsOfAppEncryptionBox {
@@ -1255,7 +1229,7 @@ public final class Crypto {
   public sealed interface ResultOfAppSigningBox {
     /**
      *  Result of getting public key
-     * {@inheritDoc}
+     *
      * @param publicKey  Signing box public key
      */
     final record GetPublicKey(String publicKey) implements ResultOfAppSigningBox {
@@ -1267,7 +1241,7 @@ public final class Crypto {
 
     /**
      *  Result of signing data
-     * {@inheritDoc}
+     *
      * @param signature  Data signature encoded as hex
      */
     final record Sign(String signature) implements ResultOfAppSigningBox {
@@ -1286,7 +1260,6 @@ public final class Crypto {
 
   public sealed interface ResultOfAppPasswordProvider {
     /**
-     * {@inheritDoc}
      * @param encryptedPassword  Password, encrypted and encoded to base64. Crypto box uses this password to decrypt its secret (seed phrase).
      * @param appEncryptionPubkey Used together with `encryption_public_key` to decode `encrypted_password`. Hex encoded public key of a temporary key pair, used for password encryption on application side.
      */
@@ -1459,7 +1432,6 @@ public final class Crypto {
    */
   public sealed interface ParamsOfAppPasswordProvider {
     /**
-     * {@inheritDoc}
      * @param encryptionPublicKey  Temporary library pubkey, that is used on application side for password encryption, along with application temporary private key and nonce. Used for password decryption on library side.
      */
     final record GetPassword(String encryptionPublicKey) implements ParamsOfAppPasswordProvider {

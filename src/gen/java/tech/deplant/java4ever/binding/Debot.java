@@ -120,7 +120,7 @@ public final class Debot {
   public sealed interface ResultOfAppDebotBrowser {
     /**
      *  Result of user input.
-     * {@inheritDoc}
+     *
      * @param value  String entered by user.
      */
     final record Input(String value) implements ResultOfAppDebotBrowser {
@@ -132,7 +132,7 @@ public final class Debot {
 
     /**
      *  Result of getting signing box.
-     * {@inheritDoc}
+     *
      * @param signingBox Signing box is owned and disposed by debot engine Signing box for signing data requested by debot engine.
      */
     final record GetSigningBox(Integer signingBox) implements ResultOfAppDebotBrowser {
@@ -144,7 +144,6 @@ public final class Debot {
 
     /**
      *  Result of debot invoking.
-     * {@inheritDoc}
      */
     final record InvokeDebot() implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
@@ -155,7 +154,7 @@ public final class Debot {
 
     /**
      *  Result of `approve` callback.
-     * {@inheritDoc}
+     *
      * @param approved  Indicates whether the DeBot is allowed to perform the specified operation.
      */
     final record Approve(Boolean approved) implements ResultOfAppDebotBrowser {
@@ -172,7 +171,7 @@ public final class Debot {
   public sealed interface ParamsOfAppDebotBrowser {
     /**
      *  Print message to user.
-     * {@inheritDoc}
+     *
      * @param msg  A string that must be printed to user.
      */
     final record Log(String msg) implements ParamsOfAppDebotBrowser {
@@ -184,7 +183,7 @@ public final class Debot {
 
     /**
      *  Switch debot to another context (menu).
-     * {@inheritDoc}
+     *
      * @param contextId  Debot context ID to which debot is switched.
      */
     final record Switch(Integer contextId) implements ParamsOfAppDebotBrowser {
@@ -196,7 +195,6 @@ public final class Debot {
 
     /**
      *  Notify browser that all context actions are shown.
-     * {@inheritDoc}
      */
     final record SwitchCompleted() implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
@@ -207,7 +205,7 @@ public final class Debot {
 
     /**
      *  Show action to the user. Called after `switch` for each action in context.
-     * {@inheritDoc}
+     *
      * @param action  Debot action that must be shown to user as menu item. At least `description` property must be shown from [DebotAction] structure.
      */
     final record ShowAction(Debot.DebotAction action) implements ParamsOfAppDebotBrowser {
@@ -219,7 +217,7 @@ public final class Debot {
 
     /**
      *  Request user input.
-     * {@inheritDoc}
+     *
      * @param prompt  A prompt string that must be printed to user before input request.
      */
     final record Input(String prompt) implements ParamsOfAppDebotBrowser {
@@ -231,7 +229,6 @@ public final class Debot {
 
     /**
      * Signing box returned is owned and disposed by debot engine Get signing box to sign data.
-     * {@inheritDoc}
      */
     final record GetSigningBox() implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
@@ -242,7 +239,7 @@ public final class Debot {
 
     /**
      *  Execute action of another debot.
-     * {@inheritDoc}
+     *
      * @param debotAddr  Address of debot in blockchain.
      * @param action  Debot action to execute.
      */
@@ -256,7 +253,7 @@ public final class Debot {
 
     /**
      *  Used by Debot to call DInterface implemented by Debot Browser.
-     * {@inheritDoc}
+     *
      * @param message Message body contains interface function and parameters. Internal message to DInterface address.
      */
     final record Send(String message) implements ParamsOfAppDebotBrowser {
@@ -268,7 +265,7 @@ public final class Debot {
 
     /**
      *  Requests permission from DeBot Browser to execute DeBot operation.
-     * {@inheritDoc}
+     *
      * @param activity  DeBot activity details.
      */
     final record Approve(Debot.DebotActivity activity) implements ParamsOfAppDebotBrowser {
@@ -320,7 +317,7 @@ public final class Debot {
   public sealed interface DebotActivity {
     /**
      *  DeBot wants to create new transaction in blockchain.
-     * {@inheritDoc}
+     *
      * @param msg  External inbound message BOC.
      * @param dst  Target smart contract address.
      * @param out  List of spendings as a result of transaction.

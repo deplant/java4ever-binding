@@ -241,7 +241,6 @@ public final class Tvm {
   public sealed interface AccountForExecutor {
     /**
      *  Non-existing account to run a creation internal message. Should be used with `skip_transaction_check = true` if the message has no deploy data since transactions on the uninitialized account are always aborted
-     * {@inheritDoc}
      */
     final record None() implements AccountForExecutor {
       @JsonProperty("type")
@@ -252,7 +251,6 @@ public final class Tvm {
 
     /**
      *  Emulate uninitialized account to run deploy message
-     * {@inheritDoc}
      */
     final record Uninit() implements AccountForExecutor {
       @JsonProperty("type")
@@ -263,7 +261,7 @@ public final class Tvm {
 
     /**
      *  Account state to run message
-     * {@inheritDoc}
+     *
      * @param boc Encoded as base64. Account BOC.
      * @param unlimitedBalance Can be used to calculate transaction fees without balance check Flag for running account with the unlimited balance.
      */

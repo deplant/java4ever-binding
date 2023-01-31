@@ -467,7 +467,7 @@ public final class Boc {
   public sealed interface BuilderOp {
     /**
      *  Append integer to cell data.
-     * {@inheritDoc}
+     *
      * @param size  Bit size of the value.
      * @param value e.g. `123`, `-123`. - Decimal string. e.g. `"123"`, `"-123"`.
      * - `0x` prefixed hexadecimal string.
@@ -482,7 +482,7 @@ public final class Boc {
 
     /**
      *  Append bit string to cell data.
-     * {@inheritDoc}
+     *
      * @param value Contains hexadecimal string representation:
      * - Can end with `_` tag.
      * - Can be prefixed with `x` or `X`.
@@ -505,7 +505,7 @@ public final class Boc {
 
     /**
      *  Append ref to nested cells.
-     * {@inheritDoc}
+     *
      * @param builder  Nested cell builder.
      */
     final record Cell(Boc.BuilderOp[] builder) implements BuilderOp {
@@ -517,7 +517,7 @@ public final class Boc {
 
     /**
      *  Append ref to nested cell.
-     * {@inheritDoc}
+     *
      * @param boc  Nested cell BOC encoded with `base64` or BOC cache key.
      */
     final record CellBoc(String boc) implements BuilderOp {
@@ -529,7 +529,7 @@ public final class Boc {
 
     /**
      *  Address.
-     * {@inheritDoc}
+     *
      * @param address  Address in a common `workchain:account` or base64 format.
      */
     final record Address(String address) implements BuilderOp {
@@ -545,7 +545,6 @@ public final class Boc {
      * Such BOC will not be removed from cache until it is unpinned BOCs can have several pins and each of the pins has reference counter indicating how many
      * times the BOC was pinned with the pin. BOC is removed from cache after all references for all
      * pins are unpinned with `cache_unpin` function calls. Pin the BOC with `pin` name.
-     * {@inheritDoc}
      */
     final record Pinned(String pin) implements BocCacheType {
       @JsonProperty("type")
@@ -556,7 +555,6 @@ public final class Boc {
 
     /**
      * BOC resides there until it is replaced with other BOCs if it is not used BOC is placed into a common BOC pool with limited size regulated by LRU (least recently used) cache lifecycle.
-     * {@inheritDoc}
      */
     final record Unpinned() implements BocCacheType {
       @JsonProperty("type")

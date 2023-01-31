@@ -2,7 +2,10 @@ package tech.deplant.java4ever.binding.generator.jtype;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
-import tech.deplant.java4ever.binding.generator.javapoet.*;
+import tech.deplant.java4ever.binding.generator.javapoet.AnnotationSpec;
+import tech.deplant.java4ever.binding.generator.javapoet.ClassName;
+import tech.deplant.java4ever.binding.generator.javapoet.MethodSpec;
+import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 import tech.deplant.java4ever.binding.generator.reference.StructType;
 import tech.deplant.java4ever.utils.Objs;
@@ -62,7 +65,6 @@ public record JavaRecord(StructType originalType,
 			// and have special type() getter
 			//structBuilder.addMethod(virtualTypeField(originalType().name()).build());
 			structBuilder.addMethod(virtualTypeField(superInterface().variantName()).build());
-			structBuilder.addJavadoc(CodeBlock.builder().add("{@inheritDoc}").build());
 		}
 
 		// for AbiEvent we should add special Jackson annotation to ignore 'outputs' tag.

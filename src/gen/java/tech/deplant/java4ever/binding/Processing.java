@@ -193,7 +193,6 @@ public final class Processing {
   public sealed interface ProcessingEvent {
     /**
      * Fetched block will be used later in waiting phase. Notifies the application that the account's current shard block will be fetched from the network. This step is performed before the message sending so that sdk knows starting from which block it will search for the transaction.
-     * {@inheritDoc}
      */
     final record WillFetchFirstBlock() implements ProcessingEvent {
       @JsonProperty("type")
@@ -206,7 +205,6 @@ public final class Processing {
      * This may happen due to the network issues. Receiving this event means that message processing will not proceed -
      * message was not sent, and Developer can try to run `process_message` again,
      * in the hope that the connection is restored. Notifies the app that the client has failed to fetch the account's current shard block.
-     * {@inheritDoc}
      */
     final record FetchFirstBlockFailed(Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")
@@ -217,7 +215,6 @@ public final class Processing {
 
     /**
      *  Notifies the app that the message will be sent to the network. This event means that the account's current shard block was successfully fetched and the message was successfully created (`abi.encode_message` function was executed successfully).
-     * {@inheritDoc}
      */
     final record WillSend(String shardBlockId, String messageId,
         String message) implements ProcessingEvent {
@@ -229,7 +226,6 @@ public final class Processing {
 
     /**
      * Do not forget to specify abi of your contract as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the message was sent to the network, i.e `processing.send_message` was successfully executed. Now, the message is in the blockchain. If Application exits at this phase, Developer needs to proceed with processing after the application is restored with `wait_for_transaction` function, passing shard_block_id and message from this event.
-     * {@inheritDoc}
      */
     final record DidSend(String shardBlockId, String messageId,
         String message) implements ProcessingEvent {
@@ -247,7 +243,6 @@ public final class Processing {
      * after the application is restored with `wait_for_transaction` function, passing
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
      * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the sending operation was failed with network error.
-     * {@inheritDoc}
      */
     final record SendFailed(String shardBlockId, String messageId, String message,
         Client.ClientError error) implements ProcessingEvent {
@@ -264,7 +259,6 @@ public final class Processing {
      * after the application is restored with `wait_for_transaction` function, passing
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
      * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the next shard block will be fetched from the network.
-     * {@inheritDoc}
      */
     final record WillFetchNextBlock(String shardBlockId, String messageId,
         String message) implements ProcessingEvent {
@@ -281,7 +275,6 @@ public final class Processing {
      * message and contract abi to it. Note that passing ABI is crucial, because it will influence the processing strategy.
      *
      * Another way to tune this is to specify long timeout in `NetworkConfig.wait_for_timeout` Notifies the app that the next block can't be fetched.
-     * {@inheritDoc}
      */
     final record FetchNextBlockFailed(String shardBlockId, String messageId, String message,
         Client.ClientError error) implements ProcessingEvent {
@@ -298,7 +291,6 @@ public final class Processing {
      * will perform retries: will create a new message and send it again and repeat it until it reaches
      * the maximum retries count or receives a successful result.  All the processing
      * events will be repeated. Notifies the app that the message was not executed within expire timeout on-chain and will never be because it is already expired. The expiration timeout can be configured with `AbiConfig` parameters.
-     * {@inheritDoc}
      */
     final record MessageExpired(String messageId, String message,
         Client.ClientError error) implements ProcessingEvent {
@@ -310,7 +302,6 @@ public final class Processing {
 
     /**
      *  Notifies the app that the message has been delivered to the thread's validators
-     * {@inheritDoc}
      */
     final record RempSentToValidators(String messageId, Long timestamp,
         Map<String, Object> json) implements ProcessingEvent {
@@ -322,7 +313,6 @@ public final class Processing {
 
     /**
      *  Notifies the app that the message has been successfully included into a block candidate by the thread's collator
-     * {@inheritDoc}
      */
     final record RempIncludedIntoBlock(String messageId, Long timestamp,
         Map<String, Object> json) implements ProcessingEvent {
@@ -334,7 +324,6 @@ public final class Processing {
 
     /**
      *  Notifies the app that the block candidate with the message has been accepted by the thread's validators
-     * {@inheritDoc}
      */
     final record RempIncludedIntoAcceptedBlock(String messageId, Long timestamp,
         Map<String, Object> json) implements ProcessingEvent {
@@ -346,7 +335,6 @@ public final class Processing {
 
     /**
      *  Notifies the app about some other minor REMP statuses occurring during message processing
-     * {@inheritDoc}
      */
     final record RempOther(String messageId, Long timestamp,
         Map<String, Object> json) implements ProcessingEvent {
@@ -358,7 +346,6 @@ public final class Processing {
 
     /**
      *  Notifies the app about any problem that has occurred in REMP processing - in this case library switches to the fallback transaction awaiting scenario (sequential block reading).
-     * {@inheritDoc}
      */
     final record RempError(Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")

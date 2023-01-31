@@ -221,7 +221,7 @@ public final class Client {
   public sealed interface AppRequestResult {
     /**
      *  Error occurred during request processing
-     * {@inheritDoc}
+     *
      * @param text  Error description
      */
     final record Error(String text) implements AppRequestResult {
@@ -233,7 +233,7 @@ public final class Client {
 
     /**
      *  Request processed successfully
-     * {@inheritDoc}
+     *
      * @param result  Request processing result
      */
     final record Ok(Map<String, Object> result) implements AppRequestResult {

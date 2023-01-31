@@ -383,7 +383,6 @@ public final class Abi {
   public sealed interface StateInitSource {
     /**
      *  Deploy message.
-     * {@inheritDoc}
      */
     final record Message(Abi.MessageSource source) implements StateInitSource {
       @JsonProperty("type")
@@ -394,7 +393,7 @@ public final class Abi {
 
     /**
      *  State init data.
-     * {@inheritDoc}
+     *
      * @param code Encoded in `base64`. Code BOC.
      * @param data Encoded in `base64`. Data BOC.
      * @param library Encoded in `base64`. Library BOC.
@@ -408,7 +407,6 @@ public final class Abi {
 
     /**
      * Encoded in `base64`. Content of the TVC file.
-     * {@inheritDoc}
      */
     final record Tvc(String tvc, String publicKey,
         Abi.StateInitParams initParams) implements StateInitSource {
@@ -560,9 +558,6 @@ public final class Abi {
   }
 
   public sealed interface ABI {
-    /**
-     * {@inheritDoc}
-     */
     final record Contract(Abi.AbiContract value) implements ABI {
       @JsonProperty("type")
       public String type() {
@@ -570,9 +565,6 @@ public final class Abi {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record Json(String value) implements ABI {
       @JsonProperty("type")
       public String type() {
@@ -580,9 +572,6 @@ public final class Abi {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record Handle(Integer value) implements ABI {
       @JsonProperty("type")
       public String type() {
@@ -590,9 +579,6 @@ public final class Abi {
       }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final record Serialized(Abi.AbiContract value) implements ABI {
       @JsonProperty("type")
       public String type() {
@@ -602,9 +588,6 @@ public final class Abi {
   }
 
   public sealed interface MessageSource {
-    /**
-     * {@inheritDoc}
-     */
     final record Encoded(String message, Abi.ABI abi) implements MessageSource {
       @JsonProperty("type")
       public String type() {
@@ -624,7 +607,6 @@ public final class Abi {
   }
 
   /**
-   * {@inheritDoc}
    * @param abi  Contract ABI.
    * @param address Must be specified in case of non-deploy message. Target address the message will be sent to.
    * @param deploySet Must be specified in case of deploy message. Deploy parameters.
@@ -759,7 +741,6 @@ public final class Abi {
   public sealed interface Signer {
     /**
      * Creates an unsigned message. No keys are provided.
-     * {@inheritDoc}
      */
     final record None() implements Signer {
       @JsonProperty("type")
@@ -770,7 +751,6 @@ public final class Abi {
 
     /**
      *  Only public key is provided in unprefixed hex string format to generate unsigned message and `data_to_sign` which can be signed later.
-     * {@inheritDoc}
      */
     final record External(String publicKey) implements Signer {
       @JsonProperty("type")
@@ -781,7 +761,6 @@ public final class Abi {
 
     /**
      *  Key pair is provided for signing
-     * {@inheritDoc}
      */
     final record Keys(Crypto.KeyPair keys) implements Signer {
       @JsonProperty("type")
@@ -792,7 +771,6 @@ public final class Abi {
 
     /**
      *  Signing Box interface is provided for signing, allows Dapps to sign messages using external APIs, such as HSM, cold wallet, etc.
-     * {@inheritDoc}
      */
     final record SigningBox(Integer handle) implements Signer {
       @JsonProperty("type")

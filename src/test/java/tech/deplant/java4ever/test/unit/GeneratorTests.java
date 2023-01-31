@@ -39,12 +39,12 @@ public class GeneratorTests {
 	}
 
 	@Test
-	public void parsed_api_json_from_client() throws JsonProcessingException, EverSdkException {
+	public void parsed_api_from_client() throws JsonProcessingException, EverSdkException {
 		var apiReference = ParserEngine.ofEverSdkLibrary(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
 	}
 
 	@Test
-	public void generate_api_from_client() throws IOException, EverSdkException {
+	public void generate_api_from_json() throws IOException, EverSdkException {
 		//var apiReference = ParserEngine.ofEverSdkLibrary(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
 		var apiReference = ParserEngine.ofJsonResource("api.json");
 		ParserEngine.parse(apiReference);

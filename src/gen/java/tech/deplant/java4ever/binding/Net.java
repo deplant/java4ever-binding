@@ -662,7 +662,6 @@ public final class Net {
   }
 
   /**
-   * {@inheritDoc}
    * @param collection  Collection name (accounts, blocks, transactions, messages, block_signatures)
    * @param filter  Collection filter
    * @param result  Projection (result) string
@@ -715,7 +714,6 @@ public final class Net {
   }
 
   /**
-   * {@inheritDoc}
    * @param collection  Collection name (accounts, blocks, transactions, messages, block_signatures)
    * @param filter  Collection filter
    * @param result  Projection (result) string
@@ -809,7 +807,6 @@ public final class Net {
   }
 
   /**
-   * {@inheritDoc}
    * @param account  Account address
    * @param result  Projection (result) string
    * @param first  Number of counterparties to return
@@ -868,7 +865,6 @@ public final class Net {
   }
 
   /**
-   * {@inheritDoc}
    * @param collection  Collection name (accounts, blocks, transactions, messages, block_signatures)
    * @param filter  Collection filter
    * @param fields  Projection (result) string
