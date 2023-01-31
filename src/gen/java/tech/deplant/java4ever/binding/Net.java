@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Net {
   /**
@@ -149,7 +149,7 @@ public final class Net {
    *
    * ### Important Notes on Subscriptions
    *
-   * Unfortunately sometimes the connection with the network breakes down.
+   * Unfortunately sometimes the connection with the network breaks down.
    * In this situation the library attempts to reconnect to the network.
    * This reconnection sequence can take significant time.
    * All of this time the client is disconnected from the network.
@@ -259,7 +259,7 @@ public final class Net {
    *
    * Function reads transactions layer by layer, by pages of 20 transactions.
    *
-   * The retrieval prosess goes like this:
+   * The retrieval process goes like this:
    * Let's assume we have an infinite chain of transactions and each transaction generates 5 messages.
    * 1. Retrieve 1st message (input parameter) and corresponding transaction - put it into result.
    * It is the first level of the tree of transactions - its root.
@@ -285,11 +285,16 @@ public final class Net {
    * @param timeout If some of the following messages and transactions are missing yet
    * The maximum waiting time is regulated by this option.
    *
-   * Default value is 60000 (1 min). Timeout used to limit waiting time for the missing messages and transaction.
+   * Default value is 60000 (1 min). If `timeout` is set to 0 then function will wait infinitely
+   * until the whole transaction tree is executed Timeout used to limit waiting time for the missing messages and transaction.
+   * @param transactionMaxCount If transaction tree contains more transaction then this parameter then only first `transaction_max_count` transaction are awaited and returned.
+   *
+   * Default value is 50. If `transaction_max_count` is set to 0 then no limitation on
+   * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
   public static Net.ResultOfQueryTransactionTree queryTransactionTree(Context ctx, String inMsg,
-      Abi.ABI[] abiRegistry, Integer timeout) throws EverSdkException {
-    return ctx.call("net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout), Net.ResultOfQueryTransactionTree.class);
+      Abi.ABI[] abiRegistry, Integer timeout, Integer transactionMaxCount) throws EverSdkException {
+    return ctx.call("net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout, transactionMaxCount), Net.ResultOfQueryTransactionTree.class);
   }
 
   /**
@@ -357,7 +362,7 @@ public final class Net {
   }
 
   /**
-   * The iterator stays exactly at the same position where the `resume_state` was catched.
+   * The iterator stays exactly at the same position where the `resume_state` was caught.
    *
    * Application should call the `remove_iterator` when iterator is no longer required. Resumes block iterator.
    *
@@ -685,10 +690,15 @@ public final class Net {
    * @param timeout If some of the following messages and transactions are missing yet
    * The maximum waiting time is regulated by this option.
    *
-   * Default value is 60000 (1 min). Timeout used to limit waiting time for the missing messages and transaction.
+   * Default value is 60000 (1 min). If `timeout` is set to 0 then function will wait infinitely
+   * until the whole transaction tree is executed Timeout used to limit waiting time for the missing messages and transaction.
+   * @param transactionMaxCount If transaction tree contains more transaction then this parameter then only first `transaction_max_count` transaction are awaited and returned.
+   *
+   * Default value is 50. If `transaction_max_count` is set to 0 then no limitation on
+   * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
   public static final record ParamsOfQueryTransactionTree(String inMsg, Abi.ABI[] abiRegistry,
-      Integer timeout) {
+      Integer timeout, Integer transactionMaxCount) {
   }
 
   /**
@@ -900,7 +910,11 @@ public final class Net {
 
     NetworkModuleResumed(614),
 
-    Unauthorized(615);
+    Unauthorized(615),
+
+    QueryTransactionTreeTimeout(616),
+
+    GraphqlConnectionError(617);
 
     private final Integer value;
 

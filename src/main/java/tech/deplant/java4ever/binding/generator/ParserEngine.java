@@ -1,12 +1,16 @@
 package tech.deplant.java4ever.binding.generator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.ContextBuilder;
+import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.generator.javapoet.JavaFile;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.jtype.*;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.binding.io.JsonResource;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
+import tech.deplant.java4ever.binding.loader.LibraryLoader;
 import tech.deplant.java4ever.utils.Objs;
 
 import java.io.IOException;
@@ -22,12 +26,12 @@ public class ParserEngine {
 		                                               ApiReference.class);
 	}
 
-//	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException {
-//		var ctx = new ContextBuilder()
-//				.setConfigJson("{}")
-//				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
-//		return ContextBuilder.DEFAULT_MAPPER.convertValue(Client.getApiReference(ctx).api(), ApiReference.class);
-//	}
+	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException, EverSdkException {
+		var ctx = new ContextBuilder()
+				.setConfigJson("{}")
+				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
+		return ContextBuilder.DEFAULT_MAPPER.convertValue(Client.getApiReference(ctx).api(), ApiReference.class);
+	}
 
 	public static void parse(ApiReference parsedApiReference) throws IOException {
 

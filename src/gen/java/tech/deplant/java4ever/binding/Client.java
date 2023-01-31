@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Client {
   /**
@@ -124,7 +124,9 @@ public final class Client {
 
     InvalidHandle(34),
 
-    LocalStorageError(35);
+    LocalStorageError(35),
+
+    InvalidData(36);
 
     private final Integer value;
 
@@ -180,22 +182,22 @@ public final class Client {
    *
    * Must be specified in milliseconds. Default is 15000 (15 sec). Maximum time difference between server and client.
    * @param sendingEndpointCount Default is 1. Maximum number of randomly chosen endpoints the library uses to broadcast a message.
-   * @param latencyDetectionInterval Library periodically checks the current endpoint for blockchain data syncronization latency.
+   * @param latencyDetectionInterval Library periodically checks the current endpoint for blockchain data synchronization latency.
    * If the latency (time-lag) is less then `NetworkConfig.max_latency`
    * then library selects another endpoint.
    *
    * Must be specified in milliseconds. Default is 60000 (1 min). Frequency of sync latency detection.
-   * @param maxLatency Must be specified in milliseconds. Default is 60000 (1 min). Maximum value for the endpoint's blockchain data syncronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint.
+   * @param maxLatency Must be specified in milliseconds. Default is 60000 (1 min). Maximum value for the endpoint's blockchain data synchronization latency (time-lag). Library periodically checks the current endpoint for blockchain data synchronization latency. If the latency (time-lag) is less then `NetworkConfig.max_latency` then library selects another endpoint.
    * @param queryTimeout Is is used when no timeout specified for the request to limit the answer waiting time. If no answer received during the timeout requests ends with
    * error.
    *
    * Must be specified in milliseconds. Default is 60000 (1 min). Default timeout for http requests.
    * @param queriesProtocol `HTTP` or `WS`. 
    * Default is `HTTP`. Queries protocol.
-   * @param firstRempStatusTimeout First REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.
+   * @param firstRempStatusTimeout First REMP status awaiting timeout. If no status received during the timeout than fallback transaction scenario is activated.
    *
    * Must be specified in milliseconds. Default is 1000 (1 sec). UNSTABLE.
-   * @param nextRempStatusTimeout Subsequent REMP status awaiting timeout. If no status recieved during the timeout than fallback transaction scenario is activated.
+   * @param nextRempStatusTimeout Subsequent REMP status awaiting timeout. If no status received during the timeout than fallback transaction scenario is activated.
    *
    * Must be specified in milliseconds. Default is 5000 (5 sec). UNSTABLE.
    * @param accessKey  Access key to GraphQL API (Project secret)

@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "boc" module of EVER-SDK API
  *
  * BOC manipulation module. 
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Boc {
   /**
@@ -56,7 +56,7 @@ public final class Boc {
    * JSON structure is compatible with GraphQL API shardstate object Parses shardstate boc into a JSON
    *
    * @param boc  BOC encoded as base64
-   * @param id  Shardstate identificator
+   * @param id  Shardstate identifier
    * @param workchainId  Workchain shardstate belongs to
    */
   public static Boc.ResultOfParse parseShardstate(Context ctx, String boc, String id,
@@ -382,7 +382,7 @@ public final class Boc {
 
   /**
    * @param boc  BOC encoded as base64
-   * @param id  Shardstate identificator
+   * @param id  Shardstate identifier
    * @param workchainId  Workchain shardstate belongs to
    */
   public static final record ParamsOfParseShardstate(String boc, String id, Integer workchainId) {

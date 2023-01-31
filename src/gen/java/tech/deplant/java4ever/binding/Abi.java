@@ -14,7 +14,7 @@ import java.util.Map;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Abi {
   /**
@@ -166,10 +166,12 @@ public final class Abi {
    * @param abi  contract ABI
    * @param message  Message BOC
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
+   * @param functionName  Function name or function id if is known in advance
    */
   public static Abi.DecodedMessageBody decodeMessage(Context ctx, Abi.ABI abi, String message,
-      Boolean allowPartial) throws EverSdkException {
-    return ctx.call("abi.decode_message", new Abi.ParamsOfDecodeMessage(abi, message, allowPartial), Abi.DecodedMessageBody.class);
+      Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) throws
+      EverSdkException {
+    return ctx.call("abi.decode_message", new Abi.ParamsOfDecodeMessage(abi, message, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
   }
 
   /**
@@ -179,10 +181,12 @@ public final class Abi {
    * @param body  Message body BOC encoded in `base64`.
    * @param isInternal  True if the body belongs to the internal message.
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
+   * @param functionName  Function name or function id if is known in advance
    */
   public static Abi.DecodedMessageBody decodeMessageBody(Context ctx, Abi.ABI abi, String body,
-      Boolean isInternal, Boolean allowPartial) throws EverSdkException {
-    return ctx.call("abi.decode_message_body", new Abi.ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial), Abi.DecodedMessageBody.class);
+      Boolean isInternal, Boolean allowPartial, String functionName, Abi.DataLayout dataLayout)
+      throws EverSdkException {
+    return ctx.call("abi.decode_message_body", new Abi.ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
   }
 
   /**
@@ -305,6 +309,17 @@ public final class Abi {
   }
 
   /**
+   *  Extracts signature from message body and calculates hash to verify the signature
+   *
+   * @param abi  Contract ABI used to decode.
+   * @param message  Message BOC encoded in `base64`.
+   */
+  public static Abi.ResultOfGetSignatureData getSignatureData(Context ctx, Abi.ABI abi,
+      String message) throws EverSdkException {
+    return ctx.call("abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message), Abi.ResultOfGetSignatureData.class);
+  }
+
+  /**
    * @param stateInit  Source of the account state init.
    * @param balance  Initial balance.
    * @param lastTransLt  Initial value for the `last_trans_lt`.
@@ -313,6 +328,13 @@ public final class Abi {
    */
   public static final record ParamsOfEncodeAccount(Abi.StateInitSource stateInit, Long balance,
       Long lastTransLt, Integer lastPaid, Boc.BocCacheType bocCache) {
+  }
+
+  /**
+   * @param abi  Contract ABI used to decode.
+   * @param message  Message BOC encoded in `base64`.
+   */
+  public static final record ParamsOfGetSignatureData(Abi.ABI abi, String message) {
   }
 
   /**
@@ -400,6 +422,12 @@ public final class Abi {
   public static final record AbiContract(@JsonProperty("abi version") Integer ABIversion,
       Integer abiVersion, String version, String[] header, Abi.AbiFunction[] functions,
       Abi.AbiEvent[] events, Abi.AbiData[] data, Abi.AbiParam[] fields) {
+  }
+
+  public enum DataLayout {
+    Input,
+
+    Output
   }
 
   public enum MessageBodyType {
@@ -501,9 +529,10 @@ public final class Abi {
    * @param body  Message body BOC encoded in `base64`.
    * @param isInternal  True if the body belongs to the internal message.
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
+   * @param functionName  Function name or function id if is known in advance
    */
   public static final record ParamsOfDecodeMessageBody(Abi.ABI abi, String body, Boolean isInternal,
-      Boolean allowPartial) {
+      Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) {
   }
 
   /**
@@ -696,6 +725,13 @@ public final class Abi {
   }
 
   /**
+   * @param signature  Signature from the message in `hex`.
+   * @param hash  Hash to verify the signature in `base64`.
+   */
+  public static final record ResultOfGetSignatureData(String signature, String hash) {
+  }
+
+  /**
    * Includes several hidden function parameters that contract
    * uses for security, message delivery monitoring and replay protection reasons.
    *
@@ -809,9 +845,10 @@ public final class Abi {
    * @param abi  contract ABI
    * @param message  Message BOC
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
+   * @param functionName  Function name or function id if is known in advance
    */
   public static final record ParamsOfDecodeMessage(Abi.ABI abi, String message,
-      Boolean allowPartial) {
+      Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) {
   }
 
   public static final record AbiParam(String name, String type, Abi.AbiParam[] components) {

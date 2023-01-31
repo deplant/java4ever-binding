@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Tvm {
   /**
@@ -21,7 +21,7 @@ public final class Tvm {
    * the same component that is used on Validator Nodes.
    *
    * Can be used for contract debugging, to find out the reason why a message was not delivered successfully.
-   * Validators throw away the failed external inbound messages (if they failed bedore `ACCEPT`) in the real network.
+   * Validators throw away the failed external inbound messages (if they failed before `ACCEPT`) in the real network.
    * This is why these messages are impossible to debug in the real network.
    * With the help of run_executor you can do that. In fact, `process_message` function
    * performs local check with `run_executor` if there was no transaction as a result of processing

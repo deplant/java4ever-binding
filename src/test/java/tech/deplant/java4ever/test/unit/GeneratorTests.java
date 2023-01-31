@@ -12,6 +12,7 @@ import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.reference.ApiReference;
 import tech.deplant.java4ever.binding.io.JsonResource;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.utils.regex.*;
 
 import java.io.IOException;
@@ -35,6 +36,11 @@ public class GeneratorTests {
 		                                             .writeValueAsString(reference);
 		assertEquals(ContextBuilder.DEFAULT_MAPPER.readTree(jsonStr),
 		             ContextBuilder.DEFAULT_MAPPER.readTree(cachedStr));
+	}
+
+	@Test
+	public void parsed_api_json_from_client() throws JsonProcessingException, EverSdkException {
+		var apiReference = ParserEngine.ofEverSdkLibrary(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
 	}
 
 	@Test

@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.38.0
+ * @version 1.40.0
  */
 public final class Processing {
   /**
@@ -228,7 +228,7 @@ public final class Processing {
     }
 
     /**
-     * Do not forget to specify abi of your contract as well, it is crucial for proccessing. See `processing.wait_for_transaction` documentation. Notifies the app that the message was sent to the network, i.e `processing.send_message` was successfuly executed. Now, the message is in the blockchain. If Application exits at this phase, Developer needs to proceed with processing after the application is restored with `wait_for_transaction` function, passing shard_block_id and message from this event.
+     * Do not forget to specify abi of your contract as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the message was sent to the network, i.e `processing.send_message` was successfully executed. Now, the message is in the blockchain. If Application exits at this phase, Developer needs to proceed with processing after the application is restored with `wait_for_transaction` function, passing shard_block_id and message from this event.
      * {@inheritDoc}
      */
     final record DidSend(String shardBlockId, String messageId,
@@ -246,7 +246,7 @@ public final class Processing {
      * If Application exits at this phase, Developer needs to proceed with processing
      * after the application is restored with `wait_for_transaction` function, passing
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
-     * as well, it is crucial for proccessing. See `processing.wait_for_transaction` documentation. Notifies the app that the sending operation was failed with network error.
+     * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the sending operation was failed with network error.
      * {@inheritDoc}
      */
     final record SendFailed(String shardBlockId, String messageId, String message,
@@ -263,7 +263,7 @@ public final class Processing {
      * If Application exits at this phase, Developer needs to proceed with processing
      * after the application is restored with `wait_for_transaction` function, passing
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
-     * as well, it is crucial for proccessing. See `processing.wait_for_transaction` documentation. Notifies the app that the next shard block will be fetched from the network.
+     * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the next shard block will be fetched from the network.
      * {@inheritDoc}
      */
     final record WillFetchNextBlock(String shardBlockId, String messageId,
@@ -295,7 +295,7 @@ public final class Processing {
      * This event occurs only for the contracts which ABI includes "expire" header.
      *
      * If Application specifies `NetworkConfig.message_retries_count` > 0, then `process_message`
-     * will perform retries: will create a new message and send it again and repeat it untill it reaches
+     * will perform retries: will create a new message and send it again and repeat it until it reaches
      * the maximum retries count or receives a successful result.  All the processing
      * events will be repeated. Notifies the app that the message was not executed within expire timeout on-chain and will never be because it is already expired. The expiration timeout can be configured with `AbiConfig` parameters.
      * {@inheritDoc}
@@ -333,7 +333,7 @@ public final class Processing {
     }
 
     /**
-     *  Notifies the app that the block candicate with the message has been accepted by the thread's validators
+     *  Notifies the app that the block candidate with the message has been accepted by the thread's validators
      * {@inheritDoc}
      */
     final record RempIncludedIntoAcceptedBlock(String messageId, Long timestamp,
@@ -357,7 +357,7 @@ public final class Processing {
     }
 
     /**
-     *  Notifies the app about any problem that has occured in REMP processing - in this case library switches to the fallback transaction awaiting scenario (sequential block reading).
+     *  Notifies the app about any problem that has occurred in REMP processing - in this case library switches to the fallback transaction awaiting scenario (sequential block reading).
      * {@inheritDoc}
      */
     final record RempError(Client.ClientError error) implements ProcessingEvent {
