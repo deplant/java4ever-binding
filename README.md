@@ -1,7 +1,7 @@
 # java4ever-binding
 
 [![JDK version](https://img.shields.io/badge/Java-19+-green.svg)](https://shields.io/)
-[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.36+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
+[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.40+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
 * Discuss in
