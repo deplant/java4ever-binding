@@ -1,0 +1,23 @@
+package tech.deplant.java4ever.binding.generator.jtype;
+
+import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
+import tech.deplant.java4ever.binding.generator.reference.ApiType;
+
+public interface JavaType {
+
+	TypeSpec.Builder poeticize();
+
+	String name();
+
+	ApiType type();
+
+	boolean isSimpleWrapper();
+
+	boolean isFlatType();
+
+	boolean isStructure();
+
+	boolean isParams();
+
+	boolean isResult();
+}

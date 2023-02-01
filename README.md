@@ -1,7 +1,7 @@
 # java4ever-binding
 
 [![JDK version](https://img.shields.io/badge/Java-19+-green.svg)](https://shields.io/)
-[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.36+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
+[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.40+-orange)](https://github.com/tonlabs/TON-SDK/tree/1.28.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
 * Discuss in
@@ -13,8 +13,8 @@
 [EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of
 [Everscale](https://everscale.network/) network via
 [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface.
-Native interconnection is not based on JNI derivatives but on
-modern [Foreign Memory Access API](https://openjdk.java.net/jeps/393).
+Native calls are based on modern [JEP 424: Foreign Function and Memory API](https://openjdk.java.net/jeps/424) (Project
+Panama).
 This artifact provide only binding functionality and is not suitable for large tests or fast prototyping.
 There is a companion [java4ever-framework](https://github.com/deplant/java4ever-framework) library that should be used
 together with this binding.
@@ -39,7 +39,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.3.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.4.0'
 }
 ```
 
@@ -50,10 +50,11 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
 ### Logging
 
-java4ever-binding uses the JDK Platform Loggging (JEP 264: Platform Logging API and Service).
+java4ever-binding uses the JDK Platform Loggging (JEP 264: Platform Logging API and Service),
+so can be easily bridged to any logging framework.

@@ -5,9 +5,9 @@ import java.lang.foreign.MemorySession;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-public class EverSdkResponse implements tc_response_handler_t {
+public class SdkResponseHandler implements tc_response_handler_t {
 
-	private final static System.Logger logger = System.getLogger(EverSdkResponse.class.getName());
+	private final static System.Logger logger = System.getLogger(SdkResponseHandler.class.getName());
 	private final CompletableFuture<String> result = new CompletableFuture<>();
 
 	/**
@@ -20,12 +20,12 @@ public class EverSdkResponse implements tc_response_handler_t {
 	public void apply(int x0, MemorySegment x1, int x2, boolean x3) {
 		try (MemorySession scope = MemorySession.openShared()) {
 			if (x2 == 0) {
-				this.result.complete(EverSdkBridge.toString(x1, scope));
+				this.result.complete(SdkBridge.toString(x1, scope));
 				logger.log(System.Logger.Level.TRACE,
 				           () -> "REQID:" + x0 + ", RESULT");
 			} else if (x2 == 1) {
 				//throw new RuntimeException(EverSdkBridge.toString(x1, scope));
-				this.result.completeExceptionally(new CompletionException(EverSdkBridge.toString(x1, scope), null));
+				this.result.completeExceptionally(new CompletionException(SdkBridge.toString(x1, scope), null));
 				//this.result.complete(tc_string_data_t.toString(x1, scope));
 				logger.log(System.Logger.Level.WARNING,
 				           () -> "REQID:" + x0 + ", ERROR");
@@ -34,7 +34,7 @@ public class EverSdkResponse implements tc_response_handler_t {
 				logger.log(System.Logger.Level.TRACE,
 				           () -> "REQID:" + x0 + ", NOP");
 				if (x3) {
-					this.result.complete(EverSdkBridge.toString(x1, scope));
+					this.result.complete(SdkBridge.toString(x1, scope));
 				}
 			} else if (x2 == 3) {
 				// APP_REQUEST = 3, request some data from application. See Application objects
@@ -50,7 +50,7 @@ public class EverSdkResponse implements tc_response_handler_t {
 				logger.log(System.Logger.Level.TRACE,
 				           () -> "REQID:" + x0 + ", RESERVED");
 				if (x3) {
-					this.result.complete(EverSdkBridge.toString(x1, scope));
+					this.result.complete(SdkBridge.toString(x1, scope));
 				}
 			} else {
 				// CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
