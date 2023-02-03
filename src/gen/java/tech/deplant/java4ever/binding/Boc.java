@@ -473,7 +473,7 @@ public final class Boc {
      * - `0x` prefixed hexadecimal string.
      *   e.g `0x123`, `0X123`, `-0x123`. Value: - `Number` containing integer number.
      */
-    final record Integer(java.lang.Integer size, Map<String, Object> value) implements BuilderOp {
+    final record Integer(java.lang.Integer size, String value) implements BuilderOp {
       @JsonProperty("type")
       public String type() {
         return "Integer";
