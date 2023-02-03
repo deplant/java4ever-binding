@@ -2,7 +2,6 @@ plugins {
     id "java-library"
     id "maven-publish"
     id "signing"
-    id "com.github.node-gradle.node" version "3.2.1" // for generating API with NodeJS script
 }
 
 // Global variables for all modules
@@ -155,11 +154,6 @@ test {
 
 }
 
-task generateApi(type: NodeTask) {
-    script = file('src/main/nodejs/gen-java.js')
-    //args = ['arg1', 'arg2']
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += "--enable-preview"
 }
@@ -173,15 +167,3 @@ tasks.withType(Test) {
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
-
-//
-//task replaceVersionInREADME << {
-//    // Maven
-//    ant.replaceregexp(match: '<version>([0-9\\.]+)</version>', replace: "<version>${v_version}</version>", flags: 'g', byline: true) {
-//        fileset(dir: '.', includes: 'README.md')
-//    }
-//    // Gradle
-//    ant.replaceregexp(match: 'com\\.acme\\:mylibrary\\:([0-9\\.]+)', replace: "com.acme:mylibrary:${v_version}", flags: 'g', byline: true) {
-//        fileset(dir: '.', includes: 'README.md')
-//    }
-//}
