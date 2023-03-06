@@ -66,11 +66,10 @@ public class GeneratorTests {
 				new NotAnyOf(new Word("[]()")),
 				Special.PLUS,
 				new Symbol(')'));
-		String patternString = RegExp.build(expr);
 
 		String processedDescription = description;
 		if (description != null) {
-			var matcher = Pattern.compile(patternString).matcher(description);
+			var matcher = expr.toPattern().matcher(description);
 			while (matcher.find()) {
 				logger.log(System.Logger.Level.DEBUG, matcher.group());
 				processedDescription = description.replace(matcher.group(), "{@link " + matcher.group() + "}");

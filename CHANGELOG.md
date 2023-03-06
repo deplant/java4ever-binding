@@ -2,6 +2,10 @@
 
 - Updated EVER-SDK -> 1.41
 - Updated dependency: Gradle -> 8.0.2
+- Fixed incorrect "ABI version" tag serialization in AbiContract type
+- Fixed BuilderOp.Integer incorrect param type
+- Improved generator rules
+- Added automatic setting of binding library info to EVER-SDK Context config
 
 ### 1.4.0
 

@@ -76,7 +76,11 @@ public class ContextBuilder {
 	 * @throws JsonProcessingException
 	 */
 	public Context buildNew(LibraryLoader loader) throws JsonProcessingException {
-		final var createContextResponse = this.jsonMapper.readValue(SdkBridge.tcCreateContext(loader, this.configJson),
+		var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
+		var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever","1.5.0"),defaults.network(),defaults.crypto(),defaults.abi(),defaults.boc(),defaults.proofs(),
+		                                           defaults.localStoragePath());
+		var mergedJson = this.jsonMapper.writeValueAsString(mergedConfig);
+		final var createContextResponse = this.jsonMapper.readValue(SdkBridge.tcCreateContext(loader, mergedJson),
 		                                                            ResultOfCreateContext.class);
 		if (createContextResponse.result() == null || createContextResponse.result() < 1) {
 			throw new RuntimeException("sdk.create_context failed!");
