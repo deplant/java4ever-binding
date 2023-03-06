@@ -13,8 +13,7 @@
 [EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of
 [Everscale](https://everscale.network/) network via
 [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface.
-Native calls are based on modern [JEP 424: Foreign Function and Memory API](https://openjdk.java.net/jeps/424) (Project
-Panama).
+Native calls are based on modern [Foreign Function & Memory API](https://openjdk.org/jeps/434).
 This artifact provide only binding functionality and is not suitable for large tests or fast prototyping.
 There is a companion [java4ever-framework](https://github.com/deplant/java4ever-framework) library that should be used
 together with this binding.
@@ -31,7 +30,7 @@ together with this binding.
 
 * Install **JDK 19** or higher ([link](https://adoptium.net/temurin/releases?version=19))
 * Build **EVER-SDK** binary lib "**ton_client**"(.so/.dll) (or
-  get [precomiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
+  get [precompiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
 
 #### Add java4ever to your Maven of Gradle setup:
 
