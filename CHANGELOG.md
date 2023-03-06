@@ -1,3 +1,19 @@
+### 1.5.0
+
+- Updated EVER-SDK -> 1.41
+- Updated dependency: Gradle -> 8.0.2
+
+### 1.4.0
+
+- Updated EVER-SDK to 1.40
+- All binding code generation rewritten from JavaScript to pure Java (javapoet lib)
+- Fixed missing types
+- Fixed AbiEvent deserialization
+- Changed Numbers to Integers
+- Fixed Void type problems
+- Fixed type inheritance for variants
+- Updated dependency: Gradle -> 7.6
+
 ### 1.3.0
 
 - Fixed parsing errors when decoding error messages of error 507

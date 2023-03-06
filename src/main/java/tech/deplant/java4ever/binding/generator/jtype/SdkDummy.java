@@ -3,7 +3,7 @@ package tech.deplant.java4ever.binding.generator.jtype;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 
-public record JavaDummy(ApiType type) implements JavaType {
+public record SdkDummy(ApiType type) implements SdkObject {
 	@Override
 	public TypeSpec.Builder poeticize() {
 		return null;

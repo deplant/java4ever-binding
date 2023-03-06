@@ -13,20 +13,20 @@ import tech.deplant.java4ever.utils.Objs;
 import javax.lang.model.element.Modifier;
 import java.util.Map;
 
-public record JavaRecord(StructType originalType,
-                         String name,
-                         ParserEngine.SdkInterfaceParent superInterface,
-                         boolean isSimpleWrapper,
-                         boolean isParams,
-                         boolean isResult,
-                         Map<ParserEngine.SdkType, JavaType> typeLibrary) implements JavaType {
+public record SdkRecord(StructType originalType,
+                        String name,
+                        ParserEngine.SdkInterfaceParent superInterface,
+                        boolean isSimpleWrapper,
+                        boolean isParams,
+                        boolean isResult,
+                        Map<ParserEngine.SdkType, SdkObject> typeLibrary) implements SdkObject {
 
 
-	private final static System.Logger logger = System.getLogger(JavaRecord.class.getName());
+	private final static System.Logger logger = System.getLogger(SdkRecord.class.getName());
 
-	public static JavaRecord ofApiType(StructType struct,
-	                                   Map<ParserEngine.SdkType, JavaType> typeLibrary,
-	                                   ParserEngine.SdkInterfaceParent superInterface) {
+	public static SdkRecord ofApiType(StructType struct,
+	                                  Map<ParserEngine.SdkType, SdkObject> typeLibrary,
+	                                  ParserEngine.SdkInterfaceParent superInterface) {
 		boolean isParams = false;
 		boolean isResult = false;
 		if (struct.name().length() >= 8) {
@@ -34,13 +34,13 @@ public record JavaRecord(StructType originalType,
 			isResult = "ResultOf".equals(struct.name().substring(0, 8));
 		}
 		boolean isSimpleWrapper = struct.struct_fields().length == 1;
-		return new JavaRecord(struct,
-		                      struct.name(),
-		                      superInterface,
-		                      isSimpleWrapper,
-		                      isParams,
-		                      isResult,
-		                      typeLibrary);
+		return new SdkRecord(struct,
+		                     struct.name(),
+		                     superInterface,
+		                     isSimpleWrapper,
+		                     isParams,
+		                     isResult,
+		                     typeLibrary);
 	}
 
 	@Override
@@ -52,11 +52,11 @@ public record JavaRecord(StructType originalType,
 		// RECORD PARAMS
 		for (ApiType component : this.originalType.struct_fields()) {
 			structBuilder
-					.addRecordComponent(JavaParam.ofApiType(component, typeLibrary()).poeticize().build());
+					.addRecordComponent(SdkParam.ofApiType(component, typeLibrary()).poeticize().build());
 		}
 		// JAVADOC
-		structBuilder.addJavadoc(new JavaDocs(originalType().summary(), originalType().description()).poeticize()
-		                                                                                             .build());
+		structBuilder.addJavadoc(new SdkDocs(originalType().summary(), originalType().description()).poeticize()
+		                                                                                            .build());
 		// for records that are implementing interfaces of EnumOfTypes
 		if (Objs.isNotNull(superInterface())) {
 			// if record is a subtype of EnumOfTypes
@@ -106,11 +106,11 @@ public record JavaRecord(StructType originalType,
 				.addModifiers(Modifier.PUBLIC)
 				.returns(ClassName.STRING)
 				.addStatement("return \"" + typeName + "\"")
-				.addAnnotation(JavaParam.renamedFieldAnnotation("type"));
+				.addAnnotation(SdkParam.renamedFieldAnnotation("type"));
 	}
 
-	public JavaRecord withSuperInterface(ParserEngine.SdkInterfaceParent superInterface) {
-		return new JavaRecord(
+	public SdkRecord withSuperInterface(ParserEngine.SdkInterfaceParent superInterface) {
+		return new SdkRecord(
 				originalType(),
 				name(),
 				superInterface,

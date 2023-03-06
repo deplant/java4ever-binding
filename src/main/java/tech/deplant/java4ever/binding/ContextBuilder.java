@@ -10,6 +10,8 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
  * Builder to correctly request and create Context object
  */
@@ -22,11 +24,10 @@ public class ContextBuilder {
 	                                                            // and possibly other configuration, modules, then:
 	                                                            .build()
 	                                                            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+	                                                            .setSerializationInclusion(NON_NULL)
 	                                                            .registerModule(new RecordNamingStrategyPatchModule());
-
 	private long timeout = 60_000L;
 	private String configJson = "{}";
-
 	private ObjectMapper jsonMapper = DEFAULT_MAPPER;
 
 	public ContextBuilder() {

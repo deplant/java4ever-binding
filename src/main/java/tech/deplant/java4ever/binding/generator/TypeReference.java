@@ -6,7 +6,7 @@ import tech.deplant.java4ever.binding.generator.javapoet.ArrayTypeName;
 import tech.deplant.java4ever.binding.generator.javapoet.ClassName;
 import tech.deplant.java4ever.binding.generator.javapoet.ParameterizedTypeName;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeName;
-import tech.deplant.java4ever.binding.generator.jtype.JavaType;
+import tech.deplant.java4ever.binding.generator.jtype.SdkObject;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.utils.Strings;
 
@@ -42,6 +42,7 @@ public record TypeReference(String module,
 			case ArrayType arr -> referenceRecursion(ref.withIsArray(true), arr.array_item());
 			case RefType r -> {
 				if (SPECIAL_REFS.contains(r.ref_name())) {
+					// special case for BuilderOp.Integer
 					if (Strings.isNotEmpty(apiType.summary()) &&
 					    apiType.summary().contains("integer number")) {
 						yield ref.withName("String").withIsRef(false);
@@ -134,7 +135,7 @@ public record TypeReference(String module,
 		return typeName;
 	}
 
-	public JavaType toTypeDeclaration(Map<ParserEngine.SdkType, JavaType> typeLibrary) {
+	public SdkObject toTypeDeclaration(Map<ParserEngine.SdkType, SdkObject> typeLibrary) {
 		return typeLibrary.get(toSdkType());
 	}
 

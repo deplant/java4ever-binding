@@ -5,7 +5,7 @@ import tech.deplant.java4ever.utils.regex.*;
 
 import static java.util.Objects.requireNonNullElse;
 
-public record JavaDocs(String summary, String description) {
+public record SdkDocs(String summary, String description) {
 
 	public CodeBlock.Builder poeticize() {
 		CodeBlock.Builder docsBuilder = CodeBlock
@@ -20,7 +20,7 @@ public record JavaDocs(String summary, String description) {
 				new NotAnyOf(new Word("[]()")),
 				Special.PLUS,
 				new Symbol(')'));
-		String mdLinksPatternString = RegExp.build(mdLinkRegExp);
+		String mdLinksPatternString = mdLinkRegExp.toString();
 
 		String processedDescription = description();
 		//TODO Do something with MD-style links in description

@@ -7,17 +7,17 @@ import tech.deplant.java4ever.binding.generator.reference.EnumOfTypes;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
-public record JavaInterface(EnumOfTypes eot,
-                            String name,
-                            JavaDocs javadoc,
-                            List<JavaRecord> children) implements JavaType {
+public record SdkInterface(EnumOfTypes eot,
+                           String name,
+                           SdkDocs javadoc,
+                           List<SdkRecord> children) implements SdkObject {
 
 	@Override
 	public TypeSpec.Builder poeticize() {
 
 		TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(name())
 		                                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.SEALED);
-		for (JavaRecord child : this.children) {
+		for (SdkRecord child : this.children) {
 			interfaceBuilder.addType(child.poeticize().build());
 		}
 

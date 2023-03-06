@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public record JavaFunction(String functionModule,
-                           ApiFunction function,
-                           //JavaType functionReturn,
-                           Map<ParserEngine.SdkType, JavaType> typeLibrary) {
+public record SdkFunction(String functionModule,
+                          ApiFunction function,
+                          //JavaType functionReturn,
+                          Map<ParserEngine.SdkType, SdkObject> typeLibrary) {
 
-	private final static System.Logger logger = System.getLogger(JavaFunction.class.getName());
+	private final static System.Logger logger = System.getLogger(SdkFunction.class.getName());
 
 	private String constructCallParams(MethodSpec.Builder methodBuilder,
 	                                   List<Object> statementArgs,
-	                                   JavaParam param) {
+	                                   SdkParam param) {
 		StringBuilder template = new StringBuilder();
 		if (Objs.isNotNull(param.libType()) &&
 		    param.libType().isStructure() &&
@@ -48,8 +48,8 @@ public record JavaFunction(String functionModule,
 					.map(
 							apiType -> constructCallParams(methodBuilder,
 							                               statementArgs,
-							                               JavaParam.ofApiType(apiType,
-							                                                   typeLibrary())))
+							                               SdkParam.ofApiType(apiType,
+							                                                  typeLibrary())))
 					.collect(Collectors.joining(", "));
 			template.append(innerFields);
 			template.append(")");
@@ -83,7 +83,7 @@ public record JavaFunction(String functionModule,
 
 		for (ApiType param : function().params()) {
 			logger.log(System.Logger.Level.DEBUG, function().name() + "\\" + param.name() + "\\" + param.type());
-			JavaParam parsedParam = JavaParam.ofApiType(param, typeLibrary());
+			SdkParam parsedParam = SdkParam.ofApiType(param, typeLibrary());
 			switch (param.name()) {
 				case "context", "_context" -> {
 					// we're always adding context, so no reason to do something
@@ -148,7 +148,7 @@ public record JavaFunction(String functionModule,
 		}
 
 		// JAVADOC
-		methodBuilder.addJavadoc(new JavaDocs(function().summary(), function().description()).poeticize().build());
+		methodBuilder.addJavadoc(new SdkDocs(function().summary(), function().description()).poeticize().build());
 
 		return methodBuilder;
 	}

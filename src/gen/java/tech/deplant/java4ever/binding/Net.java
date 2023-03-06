@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Net {
   /**
@@ -531,6 +531,19 @@ public final class Net {
   public static void removeIterator(Context ctx, Net.RegisteredIterator params) throws
       EverSdkException {
     ctx.callVoid("net.remove_iterator", params);
+  }
+
+  /**
+   *  Returns signature ID for configured network if it should be used in messages signature
+   */
+  public static Net.ResultOfGetSignatureId getSignatureId(Context ctx) throws EverSdkException {
+    return ctx.call("net.get_signature_id", null, Net.ResultOfGetSignatureId.class);
+  }
+
+  /**
+   * @param signatureId  Signature ID for configured network if it should be used in messages signature
+   */
+  public static final record ResultOfGetSignatureId(Integer signatureId) {
   }
 
   /**

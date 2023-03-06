@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.ContextBuilder;
 import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.generator.javapoet.CodeBlock;
 import tech.deplant.java4ever.binding.generator.javapoet.JavaFile;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.jtype.*;
@@ -13,9 +14,12 @@ import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 import tech.deplant.java4ever.utils.Objs;
 
+import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+
+import static java.util.Objects.requireNonNullElse;
 
 public class ParserEngine {
 
@@ -38,7 +42,7 @@ public class ParserEngine {
 		final String apiVersion = parsedApiReference.version();
 		// library to store all parsed types
 		// they'll be used later to construct correct method params and bodies
-		final Map<SdkType, JavaType> typeLibrary = new HashMap<>();
+		final Map<SdkType, SdkObject> typeLibrary = new HashMap<>();
 		// library to store references to child classes from EnumOfTypes
 		final Map<SdkType, SdkInterfaceParent> eotReferences = new HashMap<>();
 
@@ -53,9 +57,9 @@ public class ParserEngine {
 			for (ApiType type : module.types()) {
 				switch (type) {
 					case EnumOfConsts en -> {
-						var jEnum = new JavaEnum(en.name(),
-						                         en.enum_consts(),
-						                         new JavaDocs(en.summary(), en.description()));
+						var jEnum = new SdkEnum(en.name(),
+						                        en.enum_consts(),
+						                        new SdkDocs(en.summary(), en.description()));
 						typeLibrary.put(new SdkType(moduleCapitalName, en.name()), jEnum);
 					}
 					case StructType struct -> {
@@ -66,26 +70,26 @@ public class ParserEngine {
 							isResult = "ResultOf".equals(struct.name().substring(0, 8));
 						}
 						boolean isSimpleWrapper = struct.struct_fields().length == 1;
-						typeLibrary.put(new SdkType(moduleCapitalName, struct.name()), new JavaRecord(struct,
-						                                                                              struct.name(),
-						                                                                              null,
-						                                                                              isSimpleWrapper,
-						                                                                              isParams,
-						                                                                              isResult,
-						                                                                              typeLibrary));
+						typeLibrary.put(new SdkType(moduleCapitalName, struct.name()), new SdkRecord(struct,
+						                                                                             struct.name(),
+						                                                                             null,
+						                                                                             isSimpleWrapper,
+						                                                                             isParams,
+						                                                                             isResult,
+						                                                                             typeLibrary));
 					}
 					case EnumOfTypes eot -> {
-						List<JavaRecord> records = new ArrayList<>();
+						List<SdkRecord> records = new ArrayList<>();
 						// patch for 'Abi' interface that messes with module with the same name
 						String interfaceName = "Abi".equals(eot.name()) ? "ABI" : eot.name();
 						for (ApiType eotChildType : eot.enum_types()) {
 							switch (eotChildType) {
-								case StructType str -> records.add(JavaRecord.ofApiType(str,
-								                                                        typeLibrary,
-								                                                        new SdkInterfaceParent(
-										                                                        moduleCapitalName,
-										                                                        interfaceName,
-										                                                        str.name())));
+								case StructType str -> records.add(SdkRecord.ofApiType(str,
+								                                                       typeLibrary,
+								                                                       new SdkInterfaceParent(
+										                                                       moduleCapitalName,
+										                                                       interfaceName,
+										                                                       str.name())));
 								case RefType ref -> eotReferences.put(TypeReference.fromApiType(ref).toSdkType(),
 								                                      new SdkInterfaceParent(moduleCapitalName,
 								                                                             interfaceName,
@@ -95,14 +99,14 @@ public class ParserEngine {
 							}
 						}
 
-						var javaInterface = new JavaInterface(eot,
-						                                      interfaceName,
-						                                      new JavaDocs(eot.summary(), eot.description()),
-						                                      records);
+						var javaInterface = new SdkInterface(eot,
+						                                     interfaceName,
+						                                     new SdkDocs(eot.summary(), eot.description()),
+						                                     records);
 						typeLibrary.put(new SdkType(moduleCapitalName, interfaceName), javaInterface);
 					}
 					default -> {
-						typeLibrary.put(new SdkType(moduleCapitalName, type.name()), new JavaDummy(type));
+						typeLibrary.put(new SdkType(moduleCapitalName, type.name()), new SdkDummy(type));
 					}
 				}
 			}
@@ -113,15 +117,15 @@ public class ParserEngine {
 				                      Objs.notNullDo(
 						                      typeLibrary.get(typ),
 						                      jtype -> typeLibrary.put(typ,
-						                                               ((JavaRecord) jtype).withSuperInterface(sup))
+						                                               ((SdkRecord) jtype).withSuperInterface(sup))
 				                      ));
 
 		// main file building loop
 		// loops modules again, now to write them
 		for (var module : parsedApiReference.modules()) {
-			final TypeSpec.Builder moduleBuilder = ParserOfModule.classOfModule(module,
-			                                                                    ParserUtils.capitalize(module.name()),
-			                                                                    apiVersion);
+			final TypeSpec.Builder moduleBuilder = moduleToBuilder(module,
+			                                                       ParserUtils.capitalize(module.name()),
+			                                                       apiVersion);
 			String moduleCapitalName = ParserUtils.capitalize(module.name());
 
 			// let's find types that correspond to module in library
@@ -134,7 +138,7 @@ public class ParserEngine {
 			});
 
 			// let's write these types
-			for (JavaType typeRef : types) {
+			for (SdkObject typeRef : types) {
 				var builder = typeRef.poeticize();
 				if (!Objects.isNull(builder)) {
 					moduleBuilder.addType(builder.build());
@@ -144,10 +148,10 @@ public class ParserEngine {
 			// function writing loop
 			// functions receive full lib info
 			for (ApiFunction function : module.functions()) {
-				moduleBuilder.addMethod(new JavaFunction(module.name().toLowerCase(),
-				                                         function,
-				                                         typeLibrary).poeticize()
-				                                                     .build());
+				moduleBuilder.addMethod(new SdkFunction(module.name().toLowerCase(),
+				                                        function,
+				                                        typeLibrary).poeticize()
+				                                                    .build());
 			}
 
 			// file writing loop
@@ -156,6 +160,31 @@ public class ParserEngine {
 					.build();
 			javaFile.writeTo(Paths.get("src/gen/java"));
 		}
+	}
+
+	public static TypeSpec.Builder moduleToBuilder(ApiModule module, String moduleNameCapitalized, String version) {
+		TypeSpec.Builder moduleBuilder = TypeSpec
+				.classBuilder(moduleNameCapitalized)
+				.addJavadoc(moduleDocs(module, moduleNameCapitalized, version).build())
+				.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+		return moduleBuilder;
+	}
+
+	public static CodeBlock.Builder moduleDocs(ApiModule module, String moduleNameCapitalized, String version) {
+		return CodeBlock
+				.builder()
+				.add(String.format("""
+						                   <strong>%s</strong>
+						                   Contains methods of "%s" module of EVER-SDK API
+						                                
+						                   %s %s
+						                   @version %s
+						                   """,
+				                   moduleNameCapitalized,
+				                   module.name(),
+				                   requireNonNullElse(module.summary(), ""),
+				                   requireNonNullElse(module.description(), ""),
+				                   version));
 	}
 
 	public record SdkType(String module, String name) {

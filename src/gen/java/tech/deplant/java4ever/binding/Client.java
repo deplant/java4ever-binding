@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Client {
   /**
@@ -155,6 +155,9 @@ public final class Client {
   public static final record BuildInfoDependency(String name, String gitCommit) {
   }
 
+  public static final record BindingConfig(String library, String version) {
+  }
+
   /**
    * @param cacheInLocalStorage Default is `true`. If this value is set to `true`, downloaded proofs and master-chain BOCs are saved into the
    * persistent local storage (e.g. file system for native environments or browser's IndexedDB
@@ -200,6 +203,10 @@ public final class Client {
    * @param nextRempStatusTimeout Subsequent REMP status awaiting timeout. If no status received during the timeout than fallback transaction scenario is activated.
    *
    * Must be specified in milliseconds. Default is 5000 (5 sec). UNSTABLE.
+   * @param signatureId This parameter should be set to `global_id` field from any blockchain block if network can
+   * not be reachable at the moment of message encoding and the message is aimed to be sent into
+   * network with `CapSignatureWithId` enabled. Otherwise signature ID is detected automatically
+   * inside message encoding functions Network signature ID which is used by VM in signature verifying instructions if capability `CapSignatureWithId` is enabled in blockchain configuration parameters.
    * @param accessKey  Access key to GraphQL API (Project secret)
    */
   public static final record NetworkConfig(String serverAddress, String[] endpoints,
@@ -207,7 +214,8 @@ public final class Client {
       Integer messageRetriesCount, Integer messageProcessingTimeout, Integer waitForTimeout,
       Integer outOfSyncThreshold, Integer sendingEndpointCount, Integer latencyDetectionInterval,
       Integer maxLatency, Integer queryTimeout, Client.NetworkQueriesProtocol queriesProtocol,
-      Integer firstRempStatusTimeout, Integer nextRempStatusTimeout, String accessKey) {
+      Integer firstRempStatusTimeout, Integer nextRempStatusTimeout, Integer signatureId,
+      String accessKey) {
   }
 
   /**
@@ -279,9 +287,9 @@ public final class Client {
   /**
    * @param localStoragePath  For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
    */
-  public static final record ClientConfig(Client.NetworkConfig network, Client.CryptoConfig crypto,
-      Client.AbiConfig abi, Client.BocConfig boc, Client.ProofsConfig proofs,
-      String localStoragePath) {
+  public static final record ClientConfig(Client.BindingConfig binding,
+      Client.NetworkConfig network, Client.CryptoConfig crypto, Client.AbiConfig abi,
+      Client.BocConfig boc, Client.ProofsConfig proofs, String localStoragePath) {
   }
 
   /**
@@ -295,11 +303,11 @@ public final class Client {
   /**
    *  Crypto config.
    *
-   * @param mnemonicDictionary  Mnemonic dictionary that will be used by default in crypto functions. If not specified, 1 dictionary will be used.
+   * @param mnemonicDictionary  Mnemonic dictionary that will be used by default in crypto functions. If not specified, `English` dictionary will be used.
    * @param mnemonicWordCount  Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
    * @param hdkeyDerivationPath  Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
    */
-  public static final record CryptoConfig(Integer mnemonicDictionary, Integer mnemonicWordCount,
-      String hdkeyDerivationPath) {
+  public static final record CryptoConfig(Crypto.MnemonicDictionary mnemonicDictionary,
+      Integer mnemonicWordCount, String hdkeyDerivationPath) {
   }
 }

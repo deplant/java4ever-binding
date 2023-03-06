@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "boc" module of EVER-SDK API
  *
  * BOC manipulation module. 
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Boc {
   /**

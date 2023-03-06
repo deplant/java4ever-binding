@@ -14,7 +14,7 @@ import java.util.Map;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Abi {
   /**
@@ -37,11 +37,12 @@ public final class Abi {
    * @param address Since ABI version 2.3 destination address of external inbound message is used in message
    * body signature calculation. Should be provided when signed external inbound message body is
    * created. Otherwise can be omitted. Destination address of the message
+   * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
   public static Abi.ResultOfEncodeMessageBody encodeMessageBody(Context ctx, Abi.ABI abi,
       Abi.CallSet callSet, Boolean isInternal, Abi.Signer signer, Integer processingTryIndex,
-      String address) throws EverSdkException {
-    return ctx.call("abi.encode_message_body", new Abi.ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address), Abi.ResultOfEncodeMessageBody.class);
+      String address, Integer signatureId) throws EverSdkException {
+    return ctx.call("abi.encode_message_body", new Abi.ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address, signatureId), Abi.ResultOfEncodeMessageBody.class);
   }
 
   /**
@@ -106,11 +107,12 @@ public final class Abi {
    * <.....add config parameter with default value here>
    *
    * Default value is 0. Processing try index.
+   * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
   public static Abi.ResultOfEncodeMessage encodeMessage(Context ctx, Abi.ABI abi, String address,
-      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex)
-      throws EverSdkException {
-    return ctx.call("abi.encode_message", new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex), Abi.ResultOfEncodeMessage.class);
+      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
+      Integer signatureId) throws EverSdkException {
+    return ctx.call("abi.encode_message", new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), Abi.ResultOfEncodeMessage.class);
   }
 
   /**
@@ -313,10 +315,11 @@ public final class Abi {
    *
    * @param abi  Contract ABI used to decode.
    * @param message  Message BOC encoded in `base64`.
+   * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
   public static Abi.ResultOfGetSignatureData getSignatureData(Context ctx, Abi.ABI abi,
-      String message) throws EverSdkException {
-    return ctx.call("abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message), Abi.ResultOfGetSignatureData.class);
+      String message, Integer signatureId) throws EverSdkException {
+    return ctx.call("abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message, signatureId), Abi.ResultOfGetSignatureData.class);
   }
 
   /**
@@ -333,8 +336,10 @@ public final class Abi {
   /**
    * @param abi  Contract ABI used to decode.
    * @param message  Message BOC encoded in `base64`.
+   * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
-  public static final record ParamsOfGetSignatureData(Abi.ABI abi, String message) {
+  public static final record ParamsOfGetSignatureData(Abi.ABI abi, String message,
+      Integer signatureId) {
   }
 
   /**
@@ -375,9 +380,11 @@ public final class Abi {
    * @param address Since ABI version 2.3 destination address of external inbound message is used in message
    * body signature calculation. Should be provided when signed external inbound message body is
    * created. Otherwise can be omitted. Destination address of the message
+   * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
   public static final record ParamsOfEncodeMessageBody(Abi.ABI abi, Abi.CallSet callSet,
-      Boolean isInternal, Abi.Signer signer, Integer processingTryIndex, String address) {
+      Boolean isInternal, Abi.Signer signer, Integer processingTryIndex, String address,
+      Integer signatureId) {
   }
 
   public sealed interface StateInitSource {
@@ -417,7 +424,7 @@ public final class Abi {
     }
   }
 
-  public static final record AbiContract(@JsonProperty("abi version") Integer ABIversion,
+  public static final record AbiContract(@JsonProperty("ABI version") Integer abiVersionMajor,
       Integer abiVersion, String version, String[] header, Abi.AbiFunction[] functions,
       Abi.AbiEvent[] events, Abi.AbiData[] data, Abi.AbiParam[] fields) {
   }
@@ -626,10 +633,11 @@ public final class Abi {
    * <.....add config parameter with default value here>
    *
    * Default value is 0. Processing try index.
+   * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
   public static final record ParamsOfEncodeMessage(Abi.ABI abi, String address,
-      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
-      Integer processingTryIndex) implements MessageSource {
+      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
+      Integer signatureId) implements MessageSource {
     @JsonProperty("type")
     public String type() {
       return "EncodingParams";
@@ -708,9 +716,9 @@ public final class Abi {
 
   /**
    * @param signature  Signature from the message in `hex`.
-   * @param hash  Hash to verify the signature in `base64`.
+   * @param unsigned  Data to verify the signature in `base64`.
    */
-  public static final record ResultOfGetSignatureData(String signature, String hash) {
+  public static final record ResultOfGetSignatureData(String signature, String unsigned) {
   }
 
   /**

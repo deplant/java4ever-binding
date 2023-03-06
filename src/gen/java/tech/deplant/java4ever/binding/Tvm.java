@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Tvm {
   /**
@@ -116,9 +116,10 @@ public final class Tvm {
    * @param blockLt  block logical time
    * @param transactionLt  transaction logical time
    * @param chksigAlwaysSucceed  Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
+   * @param signatureId  Signature ID to be used in signature verifying instructions when CapSignatureWithId capability is enabled
    */
   public static final record ExecutionOptions(String blockchainConfig, Integer blockTime,
-      Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed) {
+      Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed, Integer signatureId) {
   }
 
   /**

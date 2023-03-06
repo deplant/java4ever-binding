@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains methods of "crypto" module of EVER-SDK API
  *
  * Crypto functions. 
- * @version 1.40.0
+ * @version 1.41.0
  */
 public final class Crypto {
   /**
@@ -280,8 +280,8 @@ public final class Crypto {
    *
    * @param dictionary  Dictionary identifier
    */
-  public static Crypto.ResultOfMnemonicWords mnemonicWords(Context ctx, Integer dictionary) throws
-      EverSdkException {
+  public static Crypto.ResultOfMnemonicWords mnemonicWords(Context ctx,
+      Crypto.MnemonicDictionary dictionary) throws EverSdkException {
     return ctx.call("crypto.mnemonic_words", new Crypto.ParamsOfMnemonicWords(dictionary), Crypto.ResultOfMnemonicWords.class);
   }
 
@@ -292,7 +292,7 @@ public final class Crypto {
    * @param wordCount  Mnemonic word count
    */
   public static Crypto.ResultOfMnemonicFromRandom mnemonicFromRandom(Context ctx,
-      Integer dictionary, Integer wordCount) throws EverSdkException {
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
     return ctx.call("crypto.mnemonic_from_random", new Crypto.ParamsOfMnemonicFromRandom(dictionary, wordCount), Crypto.ResultOfMnemonicFromRandom.class);
   }
 
@@ -304,7 +304,7 @@ public final class Crypto {
    * @param wordCount  Mnemonic word count
    */
   public static Crypto.ResultOfMnemonicFromEntropy mnemonicFromEntropy(Context ctx, String entropy,
-      Integer dictionary, Integer wordCount) throws EverSdkException {
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
     return ctx.call("crypto.mnemonic_from_entropy", new Crypto.ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), Crypto.ResultOfMnemonicFromEntropy.class);
   }
 
@@ -317,7 +317,7 @@ public final class Crypto {
    * @param wordCount  Word count
    */
   public static Crypto.ResultOfMnemonicVerify mnemonicVerify(Context ctx, String phrase,
-      Integer dictionary, Integer wordCount) throws EverSdkException {
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
     return ctx.call("crypto.mnemonic_verify", new Crypto.ParamsOfMnemonicVerify(phrase, dictionary, wordCount), Crypto.ResultOfMnemonicVerify.class);
   }
 
@@ -331,7 +331,7 @@ public final class Crypto {
    * @param wordCount  Word count
    */
   public static Crypto.KeyPair mnemonicDeriveSignKeys(Context ctx, String phrase, String path,
-      Integer dictionary, Integer wordCount) throws EverSdkException {
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
     return ctx.call("crypto.mnemonic_derive_sign_keys", new Crypto.ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), Crypto.KeyPair.class);
   }
 
@@ -343,7 +343,8 @@ public final class Crypto {
    * @param wordCount  Mnemonic word count
    */
   public static Crypto.ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(Context ctx,
-      String phrase, Integer dictionary, Integer wordCount) throws EverSdkException {
+      String phrase, Crypto.MnemonicDictionary dictionary, Integer wordCount) throws
+      EverSdkException {
     return ctx.call("crypto.hdkey_xprv_from_mnemonic", new Crypto.ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), Crypto.ResultOfHDKeyXPrvFromMnemonic.class);
   }
 
@@ -658,7 +659,7 @@ public final class Crypto {
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Creates Crypto Box from a random seed phrase. This option can be used if a developer doesn't want the seed phrase to leave the core library's memory, where it is stored encrypted.
      */
-    final record RandomSeedPhrase(Integer dictionary,
+    final record RandomSeedPhrase(Crypto.MnemonicDictionary dictionary,
         Integer wordcount) implements CryptoBoxSecret {
       @JsonProperty("type")
       public String type() {
@@ -672,7 +673,7 @@ public final class Crypto {
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Restores crypto box instance from an existing seed phrase. This type should be used when Crypto Box is initialized from a seed phrase, entered by a user.
      */
-    final record PredefinedSeedPhrase(String phrase, Integer dictionary,
+    final record PredefinedSeedPhrase(String phrase, Crypto.MnemonicDictionary dictionary,
         Integer wordcount) implements CryptoBoxSecret {
       @JsonProperty("type")
       public String type() {
@@ -734,8 +735,8 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfMnemonicFromEntropy(String entropy, Integer dictionary,
-      Integer wordCount) {
+  public static final record ParamsOfMnemonicFromEntropy(String entropy,
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
   }
 
   /**
@@ -968,8 +969,8 @@ public final class Crypto {
   public static final record ResultOfMnemonicVerify(Boolean valid) {
   }
 
-  public static final record ResultOfGetCryptoBoxSeedPhrase(String phrase, Integer dictionary,
-      Integer wordcount) {
+  public static final record ResultOfGetCryptoBoxSeedPhrase(String phrase,
+      Crypto.MnemonicDictionary dictionary, Integer wordcount) {
   }
 
   /**
@@ -1005,6 +1006,36 @@ public final class Crypto {
       public String type() {
         return "NaclSecretBox";
       }
+    }
+  }
+
+  public enum MnemonicDictionary {
+    Ton(0),
+
+    English(1),
+
+    ChineseSimplified(2),
+
+    ChineseTraditional(3),
+
+    French(4),
+
+    Italian(5),
+
+    Japanese(6),
+
+    Korean(7),
+
+    Spanish(8);
+
+    private final Integer value;
+
+    MnemonicDictionary(Integer value) {
+      this.value = value;
+    }
+
+    public Integer value() {
+      return this.value;
     }
   }
 
@@ -1064,8 +1095,8 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Word count
    */
-  public static final record ParamsOfMnemonicVerify(String phrase, Integer dictionary,
-      Integer wordCount) {
+  public static final record ParamsOfMnemonicVerify(String phrase,
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
   }
 
   /**
@@ -1320,7 +1351,8 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfMnemonicFromRandom(Integer dictionary, Integer wordCount) {
+  public static final record ParamsOfMnemonicFromRandom(Crypto.MnemonicDictionary dictionary,
+      Integer wordCount) {
   }
 
   /**
@@ -1354,7 +1386,7 @@ public final class Crypto {
    * @param wordCount  Word count
    */
   public static final record ParamsOfMnemonicDeriveSignKeys(String phrase, String path,
-      Integer dictionary, Integer wordCount) {
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
   }
 
   /**
@@ -1374,8 +1406,8 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfHDKeyXPrvFromMnemonic(String phrase, Integer dictionary,
-      Integer wordCount) {
+  public static final record ParamsOfHDKeyXPrvFromMnemonic(String phrase,
+      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
   }
 
   /**
@@ -1399,7 +1431,7 @@ public final class Crypto {
   /**
    * @param dictionary  Dictionary identifier
    */
-  public static final record ParamsOfMnemonicWords(Integer dictionary) {
+  public static final record ParamsOfMnemonicWords(Crypto.MnemonicDictionary dictionary) {
   }
 
   public static final record AesInfo(Crypto.CipherMode mode, String iv) {

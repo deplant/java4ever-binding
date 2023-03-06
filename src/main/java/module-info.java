@@ -10,6 +10,7 @@ module java4ever.binding {
 	exports tech.deplant.java4ever.binding.loader;
 	exports tech.deplant.java4ever.binding.io;
 	exports tech.deplant.java4ever.binding.generator;
+	exports tech.deplant.java4ever.binding.generator.javapoet;
 	exports tech.deplant.java4ever.binding.generator.reference;
 	exports tech.deplant.java4ever.binding.generator.jtype;
 	opens tech.deplant.java4ever.binding to com.fasterxml.jackson.databind;

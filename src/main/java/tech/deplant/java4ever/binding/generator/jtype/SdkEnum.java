@@ -8,9 +8,9 @@ import tech.deplant.java4ever.binding.generator.reference.EnumOfConsts;
 
 import javax.lang.model.element.Modifier;
 
-public record JavaEnum(String name,
-                       EnumOfConsts.Const[] consts,
-                       JavaDocs javadoc) implements JavaType {
+public record SdkEnum(String name,
+                      EnumOfConsts.Const[] consts,
+                      SdkDocs javadoc) implements SdkObject {
 
 	@Override
 	public TypeSpec.Builder poeticize() {
