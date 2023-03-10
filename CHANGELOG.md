@@ -2,6 +2,7 @@
 
 - Updated EVER-SDK -> 1.41
 - Updated dependency: Gradle -> 8.0.2
+- Removed dependency: org.junit.platform:junit-platform-launcher
 - Fixed incorrect "ABI version" tag serialization in AbiContract type
 - Fixed BuilderOp.Integer incorrect param type
 - Improved generator rules
