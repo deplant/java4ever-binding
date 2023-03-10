@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;
@@ -154,6 +155,7 @@ public final class Proofs {
       this.value = value;
     }
 
+    @JsonValue
     public Integer value() {
       return this.value;
     }

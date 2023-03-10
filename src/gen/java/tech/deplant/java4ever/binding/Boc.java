@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Object;
@@ -333,6 +334,7 @@ public final class Boc {
       this.value = value;
     }
 
+    @JsonValue
     public Integer value() {
       return this.value;
     }

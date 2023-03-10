@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import tech.deplant.java4ever.binding.generator.javapoet.MethodSpec;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeVariableName;
@@ -38,6 +39,7 @@ public record SdkEnum(String name,
 			                                .addStatement("this.$N = $N", "value", "value")
 			                                .build())
 			           .addMethod(MethodSpec.methodBuilder("value")
+					                      .addAnnotation(JsonValue.class)
 			                                .addModifiers(Modifier.PUBLIC)
 			                                .addStatement("return this.value")
 			                                .returns(TypeVariableName.get("Integer"))
