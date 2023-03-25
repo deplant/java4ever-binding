@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "crypto" module of EVER-SDK API
  *
  * Crypto functions. 
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Crypto {
   /**

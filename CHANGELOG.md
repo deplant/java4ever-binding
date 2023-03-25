@@ -1,3 +1,8 @@
+### 1.6.0
+
+- Updated EVER-SDK -> 1.42
+- Fixed serialization of integer-based enums
+
 ### 1.5.0
 
 - Updated EVER-SDK -> 1.41

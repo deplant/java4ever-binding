@@ -15,7 +15,7 @@ import java.util.Map;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Abi {
   /**

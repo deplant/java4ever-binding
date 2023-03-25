@@ -15,9 +15,89 @@ import java.util.Map;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Processing {
+  /**
+   * Message monitor performs background monitoring for a message processing results
+   * for the specified set of messages.
+   *
+   * Message monitor can serve several isolated monitoring queues.
+   * Each monitor queue has a unique application defined identifier (or name) used
+   * to separate several queue's.
+   *
+   * There are two important lists inside of the monitoring queue:
+   *
+   * - unresolved messages: contains messages requested by the application for monitoring
+   *   and not yet resolved;
+   *
+   * - resolved results: contains resolved processing results for monitored messages.
+   *
+   * Each monitoring queue tracks own unresolved and resolved lists.
+   * Application can add more messages to the monitoring queue at any time.
+   *
+   * Message monitor accumulates resolved results.
+   * Application should fetch this results with `fetchNextMonitorResults` function.
+   *
+   * When both unresolved and resolved lists becomes empty, monitor stops any background activity
+   * and frees all allocated internal memory.
+   *
+   * If monitoring queue with specified name already exists then messages will be added
+   * to the unresolved list.
+   *
+   * If monitoring queue with specified name does not exist then monitoring queue will be created
+   * with specified unresolved messages. Starts monitoring for the processing results of the specified messages.
+   *
+   * @param queue  Name of the monitoring queue.
+   * @param messages  Messages to start monitoring for.
+   */
+  public static void monitorMessages(Context ctx, String queue,
+      Processing.MessageMonitoringParams[] messages) throws EverSdkException {
+    ctx.callVoid("processing.monitor_messages", new Processing.ParamsOfMonitorMessages(queue, messages));
+  }
+
+  /**
+   *  Returns summary information about current state of the specified monitoring queue.
+   *
+   * @param queue  Name of the monitoring queue.
+   */
+  public static Processing.MonitoringQueueInfo getMonitorInfo(Context ctx, String queue) throws
+      EverSdkException {
+    return ctx.call("processing.get_monitor_info", new Processing.ParamsOfGetMonitorInfo(queue), Processing.MonitoringQueueInfo.class);
+  }
+
+  /**
+   * Results and waiting options are depends on the `wait` parameter.
+   * All returned results will be removed from the queue's resolved list. Fetches next resolved results from the specified monitoring queue.
+   *
+   * @param queue  Name of the monitoring queue.
+   * @param waitMode Default is `NO_WAIT`. Wait mode.
+   */
+  public static Processing.ResultOfFetchNextMonitorResults fetchNextMonitorResults(Context ctx,
+      String queue, Processing.MonitorFetchWaitMode waitMode) throws EverSdkException {
+    return ctx.call("processing.fetch_next_monitor_results", new Processing.ParamsOfFetchNextMonitorResults(queue, waitMode), Processing.ResultOfFetchNextMonitorResults.class);
+  }
+
+  /**
+   *  Cancels all background activity and releases all allocated system resources for the specified monitoring queue.
+   *
+   * @param queue  Name of the monitoring queue.
+   */
+  public static void cancelMonitor(Context ctx, String queue) throws EverSdkException {
+    ctx.callVoid("processing.cancel_monitor", new Processing.ParamsOfCancelMonitor(queue));
+  }
+
+  /**
+   *  Sends specified messages to the blockchain.
+   *
+   * @param messages  Messages that must be sent to the blockchain.
+   * @param monitorQueue  Optional message monitor queue that starts monitoring for the processing results for sent messages.
+   */
+  public static Processing.ResultOfSendMessages sendMessages(Context ctx,
+      Processing.MessageSendingParams[] messages, String monitorQueue) throws EverSdkException {
+    return ctx.call("processing.send_messages", new Processing.ParamsOfSendMessages(messages, monitorQueue), Processing.ResultOfSendMessages.class);
+  }
+
   /**
    * Sends message to the network and returns the last generated shard block of the destination account
    * before the message was sent. It will be required later for message processing. Sends message to the network
@@ -130,12 +210,47 @@ public final class Processing {
   }
 
   /**
+   * @param results  List of the resolved results.
+   */
+  public static final record ResultOfFetchNextMonitorResults(Processing.MessageMonitoringResult[] results) {
+  }
+
+  /**
+   * @param unresolved  Count of the unresolved messages.
+   * @param resolved  Count of resolved results.
+   */
+  public static final record MonitoringQueueInfo(Integer unresolved, Integer resolved) {
+  }
+
+  /**
+   * @param queue  Name of the monitoring queue.
+   * @param messages  Messages to start monitoring for.
+   */
+  public static final record ParamsOfMonitorMessages(String queue,
+      Processing.MessageMonitoringParams[] messages) {
+  }
+
+  /**
    * @param outMessages If the message can't be decoded, then `None` will be stored in
    * the appropriate position. Decoded bodies of the out messages.
    * @param output  Decoded body of the function output message.
    */
   public static final record DecodedOutput(Abi.DecodedMessageBody[] outMessages,
       Map<String, Object> output) {
+  }
+
+  /**
+   * @param queue  Name of the monitoring queue.
+   */
+  public static final record ParamsOfGetMonitorInfo(String queue) {
+  }
+
+  /**
+   * @param messages  Messages that must be sent to the blockchain.
+   * @param monitorQueue  Optional message monitor queue that starts monitoring for the processing results for sent messages.
+   */
+  public static final record ParamsOfSendMessages(Processing.MessageSendingParams[] messages,
+      String monitorQueue) {
   }
 
   /**
@@ -157,6 +272,31 @@ public final class Processing {
    */
   public static final record ResultOfProcessMessage(Map<String, Object> transaction,
       String[] outMessages, Processing.DecodedOutput decoded, Tvm.TransactionFees fees) {
+  }
+
+  public sealed interface MonitoredMessage {
+    /**
+     *  BOC of the message.
+     */
+    final record Boc(String boc) implements MonitoredMessage {
+      @JsonProperty("type")
+      public String type() {
+        return "Boc";
+      }
+    }
+
+    /**
+     *  Message's hash and destination address.
+     *
+     * @param hash  Hash of the message.
+     * @param address  Destination address of the message.
+     */
+    final record HashAddress(String hash, String address) implements MonitoredMessage {
+      @JsonProperty("type")
+      public String type() {
+        return "HashAddress";
+      }
+    }
   }
 
   /**
@@ -190,6 +330,23 @@ public final class Processing {
    * @param sendEvents  Flag for requesting events sending
    */
   public static final record ParamsOfSendMessage(String message, Abi.ABI abi, Boolean sendEvents) {
+  }
+
+  public enum MonitorFetchWaitMode {
+    AtLeastOne,
+
+    All,
+
+    NoWait
+  }
+
+  /**
+   * @param hash  Hash of the transaction. Present if transaction was included into the blocks. When then transaction was emulated this field will be missing.
+   * @param aborted  Aborted field of the transaction.
+   * @param compute  Optional information about the compute phase of the transaction.
+   */
+  public static final record MessageMonitoringTransaction(String hash, Boolean aborted,
+      Processing.MessageMonitoringTransactionCompute compute) {
   }
 
   public sealed interface ProcessingEvent {
@@ -361,11 +518,53 @@ public final class Processing {
   }
 
   /**
+   * @param boc  BOC of the message, that must be sent to the blockchain.
+   * @param waitUntil  Expiration time of the message. Must be specified as a UNIX timestamp in seconds.
+   * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
+   */
+  public static final record MessageSendingParams(String boc, Integer waitUntil,
+      Map<String, Object> userData) {
+  }
+
+  /**
+   * @param queue  Name of the monitoring queue.
+   */
+  public static final record ParamsOfCancelMonitor(String queue) {
+  }
+
+  /**
+   * @param exitCode  Compute phase exit code.
+   */
+  public static final record MessageMonitoringTransactionCompute(Integer exitCode) {
+  }
+
+  public enum MessageMonitoringStatus {
+    Finalized,
+
+    Timeout,
+
+    Reserved
+  }
+
+  /**
    * @param messageEncodeParams  Message encode parameters.
    * @param sendEvents  Flag for requesting events sending
    */
   public static final record ParamsOfProcessMessage(Abi.ParamsOfEncodeMessage messageEncodeParams,
       Boolean sendEvents) {
+  }
+
+  /**
+   * @param hash  Hash of the message.
+   * @param status  Processing status.
+   * @param transaction  In case of `Finalized` the transaction is extracted from the block. In case of `Timeout` the transaction is emulated using the last known account state.
+   * @param error  In case of `Timeout` contains possible error reason.
+   * @param userData  User defined data related to this message. This is the same value as passed before with `MessageMonitoringParams` or `SendMessageParams`.
+   */
+  public static final record MessageMonitoringResult(String hash,
+      Processing.MessageMonitoringStatus status,
+      Processing.MessageMonitoringTransaction transaction, String error,
+      Map<String, Object> userData) {
   }
 
   public enum ProcessingErrorCode {
@@ -411,5 +610,28 @@ public final class Processing {
     public Integer value() {
       return this.value;
     }
+  }
+
+  /**
+   * @param queue  Name of the monitoring queue.
+   * @param waitMode Default is `NO_WAIT`. Wait mode.
+   */
+  public static final record ParamsOfFetchNextMonitorResults(String queue,
+      Processing.MonitorFetchWaitMode waitMode) {
+  }
+
+  /**
+   * @param message  Monitored message identification. Can be provided as a message's BOC or (hash, address) pair. BOC is a preferable way because it helps to determine possible error reason (using TVM execution of the message).
+   * @param waitUntil  Block time Must be specified as a UNIX timestamp in seconds
+   * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
+   */
+  public static final record MessageMonitoringParams(Processing.MonitoredMessage message,
+      Integer waitUntil, Map<String, Object> userData) {
+  }
+
+  /**
+   * @param messages  Messages that was sent to the blockchain for execution.
+   */
+  public static final record ResultOfSendMessages(Processing.MessageMonitoringParams[] messages) {
   }
 }

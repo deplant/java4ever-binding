@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Client {
   /**
@@ -201,7 +201,8 @@ public final class Client {
    * Default is `HTTP`. Queries protocol.
    * @param firstRempStatusTimeout First REMP status awaiting timeout. If no status received during the timeout than fallback transaction scenario is activated.
    *
-   * Must be specified in milliseconds. Default is 1000 (1 sec). UNSTABLE.
+   * Must be specified in milliseconds. Default is 1 (1 ms) in order to start fallback scenario
+   * together with REMP statuses processing while REMP is not properly tuned yet. UNSTABLE.
    * @param nextRempStatusTimeout Subsequent REMP status awaiting timeout. If no status received during the timeout than fallback transaction scenario is activated.
    *
    * Must be specified in milliseconds. Default is 5000 (5 sec). UNSTABLE.

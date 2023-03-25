@@ -10,7 +10,7 @@ import java.util.Map;
  * Contains methods of "proofs" module of EVER-SDK API
  *
  * [UNSTABLE](UNSTABLE.md) Module for proving data, retrieved from TONOS API. 
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Proofs {
   /**

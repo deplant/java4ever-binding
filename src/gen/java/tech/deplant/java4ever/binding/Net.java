@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Net {
   /**
@@ -924,7 +924,9 @@ public final class Net {
 
     QueryTransactionTreeTimeout(616),
 
-    GraphqlConnectionError(617);
+    GraphqlConnectionError(617),
+
+    WrongWebscoketProtocolSequence(618);
 
     private final Integer value;
 

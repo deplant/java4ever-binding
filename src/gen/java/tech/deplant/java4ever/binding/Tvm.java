@@ -14,7 +14,7 @@ import java.util.Map;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.41.0
+ * @version 1.42.1
  */
 public final class Tvm {
   /**
