@@ -177,11 +177,11 @@ public record Context(int id, ObjectMapper mapper, long timeout, AtomicInteger r
 			}
 		} catch (InterruptedException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "EVER-SDK call interrupted! " + functionName + ":" + params + e.getCause() + " " + e.getMessage() + " " + e);
+			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: INTERRUPTED! " + params + e.getCause() + " " + e.getMessage() + " " + e);
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
 		} catch (TimeoutException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "EVER-SDK Execution expired on Timeout! Current timeout: " + timeout() + " Message: " +
+			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: TIMEOUT! LIMIT: " + timeout() + " Message: " +
 			                 e.getMessage());
 			throw new EverSdkException(new EverSdkException.ErrorResult(-402,
 			                                                            "EVER-SDK Execution expired on Timeout! Current timeout: " +

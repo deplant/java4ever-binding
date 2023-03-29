@@ -86,7 +86,8 @@ public class EverSdkException extends Exception {
 	                              String shardBlockId,
 	                              String waitingExpirationTime,
 	                              String blockTime,
-	                              ErrorResult localError) {
+	                              ErrorResult localError,
+	                              Integer resultCode) {
 	}
 
 	public record ErrorResult(int code, String message, ErrorResultData data) {
