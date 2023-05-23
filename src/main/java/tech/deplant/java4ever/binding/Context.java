@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
  * is identified by id number. Holds last request id and functions to
  * call SDK methods.
  */
-public record Context(int id, ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
+public record Context(int id, @JsonIgnore ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
 
 	private final static System.Logger logger = System.getLogger(Context.class.getName());
 

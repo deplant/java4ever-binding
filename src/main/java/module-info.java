@@ -17,5 +17,4 @@ module java4ever.binding {
 	opens tech.deplant.java4ever.binding.generator to com.fasterxml.jackson.databind;
 	opens tech.deplant.java4ever.binding.generator.reference to com.fasterxml.jackson.databind;
 	opens tech.deplant.java4ever.binding.generator.jtype to com.fasterxml.jackson.databind;
-	//exports tech.deplant.java4ever.binding.tst;
 }

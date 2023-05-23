@@ -38,7 +38,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.6.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.7.0'
 }
 ```
 
@@ -49,7 +49,7 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
 </dependency>
 ```
 

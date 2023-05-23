@@ -1,3 +1,8 @@
+### 1.7.0
+
+- Fixes to SDK error parsing
+- Fixes to Context serialization
+
 ### 1.6.0
 
 - Updated EVER-SDK -> 1.42

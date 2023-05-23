@@ -5,20 +5,9 @@ plugins {
 }
 
 // Global variables for all modules
-ext {
-    // dependencies
-    slf4jVersion = "2.0.3"
-    junitVersion = "5.9.1"
-    jacksonVersion = "2.13.4.20221013"
-    // details
-    v_version = "1.6.0"
-    v_groupId = "tech.deplant.java4ever"
-    v_artifactId = "java4ever-binding"
-    v_repository = "deplant/java4ever-binding"
-    v_developerId = "cassandrus"
-    v_developerName = "Dima Yankin"
-    v_developerEmail = "cassandrus@protonmail.com"
-}
+//ext {
+//
+//}
 
 group v_groupId
 version v_version
@@ -111,8 +100,8 @@ publishing {
                         id = v_developerId
                         name = v_developerName
                         email = v_developerEmail
-                        organization = "deplant"
-                        organizationUrl = "https://deplant.tech"
+                        organization = v_org
+                        organizationUrl = v_url
                     }
                 }
                 scm {
