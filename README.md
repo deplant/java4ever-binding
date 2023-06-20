@@ -1,7 +1,7 @@
 # java4ever-binding
 
-[![JDK version](https://img.shields.io/badge/Java-19+-green.svg)](https://shields.io/)
-[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.42.1-orange)](https://github.com/tonlabs/ever-sdk)
+[![JDK version](https://img.shields.io/badge/Java-19-green.svg)](https://shields.io/)
+[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.43.2-orange)](https://github.com/tonlabs/ever-sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
 * Discuss in
@@ -28,7 +28,7 @@ together with this binding.
 
 #### Prerequisites
 
-* Install **JDK 19** or higher ([link](https://adoptium.net/temurin/releases?version=19))
+* Install **JDK 19** ([link](https://adoptium.net/temurin/releases?version=19))
 * Build **EVER-SDK** binary lib "**ton_client**"(.so/.dll) (or
   get [precompiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
 
@@ -38,7 +38,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.7.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:1.8.0'
 }
 ```
 
@@ -49,7 +49,7 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
 </dependency>
 ```
 

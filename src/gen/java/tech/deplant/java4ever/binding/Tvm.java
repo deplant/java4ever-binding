@@ -14,7 +14,7 @@ import java.util.Map;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.42.1
+ * @version 1.43.2
  */
 public final class Tvm {
   /**
@@ -213,7 +213,9 @@ public final class Tvm {
 
     InvalidMessageType(413),
 
-    ContractExecutionError(414);
+    ContractExecutionError(414),
+
+    AccountIsSuspended(415);
 
     private final Integer value;
 

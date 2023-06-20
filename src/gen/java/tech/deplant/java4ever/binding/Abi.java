@@ -15,7 +15,7 @@ import java.util.Map;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.42.1
+ * @version 1.43.2
  */
 public final class Abi {
   /**
@@ -730,7 +730,8 @@ public final class Abi {
    * The actual set of header fields depends on the contract's ABI.
    * If a contract's ABI does not include some headers, then they are not filled. The ABI function header.
    *
-   * @param expire  Message expiration time in seconds. If not specified - calculated automatically from message_expiration_timeout(), try_index and message_expiration_timeout_grow_factor() (if ABI includes `expire` header).
+   * @param expire If not specified - calculated automatically from message_expiration_timeout(),
+   * try_index and message_expiration_timeout_grow_factor() (if ABI includes `expire` header). Message expiration timestamp (UNIX time) in seconds.
    * @param time If not specified, `now` is used (if ABI includes `time` header). Message creation time in milliseconds.
    * @param pubkey Encoded in `hex`. If not specified, method fails with exception (if ABI includes `pubkey` header).. Public key is used by the contract to check the signature.
    */
@@ -849,7 +850,9 @@ public final class Abi {
   }
 
   /**
-   * @param tvc  Content of TVC file encoded in `base64`.
+   * @param tvc  Content of TVC file encoded in `base64`. For compatibility reason this field can contain an encoded  `StateInit`.
+   * @param code  Contract code BOC encoded with base64.
+   * @param stateInit  State init BOC encoded with base64.
    * @param workchainId Default is `0`. Target workchain for destination address.
    * @param initialData  List of initial values for contract's public variables.
    * @param initialPubkey Public key resolving priority:
@@ -857,8 +860,8 @@ public final class Abi {
    * 2. Public key, specified in TVM file.
    * 3. Public key, provided by Signer. Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
-  public static final record DeploySet(String tvc, Integer workchainId,
-      Map<String, Object> initialData, String initialPubkey) {
+  public static final record DeploySet(String tvc, String code, String stateInit,
+      Integer workchainId, Map<String, Object> initialData, String initialPubkey) {
   }
 
   /**

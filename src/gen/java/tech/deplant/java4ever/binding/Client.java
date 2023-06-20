@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.42.1
+ * @version 1.43.2
  */
 public final class Client {
   /**
@@ -143,8 +143,8 @@ public final class Client {
 
   /**
    * @param workchain  Workchain id that is used by default in DeploySet
-   * @param messageExpirationTimeout  Message lifetime for contracts which ABI includes "expire" header. The default value is 40 sec.
-   * @param messageExpirationTimeoutGrowFactor  Factor that increases the expiration timeout for each retry The default value is 1.5
+   * @param messageExpirationTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Message lifetime for contracts which ABI includes "expire" header.
+   * @param messageExpirationTimeoutGrowFactor Default is 1.5 Factor that increases the expiration timeout for each retry
    */
   public static final record AbiConfig(Integer workchain, Integer messageExpirationTimeout,
       Integer messageExpirationTimeoutGrowFactor) {
@@ -175,17 +175,14 @@ public final class Client {
   /**
    * @param serverAddress  **This field is deprecated, but left for backward-compatibility.** Evernode endpoint.
    * @param endpoints Any correct URL format can be specified, including IP addresses. This parameter is prevailing over `server_address`.
-   * Check the full list of [supported network endpoints](https://docs.everos.dev/ever-sdk/reference/ever-os-api/networks). List of Evernode endpoints.
+   * Check the full list of [supported network endpoints](https://docs.evercloud.dev/products/evercloud/networks-endpoints). List of Evernode endpoints.
    * @param networkRetriesCount You must use `network.max_reconnect_timeout` that allows to specify maximum network resolving timeout. Deprecated.
    * @param maxReconnectTimeout Must be specified in milliseconds. Default is 120000 (2 min). Maximum time for sequential reconnections.
    * @param reconnectTimeout  Deprecated
    * @param messageRetriesCount Default is 5. The number of automatic message processing retries that SDK performs in case of `Message Expired (507)` error - but only for those messages which local emulation was successful or failed with replay protection error.
    * @param messageProcessingTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Timeout that is used to process message delivery for the contracts which ABI does not include "expire" header. If the message is not delivered within the specified timeout the appropriate error occurs.
    * @param waitForTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Maximum timeout that is used for query response.
-   * @param outOfSyncThreshold If client's device time is out of sync and difference is more than the threshold then error will occur. Also an error will occur if the specified threshold is more than
-   * `message_processing_timeout/2`.
-   *
-   * Must be specified in milliseconds. Default is 15000 (15 sec). Maximum time difference between server and client.
+   * @param outOfSyncThreshold  **DEPRECATED**: This parameter was deprecated.
    * @param sendingEndpointCount Default is 1. Maximum number of randomly chosen endpoints the library uses to broadcast a message.
    * @param latencyDetectionInterval Library periodically checks the current endpoint for blockchain data synchronization latency.
    * If the latency (time-lag) is less then `NetworkConfig.max_latency`
