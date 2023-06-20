@@ -13,9 +13,18 @@ import java.util.Map;
  * Contains methods of "boc" module of EVER-SDK API
  *
  * BOC manipulation module. 
- * @version 1.42.1
+ * @version 1.43.2
  */
 public final class Boc {
+  /**
+   *  Decodes tvc according to the tvc spec. Read more about tvc structure here https://github.com/tonlabs/ever-struct/blob/main/src/scheme/mod.rs#L30
+   *
+   * @param tvc  Contract TVC BOC encoded as base64 or BOC handle
+   */
+  public static Boc.ResultOfDecodeTvc decodeTvc(Context ctx, String tvc) throws EverSdkException {
+    return ctx.call("boc.decode_tvc", new Boc.ParamsOfDecodeTvc(tvc), Boc.ResultOfDecodeTvc.class);
+  }
+
   /**
    * JSON structure is compatible with GraphQL API message object Parses message boc into a JSON
    *
@@ -170,18 +179,18 @@ public final class Boc {
   }
 
   /**
-   *  Decodes tvc into code, data, libraries and special options.
+   *  Decodes contract's initial state into code, data, libraries and special options.
    *
-   * @param tvc  Contract TVC image BOC encoded as base64 or BOC handle
+   * @param stateInit  Contract StateInit image BOC encoded as base64 or BOC handle
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfDecodeTvc decodeTvc(Context ctx, String tvc, Boc.BocCacheType bocCache)
-      throws EverSdkException {
-    return ctx.call("boc.decode_tvc", new Boc.ParamsOfDecodeTvc(tvc, bocCache), Boc.ResultOfDecodeTvc.class);
+  public static Boc.ResultOfDecodeStateInit decodeStateInit(Context ctx, String stateInit,
+      Boc.BocCacheType bocCache) throws EverSdkException {
+    return ctx.call("boc.decode_state_init", new Boc.ParamsOfDecodeStateInit(stateInit, bocCache), Boc.ResultOfDecodeStateInit.class);
   }
 
   /**
-   *  Encodes tvc from code, data, libraries ans special options (see input params)
+   *  Encodes initial contract state from code, data, libraries ans special options (see input params)
    *
    * @param code  Contract code BOC encoded as base64 or BOC handle
    * @param data  Contract data BOC encoded as base64 or BOC handle
@@ -191,10 +200,10 @@ public final class Boc {
    * @param splitDepth  Is present and non-zero only in instances of large smart contracts
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfEncodeTvc encodeTvc(Context ctx, String code, String data,
+  public static Boc.ResultOfEncodeStateInit encodeStateInit(Context ctx, String code, String data,
       String library, Boolean tick, Boolean tock, Integer splitDepth, Boc.BocCacheType bocCache)
       throws EverSdkException {
-    return ctx.call("boc.encode_tvc", new Boc.ParamsOfEncodeTvc(code, data, library, tick, tock, splitDepth, bocCache), Boc.ResultOfEncodeTvc.class);
+    return ctx.call("boc.encode_state_init", new Boc.ParamsOfEncodeStateInit(code, data, library, tick, tock, splitDepth, bocCache), Boc.ResultOfEncodeStateInit.class);
   }
 
   /**
@@ -249,10 +258,9 @@ public final class Boc {
   }
 
   /**
-   * @param tvc  Contract TVC image BOC encoded as base64 or BOC handle
-   * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
+   * @param tvc  Contract TVC BOC encoded as base64 or BOC handle
    */
-  public static final record ParamsOfDecodeTvc(String tvc, Boc.BocCacheType bocCache) {
+  public static final record ParamsOfDecodeTvc(String tvc) {
   }
 
   /**
@@ -267,19 +275,6 @@ public final class Boc {
    * @param cacheType  Cache type
    */
   public static final record ParamsOfBocCacheSet(String boc, Boc.BocCacheType cacheType) {
-  }
-
-  /**
-   * @param code  Contract code BOC encoded as base64 or BOC handle
-   * @param data  Contract data BOC encoded as base64 or BOC handle
-   * @param library  Contract library BOC encoded as base64 or BOC handle
-   * @param tick Specifies the contract ability to handle tick transactions `special.tick` field.
-   * @param tock Specifies the contract ability to handle tock transactions `special.tock` field.
-   * @param splitDepth  Is present and non-zero only in instances of large smart contracts
-   * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
-   */
-  public static final record ParamsOfEncodeTvc(String code, String data, String library,
-      Boolean tick, Boolean tock, Integer splitDepth, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -353,6 +348,19 @@ public final class Boc {
   }
 
   /**
+   * @param code  Contract code BOC encoded as base64 or BOC handle
+   * @param data  Contract data BOC encoded as base64 or BOC handle
+   * @param library  Contract library BOC encoded as base64 or BOC handle
+   * @param tick Specifies the contract ability to handle tick transactions `special.tick` field.
+   * @param tock Specifies the contract ability to handle tock transactions `special.tock` field.
+   * @param splitDepth  Is present and non-zero only in instances of large smart contracts
+   * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
+   */
+  public static final record ParamsOfEncodeStateInit(String code, String data, String library,
+      Boolean tick, Boolean tock, Integer splitDepth, Boc.BocCacheType bocCache) {
+  }
+
+  /**
    * @param boc  BOC encoded as base64 or BOC handle
    */
   public static final record ParamsOfGetBocHash(String boc) {
@@ -362,6 +370,15 @@ public final class Boc {
    * @param blockBoc  Key block BOC or zerostate BOC encoded as base64
    */
   public static final record ParamsOfGetBlockchainConfig(String blockBoc) {
+  }
+
+  public sealed interface Tvc {
+    final record V1(Boc.TvcV1 value) implements Tvc {
+      @JsonProperty("type")
+      public String type() {
+        return "V1";
+      }
+    }
   }
 
   /**
@@ -391,6 +408,18 @@ public final class Boc {
   }
 
   /**
+   * @param tvc  Decoded TVC
+   */
+  public static final record ResultOfDecodeTvc(Boc.Tvc tvc) {
+  }
+
+  /**
+   * @param code BOC encoded as base64 or BOC handle Contract code with salt set.
+   */
+  public static final record ResultOfSetCodeSalt(String code) {
+  }
+
+  /**
    * @param code  Contract code BOC encoded as base64 or BOC handle
    * @param codeHash  Contract code hash
    * @param codeDepth  Contract code depth
@@ -403,27 +432,25 @@ public final class Boc {
    * @param splitDepth  Is present and non-zero only in instances of large smart contracts
    * @param compilerVersion  Compiler version, for example 'sol 0.49.0'
    */
-  public static final record ResultOfDecodeTvc(String code, String codeHash, Integer codeDepth,
-      String data, String dataHash, Integer dataDepth, String library, Boolean tick, Boolean tock,
-      Integer splitDepth, String compilerVersion) {
-  }
-
-  /**
-   * @param tvc  Contract TVC image BOC encoded as base64 or BOC handle of boc_cache parameter was specified
-   */
-  public static final record ResultOfEncodeTvc(String tvc) {
-  }
-
-  /**
-   * @param code BOC encoded as base64 or BOC handle Contract code with salt set.
-   */
-  public static final record ResultOfSetCodeSalt(String code) {
+  public static final record ResultOfDecodeStateInit(String code, String codeHash,
+      Integer codeDepth, String data, String dataHash, Integer dataDepth, String library,
+      Boolean tick, Boolean tock, Integer splitDepth, String compilerVersion) {
   }
 
   /**
    * @param parsed  JSON containing parsed BOC
    */
   public static final record ResultOfParse(Map<String, Object> parsed) {
+  }
+
+  public static final record TvcV1(String code, String description) {
+  }
+
+  /**
+   * @param stateInit  Contract StateInit image BOC encoded as base64 or BOC handle
+   * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
+   */
+  public static final record ParamsOfDecodeStateInit(String stateInit, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -455,6 +482,12 @@ public final class Boc {
    * @param version  Compiler version, for example 'sol 0.49.0'
    */
   public static final record ResultOfGetCompilerVersion(String version) {
+  }
+
+  /**
+   * @param stateInit  Contract StateInit image BOC encoded as base64 or BOC handle of boc_cache parameter was specified
+   */
+  public static final record ResultOfEncodeStateInit(String stateInit) {
   }
 
   /**

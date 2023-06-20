@@ -12,7 +12,7 @@ import java.lang.String;
  * Contains methods of "debot" module of EVER-SDK API
  *
  * [UNSTABLE](UNSTABLE.md) Module for working with debot. 
- * @version 1.42.1
+ * @version 1.43.2
  */
 public final class Debot {
   /**

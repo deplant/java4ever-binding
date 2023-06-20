@@ -34,7 +34,6 @@ public class AsyncTests {
 		var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever","1.5.0"),defaults.network(),defaults.crypto(),defaults.abi(),defaults.boc(),defaults.proofs(),
 		                                           defaults.localStoragePath());
 		System.out.println(ContextBuilder.DEFAULT_MAPPER.writeValueAsString(mergedConfig));
-
 	}
 
 //    @Test
