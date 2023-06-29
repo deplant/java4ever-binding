@@ -1,5 +1,10 @@
 ### 1.8.0
 
+- Support of EVER-SDK 1.43.3
+- Helper for LibraryLoader construction
+
+### 1.8.0
+
 - Support of EVER-SDK 1.43.2
 
 ### 1.7.0

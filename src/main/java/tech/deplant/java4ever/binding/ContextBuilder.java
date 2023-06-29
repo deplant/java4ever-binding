@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
+import tech.deplant.java4ever.binding.loader.DefaultLoader;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -89,6 +90,17 @@ public class ContextBuilder {
 		                   0,
 		                   this.timeout,
 		                   this.jsonMapper);
+	}
+
+	/**
+	 * Terminal builder method to create new Context. Uses default loader with EVER-SDK for autodetected
+	 * OS & processor arch.
+	 *
+	 * @return Context object that can be used in calls to EVER-SDK, ton_client library is loaded and called in the process
+	 * @throws JsonProcessingException
+	 */
+	public Context buildNew() throws JsonProcessingException {
+		return buildNew(new DefaultLoader(this.getClass().getClassLoader()));
 	}
 
 	public record ResultOfCreateContext(Integer result, String error) {

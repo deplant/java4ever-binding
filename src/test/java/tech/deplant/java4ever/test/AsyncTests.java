@@ -22,7 +22,8 @@ public class AsyncTests {
 		var configJson = "{\"network\":{\"endpoints\":[\"" + endpoint + "\"]}}";
 		var ctx = new ContextBuilder()
 				.setConfigJson(configJson)
-				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
+				.buildNew();
+		Client.version(ctx);
 		//assertEquals(Client.config(ctx).network().endpoints()[0], endpoint);
 	}
 
