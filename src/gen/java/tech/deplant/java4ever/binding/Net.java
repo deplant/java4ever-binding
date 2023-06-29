@@ -13,7 +13,7 @@ import java.util.Map;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.43.2
+ * @version 1.43.3
  */
 public final class Net {
   /**

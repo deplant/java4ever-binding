@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Execution(ExecutionMode.CONCURRENT)
 public class GeneratorTests {
 
-
 	private final static System.Logger logger = System.getLogger(GeneratorTests.class.getName());
 
 	@Test

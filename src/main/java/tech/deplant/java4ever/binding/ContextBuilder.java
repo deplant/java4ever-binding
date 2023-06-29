@@ -100,7 +100,7 @@ public class ContextBuilder {
 	 * @throws JsonProcessingException
 	 */
 	public Context buildNew() throws JsonProcessingException {
-		return buildNew(new DefaultLoader());
+		return buildNew(new DefaultLoader(this.getClass().getClassLoader()));
 	}
 
 	public record ResultOfCreateContext(Integer result, String error) {

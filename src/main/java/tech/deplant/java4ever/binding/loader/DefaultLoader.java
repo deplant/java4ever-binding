@@ -7,10 +7,36 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static java.lang.System.Logger.Level.DEBUG;
 
 public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
+
+	private final static System.Logger logger = System.getLogger(DefaultLoader.class.getName());
+
+	public static String resourceToAbsolute(ClassLoader loader, String resourcePath) throws IOException {
+		URL url = loader.getResource(resourcePath);
+
+		File lib = null;
+		if (url.getProtocol().toLowerCase().equals("file")) {
+			try {
+				lib = new File(new URI(url.toString()));
+			} catch (URISyntaxException e) {
+				lib = new File(url.getPath());
+			}
+			logger.log(DEBUG, "Looking in {0}", lib.getAbsolutePath());
+			if (!lib.exists()) {
+				throw new IOException("File URL " + url + " could not be properly decoded");
+			}
+		}
+		return lib.getAbsolutePath();
+	}
+
 	public void loadJarDll(String name) {
-		InputStream in = loader().getResourceAsStream(name);
+		InputStream in = getClass().getResourceAsStream(name);
 		byte[] buffer = new byte[1024];
 		int read = -1;
 		File temp = null;
