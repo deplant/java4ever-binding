@@ -1,5 +1,6 @@
 - Support of EVER-SDK 1.43.3
 - Helper for LibraryLoader construction
+- Added DefaultLoader choice. It uses EVER-SDK that is included in the distribution.
 
 ### 1.8.0
 
