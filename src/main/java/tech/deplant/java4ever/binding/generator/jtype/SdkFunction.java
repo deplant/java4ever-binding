@@ -82,7 +82,7 @@ public record SdkFunction(String functionModule,
 		String templateString = "%RETURN_KEY%ctx.%CALL_TYPE%($S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
 
 		for (ApiType param : function().params()) {
-			logger.log(System.Logger.Level.DEBUG, function().name() + "\\" + param.name() + "\\" + param.type());
+			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
 			SdkParam parsedParam = SdkParam.ofApiType(param, typeLibrary());
 			switch (param.name()) {
 				case "context", "_context" -> {
@@ -98,7 +98,7 @@ public record SdkFunction(String functionModule,
 					templateString = templateString.replace("%CALL_TYPE%", "callAppObject");
 					methodBuilder.addParameter(ClassName.get(AppSigningBox.class), "appObject");
 				}
-				case default -> logger.log(System.Logger.Level.ERROR, "Unknown parameter: " + param.name());
+				case default -> logger.log(System.Logger.Level.WARNING,  () -> "Unknown parameter: " + param.name());
 			}
 		}
 
@@ -124,8 +124,9 @@ public record SdkFunction(String functionModule,
 		templateString = templateString.replace("%CALL_TYPE%", "callVoid");
 		templateString = templateString.replace("%RETURN_CLASS%", "");
 
-		logger.log(System.Logger.Level.DEBUG, "Template: " + templateString);
-		statementArgs.forEach(arg -> logger.log(System.Logger.Level.DEBUG, "Arg[]: " + arg.toString()));
+		final String finalTemplateString = templateString;
+		logger.log(System.Logger.Level.TRACE, () -> "Template: " + finalTemplateString);
+		statementArgs.forEach(arg -> logger.log(System.Logger.Level.TRACE,  () -> "Arg[]: " + arg.toString()));
 
 		methodBuilder.addCode(CodeBlock
 				                      .builder()

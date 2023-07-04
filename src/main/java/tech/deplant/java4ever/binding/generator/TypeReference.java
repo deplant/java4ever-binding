@@ -33,7 +33,7 @@ public record TypeReference(String module,
 		final TypeReference typeReference = switch (apiType) {
 			case GenericType gen -> {
 				if ("AppObject".equals(gen.generic_name())) {
-					logger.log(System.Logger.Level.WARNING,
+					logger.log(System.Logger.Level.WARNING, () ->
 					           "AppObject! : " + ref + " generic: " + gen);
 				}
 				yield referenceRecursion(ref.withIsGeneric(true), gen.generic_args()[0]);
@@ -65,8 +65,8 @@ public record TypeReference(String module,
 		    typeReference.name().length() > 0) {
 			String[] splittedName = typeReference.name().split("\\.");
 			if (splittedName.length < 2) {
-				logger.log(System.Logger.Level.ERROR,
-				           "Type reference without 'module.type' notation! " + typeReference);
+				logger.log(System.Logger.Level.ERROR, () ->
+						"Type reference without 'module.type' notation! " + typeReference);
 				return typeReference;
 			}
 			// special case for Abi interface that messes with module name
@@ -112,8 +112,8 @@ public record TypeReference(String module,
 		if (isRef()) {
 			typeName = switch (name()) {
 				case "Request" -> {
-					logger.log(System.Logger.Level.WARNING,
-					           "Callback!");
+					logger.log(System.Logger.Level.WARNING,  () ->
+							"Callback!");
 					yield ClassName.get(SubscribeEvent.class);
 				}
 				default -> ClassName.bestGuess(module() + "." + name());

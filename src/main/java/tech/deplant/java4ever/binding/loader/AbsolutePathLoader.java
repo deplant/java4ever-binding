@@ -25,7 +25,7 @@ public record AbsolutePathLoader(Path filepath) implements LibraryLoader {
 	public static AbsolutePathLoader ofSystemEnv(String envName) {
 		String path = System.getenv(envName);
 		logger.log(System.Logger.Level.TRACE,
-		           () -> "Path from ENV: " + path);
+		           () -> "Path from ENV: %s".formatted(path));
 		return new AbsolutePathLoader(path);
 	}
 

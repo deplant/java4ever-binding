@@ -30,9 +30,6 @@ dependencies {
     // RUNTIME **************************
     api "tech.deplant.java4ever:java4ever-utils:$v_version" // java4ever-utils
 
-    // SLF4J Implementation of System.Logger (JEP 264: Platform Logging API and Service)
-    implementation "org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion"
-
     // JSON
     api platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion")
     api "com.fasterxml.jackson.core:jackson-databind"
@@ -47,6 +44,7 @@ dependencies {
 
 
     // SLF4J (Tests part)
+    testImplementation "org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion"     // SLF4J Implementation of System.Logger (JEP 264: Platform Logging API and Service)
     testImplementation "org.slf4j:slf4j-simple:$slf4jVersion"
     // JUnit 5
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"

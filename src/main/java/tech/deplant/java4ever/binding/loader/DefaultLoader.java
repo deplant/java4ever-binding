@@ -1,6 +1,5 @@
 package tech.deplant.java4ever.binding.loader;
 
-import tech.deplant.java4ever.utils.Fls;
 import tech.deplant.java4ever.utils.SystemContext;
 
 import java.io.File;
@@ -27,7 +26,8 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 			} catch (URISyntaxException e) {
 				lib = new File(url.getPath());
 			}
-			logger.log(DEBUG, "Looking in {0}", lib.getAbsolutePath());
+			final File finalLib = lib;
+			logger.log(DEBUG, () -> "Looking in %s".formatted(finalLib.getAbsolutePath()));
 			if (!lib.exists()) {
 				throw new IOException("File URL " + url + " could not be properly decoded");
 			}
@@ -36,11 +36,17 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 	}
 
 	public void loadJarDll(String name) {
-		InputStream in = getClass().getResourceAsStream(name);
-		byte[] buffer = new byte[1024];
-		int read = -1;
-		File temp = null;
 		try {
+//			Module module = ModuleLayer.boot()
+//			                           .findModule("java4ever.binding")
+//			                           // Optional<Module> at this point
+//			                           .orElseThrow();
+			//InputStream in = module.getResourceAsStream(name);
+			InputStream in = this.loader().getResourceAsStream(name);
+			//InputStream in = this.getClass().getResourceAsStream(name);
+			byte[] buffer = new byte[1024];
+			int read = -1;
+			File temp = null;
 			temp = File.createTempFile(name, "");
 			FileOutputStream fos = new FileOutputStream(temp);
 
@@ -63,13 +69,13 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 			loadJarDll("sdk/win32_x86_64/ton_client.dll");
 		} else if (SystemContext.OS().equals(SystemContext.OperatingSystem.LINUX) &&
 		           SystemContext.PROCESSOR().equals(SystemContext.ProcessorArchitecture.X86_64)) {
-			loadJarDll(Fls.resourceToAbsolute(DefaultLoader.class, "sdk/linux_x86_64/libton_client.so"));
+			loadJarDll("sdk/linux_x86_64/libton_client.so");
 		} else if (SystemContext.OS().equals(SystemContext.OperatingSystem.MAC) &&
 		           SystemContext.PROCESSOR().equals(SystemContext.ProcessorArchitecture.X86_64)) {
-			loadJarDll(Fls.resourceToAbsolute(DefaultLoader.class, "sdk/macos_x86_64/libton_client.dylib"));
+			loadJarDll("sdk/macos_x86_64/libton_client.dylib");
 		} else if (SystemContext.OS().equals(SystemContext.OperatingSystem.MAC) &&
 		           SystemContext.PROCESSOR().equals(SystemContext.ProcessorArchitecture.ARM_64)) {
-			loadJarDll(Fls.resourceToAbsolute(DefaultLoader.class, "sdk/macos_aarch64/libton_client.dylib"));
+			loadJarDll("sdk/macos_aarch64/libton_client.dylib");
 		} else {
 			throw new RuntimeException("Unsupported architecture, use other loaders for your custom EVER-SDK library!");
 		}

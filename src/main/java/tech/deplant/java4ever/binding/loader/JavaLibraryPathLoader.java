@@ -9,7 +9,7 @@ public record JavaLibraryPathLoader(String libraryName) implements LibraryLoader
 	public void load() {
 		System.loadLibrary(this.libraryName);
 		logger.log(System.Logger.Level.TRACE,
-		           () -> "Library loaded: " + this.libraryName + " on path: " +
-		                 System.getProperty("java.library.path"));
+		           () -> "Library loaded: %s on path: %s".formatted(this.libraryName,
+		                                                            System.getProperty("java.library.path")));
 	}
 }
