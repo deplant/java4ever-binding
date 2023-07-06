@@ -41,12 +41,7 @@ public class GeneratorTests {
 		var apiReference = ParserEngine.ofEverSdkLibrary(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
 	}
 
-	@Test
-	public void generate_api_from_json() throws IOException, EverSdkException {
-		//var apiReference = ParserEngine.ofEverSdkLibrary(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
-		var apiReference = ParserEngine.ofJsonResource("api.json");
-		ParserEngine.parse(apiReference);
-	}
+
 
 	@Test
 	public void process_links() {

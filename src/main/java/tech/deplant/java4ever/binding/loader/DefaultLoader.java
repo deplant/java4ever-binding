@@ -66,7 +66,7 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 	public void load() {
 		if (SystemContext.OS().equals(SystemContext.OperatingSystem.WINDOWS) &&
 		    SystemContext.PROCESSOR().equals(SystemContext.ProcessorArchitecture.X86_64)) {
-			loadJarDll("sdk/win32_x86_64/ton_client.dll");
+			loadJarDll("sdk/win_x86_64/ton_client.dll");
 		} else if (SystemContext.OS().equals(SystemContext.OperatingSystem.LINUX) &&
 		           SystemContext.PROCESSOR().equals(SystemContext.ProcessorArchitecture.X86_64)) {
 			loadJarDll("sdk/linux_x86_64/libton_client.so");

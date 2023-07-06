@@ -140,6 +140,22 @@ test {
 
 }
 
+task generateEverSdkApi(type: JavaExec) {
+    group = "Execution"
+    description = "Generates Java Bindings for EVER-SDK"
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "tech.deplant.java4ever.eversdkgen.EverSdkGenerator"
+}
+
+task generateFfiBridge {
+    description = "Generates FFI Bridge to ton_client lib with jextract utility"
+    exec {
+        workingDir "${projectDir}"
+        executable jextractPath
+        args "--source", "${projectDir}/jextract/ton_client/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.ffi", "--header-class-name", "ton_client"
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += "--enable-preview"
 }
