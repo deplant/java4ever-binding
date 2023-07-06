@@ -37,13 +37,5 @@ public class AsyncTests {
 		System.out.println(ContextBuilder.DEFAULT_MAPPER.writeValueAsString(mergedConfig));
 	}
 
-//    @Test
-//    public void testGo2() throws com.fasterxml.jackson.core.JsonProcessingException {
-//        log.debug(JsonContext.MAPPER.writeValueAsString(new tech.deplant.java4ever.binding.Abi.Signer.Keys(
-//                new tech.deplant.java4ever.binding.Crypto.KeyPair("pk", "sk"))));
-//        log.debug(JsonContext.MAPPER.writeValueAsString(new tech.deplant.java4ever.binding.Abi.Signer.External(
-//                "pk")));
-//        log.debug(JsonContext.MAPPER.writeValueAsString(tech.deplant.java4ever.binding.Abi.MessageBodyType.InternalOutput));
-//    }
 
 }

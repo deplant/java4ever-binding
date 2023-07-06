@@ -2,12 +2,22 @@
 
 package tech.deplant.java4ever.binding.ffi;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import java.lang.foreign.*;
 import static java.lang.foreign.ValueLayout.*;
+/**
+ * {@snippet :
+ * struct {
+ *     char* content;
+ *     uint32_t len;
+ * };
+ * }
+ */
 public class tc_string_data_t {
 
-    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+    static final StructLayout $struct$LAYOUT = MemoryLayout.structLayout(
         Constants$root.C_POINTER$LAYOUT.withName("content"),
         Constants$root.C_LONG$LAYOUT.withName("len"),
         MemoryLayout.paddingLayout(32)
@@ -15,30 +25,54 @@ public class tc_string_data_t {
     public static MemoryLayout $LAYOUT() {
         return tc_string_data_t.$struct$LAYOUT;
     }
-    static final VarHandle content$VH = $struct$LAYOUT.varHandle(PathElement.groupElement("content"));
+    static final VarHandle content$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("content"));
     public static VarHandle content$VH() {
         return tc_string_data_t.content$VH;
     }
-    public static MemoryAddress content$get(MemorySegment seg) {
-        return (MemoryAddress)tc_string_data_t.content$VH.get(seg);
+    /**
+     * Getter for field:
+     * {@snippet :
+     * char* content;
+     * }
+     */
+    public static MemorySegment content$get(MemorySegment seg) {
+        return (java.lang.foreign.MemorySegment)tc_string_data_t.content$VH.get(seg);
     }
-    public static void content$set( MemorySegment seg, MemoryAddress x) {
+    /**
+     * Setter for field:
+     * {@snippet :
+     * char* content;
+     * }
+     */
+    public static void content$set(MemorySegment seg, MemorySegment x) {
         tc_string_data_t.content$VH.set(seg, x);
     }
-    public static MemoryAddress content$get(MemorySegment seg, long index) {
-        return (MemoryAddress)tc_string_data_t.content$VH.get(seg.asSlice(index*sizeof()));
+    public static MemorySegment content$get(MemorySegment seg, long index) {
+        return (java.lang.foreign.MemorySegment)tc_string_data_t.content$VH.get(seg.asSlice(index*sizeof()));
     }
-    public static void content$set(MemorySegment seg, long index, MemoryAddress x) {
+    public static void content$set(MemorySegment seg, long index, MemorySegment x) {
         tc_string_data_t.content$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle len$VH = $struct$LAYOUT.varHandle(PathElement.groupElement("len"));
+    static final VarHandle len$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("len"));
     public static VarHandle len$VH() {
         return tc_string_data_t.len$VH;
     }
+    /**
+     * Getter for field:
+     * {@snippet :
+     * uint32_t len;
+     * }
+     */
     public static int len$get(MemorySegment seg) {
         return (int)tc_string_data_t.len$VH.get(seg);
     }
-    public static void len$set( MemorySegment seg, int x) {
+    /**
+     * Setter for field:
+     * {@snippet :
+     * uint32_t len;
+     * }
+     */
+    public static void len$set(MemorySegment seg, int x) {
         tc_string_data_t.len$VH.set(seg, x);
     }
     public static int len$get(MemorySegment seg, long index) {
@@ -49,10 +83,10 @@ public class tc_string_data_t {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
+    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
-    public static MemorySegment ofAddress(MemoryAddress addr, MemorySession session) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, session); }
+    public static MemorySegment ofAddress(MemorySegment addr, SegmentScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }
 
 

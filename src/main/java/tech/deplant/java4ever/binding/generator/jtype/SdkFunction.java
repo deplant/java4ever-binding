@@ -98,7 +98,7 @@ public record SdkFunction(String functionModule,
 					templateString = templateString.replace("%CALL_TYPE%", "callAppObject");
 					methodBuilder.addParameter(ClassName.get(AppSigningBox.class), "appObject");
 				}
-				case default -> logger.log(System.Logger.Level.WARNING,  () -> "Unknown parameter: " + param.name());
+				default -> logger.log(System.Logger.Level.WARNING,  () -> "Unknown parameter: " + param.name());
 			}
 		}
 

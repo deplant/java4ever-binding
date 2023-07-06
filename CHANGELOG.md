@@ -1,8 +1,12 @@
 ### 1.9.0
 
-- Included EVER-SDK libs in distribution (Use DefaultLoader choice) 
-- Support of EVER-SDK 1.43.3
+- Updated EVER-SDK -> 1.43.3
+- Updated Gradle -> 8.2
+- Updated baseline JDK -> 20
 - Helper for LibraryLoader construction
+- Included EVER-SDK libs in distribution (Use DefaultLoader choice)
+- Added generateEverSdkApi task for one-click EVER-SDK API generation
+- Added generateFfiBridge task for one-click FFI Bridge to ton_client lib generation
 
 ### 1.8.0
 

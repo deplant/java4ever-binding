@@ -119,18 +119,18 @@ signing {
 javadoc {
     options.addBooleanOption('html5', true)
     options.addBooleanOption('-enable-preview', true)
-    options.addStringOption('-release', '19')
+    options.addStringOption('-release', '20')
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 java {
-    withJavadocJar()
+    //withJavadocJar()
     withSourcesJar()
 }
 
 compileJava {
-    sourceCompatibility = JavaVersion.VERSION_19
-    targetCompatibility = JavaVersion.VERSION_19
+    sourceCompatibility = JavaVersion.VERSION_20
+    targetCompatibility = JavaVersion.VERSION_20
 }
 
 test {
@@ -141,31 +141,44 @@ test {
 }
 
 task generateEverSdkApi(type: JavaExec) {
-    group = "Execution"
+    group = "other"
     description = "Generates Java Bindings for EVER-SDK"
     classpath = sourceSets.test.runtimeClasspath
     mainClass = "tech.deplant.java4ever.eversdkgen.EverSdkGenerator"
 }
 
-task generateFfiBridge {
-    description = "Generates FFI Bridge to ton_client lib with jextract utility"
-    exec {
-        workingDir "${projectDir}"
-        executable jextractPath
-        args "--source", "${projectDir}/jextract/ton_client/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.ffi", "--header-class-name", "ton_client"
-    }
-}
+//task generateFfiBridge {
+//    group = "other"
+//    description = "Generates FFI Bridge to ton_client lib with jextract utility. Make sure to specify path to jextract executable through jextractPath property in your personal gradle.properties"
+//    def stdout = new ByteArrayOutputStream()
+//    exec {
+//        workingDir "${projectDir}"
+//        executable jextractPath
+//        standardOutput = stdout;
+//        args "--source", "${projectDir}/jextract/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client", "--library","ton_client"
+//    }
+//    stdout.toString().trim()
+//}
 
 tasks.withType(JavaCompile).configureEach {
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(20)
+    }
     options.compilerArgs += "--enable-preview"
 }
 
 tasks.withType(JavaExec).configureEach {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(20)
+    }
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
 
 tasks.withType(Test) {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(20)
+    }
     jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }

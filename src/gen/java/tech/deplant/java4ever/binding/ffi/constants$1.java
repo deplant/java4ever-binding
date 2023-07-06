@@ -3,54 +3,14 @@
 package tech.deplant.java4ever.binding.ffi;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import java.lang.foreign.*;
+import static java.lang.foreign.ValueLayout.*;
+final class constants$1 {
 
-class constants$1 {
-
-    static final FunctionDescriptor tc_response_handler_t$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_t$MH = RuntimeHelper.downcallHandle(
-        constants$1.tc_response_handler_t$FUNC
-    );
-    static final FunctionDescriptor tc_response_handler_ptr_t$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_ptr_t$MH = RuntimeHelper.downcallHandle(
-        constants$1.tc_response_handler_ptr_t$FUNC
-    );
-    static final FunctionDescriptor tc_create_context$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        )
-    );
-    static final MethodHandle tc_create_context$MH = RuntimeHelper.downcallHandle(
-        "tc_create_context",
-        constants$1.tc_create_context$FUNC
-    );
-    static final FunctionDescriptor tc_destroy_context$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT
-    );
-    static final MethodHandle tc_destroy_context$MH = RuntimeHelper.downcallHandle(
-        "tc_destroy_context",
-        constants$1.tc_destroy_context$FUNC
-    );
+    // Suppresses default constructor, ensuring non-instantiability.
+    private constants$1() {}
     static final FunctionDescriptor tc_request$FUNC = FunctionDescriptor.ofVoid(
         Constants$root.C_LONG$LAYOUT,
         MemoryLayout.structLayout(
@@ -69,6 +29,60 @@ class constants$1 {
     static final MethodHandle tc_request$MH = RuntimeHelper.downcallHandle(
         "tc_request",
         constants$1.tc_request$FUNC
+    );
+    static final FunctionDescriptor tc_request_ptr$FUNC = FunctionDescriptor.ofVoid(
+        Constants$root.C_LONG$LAYOUT,
+        MemoryLayout.structLayout(
+            Constants$root.C_POINTER$LAYOUT.withName("content"),
+            Constants$root.C_LONG$LAYOUT.withName("len"),
+            MemoryLayout.paddingLayout(32)
+        ),
+        MemoryLayout.structLayout(
+            Constants$root.C_POINTER$LAYOUT.withName("content"),
+            Constants$root.C_LONG$LAYOUT.withName("len"),
+            MemoryLayout.paddingLayout(32)
+        ),
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
+    );
+    static final MethodHandle tc_request_ptr$MH = RuntimeHelper.downcallHandle(
+        "tc_request_ptr",
+        constants$1.tc_request_ptr$FUNC
+    );
+    static final FunctionDescriptor tc_request_sync$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_LONG$LAYOUT,
+        MemoryLayout.structLayout(
+            Constants$root.C_POINTER$LAYOUT.withName("content"),
+            Constants$root.C_LONG$LAYOUT.withName("len"),
+            MemoryLayout.paddingLayout(32)
+        ),
+        MemoryLayout.structLayout(
+            Constants$root.C_POINTER$LAYOUT.withName("content"),
+            Constants$root.C_LONG$LAYOUT.withName("len"),
+            MemoryLayout.paddingLayout(32)
+        )
+    );
+    static final MethodHandle tc_request_sync$MH = RuntimeHelper.downcallHandle(
+        "tc_request_sync",
+        constants$1.tc_request_sync$FUNC
+    );
+    static final FunctionDescriptor tc_read_string$FUNC = FunctionDescriptor.of(MemoryLayout.structLayout(
+        Constants$root.C_POINTER$LAYOUT.withName("content"),
+        Constants$root.C_LONG$LAYOUT.withName("len"),
+        MemoryLayout.paddingLayout(32)
+    ),
+        Constants$root.C_POINTER$LAYOUT
+    );
+    static final MethodHandle tc_read_string$MH = RuntimeHelper.downcallHandle(
+        "tc_read_string",
+        constants$1.tc_read_string$FUNC
+    );
+    static final FunctionDescriptor tc_destroy_string$FUNC = FunctionDescriptor.ofVoid(
+        Constants$root.C_POINTER$LAYOUT
+    );
+    static final MethodHandle tc_destroy_string$MH = RuntimeHelper.downcallHandle(
+        "tc_destroy_string",
+        constants$1.tc_destroy_string$FUNC
     );
 }
 

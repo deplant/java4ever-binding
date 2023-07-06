@@ -2,19 +2,27 @@
 
 package tech.deplant.java4ever.binding.ffi;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import java.lang.foreign.*;
-
+import static java.lang.foreign.ValueLayout.*;
+/**
+ * {@snippet :
+ * void (*tc_response_handler_t)(unsigned int request_id,struct  params_json,unsigned int response_type,_Bool finished);
+ * }
+ */
 public interface tc_response_handler_t {
 
-    void apply(int request_id, MemorySegment params_json, int response_type, boolean finished);
-    static MemorySegment allocate(tc_response_handler_t fi, MemorySession session) {
-        return RuntimeHelper.upcallStub(tc_response_handler_t.class, fi, constants$0.tc_response_handler_t$FUNC, session);
+    void apply(int request_id, java.lang.foreign.MemorySegment params_json, int response_type, boolean finished);
+    static MemorySegment allocate(tc_response_handler_t fi, SegmentScope scope) {
+        return RuntimeHelper.upcallStub(constants$0.tc_response_handler_t_UP$MH, fi, constants$0.tc_response_handler_t$FUNC, scope);
     }
-    static tc_response_handler_t ofAddress(MemoryAddress addr, MemorySession session) {
-        MemorySegment symbol = MemorySegment.ofAddress(addr, 0, session);
-        return (int _request_id, MemorySegment _params_json, int _response_type, boolean _finished) -> {
+    static tc_response_handler_t ofAddress(MemorySegment addr, SegmentScope scope) {
+        MemorySegment symbol = MemorySegment.ofAddress(addr.address(), 0, scope);
+        return (int _request_id, java.lang.foreign.MemorySegment _params_json, int _response_type, boolean _finished) -> {
             try {
-                constants$1.tc_response_handler_t$MH.invokeExact((Addressable)symbol, _request_id, _params_json, _response_type, _finished);
+                constants$0.tc_response_handler_t_DOWN$MH.invokeExact(symbol, _request_id, _params_json, _response_type, _finished);
             } catch (Throwable ex$) {
                 throw new AssertionError("should not reach here", ex$);
             }
