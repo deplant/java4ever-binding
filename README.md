@@ -1,4 +1,4 @@
-# java4ever-binding
+# EVER-SDK for Java
 
 [![JDK version](https://img.shields.io/badge/Java-20-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.43.3-orange)](https://github.com/tonlabs/ever-sdk)
@@ -9,14 +9,17 @@
 * Read full
   docs: [![javadoc](https://javadoc.io/badge2/tech.deplant.java4ever/java4ever-binding/javadoc.svg)](https://javadoc.io/doc/tech.deplant.java4ever/java4ever-binding)
 
-**java4ever-binding** is a Java Binding library for
-[EVER-SDK](https://github.com/tonlabs/ever-sdk) framework of
-[Everscale](https://everscale.network/) network via
-[JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface.
+This is a Java binding project for
+[EVER-SDK](https://github.com/tonlabs/ever-sdk) library that is 
+compatible with 
+[Everscale](https://everscale.network/), Venom, GOSH & TON blockchain 
+networks.
+Binding calls [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface of EVER-SDK.
 Native calls are based on modern [Foreign Function & Memory API](https://openjdk.org/jeps/434).
-This artifact provide only binding functionality and is not suitable for large tests or fast prototyping.
-There is a companion [java4ever-framework](https://github.com/deplant/java4ever-framework) library that should be used
-together with this binding.
+
+This artifact provides full binding functionality, but doesn't include 
+higher level helpers for development, tests or fast prototyping. Try our larger [Java4Ever](https://github.com/deplant/java4ever-framework) framework 
+that is based on this binding for easier work with TVM blockchains.
 
 ### Goals
 

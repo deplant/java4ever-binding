@@ -5,8 +5,8 @@
 - Updated baseline JDK -> 20
 - Helper for LibraryLoader construction
 - Included EVER-SDK libs in distribution (Use DefaultLoader choice)
-- Added generateEverSdkApi task for one-click EVER-SDK API generation
-- Added generateFfiBridge task for one-click FFI Bridge to ton_client lib generation
+- Added **generateEverSdkApi** Gradle task for one-click EVER-SDK API re-generation
+- Added **generateFfiBridge** Gradle task for one-click FFI Bridge to ton_client lib re-generation
 
 ### 1.8.0
 
