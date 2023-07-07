@@ -31,7 +31,7 @@ that is based on this binding for easier work with TVM blockchains.
 
 #### Prerequisites
 
-* Install **JDK 20** ([link](https://adoptium.net/temurin/releases?version=19))
+* Install **JDK 20** ([link](https://adoptium.net/temurin/releases?version=20))
 
 #### Add java4ever to your Maven of Gradle setup:
 
