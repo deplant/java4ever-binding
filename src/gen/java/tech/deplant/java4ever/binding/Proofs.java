@@ -75,7 +75,7 @@ public final class Proofs {
    *
    * @param block  Single block's data, retrieved from TONOS API, that needs proof. Required fields are `id` and/or top-level `boc` (for block identification), others are optional.
    */
-  public static void proofBlockData(Context ctx, Map<String, Object> block) throws
+  public static void proofBlockData(EverSdkContext ctx, Map<String, Object> block) throws
       EverSdkException {
     ctx.callVoid("proofs.proof_block_data", new Proofs.ParamsOfProofBlockData(block));
   }
@@ -99,8 +99,8 @@ public final class Proofs {
    *
    * @param transaction  Single transaction's data as queried from DApp server, without modifications. The required fields are `id` and/or top-level `boc`, others are optional. In order to reduce network requests count, it is recommended to provide `block_id` and `boc` of transaction.
    */
-  public static void proofTransactionData(Context ctx, Map<String, Object> transaction) throws
-      EverSdkException {
+  public static void proofTransactionData(EverSdkContext ctx, Map<String, Object> transaction)
+      throws EverSdkException {
     ctx.callVoid("proofs.proof_transaction_data", new Proofs.ParamsOfProofTransactionData(transaction));
   }
 
@@ -123,7 +123,7 @@ public final class Proofs {
    *
    * @param message  Single message's data as queried from DApp server, without modifications. The required fields are `id` and/or top-level `boc`, others are optional. In order to reduce network requests count, it is recommended to provide at least `boc` of message and non-null `src_transaction.id` or `dst_transaction.id`.
    */
-  public static void proofMessageData(Context ctx, Map<String, Object> message) throws
+  public static void proofMessageData(EverSdkContext ctx, Map<String, Object> message) throws
       EverSdkException {
     ctx.callVoid("proofs.proof_message_data", new Proofs.ParamsOfProofMessageData(message));
   }

@@ -1,7 +1,7 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
 import tech.deplant.java4ever.binding.AppSigningBox;
-import tech.deplant.java4ever.binding.Context;
+import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.Unstable;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
@@ -74,7 +74,7 @@ public record SdkFunction(String functionModule,
 		// Args for all call params
 		List<Object> statementArgs = new ArrayList<>();
 		// Context param
-		methodBuilder.addParameter(ClassName.get(Context.class), "ctx");
+		methodBuilder.addParameter(ClassName.get(EverSdkContext.class), "ctx");
 		// Function SDK name
 		// adds function name as a first arg to statementArgs array
 		statementArgs.add(String.format("%s.%s", functionModule().toLowerCase(), function().name()));

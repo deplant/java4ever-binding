@@ -25,8 +25,8 @@ public final class Debot {
    * @param address  Debot smart contract address
    */
   @Unstable
-  public static Debot.RegisteredDebot init(Context ctx, String address, AppSigningBox appObject)
-      throws EverSdkException {
+  public static Debot.RegisteredDebot init(EverSdkContext ctx, String address,
+      AppSigningBox appObject) throws EverSdkException {
     return ctx.callAppObject("debot.init", new Debot.ParamsOfInit(address), appObject, Debot.RegisteredDebot.class);
   }
 
@@ -45,7 +45,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
-  public static void start(Context ctx, Integer debotHandle) throws EverSdkException {
+  public static void start(EverSdkContext ctx, Integer debotHandle) throws EverSdkException {
     ctx.callVoid("debot.start", new Debot.ParamsOfStart(debotHandle));
   }
 
@@ -55,7 +55,8 @@ public final class Debot {
    * @param address  Debot smart contract address.
    */
   @Unstable
-  public static Debot.ResultOfFetch fetch(Context ctx, String address) throws EverSdkException {
+  public static Debot.ResultOfFetch fetch(EverSdkContext ctx, String address) throws
+      EverSdkException {
     return ctx.call("debot.fetch", new Debot.ParamsOfFetch(address), Debot.ResultOfFetch.class);
   }
 
@@ -70,8 +71,8 @@ public final class Debot {
    * @param action  Debot Action that must be executed.
    */
   @Unstable
-  public static void execute(Context ctx, Integer debotHandle, Debot.DebotAction action) throws
-      EverSdkException {
+  public static void execute(EverSdkContext ctx, Integer debotHandle, Debot.DebotAction action)
+      throws EverSdkException {
     ctx.callVoid("debot.execute", new Debot.ParamsOfExecute(debotHandle, action));
   }
 
@@ -82,7 +83,7 @@ public final class Debot {
    * @param message  BOC of internal message to debot encoded in base64 format.
    */
   @Unstable
-  public static void send(Context ctx, Integer debotHandle, String message) throws
+  public static void send(EverSdkContext ctx, Integer debotHandle, String message) throws
       EverSdkException {
     ctx.callVoid("debot.send", new Debot.ParamsOfSend(debotHandle, message));
   }
@@ -93,7 +94,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
-  public static void remove(Context ctx, Integer debotHandle) throws EverSdkException {
+  public static void remove(EverSdkContext ctx, Integer debotHandle) throws EverSdkException {
     ctx.callVoid("debot.remove", new Debot.ParamsOfRemove(debotHandle));
   }
 

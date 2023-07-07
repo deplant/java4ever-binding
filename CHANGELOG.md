@@ -1,4 +1,4 @@
-### 1.9.0
+### 2.1.0
 
 - Updated EVER-SDK -> 1.43.3
 - Updated Gradle -> 8.2

@@ -3,7 +3,14 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
+import tech.deplant.java4ever.binding.loader.DefaultLoader;
+import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -12,14 +19,16 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
  * Class that represents the established environment inside EVER-SDK and
  * is identified by id number. Holds last request id and functions to
  * call SDK methods.
  */
-public record Context(int id, @JsonIgnore ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
+public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
 
-	private final static System.Logger logger = System.getLogger(Context.class.getName());
+	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
 	/**
 	 * Constructor of EVER-SDK context
@@ -29,11 +38,15 @@ public record Context(int id, @JsonIgnore ObjectMapper mapper, long timeout, Ato
 	 * @param timeout      timeout for operations in milliseconds
 	 * @param mapper       Jackson's ObjectMapper, ContextBuilder have correctly preconfigured one.
 	 */
-	public Context(int id,
-	               int requestCount,
-	               long timeout,
-	               ObjectMapper mapper) {
+	public EverSdkContext(int id,
+	                      int requestCount,
+	                      long timeout,
+	                      ObjectMapper mapper) {
 		this(id, mapper, timeout, new AtomicInteger(requestCount));
+	}
+
+	public static EverSdkContext.Builder builder() {
+		return new EverSdkContext.Builder();
 	}
 
 	/**
@@ -190,5 +203,99 @@ public record Context(int id, @JsonIgnore ObjectMapper mapper, long timeout, Ato
 
 		}
 
+	}
+
+	/**
+	 * Builder to correctly request and create Context object
+	 */
+	public static class Builder {
+
+		public static final ObjectMapper DEFAULT_MAPPER = JsonMapper.builder() // or different mapper for other format
+		                                                            .addModule(new ParameterNamesModule())
+		                                                            .addModule(new Jdk8Module())
+		                                                            .addModule(new JavaTimeModule())
+		                                                            // and possibly other configuration, modules, then:
+		                                                            .build()
+		                                                            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+		                                                            .setSerializationInclusion(NON_NULL)
+		                                                            .registerModule(new RecordNamingStrategyPatchModule());
+		private long timeout = 60_000L;
+		private String configJson = "{}";
+		private ObjectMapper jsonMapper = DEFAULT_MAPPER;
+
+		public Builder() {
+		}
+
+		public Builder setConfigJson(String configJson) {
+			this.configJson = configJson;
+			return this;
+		}
+
+		/**
+		 * Sets timeout for EVER-SDK responses
+		 *
+		 * @param timeout Response completion waiting timeout (in milliseconds)
+		 * @return instance of builder
+		 */
+		public Builder setTimeout(long timeout) {
+			this.timeout = timeout;
+			return this;
+		}
+
+		public Builder setMapper(ObjectMapper jsonMapper) {
+			this.jsonMapper = jsonMapper;
+			return this;
+		}
+
+		/**
+		 * If you, for some reason, can't directly access already created Context object, but you're sure that
+		 * it is created, loaded and you know it's id and last request count, you should use this method to
+		 * load Context object out of this data.
+		 * It's up to you if id and request count are correct, it will not be checked until you start calls with Context.
+		 *
+		 * @param existingContextId           id of existing, previously created Context in EVER-SDK
+		 * @param existingContextRequestCount last request number of previously created Context in EVER-SDK
+		 * @return Context object made of provided data
+		 */
+		public EverSdkContext buildFromExisting(int existingContextId, int existingContextRequestCount) {
+			return new EverSdkContext(existingContextId, existingContextRequestCount, this.timeout, this.jsonMapper);
+		}
+
+		/**
+		 * Terminal builder method to create new Context
+		 *
+		 * @param loader Specify how exactly ton_client library will be found and loaded
+		 * @return Context object that can be used in calls to EVER-SDK, ton_client library is loaded and called in the process
+		 * @throws JsonProcessingException
+		 */
+		public EverSdkContext buildNew(LibraryLoader loader) throws JsonProcessingException {
+			var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
+			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever","2.1.0"),defaults.network(),defaults.crypto(),defaults.abi(),defaults.boc(),defaults.proofs(),
+			                                           defaults.localStoragePath());
+			var mergedJson = this.jsonMapper.writeValueAsString(mergedConfig);
+			final var createContextResponse = this.jsonMapper.readValue(SdkBridge.tcCreateContext(loader, mergedJson),
+			                                                            ResultOfCreateContext.class);
+			if (createContextResponse.result() == null || createContextResponse.result() < 1) {
+				throw new RuntimeException("sdk.create_context failed!");
+			}
+			return new EverSdkContext(createContextResponse.result(),
+			                          0,
+			                          this.timeout,
+			                          this.jsonMapper);
+		}
+
+		/**
+		 * Terminal builder method to create new Context. Uses default loader with EVER-SDK for autodetected
+		 * OS & processor arch.
+		 *
+		 * @return Context object that can be used in calls to EVER-SDK, ton_client library is loaded and called in the process
+		 * @throws JsonProcessingException
+		 */
+		public EverSdkContext buildNew() throws JsonProcessingException {
+			return buildNew(new DefaultLoader(this.getClass().getClassLoader()));
+		}
+
+		public record ResultOfCreateContext(Integer result, String error) {
+		}
 	}
 }

@@ -21,7 +21,8 @@ public final class Boc {
    *
    * @param tvc  Contract TVC BOC encoded as base64 or BOC handle
    */
-  public static Boc.ResultOfDecodeTvc decodeTvc(Context ctx, String tvc) throws EverSdkException {
+  public static Boc.ResultOfDecodeTvc decodeTvc(EverSdkContext ctx, String tvc) throws
+      EverSdkException {
     return ctx.call("boc.decode_tvc", new Boc.ParamsOfDecodeTvc(tvc), Boc.ResultOfDecodeTvc.class);
   }
 
@@ -30,7 +31,8 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64
    */
-  public static Boc.ResultOfParse parseMessage(Context ctx, String boc) throws EverSdkException {
+  public static Boc.ResultOfParse parseMessage(EverSdkContext ctx, String boc) throws
+      EverSdkException {
     return ctx.call("boc.parse_message", new Boc.ParamsOfParse(boc), Boc.ResultOfParse.class);
   }
 
@@ -39,7 +41,7 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64
    */
-  public static Boc.ResultOfParse parseTransaction(Context ctx, String boc) throws
+  public static Boc.ResultOfParse parseTransaction(EverSdkContext ctx, String boc) throws
       EverSdkException {
     return ctx.call("boc.parse_transaction", new Boc.ParamsOfParse(boc), Boc.ResultOfParse.class);
   }
@@ -49,7 +51,8 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64
    */
-  public static Boc.ResultOfParse parseAccount(Context ctx, String boc) throws EverSdkException {
+  public static Boc.ResultOfParse parseAccount(EverSdkContext ctx, String boc) throws
+      EverSdkException {
     return ctx.call("boc.parse_account", new Boc.ParamsOfParse(boc), Boc.ResultOfParse.class);
   }
 
@@ -58,7 +61,8 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64
    */
-  public static Boc.ResultOfParse parseBlock(Context ctx, String boc) throws EverSdkException {
+  public static Boc.ResultOfParse parseBlock(EverSdkContext ctx, String boc) throws
+      EverSdkException {
     return ctx.call("boc.parse_block", new Boc.ParamsOfParse(boc), Boc.ResultOfParse.class);
   }
 
@@ -69,7 +73,7 @@ public final class Boc {
    * @param id  Shardstate identifier
    * @param workchainId  Workchain shardstate belongs to
    */
-  public static Boc.ResultOfParse parseShardstate(Context ctx, String boc, String id,
+  public static Boc.ResultOfParse parseShardstate(EverSdkContext ctx, String boc, String id,
       Integer workchainId) throws EverSdkException {
     return ctx.call("boc.parse_shardstate", new Boc.ParamsOfParseShardstate(boc, id, workchainId), Boc.ResultOfParse.class);
   }
@@ -79,8 +83,8 @@ public final class Boc {
    *
    * @param blockBoc  Key block BOC or zerostate BOC encoded as base64
    */
-  public static Boc.ResultOfGetBlockchainConfig getBlockchainConfig(Context ctx, String blockBoc)
-      throws EverSdkException {
+  public static Boc.ResultOfGetBlockchainConfig getBlockchainConfig(EverSdkContext ctx,
+      String blockBoc) throws EverSdkException {
     return ctx.call("boc.get_blockchain_config", new Boc.ParamsOfGetBlockchainConfig(blockBoc), Boc.ResultOfGetBlockchainConfig.class);
   }
 
@@ -89,7 +93,8 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64 or BOC handle
    */
-  public static Boc.ResultOfGetBocHash getBocHash(Context ctx, String boc) throws EverSdkException {
+  public static Boc.ResultOfGetBocHash getBocHash(EverSdkContext ctx, String boc) throws
+      EverSdkException {
     return ctx.call("boc.get_boc_hash", new Boc.ParamsOfGetBocHash(boc), Boc.ResultOfGetBocHash.class);
   }
 
@@ -98,7 +103,7 @@ public final class Boc {
    *
    * @param boc  BOC encoded as base64 or BOC handle
    */
-  public static Boc.ResultOfGetBocDepth getBocDepth(Context ctx, String boc) throws
+  public static Boc.ResultOfGetBocDepth getBocDepth(EverSdkContext ctx, String boc) throws
       EverSdkException {
     return ctx.call("boc.get_boc_depth", new Boc.ParamsOfGetBocDepth(boc), Boc.ResultOfGetBocDepth.class);
   }
@@ -108,7 +113,7 @@ public final class Boc {
    *
    * @param tvc  Contract TVC image or image BOC handle
    */
-  public static Boc.ResultOfGetCodeFromTvc getCodeFromTvc(Context ctx, String tvc) throws
+  public static Boc.ResultOfGetCodeFromTvc getCodeFromTvc(EverSdkContext ctx, String tvc) throws
       EverSdkException {
     return ctx.call("boc.get_code_from_tvc", new Boc.ParamsOfGetCodeFromTvc(tvc), Boc.ResultOfGetCodeFromTvc.class);
   }
@@ -118,7 +123,7 @@ public final class Boc {
    *
    * @param bocRef  Reference to the cached BOC
    */
-  public static Boc.ResultOfBocCacheGet cacheGet(Context ctx, String bocRef) throws
+  public static Boc.ResultOfBocCacheGet cacheGet(EverSdkContext ctx, String bocRef) throws
       EverSdkException {
     return ctx.call("boc.cache_get", new Boc.ParamsOfBocCacheGet(bocRef), Boc.ResultOfBocCacheGet.class);
   }
@@ -129,7 +134,7 @@ public final class Boc {
    * @param boc  BOC encoded as base64 or BOC reference
    * @param cacheType  Cache type
    */
-  public static Boc.ResultOfBocCacheSet cacheSet(Context ctx, String boc,
+  public static Boc.ResultOfBocCacheSet cacheSet(EverSdkContext ctx, String boc,
       Boc.BocCacheType cacheType) throws EverSdkException {
     return ctx.call("boc.cache_set", new Boc.ParamsOfBocCacheSet(boc, cacheType), Boc.ResultOfBocCacheSet.class);
   }
@@ -140,7 +145,8 @@ public final class Boc {
    * @param pin  Pinned name
    * @param bocRef If it is provided then only referenced BOC is unpinned Reference to the cached BOC.
    */
-  public static void cacheUnpin(Context ctx, String pin, String bocRef) throws EverSdkException {
+  public static void cacheUnpin(EverSdkContext ctx, String pin, String bocRef) throws
+      EverSdkException {
     ctx.callVoid("boc.cache_unpin", new Boc.ParamsOfBocCacheUnpin(pin, bocRef));
   }
 
@@ -150,7 +156,7 @@ public final class Boc {
    * @param builder  Cell builder operations.
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfEncodeBoc encodeBoc(Context ctx, Boc.BuilderOp[] builder,
+  public static Boc.ResultOfEncodeBoc encodeBoc(EverSdkContext ctx, Boc.BuilderOp[] builder,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.encode_boc", new Boc.ParamsOfEncodeBoc(builder, bocCache), Boc.ResultOfEncodeBoc.class);
   }
@@ -161,7 +167,7 @@ public final class Boc {
    * @param code  Contract code BOC encoded as base64 or code BOC handle
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfGetCodeSalt getCodeSalt(Context ctx, String code,
+  public static Boc.ResultOfGetCodeSalt getCodeSalt(EverSdkContext ctx, String code,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.get_code_salt", new Boc.ParamsOfGetCodeSalt(code, bocCache), Boc.ResultOfGetCodeSalt.class);
   }
@@ -173,7 +179,7 @@ public final class Boc {
    * @param salt BOC encoded as base64 or BOC handle Code salt to set.
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfSetCodeSalt setCodeSalt(Context ctx, String code, String salt,
+  public static Boc.ResultOfSetCodeSalt setCodeSalt(EverSdkContext ctx, String code, String salt,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.set_code_salt", new Boc.ParamsOfSetCodeSalt(code, salt, bocCache), Boc.ResultOfSetCodeSalt.class);
   }
@@ -184,7 +190,7 @@ public final class Boc {
    * @param stateInit  Contract StateInit image BOC encoded as base64 or BOC handle
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfDecodeStateInit decodeStateInit(Context ctx, String stateInit,
+  public static Boc.ResultOfDecodeStateInit decodeStateInit(EverSdkContext ctx, String stateInit,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.decode_state_init", new Boc.ParamsOfDecodeStateInit(stateInit, bocCache), Boc.ResultOfDecodeStateInit.class);
   }
@@ -200,9 +206,9 @@ public final class Boc {
    * @param splitDepth  Is present and non-zero only in instances of large smart contracts
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Boc.ResultOfEncodeStateInit encodeStateInit(Context ctx, String code, String data,
-      String library, Boolean tick, Boolean tock, Integer splitDepth, Boc.BocCacheType bocCache)
-      throws EverSdkException {
+  public static Boc.ResultOfEncodeStateInit encodeStateInit(EverSdkContext ctx, String code,
+      String data, String library, Boolean tick, Boolean tock, Integer splitDepth,
+      Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.encode_state_init", new Boc.ParamsOfEncodeStateInit(code, data, library, tick, tock, splitDepth, bocCache), Boc.ResultOfEncodeStateInit.class);
   }
 
@@ -215,8 +221,9 @@ public final class Boc {
    * @param body  Bag of cells with the message body encoded as base64.
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static Boc.ResultOfEncodeExternalInMessage encodeExternalInMessage(Context ctx, String src,
-      String dst, String init, String body, Boc.BocCacheType bocCache) throws EverSdkException {
+  public static Boc.ResultOfEncodeExternalInMessage encodeExternalInMessage(EverSdkContext ctx,
+      String src, String dst, String init, String body, Boc.BocCacheType bocCache) throws
+      EverSdkException {
     return ctx.call("boc.encode_external_in_message", new Boc.ParamsOfEncodeExternalInMessage(src, dst, init, body, bocCache), Boc.ResultOfEncodeExternalInMessage.class);
   }
 
@@ -225,8 +232,8 @@ public final class Boc {
    *
    * @param code  Contract code BOC encoded as base64 or code BOC handle
    */
-  public static Boc.ResultOfGetCompilerVersion getCompilerVersion(Context ctx, String code) throws
-      EverSdkException {
+  public static Boc.ResultOfGetCompilerVersion getCompilerVersion(EverSdkContext ctx, String code)
+      throws EverSdkException {
     return ctx.call("boc.get_compiler_version", new Boc.ParamsOfGetCompilerVersion(code), Boc.ResultOfGetCompilerVersion.class);
   }
 

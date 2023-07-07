@@ -58,7 +58,7 @@ public final class Tvm {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
    */
-  public static Tvm.ResultOfRunExecutor runExecutor(Context ctx, String message,
+  public static Tvm.ResultOfRunExecutor runExecutor(EverSdkContext ctx, String message,
       Tvm.AccountForExecutor account, Tvm.ExecutionOptions executionOptions, Abi.ABI abi,
       Boolean skipTransactionCheck, Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) throws
       EverSdkException {
@@ -86,7 +86,7 @@ public final class Tvm {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
    */
-  public static Tvm.ResultOfRunTvm runTvm(Context ctx, String message, String account,
+  public static Tvm.ResultOfRunTvm runTvm(EverSdkContext ctx, String message, String account,
       Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache,
       Boolean returnUpdatedAccount) throws EverSdkException {
     return ctx.call("tvm.run_tvm", new Tvm.ParamsOfRunTvm(message, account, executionOptions, abi, bocCache, returnUpdatedAccount), Tvm.ResultOfRunTvm.class);
@@ -105,7 +105,7 @@ public final class Tvm {
    * set this flag to true.
    * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
    */
-  public static Tvm.ResultOfRunGet runGet(Context ctx, String account, String functionName,
+  public static Tvm.ResultOfRunGet runGet(EverSdkContext ctx, String account, String functionName,
       Map<String, Object> input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray)
       throws EverSdkException {
     return ctx.call("tvm.run_get", new Tvm.ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), Tvm.ResultOfRunGet.class);

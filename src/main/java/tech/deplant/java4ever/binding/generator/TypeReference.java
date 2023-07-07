@@ -1,6 +1,6 @@
 package tech.deplant.java4ever.binding.generator;
 
-import tech.deplant.java4ever.binding.Context;
+import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.SubscribeEvent;
 import tech.deplant.java4ever.binding.generator.javapoet.ArrayTypeName;
 import tech.deplant.java4ever.binding.generator.javapoet.ClassName;
@@ -125,7 +125,7 @@ public record TypeReference(String module,
 				case "Boolean" -> ClassName.get(Boolean.class);
 				case "Long" -> ClassName.get(Long.class);
 				case "Value", "API" -> ParameterizedTypeName.get(TypeName.MAP, TypeName.STRING, TypeName.OBJECT);
-				case "ClientContext" -> ClassName.get(Context.class);
+				case "ClientContext" -> ClassName.get(EverSdkContext.class);
 				default -> throw new IllegalStateException("Unexpected value: " + name());
 			};
 		}

@@ -19,7 +19,7 @@ public final class Client {
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ResultOfGetApiReference getApiReference(Context ctx) throws
+  public static Client.ResultOfGetApiReference getApiReference(EverSdkContext ctx) throws
       EverSdkException {
     return ctx.call("client.get_api_reference", null, Client.ResultOfGetApiReference.class);
   }
@@ -27,21 +27,21 @@ public final class Client {
   /**
    *  Returns Core Library version
    */
-  public static Client.ResultOfVersion version(Context ctx) throws EverSdkException {
+  public static Client.ResultOfVersion version(EverSdkContext ctx) throws EverSdkException {
     return ctx.call("client.version", null, Client.ResultOfVersion.class);
   }
 
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ClientConfig config(Context ctx) throws EverSdkException {
+  public static Client.ClientConfig config(EverSdkContext ctx) throws EverSdkException {
     return ctx.call("client.config", null, Client.ClientConfig.class);
   }
 
   /**
    *  Returns detailed information about this build.
    */
-  public static Client.ResultOfBuildInfo buildInfo(Context ctx) throws EverSdkException {
+  public static Client.ResultOfBuildInfo buildInfo(EverSdkContext ctx) throws EverSdkException {
     return ctx.call("client.build_info", null, Client.ResultOfBuildInfo.class);
   }
 
@@ -51,7 +51,7 @@ public final class Client {
    * @param appRequestId  Request ID received from SDK
    * @param result  Result of request processing
    */
-  public static void resolveAppRequest(Context ctx, Integer appRequestId,
+  public static void resolveAppRequest(EverSdkContext ctx, Integer appRequestId,
       Client.AppRequestResult result) throws EverSdkException {
     ctx.callVoid("client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
   }

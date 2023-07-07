@@ -19,7 +19,7 @@ public final class Utils {
    * @param address  Account address in any TON format.
    * @param outputFormat  Specify the format to convert to.
    */
-  public static Utils.ResultOfConvertAddress convertAddress(Context ctx, String address,
+  public static Utils.ResultOfConvertAddress convertAddress(EverSdkContext ctx, String address,
       Utils.AddressStringFormat outputFormat) throws EverSdkException {
     return ctx.call("utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
   }
@@ -36,15 +36,15 @@ public final class Utils {
    *
    * @param address  Account address in any TON format.
    */
-  public static Utils.ResultOfGetAddressType getAddressType(Context ctx, String address) throws
-      EverSdkException {
+  public static Utils.ResultOfGetAddressType getAddressType(EverSdkContext ctx, String address)
+      throws EverSdkException {
     return ctx.call("utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
   }
 
   /**
    *  Calculates storage fee for an account over a specified time period
    */
-  public static Utils.ResultOfCalcStorageFee calcStorageFee(Context ctx, String account,
+  public static Utils.ResultOfCalcStorageFee calcStorageFee(EverSdkContext ctx, String account,
       Integer period) throws EverSdkException {
     return ctx.call("utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
   }
@@ -55,7 +55,7 @@ public final class Utils {
    * @param uncompressed Must be encoded as base64. Uncompressed data.
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
-  public static Utils.ResultOfCompressZstd compressZstd(Context ctx, String uncompressed,
+  public static Utils.ResultOfCompressZstd compressZstd(EverSdkContext ctx, String uncompressed,
       Integer level) throws EverSdkException {
     return ctx.call("utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
   }
@@ -65,8 +65,8 @@ public final class Utils {
    *
    * @param compressed Must be encoded as base64. Compressed data.
    */
-  public static Utils.ResultOfDecompressZstd decompressZstd(Context ctx, String compressed) throws
-      EverSdkException {
+  public static Utils.ResultOfDecompressZstd decompressZstd(EverSdkContext ctx, String compressed)
+      throws EverSdkException {
     return ctx.call("utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
   }
 

@@ -22,8 +22,8 @@ public final class Net {
    * @param query  GraphQL query text.
    * @param variables Must be a map with named values that can be used in query. Variables used in query.
    */
-  public static Net.ResultOfQuery query(Context ctx, String query, Map<String, Object> variables)
-      throws EverSdkException {
+  public static Net.ResultOfQuery query(EverSdkContext ctx, String query,
+      Map<String, Object> variables) throws EverSdkException {
     return ctx.call("net.query", new Net.ParamsOfQuery(query, variables), Net.ResultOfQuery.class);
   }
 
@@ -32,7 +32,7 @@ public final class Net {
    *
    * @param operations  List of query operations that must be performed per single fetch.
    */
-  public static Net.ResultOfBatchQuery batchQuery(Context ctx,
+  public static Net.ResultOfBatchQuery batchQuery(EverSdkContext ctx,
       Net.ParamsOfQueryOperation[] operations) throws EverSdkException {
     return ctx.call("net.batch_query", new Net.ParamsOfBatchQuery(operations), Net.ResultOfBatchQuery.class);
   }
@@ -48,7 +48,7 @@ public final class Net {
    * @param order  Sorting order
    * @param limit  Number of documents to return
    */
-  public static Net.ResultOfQueryCollection queryCollection(Context ctx, String collection,
+  public static Net.ResultOfQueryCollection queryCollection(EverSdkContext ctx, String collection,
       Map<String, Object> filter, String result, Net.OrderBy[] order, Integer limit) throws
       EverSdkException {
     return ctx.call("net.query_collection", new Net.ParamsOfQueryCollection(collection, filter, result, order, limit), Net.ResultOfQueryCollection.class);
@@ -62,8 +62,9 @@ public final class Net {
    * @param filter  Collection filter
    * @param fields  Projection (result) string
    */
-  public static Net.ResultOfAggregateCollection aggregateCollection(Context ctx, String collection,
-      Map<String, Object> filter, Net.FieldAggregation[] fields) throws EverSdkException {
+  public static Net.ResultOfAggregateCollection aggregateCollection(EverSdkContext ctx,
+      String collection, Map<String, Object> filter, Net.FieldAggregation[] fields) throws
+      EverSdkException {
     return ctx.call("net.aggregate_collection", new Net.ParamsOfAggregateCollection(collection, filter, fields), Net.ResultOfAggregateCollection.class);
   }
 
@@ -80,15 +81,16 @@ public final class Net {
    * @param result  Projection (result) string
    * @param timeout  Query timeout
    */
-  public static Net.ResultOfWaitForCollection waitForCollection(Context ctx, String collection,
-      Map<String, Object> filter, String result, Integer timeout) throws EverSdkException {
+  public static Net.ResultOfWaitForCollection waitForCollection(EverSdkContext ctx,
+      String collection, Map<String, Object> filter, String result, Integer timeout) throws
+      EverSdkException {
     return ctx.call("net.wait_for_collection", new Net.ParamsOfWaitForCollection(collection, filter, result, timeout), Net.ResultOfWaitForCollection.class);
   }
 
   /**
    * Cancels a subscription specified by its handle. Cancels a subscription
    */
-  public static void unsubscribe(Context ctx, Net.ResultOfSubscribeCollection params) throws
+  public static void unsubscribe(EverSdkContext ctx, Net.ResultOfSubscribeCollection params) throws
       EverSdkException {
     ctx.callVoid("net.unsubscribe", params);
   }
@@ -139,8 +141,8 @@ public final class Net {
    * @param filter  Collection filter
    * @param result  Projection (result) string
    */
-  public static Net.ResultOfSubscribeCollection subscribeCollection(Context ctx, String collection,
-      Map<String, Object> filter, String result) throws EverSdkException {
+  public static Net.ResultOfSubscribeCollection subscribeCollection(EverSdkContext ctx,
+      String collection, Map<String, Object> filter, String result) throws EverSdkException {
     return ctx.call("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), Net.ResultOfSubscribeCollection.class);
   }
 
@@ -183,7 +185,7 @@ public final class Net {
    * @param subscription  GraphQL subscription text.
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
-  public static Net.ResultOfSubscribeCollection subscribe(Context ctx, String subscription,
+  public static Net.ResultOfSubscribeCollection subscribe(EverSdkContext ctx, String subscription,
       Map<String, Object> variables) throws EverSdkException {
     return ctx.call("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), Net.ResultOfSubscribeCollection.class);
   }
@@ -191,14 +193,14 @@ public final class Net {
   /**
    *  Suspends network module to stop any network activity
    */
-  public static void suspend(Context ctx) throws EverSdkException {
+  public static void suspend(EverSdkContext ctx) throws EverSdkException {
     ctx.callVoid("net.suspend", null);
   }
 
   /**
    *  Resumes network module to enable network activity
    */
-  public static void resume(Context ctx) throws EverSdkException {
+  public static void resume(EverSdkContext ctx) throws EverSdkException {
     ctx.callVoid("net.resume", null);
   }
 
@@ -207,29 +209,30 @@ public final class Net {
    *
    * @param address  Account address
    */
-  public static Net.ResultOfFindLastShardBlock findLastShardBlock(Context ctx, String address)
-      throws EverSdkException {
+  public static Net.ResultOfFindLastShardBlock findLastShardBlock(EverSdkContext ctx,
+      String address) throws EverSdkException {
     return ctx.call("net.find_last_shard_block", new Net.ParamsOfFindLastShardBlock(address), Net.ResultOfFindLastShardBlock.class);
   }
 
   /**
    *  Requests the list of alternative endpoints from server
    */
-  public static Net.EndpointsSet fetchEndpoints(Context ctx) throws EverSdkException {
+  public static Net.EndpointsSet fetchEndpoints(EverSdkContext ctx) throws EverSdkException {
     return ctx.call("net.fetch_endpoints", null, Net.EndpointsSet.class);
   }
 
   /**
    *  Sets the list of endpoints to use on reinit
    */
-  public static void setEndpoints(Context ctx, Net.EndpointsSet params) throws EverSdkException {
+  public static void setEndpoints(EverSdkContext ctx, Net.EndpointsSet params) throws
+      EverSdkException {
     ctx.callVoid("net.set_endpoints", params);
   }
 
   /**
    *  Requests the list of alternative endpoints from server
    */
-  public static Net.ResultOfGetEndpoints getEndpoints(Context ctx) throws EverSdkException {
+  public static Net.ResultOfGetEndpoints getEndpoints(EverSdkContext ctx) throws EverSdkException {
     return ctx.call("net.get_endpoints", null, Net.ResultOfGetEndpoints.class);
   }
 
@@ -243,7 +246,7 @@ public final class Net {
    * @param first  Number of counterparties to return
    * @param after  `cursor` field of the last received result
    */
-  public static Net.ResultOfQueryCollection queryCounterparties(Context ctx, String account,
+  public static Net.ResultOfQueryCollection queryCounterparties(EverSdkContext ctx, String account,
       String result, Integer first, String after) throws EverSdkException {
     return ctx.call("net.query_counterparties", new Net.ParamsOfQueryCounterparties(account, result, first, after), Net.ResultOfQueryCollection.class);
   }
@@ -293,8 +296,9 @@ public final class Net {
    * Default value is 50. If `transaction_max_count` is set to 0 then no limitation on
    * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
-  public static Net.ResultOfQueryTransactionTree queryTransactionTree(Context ctx, String inMsg,
-      Abi.ABI[] abiRegistry, Integer timeout, Integer transactionMaxCount) throws EverSdkException {
+  public static Net.ResultOfQueryTransactionTree queryTransactionTree(EverSdkContext ctx,
+      String inMsg, Abi.ABI[] abiRegistry, Integer timeout, Integer transactionMaxCount) throws
+      EverSdkException {
     return ctx.call("net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout, transactionMaxCount), Net.ResultOfQueryTransactionTree.class);
   }
 
@@ -357,7 +361,7 @@ public final class Net {
    * Note that iterated items can contains additional fields that are
    * not requested in the `result`. Projection (result) string.
    */
-  public static Net.RegisteredIterator createBlockIterator(Context ctx, Integer startTime,
+  public static Net.RegisteredIterator createBlockIterator(EverSdkContext ctx, Integer startTime,
       Integer endTime, String[] shardFilter, String result) throws EverSdkException {
     return ctx.call("net.create_block_iterator", new Net.ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), Net.RegisteredIterator.class);
   }
@@ -369,7 +373,7 @@ public final class Net {
    *
    * @param resumeState Same as value returned from `iterator_next`. Iterator state from which to resume.
    */
-  public static Net.RegisteredIterator resumeBlockIterator(Context ctx,
+  public static Net.RegisteredIterator resumeBlockIterator(EverSdkContext ctx,
       Map<String, Object> resumeState) throws EverSdkException {
     return ctx.call("net.resume_block_iterator", new Net.ParamsOfResumeBlockIterator(resumeState), Net.RegisteredIterator.class);
   }
@@ -468,9 +472,9 @@ public final class Net {
    * @param includeTransfers If this parameter is `true` then each transaction contains field
    * `transfers` with list of transfer. See more about this structure in function description. Include `transfers` field in iterated transactions.
    */
-  public static Net.RegisteredIterator createTransactionIterator(Context ctx, Integer startTime,
-      Integer endTime, String[] shardFilter, String[] accountsFilter, String result,
-      Boolean includeTransfers) throws EverSdkException {
+  public static Net.RegisteredIterator createTransactionIterator(EverSdkContext ctx,
+      Integer startTime, Integer endTime, String[] shardFilter, String[] accountsFilter,
+      String result, Boolean includeTransfers) throws EverSdkException {
     return ctx.call("net.create_transaction_iterator", new Net.ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), Net.RegisteredIterator.class);
   }
 
@@ -493,7 +497,7 @@ public final class Net {
    * if both are specified.
    * So it is the application's responsibility to specify the correct filter combination. Account address filter.
    */
-  public static Net.RegisteredIterator resumeTransactionIterator(Context ctx,
+  public static Net.RegisteredIterator resumeTransactionIterator(EverSdkContext ctx,
       Map<String, Object> resumeState, String[] accountsFilter) throws EverSdkException {
     return ctx.call("net.resume_transaction_iterator", new Net.ParamsOfResumeTransactionIterator(resumeState, accountsFilter), Net.RegisteredIterator.class);
   }
@@ -518,8 +522,8 @@ public final class Net {
    * @param limit If value is missing or is less than 1 the library uses 1. Maximum count of the returned items.
    * @param returnResumeState  Indicates that function must return the iterator state that can be used for resuming iteration.
    */
-  public static Net.ResultOfIteratorNext iteratorNext(Context ctx, Integer iterator, Integer limit,
-      Boolean returnResumeState) throws EverSdkException {
+  public static Net.ResultOfIteratorNext iteratorNext(EverSdkContext ctx, Integer iterator,
+      Integer limit, Boolean returnResumeState) throws EverSdkException {
     return ctx.call("net.iterator_next", new Net.ParamsOfIteratorNext(iterator, limit, returnResumeState), Net.ResultOfIteratorNext.class);
   }
 
@@ -529,7 +533,7 @@ public final class Net {
    * Application always should call the `remove_iterator` when iterator
    * is no longer required. Removes an iterator
    */
-  public static void removeIterator(Context ctx, Net.RegisteredIterator params) throws
+  public static void removeIterator(EverSdkContext ctx, Net.RegisteredIterator params) throws
       EverSdkException {
     ctx.callVoid("net.remove_iterator", params);
   }
@@ -537,7 +541,8 @@ public final class Net {
   /**
    *  Returns signature ID for configured network if it should be used in messages signature
    */
-  public static Net.ResultOfGetSignatureId getSignatureId(Context ctx) throws EverSdkException {
+  public static Net.ResultOfGetSignatureId getSignatureId(EverSdkContext ctx) throws
+      EverSdkException {
     return ctx.call("net.get_signature_id", null, Net.ResultOfGetSignatureId.class);
   }
 

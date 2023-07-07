@@ -1,6 +1,6 @@
 # java4ever-binding
 
-[![JDK version](https://img.shields.io/badge/Java-19-green.svg)](https://shields.io/)
+[![JDK version](https://img.shields.io/badge/Java-20-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.43.3-orange)](https://github.com/tonlabs/ever-sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
@@ -28,9 +28,7 @@ together with this binding.
 
 #### Prerequisites
 
-* Install **JDK 19** ([link](https://adoptium.net/temurin/releases?version=19))
-* Build **EVER-SDK** binary lib "**ton_client**"(.so/.dll) (or
-  get [precompiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
+* Install **JDK 20** ([link](https://adoptium.net/temurin/releases?version=19))
 
 #### Add java4ever to your Maven of Gradle setup:
 
@@ -38,7 +36,7 @@ together with this binding.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:1.9.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:2.1.0'
 }
 ```
 
@@ -49,9 +47,52 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>1.9.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
+
+### Creating EVER-SDK Context
+
+If you use default EVER-SDK lib (_latest EVER-SDK that is included in the distribution_), 
+you can create EverSdkContext object as following:
+
+```java
+EverSdkContext ctx = EverSdkContext.builder()
+        .setConfigJson(configJson)
+        .buildNew();
+```
+
+To use custom one, specify it in buildNew() method:
+
+```java
+EverSdkContext ctx = EverSdkContext.builder()
+        .setConfigJson(configJson)
+        .buildNew(new AbsolutePathLoader(Path.of("\home\ton\lib\libton_client.so")));
+```
+
+Variants of loading ton_client lib:
+* `AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB")` - path from Environment variable
+* `AbsolutePathLoader.ofUserDir("libton_client.so")` - file from ~ (user home)
+* `new AbsolutePathLoader(Path.of("\home\ton\lib\libton_client.so"))` - any absolute path
+* `new JavaLibraryPathLoader("ton_client");` - gets library from java.library.path JVM argument
+
+### Calling EVER-SDK methods
+
+It's very simple, just type ModuleName.methodName (list of modules and methods is here: [EVER-SDK API Summary](https://github.com/tonlabs/ever-sdk/blob/master/docs/SUMMARY.md) ). 
+Note that method names are converted from snake_case to camelCase. Then pass EverSdkContext object as 1st parameter. That's all.
+
+```java
+Client.version(ctx);
+```
+
+
+## Notes
+
+### Custom EVER-SDK libs
+
+EVER-SDK libs are included in the distribution, but if you want to use custom one - build **EVER-SDK** binary lib "**ton_client**"(.so/.dll) yourself (or
+  get [precompiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
+
 
 ### Logging
 

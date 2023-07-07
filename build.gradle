@@ -4,11 +4,6 @@ plugins {
     id "signing"
 }
 
-// Global variables for all modules
-//ext {
-//
-//}
-
 group v_groupId
 version v_version
 
@@ -41,7 +36,6 @@ dependencies {
     //implementation "com.squareup:javapoet:1.13.0"
 
     // TESTS **************************
-
 
     // SLF4J (Tests part)
     testImplementation "org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion"     // SLF4J Implementation of System.Logger (JEP 264: Platform Logging API and Service)
@@ -117,14 +111,18 @@ signing {
 }
 
 javadoc {
+    failOnError false
     options.addBooleanOption('html5', true)
-    options.addBooleanOption('-enable-preview', true)
-    options.addStringOption('-release', '20')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+    //options.addBooleanOption('-enable-preview', true)
+    //options.addStringOption('-release', '20')
+    options.addBooleanOption('-ignore-source-errors', true)
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 java {
-    //withJavadocJar()
+    withJavadocJar()
     withSourcesJar()
 }
 
@@ -140,6 +138,7 @@ test {
 
 }
 
+// Task for JavaPoet generation of EVER-SDK API
 task generateEverSdkApi(type: JavaExec) {
     group = "other"
     description = "Generates Java Bindings for EVER-SDK"
@@ -147,18 +146,22 @@ task generateEverSdkApi(type: JavaExec) {
     mainClass = "tech.deplant.java4ever.eversdkgen.EverSdkGenerator"
 }
 
-//task generateFfiBridge {
-//    group = "other"
-//    description = "Generates FFI Bridge to ton_client lib with jextract utility. Make sure to specify path to jextract executable through jextractPath property in your personal gradle.properties"
-//    def stdout = new ByteArrayOutputStream()
-//    exec {
-//        workingDir "${projectDir}"
-//        executable jextractPath
-//        standardOutput = stdout;
-//        args "--source", "${projectDir}/jextract/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client", "--library","ton_client"
-//    }
-//    stdout.toString().trim()
-//}
+// Task for Jextract gerneration of FFM Bridge
+tasks.register('generateFfmApiBridge') {
+    group = "other"
+    description = "Generates FFM API Bridge to ton_client lib with jextract utility. Make sure to specify path to jextract executable with `jextractPath` property in your personal gradle.properties file"
+    def stdout = new ByteArrayOutputStream()
+    println "FFM API generation starting..."
+    println "jextract path: ${jextractPath}"
+    exec {
+        workingDir "${projectDir}"
+        executable jextractPath
+        standardOutput = stdout;
+        args "--source", "${projectDir}/jextract/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client"
+    }
+    stdout.toString().trim()
+    println "FFM API generation ended."
+}
 
 tasks.withType(JavaCompile).configureEach {
     javaCompiler = javaToolchains.compilerFor {
