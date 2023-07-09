@@ -217,8 +217,8 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 		                                                            // and possibly other configuration, modules, then:
 		                                                            .build()
 		                                                            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-		                                                            .setSerializationInclusion(NON_NULL)
-		                                                            .registerModule(new RecordNamingStrategyPatchModule());
+		                                                            .setSerializationInclusion(NON_NULL);
+		                                                            //.registerModule(new RecordNamingStrategyPatchModule());
 		private long timeout = 60_000L;
 		private String configJson = "{}";
 		private ObjectMapper jsonMapper = DEFAULT_MAPPER;
