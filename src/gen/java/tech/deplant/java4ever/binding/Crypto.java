@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;
@@ -57,7 +58,7 @@ public final class Crypto {
    * @param length  Size of random byte array.
    */
   public static Crypto.ResultOfGenerateRandomBytes generateRandomBytes(EverSdkContext ctx,
-      Integer length) throws EverSdkException {
+      Long length) throws EverSdkException {
     return ctx.call("crypto.generate_random_bytes", new Crypto.ParamsOfGenerateRandomBytes(length), Crypto.ResultOfGenerateRandomBytes.class);
   }
 
@@ -145,7 +146,7 @@ public final class Crypto {
    * @param dkLen  Intended output length in octets of the derived key.
    */
   public static Crypto.ResultOfScrypt scrypt(EverSdkContext ctx, String password, String salt,
-      Integer logN, Integer r, Integer p, Integer dkLen) throws EverSdkException {
+      Integer logN, Long r, Long p, Long dkLen) throws EverSdkException {
     return ctx.call("crypto.scrypt", new Crypto.ParamsOfScrypt(password, salt, logN, r, p, dkLen), Crypto.ResultOfScrypt.class);
   }
 
@@ -363,7 +364,7 @@ public final class Crypto {
    * @param hardened  Indicates the derivation of hardened/not-hardened key (see BIP-0032)
    */
   public static Crypto.ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(EverSdkContext ctx,
-      String xprv, Integer childIndex, Boolean hardened) throws EverSdkException {
+      String xprv, Long childIndex, Boolean hardened) throws EverSdkException {
     return ctx.call("crypto.hdkey_derive_from_xprv", new Crypto.ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), Crypto.ResultOfHDKeyDeriveFromXPrv.class);
   }
 
@@ -462,7 +463,7 @@ public final class Crypto {
    * @param secretLifetime  Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set.
    */
   public static Crypto.RegisteredSigningBox getSigningBoxFromCryptoBox(EverSdkContext ctx,
-      Integer handle, String hdpath, Integer secretLifetime) throws EverSdkException {
+      Long handle, String hdpath, Long secretLifetime) throws EverSdkException {
     return ctx.call("crypto.get_signing_box_from_crypto_box", new Crypto.ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), Crypto.RegisteredSigningBox.class);
   }
 
@@ -479,8 +480,8 @@ public final class Crypto {
    * @param secretLifetime  Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set.
    */
   public static Crypto.RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(EverSdkContext ctx,
-      Integer handle, String hdpath, Crypto.BoxEncryptionAlgorithm algorithm,
-      Integer secretLifetime) throws EverSdkException {
+      Long handle, String hdpath, Crypto.BoxEncryptionAlgorithm algorithm, Long secretLifetime)
+      throws EverSdkException {
     return ctx.call("crypto.get_encryption_box_from_crypto_box", new Crypto.ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), Crypto.RegisteredEncryptionBox.class);
   }
 
@@ -522,7 +523,7 @@ public final class Crypto {
    * @param signingBox  Signing Box handle.
    * @param unsigned Must be encoded with `base64`. Unsigned user data.
    */
-  public static Crypto.ResultOfSigningBoxSign signingBoxSign(EverSdkContext ctx, Integer signingBox,
+  public static Crypto.ResultOfSigningBoxSign signingBoxSign(EverSdkContext ctx, Long signingBox,
       String unsigned) throws EverSdkException {
     return ctx.call("crypto.signing_box_sign", new Crypto.ParamsOfSigningBoxSign(signingBox, unsigned), Crypto.ResultOfSigningBoxSign.class);
   }
@@ -557,7 +558,7 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    */
   public static Crypto.ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(EverSdkContext ctx,
-      Integer encryptionBox) throws EverSdkException {
+      Long encryptionBox) throws EverSdkException {
     return ctx.call("crypto.encryption_box_get_info", new Crypto.ParamsOfEncryptionBoxGetInfo(encryptionBox), Crypto.ResultOfEncryptionBoxGetInfo.class);
   }
 
@@ -569,7 +570,7 @@ public final class Crypto {
    * @param data  Data to be encrypted, encoded in Base64
    */
   public static Crypto.ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(EverSdkContext ctx,
-      Integer encryptionBox, String data) throws EverSdkException {
+      Long encryptionBox, String data) throws EverSdkException {
     return ctx.call("crypto.encryption_box_encrypt", new Crypto.ParamsOfEncryptionBoxEncrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxEncrypt.class);
   }
 
@@ -581,7 +582,7 @@ public final class Crypto {
    * @param data  Data to be decrypted, encoded in Base64
    */
   public static Crypto.ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(EverSdkContext ctx,
-      Integer encryptionBox, String data) throws EverSdkException {
+      Long encryptionBox, String data) throws EverSdkException {
     return ctx.call("crypto.encryption_box_decrypt", new Crypto.ParamsOfEncryptionBoxDecrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxDecrypt.class);
   }
 
@@ -641,7 +642,7 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be encrypted, encoded in Base64
    */
-  public static final record ParamsOfEncryptionBoxEncrypt(Integer encryptionBox, String data) {
+  public static final record ParamsOfEncryptionBoxEncrypt(Long encryptionBox, String data) {
   }
 
   /**
@@ -953,7 +954,7 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be decrypted, encoded in Base64
    */
-  public static final record ParamsOfEncryptionBoxDecrypt(Integer encryptionBox, String data) {
+  public static final record ParamsOfEncryptionBoxDecrypt(Long encryptionBox, String data) {
   }
 
   /**
@@ -1060,7 +1061,7 @@ public final class Crypto {
    * @param signingBox  Signing Box handle.
    * @param unsigned Must be encoded with `base64`. Unsigned user data.
    */
-  public static final record ParamsOfSigningBoxSign(Integer signingBox, String unsigned) {
+  public static final record ParamsOfSigningBoxSign(Long signingBox, String unsigned) {
   }
 
   /**
@@ -1075,8 +1076,8 @@ public final class Crypto {
    * @param algorithm  Encryption algorithm.
    * @param secretLifetime  Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set.
    */
-  public static final record ParamsOfGetEncryptionBoxFromCryptoBox(Integer handle, String hdpath,
-      Crypto.BoxEncryptionAlgorithm algorithm, Integer secretLifetime) {
+  public static final record ParamsOfGetEncryptionBoxFromCryptoBox(Long handle, String hdpath,
+      Crypto.BoxEncryptionAlgorithm algorithm, Long secretLifetime) {
   }
 
   /**
@@ -1126,14 +1127,14 @@ public final class Crypto {
    * @param hdpath By default, Everscale HD path is used. HD key derivation path.
    * @param secretLifetime  Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set.
    */
-  public static final record ParamsOfGetSigningBoxFromCryptoBox(Integer handle, String hdpath,
-      Integer secretLifetime) {
+  public static final record ParamsOfGetSigningBoxFromCryptoBox(Long handle, String hdpath,
+      Long secretLifetime) {
   }
 
   /**
    * @param handle  Handle of the signing box.
    */
-  public static final record RegisteredSigningBox(Integer handle) {
+  public static final record RegisteredSigningBox(Long handle) {
   }
 
   /**
@@ -1324,7 +1325,7 @@ public final class Crypto {
   /**
    * @param length  Size of random byte array.
    */
-  public static final record ParamsOfGenerateRandomBytes(Integer length) {
+  public static final record ParamsOfGenerateRandomBytes(Long length) {
   }
 
   /**
@@ -1335,8 +1336,8 @@ public final class Crypto {
    * @param p  Parallelization parameter.
    * @param dkLen  Intended output length in octets of the derived key.
    */
-  public static final record ParamsOfScrypt(String password, String salt, Integer logN, Integer r,
-      Integer p, Integer dkLen) {
+  public static final record ParamsOfScrypt(String password, String salt, Integer logN, Long r,
+      Long p, Long dkLen) {
   }
 
   /**
@@ -1347,13 +1348,13 @@ public final class Crypto {
       @JsonProperty("secret") Crypto.CryptoBoxSecret secretKey) {
   }
 
-  public static final record RegisteredCryptoBox(Integer handle) {
+  public static final record RegisteredCryptoBox(Long handle) {
   }
 
   /**
    * @param handle  Handle of the encryption box.
    */
-  public static final record RegisteredEncryptionBox(Integer handle) {
+  public static final record RegisteredEncryptionBox(Long handle) {
   }
 
   /**
@@ -1379,7 +1380,7 @@ public final class Crypto {
   /**
    * @param encryptionBox  Encryption box handle
    */
-  public static final record ParamsOfEncryptionBoxGetInfo(Integer encryptionBox) {
+  public static final record ParamsOfEncryptionBoxGetInfo(Long encryptionBox) {
   }
 
   /**
@@ -1457,7 +1458,7 @@ public final class Crypto {
    * @param childIndex  Child index (see BIP-0032)
    * @param hardened  Indicates the derivation of hardened/not-hardened key (see BIP-0032)
    */
-  public static final record ParamsOfHDKeyDeriveFromXPrv(String xprv, Integer childIndex,
+  public static final record ParamsOfHDKeyDeriveFromXPrv(String xprv, Long childIndex,
       Boolean hardened) {
   }
 

@@ -2,7 +2,7 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.Boolean;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.String;
 
 /**
@@ -45,7 +45,7 @@ public final class Utils {
    *  Calculates storage fee for an account over a specified time period
    */
   public static Utils.ResultOfCalcStorageFee calcStorageFee(EverSdkContext ctx, String account,
-      Integer period) throws EverSdkException {
+      Long period) throws EverSdkException {
     return ctx.call("utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
   }
 
@@ -56,7 +56,7 @@ public final class Utils {
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
   public static Utils.ResultOfCompressZstd compressZstd(EverSdkContext ctx, String uncompressed,
-      Integer level) throws EverSdkException {
+      Long level) throws EverSdkException {
     return ctx.call("utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
   }
 
@@ -70,7 +70,7 @@ public final class Utils {
     return ctx.call("utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
   }
 
-  public static final record ParamsOfCalcStorageFee(String account, Integer period) {
+  public static final record ParamsOfCalcStorageFee(String account, Long period) {
   }
 
   public static final record ResultOfCalcStorageFee(String fee) {
@@ -108,7 +108,7 @@ public final class Utils {
    * @param uncompressed Must be encoded as base64. Uncompressed data.
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
-  public static final record ParamsOfCompressZstd(String uncompressed, Integer level) {
+  public static final record ParamsOfCompressZstd(String uncompressed, Long level) {
   }
 
   /**

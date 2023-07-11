@@ -38,10 +38,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @param timeout      timeout for operations in milliseconds
 	 * @param mapper       Jackson's ObjectMapper, ContextBuilder have correctly preconfigured one.
 	 */
-	public EverSdkContext(int id,
-	                      int requestCount,
-	                      long timeout,
-	                      ObjectMapper mapper) {
+	public EverSdkContext(int id, int requestCount, long timeout, ObjectMapper mapper) {
 		this(id, mapper, timeout, new AtomicInteger(requestCount));
 	}
 
@@ -76,17 +73,24 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @param params
 	 * @param consumer
 	 * @param clazz
-	 * @param <T>
-	 * @param <P>
-	 * @param <E>
+	 * @param <T> type of function result
+	 * @param <P> type of function params
 	 * @return
 	 * @throws EverSdkException
 	 */
-	public <T, P, E extends ExternalEvent> T callEvent(String functionName,
-	                                                   P params,
-	                                                   Consumer<E> consumer,
-	                                                   Class<T> clazz) throws EverSdkException {
-		return call(functionName, params, clazz);
+	public <T, P> T callEvent(String functionName,
+	                          P params,
+	                          Consumer<CallbackHandler> consumer,
+	                          Class<T> clazz) throws EverSdkException {
+		try {
+			return this.mapper.readValue(processRequest(functionName, processParams(params), consumer), clazz);
+		} catch (JsonProcessingException e) {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
+			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
+			                                                            "Successful response deserialization failed! Check getCause() for actual response."),
+			                           e);
+		}
 	}
 
 	/**
@@ -100,11 +104,9 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @return output type record, usually ResultOf...
 	 * @throws EverSdkException
 	 */
-	public <T, P> T call(String functionName,
-	                     P params,
-	                     Class<T> clazz) throws EverSdkException {
+	public <T, P> T call(String functionName, P params, Class<T> clazz) throws EverSdkException {
 		try {
-			return this.mapper.readValue(processRequest(functionName, processParams(params)), clazz);
+			return this.mapper.readValue(processRequest(functionName, processParams(params), null), clazz);
 		} catch (JsonProcessingException e) {
 			logger.log(System.Logger.Level.ERROR,
 			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
@@ -122,9 +124,8 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @param <P>
 	 * @throws EverSdkException
 	 */
-	public <P> void callVoid(String functionName,
-	                         P params) throws EverSdkException {
-		processRequest(functionName, processParams(params));
+	public <P> void callVoid(String functionName, P params) throws EverSdkException {
+		processRequest(functionName, processParams(params), null);
 	}
 
 	private <P> String processParams(P params) throws EverSdkException {
@@ -133,21 +134,18 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 		} catch (JsonProcessingException e) {
 			logger.log(System.Logger.Level.ERROR,
 			           () -> "Parameters serialization failed!" + e.getMessage() + e.getCause());
-			throw new EverSdkException(new EverSdkException.ErrorResult(-501,
-			                                                            "Parameters serialization failed!"), e);
+			throw new EverSdkException(new EverSdkException.ErrorResult(-501, "Parameters serialization failed!"), e);
 		}
 	}
 
-	private String processRequest(String functionName,
-	                              String params) throws EverSdkException {
+	private String processRequest(String functionName, String params, Consumer<CallbackHandler> consumer) throws EverSdkException {
 		final int requestId = requestCount().incrementAndGet();
 		try {
 			logger.log(System.Logger.Level.TRACE,
 			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " SEND:" + params);
-			final String result = SdkBridge
-					.tcRequest(id(), requestId, functionName, params)
-					.result()
-					.get(timeout(), TimeUnit.MILLISECONDS);
+			final String result = SdkBridge.tcRequest(id(), requestId, functionName, params, consumer)
+			                               .result()
+			                               .get(timeout(), TimeUnit.MILLISECONDS);
 			logger.log(System.Logger.Level.TRACE,
 			           () -> "FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestId + " RESP:" + result);
 			return result;
@@ -163,8 +161,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 				    responseCopy.data().localError().data().exitCode() > 0) {
 					logger.log(System.Logger.Level.WARNING,
 					           () -> "Error from SDK. Code: " + responseCopy.data().localError().code() +
-					                 ", Message: " +
-					                 responseCopy.data().localError().message());
+					                 ", Message: " + responseCopy.data().localError().message());
 					throw new EverSdkException(new EverSdkException.ErrorResult(responseCopy.data()
 					                                                                        .localError()
 					                                                                        .data()
@@ -191,12 +188,13 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 			}
 		} catch (InterruptedException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: INTERRUPTED! " + params + e.getCause() + " " + e.getMessage() + " " + e);
+			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: INTERRUPTED! " +
+			                 params + e.getCause() + " " + e.getMessage() + " " + e);
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
 		} catch (TimeoutException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: TIMEOUT! LIMIT: " + timeout() + " Message: " +
-			                 e.getMessage());
+			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId +
+			                 " ERR: TIMEOUT! LIMIT: " + timeout() + " Message: " + e.getMessage());
 			throw new EverSdkException(new EverSdkException.ErrorResult(-402,
 			                                                            "EVER-SDK Execution expired on Timeout! Current timeout: " +
 			                                                            timeout()), e);
@@ -210,18 +208,10 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 */
 	public static class Builder {
 
-		public static final ObjectMapper DEFAULT_MAPPER = JsonMapper.builder() // or different mapper for other format
-		                                                            .addModule(new ParameterNamesModule())
-		                                                            .addModule(new Jdk8Module())
-		                                                            .addModule(new JavaTimeModule())
-		                                                            // and possibly other configuration, modules, then:
-		                                                            .build()
-		                                                            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-		                                                            .setSerializationInclusion(NON_NULL);
-		                                                            //.registerModule(new RecordNamingStrategyPatchModule());
+		//.registerModule(new RecordNamingStrategyPatchModule());
 		private long timeout = 60_000L;
 		private String configJson = "{}";
-		private ObjectMapper jsonMapper = DEFAULT_MAPPER;
+		private ObjectMapper jsonMapper;
 
 		public Builder() {
 		}
@@ -269,8 +259,16 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 		 * @throws JsonProcessingException
 		 */
 		public EverSdkContext buildNew(LibraryLoader loader) throws JsonProcessingException {
+			if (this.jsonMapper == null) {
+				this.jsonMapper = JsonContext.SDK_JSON_MAPPER();
+			}
 			var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
-			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever","2.1.0"),defaults.network(),defaults.crypto(),defaults.abi(),defaults.boc(),defaults.proofs(),
+			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever", "2.1.0"),
+			                                           defaults.network(),
+			                                           defaults.crypto(),
+			                                           defaults.abi(),
+			                                           defaults.boc(),
+			                                           defaults.proofs(),
 			                                           defaults.localStoragePath());
 			var mergedJson = this.jsonMapper.writeValueAsString(mergedConfig);
 			final var createContextResponse = this.jsonMapper.readValue(SdkBridge.tcCreateContext(loader, mergedJson),
@@ -278,10 +276,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 			if (createContextResponse.result() == null || createContextResponse.result() < 1) {
 				throw new RuntimeException("sdk.create_context failed!");
 			}
-			return new EverSdkContext(createContextResponse.result(),
-			                          0,
-			                          this.timeout,
-			                          this.jsonMapper);
+			return new EverSdkContext(createContextResponse.result(), 0, this.timeout, this.jsonMapper);
 		}
 
 		/**

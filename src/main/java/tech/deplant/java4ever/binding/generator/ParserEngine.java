@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.JsonContext;
 import tech.deplant.java4ever.binding.generator.javapoet.CodeBlock;
 import tech.deplant.java4ever.binding.generator.javapoet.JavaFile;
 import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
@@ -26,8 +27,8 @@ public class ParserEngine {
 	private final static System.Logger logger = System.getLogger(ParserEngine.class.getName());
 
 	public static ApiReference ofJsonResource(String resourceName) throws JsonProcessingException {
-		return EverSdkContext.Builder.DEFAULT_MAPPER.readValue(new JsonResource(resourceName).get(),
-		                                                       ApiReference.class);
+		return JsonContext.SDK_JSON_MAPPER().readValue(new JsonResource(resourceName).get(),
+		                             ApiReference.class);
 	}
 
 	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException, EverSdkException {

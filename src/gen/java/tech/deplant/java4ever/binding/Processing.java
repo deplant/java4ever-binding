@@ -7,7 +7,9 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
+import java.math.BigInteger;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * <strong>Processing</strong>
@@ -117,8 +119,9 @@ public final class Processing {
    * @param sendEvents  Flag for requesting events sending
    */
   public static Processing.ResultOfSendMessage sendMessage(EverSdkContext ctx, String message,
-      Abi.ABI abi, Boolean sendEvents) throws EverSdkException {
-    return ctx.call("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), Processing.ResultOfSendMessage.class);
+      Abi.ABI abi, Boolean sendEvents, Consumer<CallbackHandler> callbackHandler) throws
+      EverSdkException {
+    return ctx.callEvent("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), callbackHandler, Processing.ResultOfSendMessage.class);
   }
 
   /**
@@ -160,8 +163,9 @@ public final class Processing {
    */
   public static Processing.ResultOfProcessMessage waitForTransaction(EverSdkContext ctx,
       Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,
-      String[] sendingEndpoints) throws EverSdkException {
-    return ctx.call("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), Processing.ResultOfProcessMessage.class);
+      String[] sendingEndpoints, Consumer<CallbackHandler> callbackHandler) throws
+      EverSdkException {
+    return ctx.callEvent("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), callbackHandler, Processing.ResultOfProcessMessage.class);
   }
 
   /**
@@ -206,7 +210,7 @@ public final class Processing {
    */
   public static Processing.ResultOfProcessMessage processMessage(EverSdkContext ctx, Abi.ABI abi,
       String address, Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
-      Integer processingTryIndex, Integer signatureId, Boolean sendEvents) throws EverSdkException {
+      Integer processingTryIndex, Long signatureId, Boolean sendEvents) throws EverSdkException {
     return ctx.call("processing.process_message", new Processing.ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), sendEvents), Processing.ResultOfProcessMessage.class);
   }
 
@@ -220,7 +224,7 @@ public final class Processing {
    * @param unresolved  Count of the unresolved messages.
    * @param resolved  Count of resolved results.
    */
-  public static final record MonitoringQueueInfo(Integer unresolved, Integer resolved) {
+  public static final record MonitoringQueueInfo(Long unresolved, Long resolved) {
   }
 
   /**
@@ -465,7 +469,7 @@ public final class Processing {
     /**
      *  Notifies the app that the message has been delivered to the thread's validators
      */
-    final record RempSentToValidators(String messageId, String messageDst, Long timestamp,
+    final record RempSentToValidators(String messageId, String messageDst, BigInteger timestamp,
         Map<String, Object> json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -476,7 +480,7 @@ public final class Processing {
     /**
      *  Notifies the app that the message has been successfully included into a block candidate by the thread's collator
      */
-    final record RempIncludedIntoBlock(String messageId, String messageDst, Long timestamp,
+    final record RempIncludedIntoBlock(String messageId, String messageDst, BigInteger timestamp,
         Map<String, Object> json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -487,8 +491,8 @@ public final class Processing {
     /**
      *  Notifies the app that the block candidate with the message has been accepted by the thread's validators
      */
-    final record RempIncludedIntoAcceptedBlock(String messageId, String messageDst, Long timestamp,
-        Map<String, Object> json) implements ProcessingEvent {
+    final record RempIncludedIntoAcceptedBlock(String messageId, String messageDst,
+        BigInteger timestamp, Map<String, Object> json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempIncludedIntoAcceptedBlock";
@@ -498,7 +502,7 @@ public final class Processing {
     /**
      *  Notifies the app about some other minor REMP statuses occurring during message processing
      */
-    final record RempOther(String messageId, String messageDst, Long timestamp,
+    final record RempOther(String messageId, String messageDst, BigInteger timestamp,
         Map<String, Object> json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -523,7 +527,7 @@ public final class Processing {
    * @param waitUntil  Expiration time of the message. Must be specified as a UNIX timestamp in seconds.
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
-  public static final record MessageSendingParams(String boc, Integer waitUntil,
+  public static final record MessageSendingParams(String boc, Long waitUntil,
       Map<String, Object> userData) {
   }
 
@@ -536,7 +540,7 @@ public final class Processing {
   /**
    * @param exitCode  Compute phase exit code.
    */
-  public static final record MessageMonitoringTransactionCompute(Integer exitCode) {
+  public static final record MessageMonitoringTransactionCompute(Long exitCode) {
   }
 
   public enum MessageMonitoringStatus {
@@ -627,7 +631,7 @@ public final class Processing {
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
   public static final record MessageMonitoringParams(Processing.MonitoredMessage message,
-      Integer waitUntil, Map<String, Object> userData) {
+      Long waitUntil, Map<String, Object> userData) {
   }
 
   /**

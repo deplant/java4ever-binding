@@ -1,10 +1,12 @@
 package tech.deplant.java4ever.binding.ffi;
 
+import tech.deplant.java4ever.binding.CallbackHandler;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.lang.foreign.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static tech.deplant.java4ever.binding.ffi.tc_string_data_t.*;
@@ -25,8 +27,8 @@ public class SdkBridge {
 		//}
 	}
 
-	public static SdkResponseHandler tcRequest(int contextId, int requestId, String functionName, String params) {
-		final var response = new SdkResponseHandler();
+	public static SdkResponseHandler tcRequest(int contextId, int requestId, String functionName, String params, Consumer<CallbackHandler> consumer) {
+		final var response = new SdkResponseHandler(consumer);
 		ton_client.tc_request(contextId,
 		                      ofString(functionName),
 		                      ofString(params),

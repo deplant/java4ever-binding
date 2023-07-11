@@ -90,8 +90,8 @@ public class EverSdkException extends Exception {
 	                              Integer resultCode) {
 	}
 
-	public record ErrorResult(int code, String message, ErrorResultData data) {
-		public ErrorResult(int code, String message) {
+	public record ErrorResult(long code, String message, ErrorResultData data) {
+		public ErrorResult(long code, String message) {
 			this(code, message, null);
 		}
 	}

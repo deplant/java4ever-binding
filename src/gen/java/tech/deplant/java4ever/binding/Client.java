@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;
@@ -51,7 +52,7 @@ public final class Client {
    * @param appRequestId  Request ID received from SDK
    * @param result  Result of request processing
    */
-  public static void resolveAppRequest(EverSdkContext ctx, Integer appRequestId,
+  public static void resolveAppRequest(EverSdkContext ctx, Long appRequestId,
       Client.AppRequestResult result) throws EverSdkException {
     ctx.callVoid("client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
   }
@@ -146,8 +147,8 @@ public final class Client {
    * @param messageExpirationTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Message lifetime for contracts which ABI includes "expire" header.
    * @param messageExpirationTimeoutGrowFactor Default is 1.5 Factor that increases the expiration timeout for each retry
    */
-  public static final record AbiConfig(Integer workchain, Integer messageExpirationTimeout,
-      Integer messageExpirationTimeoutGrowFactor) {
+  public static final record AbiConfig(Long workchain, Long messageExpirationTimeout,
+      Long messageExpirationTimeoutGrowFactor) {
   }
 
   /**
@@ -169,7 +170,7 @@ public final class Client {
   public static final record ProofsConfig(Boolean cacheInLocalStorage) {
   }
 
-  public static final record ClientError(Integer code, String message, Map<String, Object> data) {
+  public static final record ClientError(Long code, String message, Map<String, Object> data) {
   }
 
   /**
@@ -210,19 +211,18 @@ public final class Client {
    * @param accessKey  Access key to GraphQL API (Project secret)
    */
   public static final record NetworkConfig(String serverAddress, String[] endpoints,
-      Integer networkRetriesCount, Integer maxReconnectTimeout, Integer reconnectTimeout,
-      Integer messageRetriesCount, Integer messageProcessingTimeout, Integer waitForTimeout,
-      Integer outOfSyncThreshold, Integer sendingEndpointCount, Integer latencyDetectionInterval,
-      Integer maxLatency, Integer queryTimeout, Client.NetworkQueriesProtocol queriesProtocol,
-      Integer firstRempStatusTimeout, Integer nextRempStatusTimeout, Integer signatureId,
-      String accessKey) {
+      Integer networkRetriesCount, Long maxReconnectTimeout, Long reconnectTimeout,
+      Integer messageRetriesCount, Long messageProcessingTimeout, Long waitForTimeout,
+      Long outOfSyncThreshold, Integer sendingEndpointCount, Long latencyDetectionInterval,
+      Long maxLatency, Long queryTimeout, Client.NetworkQueriesProtocol queriesProtocol,
+      Long firstRempStatusTimeout, Long nextRempStatusTimeout, Long signatureId, String accessKey) {
   }
 
   /**
    * @param appRequestId Should be used in `resolve_app_request` call Request ID.
    * @param requestData  Request describing data
    */
-  public static final record ParamsOfAppRequest(Integer appRequestId,
+  public static final record ParamsOfAppRequest(Long appRequestId,
       Map<String, Object> requestData) {
   }
 
@@ -259,14 +259,14 @@ public final class Client {
    * @param appRequestId  Request ID received from SDK
    * @param result  Result of request processing
    */
-  public static final record ParamsOfResolveAppRequest(Integer appRequestId,
+  public static final record ParamsOfResolveAppRequest(Long appRequestId,
       Client.AppRequestResult result) {
   }
 
   /**
    * @param cacheMaxSize Default is 10 MB Maximum BOC cache size in kilobytes.
    */
-  public static final record BocConfig(Integer cacheMaxSize) {
+  public static final record BocConfig(Long cacheMaxSize) {
   }
 
   /**
@@ -296,7 +296,7 @@ public final class Client {
    * @param buildNumber  Build number assigned to this build by the CI.
    * @param dependencies  Fingerprint of the most important dependencies.
    */
-  public static final record ResultOfBuildInfo(Integer buildNumber,
+  public static final record ResultOfBuildInfo(Long buildNumber,
       Client.BuildInfoDependency[] dependencies) {
   }
 

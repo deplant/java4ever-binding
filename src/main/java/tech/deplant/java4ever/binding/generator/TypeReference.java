@@ -10,6 +10,7 @@ import tech.deplant.java4ever.binding.generator.jtype.SdkObject;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.utils.Strings;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -52,10 +53,16 @@ public record TypeReference(String module,
 					yield ref.withName(r.ref_name()).withIsRef(true);
 				}
 			}
-			case NumberType num -> ref.withName("Integer").withIsRef(false);
+			case NumberType num -> {
+				if (num.number_size() >= 32) {
+					yield ref.withName("Long").withIsRef(false);
+				} else {
+					yield ref.withName("Integer").withIsRef(false);
+				}
+			}
 			case StringType str -> ref.withName("String").withIsRef(false);
 			case BooleanType bool -> ref.withName("Boolean").withIsRef(false);
-			case BigIntType bigInt -> ref.withName("Long").withIsRef(false);
+			case BigIntType bigInt -> ref.withName("BigInteger").withIsRef(false);
 			case NoneType none -> ref.withIsVoid(true);
 			default -> throw new IllegalStateException("Unexpected value: " + apiType);
 		};
@@ -124,6 +131,7 @@ public record TypeReference(String module,
 				case "String" -> TypeName.STRING;
 				case "Boolean" -> ClassName.get(Boolean.class);
 				case "Long" -> ClassName.get(Long.class);
+				case "BigInteger" -> ClassName.get(BigInteger.class);
 				case "Value", "API" -> ParameterizedTypeName.get(TypeName.MAP, TypeName.STRING, TypeName.OBJECT);
 				case "ClientContext" -> ClassName.get(EverSdkContext.class);
 				default -> throw new IllegalStateException("Unexpected value: " + name());

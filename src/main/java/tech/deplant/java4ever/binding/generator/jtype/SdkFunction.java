@@ -1,16 +1,10 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
-import tech.deplant.java4ever.binding.AppSigningBox;
-import tech.deplant.java4ever.binding.EverSdkContext;
-import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.Unstable;
+import tech.deplant.java4ever.binding.*;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
-import tech.deplant.java4ever.binding.generator.javapoet.AnnotationSpec;
-import tech.deplant.java4ever.binding.generator.javapoet.ClassName;
-import tech.deplant.java4ever.binding.generator.javapoet.CodeBlock;
-import tech.deplant.java4ever.binding.generator.javapoet.MethodSpec;
+import tech.deplant.java4ever.binding.generator.javapoet.*;
 import tech.deplant.java4ever.binding.generator.reference.ApiFunction;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 import tech.deplant.java4ever.binding.generator.reference.StructType;
@@ -22,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public record SdkFunction(String functionModule,
@@ -83,15 +78,21 @@ public record SdkFunction(String functionModule,
 
 		for (ApiType param : function().params()) {
 			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
-			SdkParam parsedParam = SdkParam.ofApiType(param, typeLibrary());
 			switch (param.name()) {
 				case "context", "_context" -> {
 					// we're always adding context, so no reason to do something
 				}
 				case "params" -> {
+					SdkParam parsedParam = SdkParam.ofApiType(param, typeLibrary());
 					templateString = templateString.replace("%PARAMS%", constructCallParams(methodBuilder,
 					                                                                        statementArgs,
 					                                                                        parsedParam));
+				}
+				case "callback" -> {
+					templateString = templateString.replace("%APP_OBJ%", ", callbackHandler");
+					templateString = templateString.replace("%CALL_TYPE%", "callEvent");
+					var paramClass = ClassName.get(CallbackHandler.class);
+					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "callbackHandler");
 				}
 				case "app_object", "password_provider" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", appObject");

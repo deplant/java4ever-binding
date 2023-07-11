@@ -3,7 +3,7 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;
@@ -74,7 +74,7 @@ public final class Boc {
    * @param workchainId  Workchain shardstate belongs to
    */
   public static Boc.ResultOfParse parseShardstate(EverSdkContext ctx, String boc, String id,
-      Integer workchainId) throws EverSdkException {
+      Long workchainId) throws EverSdkException {
     return ctx.call("boc.parse_shardstate", new Boc.ParamsOfParseShardstate(boc, id, workchainId), Boc.ResultOfParse.class);
   }
 
@@ -207,7 +207,7 @@ public final class Boc {
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
   public static Boc.ResultOfEncodeStateInit encodeStateInit(EverSdkContext ctx, String code,
-      String data, String library, Boolean tick, Boolean tock, Integer splitDepth,
+      String data, String library, Boolean tick, Boolean tock, Long splitDepth,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("boc.encode_state_init", new Boc.ParamsOfEncodeStateInit(code, data, library, tick, tock, splitDepth, bocCache), Boc.ResultOfEncodeStateInit.class);
   }
@@ -364,7 +364,7 @@ public final class Boc {
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
   public static final record ParamsOfEncodeStateInit(String code, String data, String library,
-      Boolean tick, Boolean tock, Integer splitDepth, Boc.BocCacheType bocCache) {
+      Boolean tick, Boolean tock, Long splitDepth, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -397,7 +397,7 @@ public final class Boc {
   /**
    * @param depth  BOC root cell depth
    */
-  public static final record ResultOfGetBocDepth(Integer depth) {
+  public static final record ResultOfGetBocDepth(Long depth) {
   }
 
   /**
@@ -411,7 +411,7 @@ public final class Boc {
    * @param id  Shardstate identifier
    * @param workchainId  Workchain shardstate belongs to
    */
-  public static final record ParamsOfParseShardstate(String boc, String id, Integer workchainId) {
+  public static final record ParamsOfParseShardstate(String boc, String id, Long workchainId) {
   }
 
   /**
@@ -439,9 +439,9 @@ public final class Boc {
    * @param splitDepth  Is present and non-zero only in instances of large smart contracts
    * @param compilerVersion  Compiler version, for example 'sol 0.49.0'
    */
-  public static final record ResultOfDecodeStateInit(String code, String codeHash,
-      Integer codeDepth, String data, String dataHash, Integer dataDepth, String library,
-      Boolean tick, Boolean tock, Integer splitDepth, String compilerVersion) {
+  public static final record ResultOfDecodeStateInit(String code, String codeHash, Long codeDepth,
+      String data, String dataHash, Long dataDepth, String library, Boolean tick, Boolean tock,
+      Long splitDepth, String compilerVersion) {
   }
 
   /**
@@ -515,7 +515,7 @@ public final class Boc {
      * - `0x` prefixed hexadecimal string.
      *   e.g `0x123`, `0X123`, `-0x123`. Value: - `Number` containing integer number.
      */
-    final record Integer(java.lang.Integer size, String value) implements BuilderOp {
+    final record Integer(Long size, String value) implements BuilderOp {
       @JsonProperty("type")
       public String type() {
         return "Integer";

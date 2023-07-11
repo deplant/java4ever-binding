@@ -3,10 +3,10 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
-import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
+import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -119,8 +119,8 @@ public final class Tvm {
    * @param chksigAlwaysSucceed  Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
    * @param signatureId  Signature ID to be used in signature verifying instructions when CapSignatureWithId capability is enabled
    */
-  public static final record ExecutionOptions(String blockchainConfig, Integer blockTime,
-      Long blockLt, Long transactionLt, Boolean chksigAlwaysSucceed, Integer signatureId) {
+  public static final record ExecutionOptions(String blockchainConfig, Long blockTime,
+      BigInteger blockLt, BigInteger transactionLt, Boolean chksigAlwaysSucceed, Long signatureId) {
   }
 
   /**
@@ -167,9 +167,10 @@ public final class Tvm {
    * @param totalFwdFees  Total fees the account pays for message forwarding
    * @param accountFees  Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
    */
-  public static final record TransactionFees(Long inMsgFwdFee, Long storageFee, Long gasFee,
-      Long outMsgsFwdFee, Long totalAccountFees, Long totalOutput, Long extInMsgFee,
-      Long totalFwdFees, Long accountFees) {
+  public static final record TransactionFees(BigInteger inMsgFwdFee, BigInteger storageFee,
+      BigInteger gasFee, BigInteger outMsgsFwdFee, BigInteger totalAccountFees,
+      BigInteger totalOutput, BigInteger extInMsgFee, BigInteger totalFwdFees,
+      BigInteger accountFees) {
   }
 
   /**

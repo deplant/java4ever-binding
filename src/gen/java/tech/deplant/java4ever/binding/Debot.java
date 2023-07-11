@@ -6,6 +6,7 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
+import java.math.BigInteger;
 
 /**
  * <strong>Debot</strong>
@@ -45,7 +46,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
-  public static void start(EverSdkContext ctx, Integer debotHandle) throws EverSdkException {
+  public static void start(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
     ctx.callVoid("debot.start", new Debot.ParamsOfStart(debotHandle));
   }
 
@@ -71,8 +72,8 @@ public final class Debot {
    * @param action  Debot Action that must be executed.
    */
   @Unstable
-  public static void execute(EverSdkContext ctx, Integer debotHandle, Debot.DebotAction action)
-      throws EverSdkException {
+  public static void execute(EverSdkContext ctx, Long debotHandle, Debot.DebotAction action) throws
+      EverSdkException {
     ctx.callVoid("debot.execute", new Debot.ParamsOfExecute(debotHandle, action));
   }
 
@@ -83,7 +84,7 @@ public final class Debot {
    * @param message  BOC of internal message to debot encoded in base64 format.
    */
   @Unstable
-  public static void send(EverSdkContext ctx, Integer debotHandle, String message) throws
+  public static void send(EverSdkContext ctx, Long debotHandle, String message) throws
       EverSdkException {
     ctx.callVoid("debot.send", new Debot.ParamsOfSend(debotHandle, message));
   }
@@ -94,7 +95,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
-  public static void remove(EverSdkContext ctx, Integer debotHandle) throws EverSdkException {
+  public static void remove(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
     ctx.callVoid("debot.remove", new Debot.ParamsOfRemove(debotHandle));
   }
 
@@ -104,7 +105,7 @@ public final class Debot {
    * @param amount  Amount of nanotokens that will be sent to `dst` address.
    * @param dst  Destination address of recipient of funds.
    */
-  public static final record Spending(Long amount, String dst) {
+  public static final record Spending(BigInteger amount, String dst) {
   }
 
   /**
@@ -113,7 +114,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param action  Debot Action that must be executed.
    */
-  public static final record ParamsOfExecute(Integer debotHandle, Debot.DebotAction action) {
+  public static final record ParamsOfExecute(Long debotHandle, Debot.DebotAction action) {
   }
 
   /**
@@ -137,7 +138,7 @@ public final class Debot {
      *
      * @param signingBox Signing box is owned and disposed by debot engine Signing box for signing data requested by debot engine.
      */
-    final record GetSigningBox(Integer signingBox) implements ResultOfAppDebotBrowser {
+    final record GetSigningBox(Long signingBox) implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "GetSigningBox";
@@ -291,7 +292,7 @@ public final class Debot {
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
-  public static final record ParamsOfRemove(Integer debotHandle) {
+  public static final record ParamsOfRemove(Long debotHandle) {
   }
 
   /**
@@ -301,7 +302,7 @@ public final class Debot {
    * @param debotAbi  Debot abi as json string.
    * @param info  Debot metadata.
    */
-  public static final record RegisteredDebot(Integer debotHandle, String debotAbi,
+  public static final record RegisteredDebot(Long debotHandle, String debotAbi,
       Debot.DebotInfo info) {
   }
 
@@ -310,7 +311,7 @@ public final class Debot {
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
-  public static final record ParamsOfStart(Integer debotHandle) {
+  public static final record ParamsOfStart(Long debotHandle) {
   }
 
   /**
@@ -328,8 +329,8 @@ public final class Debot {
      * @param signkey  Public key from keypair that was used to sign external message.
      * @param signingBoxHandle  Signing box handle used to sign external message.
      */
-    final record Transaction(String msg, String dst, Debot.Spending[] out, Long fee,
-        Boolean setcode, String signkey, Integer signingBoxHandle) implements DebotActivity {
+    final record Transaction(String msg, String dst, Debot.Spending[] out, BigInteger fee,
+        Boolean setcode, String signkey, Long signingBoxHandle) implements DebotActivity {
       @JsonProperty("type")
       public String type() {
         return "Transaction";
@@ -351,7 +352,7 @@ public final class Debot {
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param message  BOC of internal message to debot encoded in base64 format.
    */
-  public static final record ParamsOfSend(Integer debotHandle, String message) {
+  public static final record ParamsOfSend(Long debotHandle, String message) {
   }
 
   /**

@@ -8,6 +8,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
+import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -42,7 +43,7 @@ public final class Abi {
    */
   public static Abi.ResultOfEncodeMessageBody encodeMessageBody(EverSdkContext ctx, Abi.ABI abi,
       Abi.CallSet callSet, Boolean isInternal, Abi.Signer signer, Integer processingTryIndex,
-      String address, Integer signatureId) throws EverSdkException {
+      String address, Long signatureId) throws EverSdkException {
     return ctx.call("abi.encode_message_body", new Abi.ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address, signatureId), Abi.ResultOfEncodeMessageBody.class);
   }
 
@@ -113,7 +114,7 @@ public final class Abi {
    */
   public static Abi.ResultOfEncodeMessage encodeMessage(EverSdkContext ctx, Abi.ABI abi,
       String address, Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
-      Integer processingTryIndex, Integer signatureId) throws EverSdkException {
+      Integer processingTryIndex, Long signatureId) throws EverSdkException {
     return ctx.call("abi.encode_message", new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), Abi.ResultOfEncodeMessage.class);
   }
 
@@ -205,7 +206,7 @@ public final class Abi {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
   public static Abi.ResultOfEncodeAccount encodeAccount(EverSdkContext ctx,
-      Abi.StateInitSource stateInit, Long balance, Long lastTransLt, Integer lastPaid,
+      Abi.StateInitSource stateInit, BigInteger balance, BigInteger lastTransLt, Long lastPaid,
       Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("abi.encode_account", new Abi.ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), Abi.ResultOfEncodeAccount.class);
   }
@@ -320,7 +321,7 @@ public final class Abi {
    * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
   public static Abi.ResultOfGetSignatureData getSignatureData(EverSdkContext ctx, Abi.ABI abi,
-      String message, Integer signatureId) throws EverSdkException {
+      String message, Long signatureId) throws EverSdkException {
     return ctx.call("abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message, signatureId), Abi.ResultOfGetSignatureData.class);
   }
 
@@ -331,8 +332,8 @@ public final class Abi {
    * @param lastPaid  Initial value for the `last_paid`.
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static final record ParamsOfEncodeAccount(Abi.StateInitSource stateInit, Long balance,
-      Long lastTransLt, Integer lastPaid, Boc.BocCacheType bocCache) {
+  public static final record ParamsOfEncodeAccount(Abi.StateInitSource stateInit,
+      BigInteger balance, BigInteger lastTransLt, Long lastPaid, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -341,7 +342,7 @@ public final class Abi {
    * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
   public static final record ParamsOfGetSignatureData(Abi.ABI abi, String message,
-      Integer signatureId) {
+      Long signatureId) {
   }
 
   /**
@@ -386,7 +387,7 @@ public final class Abi {
    */
   public static final record ParamsOfEncodeMessageBody(Abi.ABI abi, Abi.CallSet callSet,
       Boolean isInternal, Abi.Signer signer, Integer processingTryIndex, String address,
-      Integer signatureId) {
+      Long signatureId) {
   }
 
   public sealed interface StateInitSource {
@@ -426,8 +427,8 @@ public final class Abi {
     }
   }
 
-  public static final record AbiContract(@JsonProperty("ABI version") Integer abiVersionMajor,
-      Integer abiVersion, String version, String[] header, Abi.AbiFunction[] functions,
+  public static final record AbiContract(@JsonProperty("ABI version") Long abiVersionMajor,
+      Long abiVersion, String version, String[] header, Abi.AbiFunction[] functions,
       Abi.AbiEvent[] events, Abi.AbiData[] data, Abi.AbiParam[] fields) {
   }
 
@@ -528,7 +529,7 @@ public final class Abi {
   /**
    * @param functionId  Contract function ID
    */
-  public static final record ResultOfCalcFunctionId(Integer functionId) {
+  public static final record ResultOfCalcFunctionId(Long functionId) {
   }
 
   /**
@@ -581,7 +582,7 @@ public final class Abi {
       }
     }
 
-    final record Handle(Integer value) implements ABI {
+    final record Handle(Long value) implements ABI {
       @JsonProperty("type")
       public String type() {
         return "Handle";
@@ -639,7 +640,7 @@ public final class Abi {
    */
   public static final record ParamsOfEncodeMessage(Abi.ABI abi, String address,
       Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
-      Integer signatureId) implements MessageSource {
+      Long signatureId) implements MessageSource {
     @JsonProperty("type")
     public String type() {
       return "EncodingParams";
@@ -664,7 +665,7 @@ public final class Abi {
       Map<String, Object> value, Abi.FunctionHeader header) {
   }
 
-  public static final record AbiData(Integer key, String name, String type,
+  public static final record AbiData(Long key, String name, String type,
       Abi.AbiParam[] components) {
   }
 
@@ -736,7 +737,7 @@ public final class Abi {
    * @param time If not specified, `now` is used (if ABI includes `time` header). Message creation time in milliseconds.
    * @param pubkey Encoded in `hex`. If not specified, method fails with exception (if ABI includes `pubkey` header).. Public key is used by the contract to check the signature.
    */
-  public static final record FunctionHeader(Integer expire, Long time, String pubkey) {
+  public static final record FunctionHeader(Long expire, BigInteger time, String pubkey) {
   }
 
   /**
@@ -784,7 +785,7 @@ public final class Abi {
     /**
      *  Signing Box interface is provided for signing, allows Dapps to sign messages using external APIs, such as HSM, cold wallet, etc.
      */
-    final record SigningBox(Integer handle) implements Signer {
+    final record SigningBox(Long handle) implements Signer {
       @JsonProperty("type")
       public String type() {
         return "SigningBox";
@@ -861,8 +862,8 @@ public final class Abi {
    * 2. Public key, specified in TVM file.
    * 3. Public key, provided by Signer. Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
-  public static final record DeploySet(String tvc, String code, String stateInit,
-      Integer workchainId, Map<String, Object> initialData, String initialPubkey) {
+  public static final record DeploySet(String tvc, String code, String stateInit, Long workchainId,
+      Map<String, Object> initialData, String initialPubkey) {
   }
 
   /**

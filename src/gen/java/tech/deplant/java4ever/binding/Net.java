@@ -3,10 +3,11 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * <strong>Net</strong>
@@ -49,7 +50,7 @@ public final class Net {
    * @param limit  Number of documents to return
    */
   public static Net.ResultOfQueryCollection queryCollection(EverSdkContext ctx, String collection,
-      Map<String, Object> filter, String result, Net.OrderBy[] order, Integer limit) throws
+      Map<String, Object> filter, String result, Net.OrderBy[] order, Long limit) throws
       EverSdkException {
     return ctx.call("net.query_collection", new Net.ParamsOfQueryCollection(collection, filter, result, order, limit), Net.ResultOfQueryCollection.class);
   }
@@ -82,7 +83,7 @@ public final class Net {
    * @param timeout  Query timeout
    */
   public static Net.ResultOfWaitForCollection waitForCollection(EverSdkContext ctx,
-      String collection, Map<String, Object> filter, String result, Integer timeout) throws
+      String collection, Map<String, Object> filter, String result, Long timeout) throws
       EverSdkException {
     return ctx.call("net.wait_for_collection", new Net.ParamsOfWaitForCollection(collection, filter, result, timeout), Net.ResultOfWaitForCollection.class);
   }
@@ -142,8 +143,9 @@ public final class Net {
    * @param result  Projection (result) string
    */
   public static Net.ResultOfSubscribeCollection subscribeCollection(EverSdkContext ctx,
-      String collection, Map<String, Object> filter, String result) throws EverSdkException {
-    return ctx.call("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), Net.ResultOfSubscribeCollection.class);
+      String collection, Map<String, Object> filter, String result,
+      Consumer<CallbackHandler> callbackHandler) throws EverSdkException {
+    return ctx.callEvent("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), callbackHandler, Net.ResultOfSubscribeCollection.class);
   }
 
   /**
@@ -186,8 +188,9 @@ public final class Net {
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
   public static Net.ResultOfSubscribeCollection subscribe(EverSdkContext ctx, String subscription,
-      Map<String, Object> variables) throws EverSdkException {
-    return ctx.call("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), Net.ResultOfSubscribeCollection.class);
+      Map<String, Object> variables, Consumer<CallbackHandler> callbackHandler) throws
+      EverSdkException {
+    return ctx.callEvent("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), callbackHandler, Net.ResultOfSubscribeCollection.class);
   }
 
   /**
@@ -247,7 +250,7 @@ public final class Net {
    * @param after  `cursor` field of the last received result
    */
   public static Net.ResultOfQueryCollection queryCounterparties(EverSdkContext ctx, String account,
-      String result, Integer first, String after) throws EverSdkException {
+      String result, Long first, String after) throws EverSdkException {
     return ctx.call("net.query_counterparties", new Net.ParamsOfQueryCounterparties(account, result, first, after), Net.ResultOfQueryCollection.class);
   }
 
@@ -297,7 +300,7 @@ public final class Net {
    * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
   public static Net.ResultOfQueryTransactionTree queryTransactionTree(EverSdkContext ctx,
-      String inMsg, Abi.ABI[] abiRegistry, Integer timeout, Integer transactionMaxCount) throws
+      String inMsg, Abi.ABI[] abiRegistry, Long timeout, Long transactionMaxCount) throws
       EverSdkException {
     return ctx.call("net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout, transactionMaxCount), Net.ResultOfQueryTransactionTree.class);
   }
@@ -361,8 +364,8 @@ public final class Net {
    * Note that iterated items can contains additional fields that are
    * not requested in the `result`. Projection (result) string.
    */
-  public static Net.RegisteredIterator createBlockIterator(EverSdkContext ctx, Integer startTime,
-      Integer endTime, String[] shardFilter, String result) throws EverSdkException {
+  public static Net.RegisteredIterator createBlockIterator(EverSdkContext ctx, Long startTime,
+      Long endTime, String[] shardFilter, String result) throws EverSdkException {
     return ctx.call("net.create_block_iterator", new Net.ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), Net.RegisteredIterator.class);
   }
 
@@ -472,9 +475,9 @@ public final class Net {
    * @param includeTransfers If this parameter is `true` then each transaction contains field
    * `transfers` with list of transfer. See more about this structure in function description. Include `transfers` field in iterated transactions.
    */
-  public static Net.RegisteredIterator createTransactionIterator(EverSdkContext ctx,
-      Integer startTime, Integer endTime, String[] shardFilter, String[] accountsFilter,
-      String result, Boolean includeTransfers) throws EverSdkException {
+  public static Net.RegisteredIterator createTransactionIterator(EverSdkContext ctx, Long startTime,
+      Long endTime, String[] shardFilter, String[] accountsFilter, String result,
+      Boolean includeTransfers) throws EverSdkException {
     return ctx.call("net.create_transaction_iterator", new Net.ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), Net.RegisteredIterator.class);
   }
 
@@ -522,8 +525,8 @@ public final class Net {
    * @param limit If value is missing or is less than 1 the library uses 1. Maximum count of the returned items.
    * @param returnResumeState  Indicates that function must return the iterator state that can be used for resuming iteration.
    */
-  public static Net.ResultOfIteratorNext iteratorNext(EverSdkContext ctx, Integer iterator,
-      Integer limit, Boolean returnResumeState) throws EverSdkException {
+  public static Net.ResultOfIteratorNext iteratorNext(EverSdkContext ctx, Long iterator, Long limit,
+      Boolean returnResumeState) throws EverSdkException {
     return ctx.call("net.iterator_next", new Net.ParamsOfIteratorNext(iterator, limit, returnResumeState), Net.ResultOfIteratorNext.class);
   }
 
@@ -549,7 +552,7 @@ public final class Net {
   /**
    * @param signatureId  Signature ID for configured network if it should be used in messages signature
    */
-  public static final record ResultOfGetSignatureId(Integer signatureId) {
+  public static final record ResultOfGetSignatureId(Long signatureId) {
   }
 
   /**
@@ -597,7 +600,7 @@ public final class Net {
    * @param includeTransfers If this parameter is `true` then each transaction contains field
    * `transfers` with list of transfer. See more about this structure in function description. Include `transfers` field in iterated transactions.
    */
-  public static final record ParamsOfCreateTransactionIterator(Integer startTime, Integer endTime,
+  public static final record ParamsOfCreateTransactionIterator(Long startTime, Long endTime,
       String[] shardFilter, String[] accountsFilter, String result, Boolean includeTransfers) {
   }
 
@@ -606,7 +609,7 @@ public final class Net {
    * @param limit If value is missing or is less than 1 the library uses 1. Maximum count of the returned items.
    * @param returnResumeState  Indicates that function must return the iterator state that can be used for resuming iteration.
    */
-  public static final record ParamsOfIteratorNext(Integer iterator, Integer limit,
+  public static final record ParamsOfIteratorNext(Long iterator, Long limit,
       Boolean returnResumeState) {
   }
 
@@ -663,7 +666,7 @@ public final class Net {
   /**
    * @param handle Must be closed with `unsubscribe` Subscription handle.
    */
-  public static final record ResultOfSubscribeCollection(Integer handle) {
+  public static final record ResultOfSubscribeCollection(Long handle) {
   }
 
   /**
@@ -688,7 +691,7 @@ public final class Net {
    * @param limit  Number of documents to return
    */
   public static final record ParamsOfQueryCollection(String collection, Map<String, Object> filter,
-      String result, Net.OrderBy[] order, Integer limit) implements ParamsOfQueryOperation {
+      String result, Net.OrderBy[] order, Long limit) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "QueryCollection";
@@ -699,7 +702,7 @@ public final class Net {
    * @param handle Must be removed using `remove_iterator`
    * when it is no more needed for the application. Iterator handle.
    */
-  public static final record RegisteredIterator(Integer handle) {
+  public static final record RegisteredIterator(Long handle) {
   }
 
   /**
@@ -716,7 +719,7 @@ public final class Net {
    * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
   public static final record ParamsOfQueryTransactionTree(String inMsg, Abi.ABI[] abiRegistry,
-      Integer timeout, Integer transactionMaxCount) {
+      Long timeout, Long transactionMaxCount) {
   }
 
   /**
@@ -739,8 +742,7 @@ public final class Net {
    * @param timeout  Query timeout
    */
   public static final record ParamsOfWaitForCollection(String collection,
-      Map<String, Object> filter, String result,
-      Integer timeout) implements ParamsOfQueryOperation {
+      Map<String, Object> filter, String result, Long timeout) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "WaitForCollection";
@@ -821,7 +823,7 @@ public final class Net {
    * Note that iterated items can contains additional fields that are
    * not requested in the `result`. Projection (result) string.
    */
-  public static final record ParamsOfCreateBlockIterator(Integer startTime, Integer endTime,
+  public static final record ParamsOfCreateBlockIterator(Long startTime, Long endTime,
       String[] shardFilter, String result) {
   }
 
@@ -831,8 +833,8 @@ public final class Net {
    * @param first  Number of counterparties to return
    * @param after  `cursor` field of the last received result
    */
-  public static final record ParamsOfQueryCounterparties(String account, String result,
-      Integer first, String after) implements ParamsOfQueryOperation {
+  public static final record ParamsOfQueryCounterparties(String account, String result, Long first,
+      String after) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "QueryCounterparties";
@@ -955,6 +957,6 @@ public final class Net {
    * @param exitCode  Compute phase exit code.
    */
   public static final record TransactionNode(String id, String inMsg, String[] outMsgs,
-      String accountAddr, String totalFees, Boolean aborted, Integer exitCode) {
+      String accountAddr, String totalFees, Boolean aborted, Long exitCode) {
   }
 }
