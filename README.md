@@ -39,7 +39,7 @@ that is based on this binding for easier work with TVM blockchains.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:2.1.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:2.1.1'
 }
 ```
 
@@ -50,7 +50,7 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 

@@ -1,3 +1,7 @@
+### 2.1.1
+
+- Fixes for event handling in subscriptions and alike
+
 ### 2.1.0
 
 - Updated EVER-SDK -> 1.43.3
