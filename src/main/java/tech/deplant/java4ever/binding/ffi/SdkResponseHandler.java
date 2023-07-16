@@ -56,7 +56,8 @@ public class SdkResponseHandler implements tc_response_handler_t {
 			}
 		} else {
 			// CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
-			logger.log(System.Logger.Level.TRACE, () -> "REQID: %d, CUSTOM".formatted(x0));
+			logger.log(System.Logger.Level.TRACE,
+			           () -> "REQID: %d, CUSTOM #%d, %s".formatted(x0, x2, SdkBridge.toString(x1)));
 			if (this.handlerConsumer != null) {
 				this.handlerConsumer.accept(new CallbackHandler(SdkBridge.toString(x1), x2));
 			}
