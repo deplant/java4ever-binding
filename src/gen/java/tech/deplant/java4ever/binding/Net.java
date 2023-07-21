@@ -2,11 +2,10 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -23,8 +22,8 @@ public final class Net {
    * @param query  GraphQL query text.
    * @param variables Must be a map with named values that can be used in query. Variables used in query.
    */
-  public static Net.ResultOfQuery query(EverSdkContext ctx, String query,
-      Map<String, Object> variables) throws EverSdkException {
+  public static Net.ResultOfQuery query(EverSdkContext ctx, String query, JsonNode variables) throws
+      EverSdkException {
     return ctx.call("net.query", new Net.ParamsOfQuery(query, variables), Net.ResultOfQuery.class);
   }
 
@@ -50,8 +49,7 @@ public final class Net {
    * @param limit  Number of documents to return
    */
   public static Net.ResultOfQueryCollection queryCollection(EverSdkContext ctx, String collection,
-      Map<String, Object> filter, String result, Net.OrderBy[] order, Long limit) throws
-      EverSdkException {
+      JsonNode filter, String result, Net.OrderBy[] order, Long limit) throws EverSdkException {
     return ctx.call("net.query_collection", new Net.ParamsOfQueryCollection(collection, filter, result, order, limit), Net.ResultOfQueryCollection.class);
   }
 
@@ -64,8 +62,7 @@ public final class Net {
    * @param fields  Projection (result) string
    */
   public static Net.ResultOfAggregateCollection aggregateCollection(EverSdkContext ctx,
-      String collection, Map<String, Object> filter, Net.FieldAggregation[] fields) throws
-      EverSdkException {
+      String collection, JsonNode filter, Net.FieldAggregation[] fields) throws EverSdkException {
     return ctx.call("net.aggregate_collection", new Net.ParamsOfAggregateCollection(collection, filter, fields), Net.ResultOfAggregateCollection.class);
   }
 
@@ -83,8 +80,7 @@ public final class Net {
    * @param timeout  Query timeout
    */
   public static Net.ResultOfWaitForCollection waitForCollection(EverSdkContext ctx,
-      String collection, Map<String, Object> filter, String result, Long timeout) throws
-      EverSdkException {
+      String collection, JsonNode filter, String result, Long timeout) throws EverSdkException {
     return ctx.call("net.wait_for_collection", new Net.ParamsOfWaitForCollection(collection, filter, result, timeout), Net.ResultOfWaitForCollection.class);
   }
 
@@ -143,8 +139,8 @@ public final class Net {
    * @param result  Projection (result) string
    */
   public static Net.ResultOfSubscribeCollection subscribeCollection(EverSdkContext ctx,
-      String collection, Map<String, Object> filter, String result,
-      Consumer<CallbackHandler> callbackHandler) throws EverSdkException {
+      String collection, JsonNode filter, String result, Consumer<CallbackHandler> callbackHandler)
+      throws EverSdkException {
     return ctx.callEvent("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), callbackHandler, Net.ResultOfSubscribeCollection.class);
   }
 
@@ -188,8 +184,7 @@ public final class Net {
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
   public static Net.ResultOfSubscribeCollection subscribe(EverSdkContext ctx, String subscription,
-      Map<String, Object> variables, Consumer<CallbackHandler> callbackHandler) throws
-      EverSdkException {
+      JsonNode variables, Consumer<CallbackHandler> callbackHandler) throws EverSdkException {
     return ctx.callEvent("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), callbackHandler, Net.ResultOfSubscribeCollection.class);
   }
 
@@ -376,8 +371,8 @@ public final class Net {
    *
    * @param resumeState Same as value returned from `iterator_next`. Iterator state from which to resume.
    */
-  public static Net.RegisteredIterator resumeBlockIterator(EverSdkContext ctx,
-      Map<String, Object> resumeState) throws EverSdkException {
+  public static Net.RegisteredIterator resumeBlockIterator(EverSdkContext ctx, JsonNode resumeState)
+      throws EverSdkException {
     return ctx.call("net.resume_block_iterator", new Net.ParamsOfResumeBlockIterator(resumeState), Net.RegisteredIterator.class);
   }
 
@@ -501,7 +496,7 @@ public final class Net {
    * So it is the application's responsibility to specify the correct filter combination. Account address filter.
    */
   public static Net.RegisteredIterator resumeTransactionIterator(EverSdkContext ctx,
-      Map<String, Object> resumeState, String[] accountsFilter) throws EverSdkException {
+      JsonNode resumeState, String[] accountsFilter) throws EverSdkException {
     return ctx.call("net.resume_transaction_iterator", new Net.ParamsOfResumeTransactionIterator(resumeState, accountsFilter), Net.RegisteredIterator.class);
   }
 
@@ -616,7 +611,7 @@ public final class Net {
   /**
    * @param results Returns an array of values. Each value corresponds to `queries` item. Result values for batched queries.
    */
-  public static final record ResultOfBatchQuery(Map<String, Object>[] results) {
+  public static final record ResultOfBatchQuery(JsonNode[] results) {
   }
 
   public enum SortDirection {
@@ -628,7 +623,7 @@ public final class Net {
   /**
    * @param result  Result provided by DAppServer.
    */
-  public static final record ResultOfQuery(Map<String, Object> result) {
+  public static final record ResultOfQuery(JsonNode result) {
   }
 
   /**
@@ -643,7 +638,7 @@ public final class Net {
    * if both are specified.
    * So it is the application's responsibility to specify the correct filter combination. Account address filter.
    */
-  public static final record ParamsOfResumeTransactionIterator(Map<String, Object> resumeState,
+  public static final record ParamsOfResumeTransactionIterator(JsonNode resumeState,
       String[] accountsFilter) {
   }
 
@@ -659,8 +654,8 @@ public final class Net {
    * Note that `resume_state` corresponds to the iteration position
    * after the returned items. Optional iterator state that can be used for resuming iteration.
    */
-  public static final record ResultOfIteratorNext(Map<String, Object>[] items, Boolean hasMore,
-      Map<String, Object> resumeState) {
+  public static final record ResultOfIteratorNext(JsonNode[] items, Boolean hasMore,
+      JsonNode resumeState) {
   }
 
   /**
@@ -690,7 +685,7 @@ public final class Net {
    * @param order  Sorting order
    * @param limit  Number of documents to return
    */
-  public static final record ParamsOfQueryCollection(String collection, Map<String, Object> filter,
+  public static final record ParamsOfQueryCollection(String collection, JsonNode filter,
       String result, Net.OrderBy[] order, Long limit) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
@@ -726,13 +721,13 @@ public final class Net {
    * @param query  GraphQL query text.
    * @param variables Must be a map with named values that can be used in query. Variables used in query.
    */
-  public static final record ParamsOfQuery(String query, Map<String, Object> variables) {
+  public static final record ParamsOfQuery(String query, JsonNode variables) {
   }
 
   /**
    * @param result  First found object that matches the provided criteria
    */
-  public static final record ResultOfWaitForCollection(Map<String, Object> result) {
+  public static final record ResultOfWaitForCollection(JsonNode result) {
   }
 
   /**
@@ -741,8 +736,8 @@ public final class Net {
    * @param result  Projection (result) string
    * @param timeout  Query timeout
    */
-  public static final record ParamsOfWaitForCollection(String collection,
-      Map<String, Object> filter, String result, Long timeout) implements ParamsOfQueryOperation {
+  public static final record ParamsOfWaitForCollection(String collection, JsonNode filter,
+      String result, Long timeout) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "WaitForCollection";
@@ -771,7 +766,7 @@ public final class Net {
    * @param subscription  GraphQL subscription text.
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
-  public static final record ParamsOfSubscribe(String subscription, Map<String, Object> variables) {
+  public static final record ParamsOfSubscribe(String subscription, JsonNode variables) {
   }
 
   public static final record OrderBy(String path, Net.SortDirection direction) {
@@ -845,13 +840,13 @@ public final class Net {
    * @param values Returns an array of strings. Each string refers to the corresponding `fields` item.
    * Numeric value is returned as a decimal string representations. Values for requested fields.
    */
-  public static final record ResultOfAggregateCollection(Map<String, Object> values) {
+  public static final record ResultOfAggregateCollection(JsonNode values) {
   }
 
   /**
    * @param result  Objects that match the provided criteria
    */
-  public static final record ResultOfQueryCollection(Map<String, Object>[] result) {
+  public static final record ResultOfQueryCollection(JsonNode[] result) {
   }
 
   /**
@@ -859,8 +854,8 @@ public final class Net {
    * @param filter  Collection filter
    * @param result  Projection (result) string
    */
-  public static final record ParamsOfSubscribeCollection(String collection,
-      Map<String, Object> filter, String result) {
+  public static final record ParamsOfSubscribeCollection(String collection, JsonNode filter,
+      String result) {
   }
 
   /**
@@ -879,7 +874,7 @@ public final class Net {
   /**
    * @param resumeState Same as value returned from `iterator_next`. Iterator state from which to resume.
    */
-  public static final record ParamsOfResumeBlockIterator(Map<String, Object> resumeState) {
+  public static final record ParamsOfResumeBlockIterator(JsonNode resumeState) {
   }
 
   public sealed interface ParamsOfQueryOperation {
@@ -890,8 +885,8 @@ public final class Net {
    * @param filter  Collection filter
    * @param fields  Projection (result) string
    */
-  public static final record ParamsOfAggregateCollection(String collection,
-      Map<String, Object> filter, Net.FieldAggregation[] fields) implements ParamsOfQueryOperation {
+  public static final record ParamsOfAggregateCollection(String collection, JsonNode filter,
+      Net.FieldAggregation[] fields) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "AggregateCollection";

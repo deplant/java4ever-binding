@@ -2,12 +2,11 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
 import java.math.BigInteger;
-import java.util.Map;
 
 /**
  * <strong>Tvm</strong>
@@ -106,8 +105,8 @@ public final class Tvm {
    * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
    */
   public static Tvm.ResultOfRunGet runGet(EverSdkContext ctx, String account, String functionName,
-      Map<String, Object> input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray)
-      throws EverSdkException {
+      JsonNode input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray) throws
+      EverSdkException {
     return ctx.call("tvm.run_get", new Tvm.ParamsOfRunGet(account, functionName, input, executionOptions, tupleListAsArray), Tvm.ResultOfRunGet.class);
   }
 
@@ -132,15 +131,14 @@ public final class Tvm {
    * @param account Encoded as `base64` Updated account state BOC.
    * @param fees  Transaction fees
    */
-  public static final record ResultOfRunExecutor(Map<String, Object> transaction,
-      String[] outMessages, Processing.DecodedOutput decoded, String account,
-      Tvm.TransactionFees fees) {
+  public static final record ResultOfRunExecutor(JsonNode transaction, String[] outMessages,
+      Processing.DecodedOutput decoded, String account, Tvm.TransactionFees fees) {
   }
 
   /**
    * @param output  Values returned by get-method on stack
    */
-  public static final record ResultOfRunGet(Map<String, Object> output) {
+  public static final record ResultOfRunGet(JsonNode output) {
   }
 
   /**
@@ -183,8 +181,8 @@ public final class Tvm {
    * set this flag to true.
    * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
    */
-  public static final record ParamsOfRunGet(String account, String functionName,
-      Map<String, Object> input, Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray) {
+  public static final record ParamsOfRunGet(String account, String functionName, JsonNode input,
+      Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray) {
   }
 
   public enum TvmErrorCode {

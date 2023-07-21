@@ -2,11 +2,10 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
-import java.util.Map;
 
 /**
  * <strong>Boc</strong>
@@ -447,7 +446,7 @@ public final class Boc {
   /**
    * @param parsed  JSON containing parsed BOC
    */
-  public static final record ResultOfParse(Map<String, Object> parsed) {
+  public static final record ResultOfParse(JsonNode parsed) {
   }
 
   public static final record TvcV1(String code, String description) {

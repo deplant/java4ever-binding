@@ -1,6 +1,7 @@
-### 2.1.1
+### 2.2.0
 
-- Fixes for event handling in subscriptions and alike
+- Fixes for event handling in subscriptions and alike. You should pass Consumer object for handling custom notifications.
+- Previous usage of Map<String,Object> to represent dynamic types (for example transaction output) wasn't enough. It's not easy to parse deep type trees through Map representation. Type changed to JsonNode object that represents tree with all parsing capabilities. 
 
 ### 2.1.0
 

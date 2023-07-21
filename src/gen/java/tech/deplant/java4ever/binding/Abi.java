@@ -3,13 +3,12 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
 import java.math.BigInteger;
-import java.util.Map;
 
 /**
  * <strong>Abi</strong>
@@ -233,8 +232,8 @@ public final class Abi {
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
   public static Abi.ResultOfUpdateInitialData updateInitialData(EverSdkContext ctx, Abi.ABI abi,
-      String data, Map<String, Object> initialData, String initialPubkey, Boc.BocCacheType bocCache)
-      throws EverSdkException {
+      String data, JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
+      EverSdkException {
     return ctx.call("abi.update_initial_data", new Abi.ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), Abi.ResultOfUpdateInitialData.class);
   }
 
@@ -247,7 +246,7 @@ public final class Abi {
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
   public static Abi.ResultOfEncodeInitialData encodeInitialData(EverSdkContext ctx, Abi.ABI abi,
-      Map<String, Object> initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
+      JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
       EverSdkException {
     return ctx.call("abi.encode_initial_data", new Abi.ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), Abi.ResultOfEncodeInitialData.class);
   }
@@ -297,7 +296,7 @@ public final class Abi {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
   public static Abi.ResultOfAbiEncodeBoc encodeBoc(EverSdkContext ctx, Abi.AbiParam[] params,
-      Map<String, Object> data, Boc.BocCacheType bocCache) throws EverSdkException {
+      JsonNode data, Boc.BocCacheType bocCache) throws EverSdkException {
     return ctx.call("abi.encode_boc", new Abi.ParamsOfAbiEncodeBoc(params, data, bocCache), Abi.ResultOfAbiEncodeBoc.class);
   }
 
@@ -478,7 +477,7 @@ public final class Abi {
    * @param initialPubkey  Initial account owner's public key to set into account data
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static final record ParamsOfEncodeInitialData(Abi.ABI abi, Map<String, Object> initialData,
+  public static final record ParamsOfEncodeInitialData(Abi.ABI abi, JsonNode initialData,
       String initialPubkey, Boc.BocCacheType bocCache) {
   }
 
@@ -508,7 +507,7 @@ public final class Abi {
    * @param data  Parameters and values as a JSON structure
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static final record ParamsOfAbiEncodeBoc(Abi.AbiParam[] params, Map<String, Object> data,
+  public static final record ParamsOfAbiEncodeBoc(Abi.AbiParam[] params, JsonNode data,
       Boc.BocCacheType bocCache) {
   }
 
@@ -651,8 +650,7 @@ public final class Abi {
    * @param initialData Initial data is decoded if `abi` input parameter is provided List of initial values of contract's public variables.
    * @param initialPubkey  Initial account owner's public key
    */
-  public static final record ResultOfDecodeInitialData(Map<String, Object> initialData,
-      String initialPubkey) {
+  public static final record ResultOfDecodeInitialData(JsonNode initialData, String initialPubkey) {
   }
 
   /**
@@ -662,14 +660,14 @@ public final class Abi {
    * @param header  Function header.
    */
   public static final record DecodedMessageBody(Abi.MessageBodyType bodyType, String name,
-      Map<String, Object> value, Abi.FunctionHeader header) {
+      JsonNode value, Abi.FunctionHeader header) {
   }
 
   public static final record AbiData(Long key, String name, String type,
       Abi.AbiParam[] components) {
   }
 
-  public static final record StateInitParams(Abi.ABI abi, Map<String, Object> value) {
+  public static final record StateInitParams(Abi.ABI abi, JsonNode value) {
   }
 
   public enum AbiErrorCode {
@@ -748,7 +746,7 @@ public final class Abi {
    * @param input  Function input parameters according to ABI.
    */
   public static final record CallSet(String functionName, Abi.FunctionHeader header,
-      Map<String, Object> input) {
+      JsonNode input) {
   }
 
   public sealed interface Signer {
@@ -796,7 +794,7 @@ public final class Abi {
   /**
    * @param data  Decoded data as a JSON structure.
    */
-  public static final record ResultOfDecodeBoc(Map<String, Object> data) {
+  public static final record ResultOfDecodeBoc(JsonNode data) {
   }
 
   /**
@@ -814,7 +812,7 @@ public final class Abi {
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
   public static final record ParamsOfUpdateInitialData(Abi.ABI abi, String data,
-      Map<String, Object> initialData, String initialPubkey, Boc.BocCacheType bocCache) {
+      JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -848,7 +846,7 @@ public final class Abi {
   /**
    * @param data  Decoded data as a JSON structure.
    */
-  public static final record ResultOfDecodeAccountData(Map<String, Object> data) {
+  public static final record ResultOfDecodeAccountData(JsonNode data) {
   }
 
   /**
@@ -863,7 +861,7 @@ public final class Abi {
    * 3. Public key, provided by Signer. Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
   public static final record DeploySet(String tvc, String code, String stateInit, Long workchainId,
-      Map<String, Object> initialData, String initialPubkey) {
+      JsonNode initialData, String initialPubkey) {
   }
 
   /**

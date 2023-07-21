@@ -2,13 +2,12 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
 import java.math.BigInteger;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -240,8 +239,7 @@ public final class Processing {
    * the appropriate position. Decoded bodies of the out messages.
    * @param output  Decoded body of the function output message.
    */
-  public static final record DecodedOutput(Abi.DecodedMessageBody[] outMessages,
-      Map<String, Object> output) {
+  public static final record DecodedOutput(Abi.DecodedMessageBody[] outMessages, JsonNode output) {
   }
 
   /**
@@ -275,8 +273,8 @@ public final class Processing {
    * @param decoded  Optional decoded message bodies according to the optional `abi` parameter.
    * @param fees  Transaction fees
    */
-  public static final record ResultOfProcessMessage(Map<String, Object> transaction,
-      String[] outMessages, Processing.DecodedOutput decoded, Tvm.TransactionFees fees) {
+  public static final record ResultOfProcessMessage(JsonNode transaction, String[] outMessages,
+      Processing.DecodedOutput decoded, Tvm.TransactionFees fees) {
   }
 
   public sealed interface MonitoredMessage {
@@ -470,7 +468,7 @@ public final class Processing {
      *  Notifies the app that the message has been delivered to the thread's validators
      */
     final record RempSentToValidators(String messageId, String messageDst, BigInteger timestamp,
-        Map<String, Object> json) implements ProcessingEvent {
+        JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempSentToValidators";
@@ -481,7 +479,7 @@ public final class Processing {
      *  Notifies the app that the message has been successfully included into a block candidate by the thread's collator
      */
     final record RempIncludedIntoBlock(String messageId, String messageDst, BigInteger timestamp,
-        Map<String, Object> json) implements ProcessingEvent {
+        JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempIncludedIntoBlock";
@@ -492,7 +490,7 @@ public final class Processing {
      *  Notifies the app that the block candidate with the message has been accepted by the thread's validators
      */
     final record RempIncludedIntoAcceptedBlock(String messageId, String messageDst,
-        BigInteger timestamp, Map<String, Object> json) implements ProcessingEvent {
+        BigInteger timestamp, JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempIncludedIntoAcceptedBlock";
@@ -503,7 +501,7 @@ public final class Processing {
      *  Notifies the app about some other minor REMP statuses occurring during message processing
      */
     final record RempOther(String messageId, String messageDst, BigInteger timestamp,
-        Map<String, Object> json) implements ProcessingEvent {
+        JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempOther";
@@ -527,8 +525,7 @@ public final class Processing {
    * @param waitUntil  Expiration time of the message. Must be specified as a UNIX timestamp in seconds.
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
-  public static final record MessageSendingParams(String boc, Long waitUntil,
-      Map<String, Object> userData) {
+  public static final record MessageSendingParams(String boc, Long waitUntil, JsonNode userData) {
   }
 
   /**
@@ -568,8 +565,7 @@ public final class Processing {
    */
   public static final record MessageMonitoringResult(String hash,
       Processing.MessageMonitoringStatus status,
-      Processing.MessageMonitoringTransaction transaction, String error,
-      Map<String, Object> userData) {
+      Processing.MessageMonitoringTransaction transaction, String error, JsonNode userData) {
   }
 
   public enum ProcessingErrorCode {
@@ -631,7 +627,7 @@ public final class Processing {
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
   public static final record MessageMonitoringParams(Processing.MonitoredMessage message,
-      Long waitUntil, Map<String, Object> userData) {
+      Long waitUntil, JsonNode userData) {
   }
 
   /**

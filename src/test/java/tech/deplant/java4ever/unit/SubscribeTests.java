@@ -6,10 +6,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import tech.deplant.java4ever.binding.Client;
-import tech.deplant.java4ever.binding.EverSdkContext;
-import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.Net;
+import tech.deplant.java4ever.binding.*;
 
 import java.util.Map;
 
@@ -44,7 +41,7 @@ public class SubscribeTests {
 
 		Net.subscribe(ctx,
 		              queryText,
-		              Map.of(),
+		              JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
 		              handler -> logger.log(System.Logger.Level.WARNING,
 		                                    "code: %d, msg: %s".formatted(handler.responseType(), handler.params())));
 	}

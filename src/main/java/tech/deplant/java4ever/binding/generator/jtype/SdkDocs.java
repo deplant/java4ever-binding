@@ -13,11 +13,11 @@ public record SdkDocs(String summary, String description) {
 
 		var mdLinkRegExp = new Then(
 				new Symbol('['),
-				new NotAnyOf(new Word("[]()")),
+				new NoneOf(new Word("[]()")),
 				Special.PLUS,
 				new Symbol(']'),
 				new Symbol('('),
-				new NotAnyOf(new Word("[]()")),
+				new NoneOf(new Word("[]()")),
 				Special.PLUS,
 				new Symbol(')'));
 		String mdLinksPatternString = mdLinkRegExp.toString();

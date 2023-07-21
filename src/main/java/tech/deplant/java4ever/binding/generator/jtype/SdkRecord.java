@@ -48,7 +48,7 @@ public record SdkRecord(StructType originalType,
 		// METADATA
 		TypeSpec.Builder structBuilder = TypeSpec
 				.recordBuilder(this.originalType.name())
-				.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+				.addModifiers(Modifier.PUBLIC);
 		// RECORD PARAMS
 		for (ApiType component : this.originalType.struct_fields()) {
 			structBuilder

@@ -2,12 +2,11 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
-import java.util.Map;
 
 /**
  * <strong>Crypto</strong>
@@ -1163,8 +1162,8 @@ public final class Crypto {
    * @param options  Options, depends on algorithm and specific encryption box implementation
    * @param publicKey  Public information, depends on algorithm
    */
-  public static final record EncryptionBoxInfo(String hdpath, String algorithm,
-      Map<String, Object> options, @JsonProperty("public") Map<String, Object> publicKey) {
+  public static final record EncryptionBoxInfo(String hdpath, String algorithm, JsonNode options,
+      @JsonProperty("public") JsonNode publicKey) {
   }
 
   /**

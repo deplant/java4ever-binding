@@ -2,12 +2,11 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
-import java.lang.Object;
 import java.lang.String;
-import java.util.Map;
 
 /**
  * <strong>Client</strong>
@@ -170,7 +169,7 @@ public final class Client {
   public static final record ProofsConfig(Boolean cacheInLocalStorage) {
   }
 
-  public static final record ClientError(Long code, String message, Map<String, Object> data) {
+  public static final record ClientError(Long code, String message, JsonNode data) {
   }
 
   /**
@@ -222,8 +221,7 @@ public final class Client {
    * @param appRequestId Should be used in `resolve_app_request` call Request ID.
    * @param requestData  Request describing data
    */
-  public static final record ParamsOfAppRequest(Long appRequestId,
-      Map<String, Object> requestData) {
+  public static final record ParamsOfAppRequest(Long appRequestId, JsonNode requestData) {
   }
 
   public sealed interface AppRequestResult {
@@ -244,7 +242,7 @@ public final class Client {
      *
      * @param result  Request processing result
      */
-    final record Ok(Map<String, Object> result) implements AppRequestResult {
+    final record Ok(JsonNode result) implements AppRequestResult {
       @JsonProperty("type")
       public String type() {
         return "Ok";
@@ -252,7 +250,7 @@ public final class Client {
     }
   }
 
-  public static final record ResultOfGetApiReference(Map<String, Object> api) {
+  public static final record ResultOfGetApiReference(JsonNode api) {
   }
 
   /**
