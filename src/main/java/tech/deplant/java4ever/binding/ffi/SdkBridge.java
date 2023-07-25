@@ -16,30 +16,33 @@ public class SdkBridge {
 	public static String tcCreateContext(LibraryLoader loader,
 	                                     String configJson) {
 		loader.load();
-		//try (Arena scope = SegmentScope.openShared()) {
+		try (Arena offHeapMemory = Arena.openConfined()) {
 			return toString(
 					ton_client.tc_read_string(
-							SegmentAllocator.nativeAllocator(SegmentScope.auto()),
-							ton_client.tc_create_context(ofString(configJson))
-					)/*,
-					scope*/
+							SegmentAllocator.nativeAllocator(offHeapMemory.scope()),
+							ton_client.tc_create_context(toRustString(configJson,offHeapMemory.scope()))
+					),
+					offHeapMemory.scope()
 			);
-		//}
+		}
 	}
 
 	public static SdkResponseHandler tcRequest(int contextId, int requestId, String functionName, String params, Consumer<CallbackHandler> consumer) {
-		final var response = new SdkResponseHandler(consumer);
-		ton_client.tc_request(contextId,
-		                      ofString(functionName),
-		                      ofString(params),
-		                      requestId,
-		                      tc_response_handler_t.allocate(response, Arena.openShared().scope()));
-		return response;
+		try (Arena offHeapMemory = Arena.openShared()) {
+			final var response = new SdkResponseHandler(consumer);
+			ton_client.tc_request(contextId,
+			                      toRustString(functionName, offHeapMemory.scope()),
+			                      toRustString(params, offHeapMemory.scope()),
+			                      requestId,
+			                      tc_response_handler_t.allocate(response, SegmentScope.auto()));
+			return response;
+		}
 	}
 
-	public static MemorySegment ofString(String text/*, Arena scope*/) {
-		MemorySegment stringData = allocate(SegmentAllocator.nativeAllocator(SegmentScope.auto()));
-		MemorySegment nativeString = fromJavaString(SegmentAllocator.nativeAllocator(SegmentScope.auto()),
+	public static MemorySegment toRustString(final String text, SegmentScope scope) {
+		SegmentAllocator allocator = SegmentAllocator.nativeAllocator(scope);
+		MemorySegment stringData = allocate(allocator);
+		MemorySegment nativeString = fromJavaString(allocator,
 		                                            text,
 		                                            StandardCharsets.UTF_8);
 		content$set(stringData, 0, nativeString); //TODO dubious, recheck
@@ -48,20 +51,14 @@ public class SdkBridge {
 		return stringData;
 	}
 
-	public static String toString(MemorySegment seg/*, Arena scope*/) {
-		return toJavaString(seg/*, scope*/);
+	public static String toString(MemorySegment seg, SegmentScope scope) {
+		return toJavaString(seg, scope);
 	}
 
-	private static String toJavaString(MemorySegment segment, int len) {
-		byte[] bytes = new byte[len];
-		MemorySegment.copy(segment, JAVA_BYTE, 0L, bytes, 0, len);
-		return new String(bytes, StandardCharsets.UTF_8);
-	}
-
-	private static String toJavaString(MemorySegment seg/*, Arena scope*/) {
+	private static String toJavaString(MemorySegment seg, SegmentScope scope) {
 		if (tc_string_data_t.len$get(seg) > 0) {
 			MemorySegment addressSegment = tc_string_data_t.content$get(seg);
-			byte[] str = MemorySegment.ofAddress(addressSegment.address(), len$get(seg), SegmentScope.auto()).toArray(JAVA_BYTE);
+			byte[] str = MemorySegment.ofAddress(addressSegment.address(), len$get(seg), scope).toArray(JAVA_BYTE);
 			return new String(str, StandardCharsets.UTF_8);
 		} else {
 			return "";

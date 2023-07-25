@@ -36,8 +36,8 @@ public class ConfigTests {
 				.setConfigJson(configJson)
 				.buildNew();
 		Client.version(ctx);
-		assertEquals(Client.config(ctx).binding().version(), "2.1.0");
-		assertEquals(Client.config(ctx).binding().library(), "java4ever");
+		assertEquals("2.2.0", Client.config(ctx).binding().version());
+		assertEquals("java4ever", Client.config(ctx).binding().library());
 	}
 
 
