@@ -1,3 +1,8 @@
+### 2.3.0
+
+- Updated EVER-SDK -> 1.44.1
+- Improved JavaPoet generation, no more final and static modifiers for inner records
+
 ### 2.2.0
 
 - Fixes for event handling in subscriptions and alike. You should pass Consumer object for handling custom notifications.

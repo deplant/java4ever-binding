@@ -13,7 +13,7 @@ import java.lang.String;
  * Contains methods of "crypto" module of EVER-SDK API
  *
  * Crypto functions. 
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Crypto {
   /**
@@ -598,7 +598,7 @@ public final class Crypto {
   /**
    * @param modularPower  Result of modular exponentiation
    */
-  public static final record ResultOfModularPower(String modularPower) {
+  public record ResultOfModularPower(String modularPower) {
   }
 
   /**
@@ -606,8 +606,8 @@ public final class Crypto {
    * @param secretKey Must be encoded with `hex`. 256-bit key.
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static final record NaclBoxParamsEB(String theirPublic,
-      @JsonProperty("secret") String secretKey, String nonce) {
+  public record NaclBoxParamsEB(String theirPublic, @JsonProperty("secret") String secretKey,
+      String nonce) {
   }
 
   /**
@@ -617,7 +617,7 @@ public final class Crypto {
     /**
      *  Get signing box public key
      */
-    final record GetPublicKey() implements ParamsOfAppSigningBox {
+    record GetPublicKey() implements ParamsOfAppSigningBox {
       @JsonProperty("type")
       public String type() {
         return "GetPublicKey";
@@ -629,7 +629,7 @@ public final class Crypto {
      *
      * @param unsigned  Data to sign encoded as base64
      */
-    final record Sign(String unsigned) implements ParamsOfAppSigningBox {
+    record Sign(String unsigned) implements ParamsOfAppSigningBox {
       @JsonProperty("type")
       public String type() {
         return "Sign";
@@ -641,19 +641,19 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be encrypted, encoded in Base64
    */
-  public static final record ParamsOfEncryptionBoxEncrypt(Long encryptionBox, String data) {
+  public record ParamsOfEncryptionBoxEncrypt(Long encryptionBox, String data) {
   }
 
   /**
    * @param data  Decrypted data, encoded in Base64.
    */
-  public static final record ResultOfEncryptionBoxDecrypt(String data) {
+  public record ResultOfEncryptionBoxDecrypt(String data) {
   }
 
   /**
    * @param factors  Two factors of composite or empty if composite can't be factorized.
    */
-  public static final record ResultOfFactorize(String[] factors) {
+  public record ResultOfFactorize(String[] factors) {
   }
 
   /**
@@ -666,7 +666,7 @@ public final class Crypto {
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Creates Crypto Box from a random seed phrase. This option can be used if a developer doesn't want the seed phrase to leave the core library's memory, where it is stored encrypted.
      */
-    final record RandomSeedPhrase(Crypto.MnemonicDictionary dictionary,
+    record RandomSeedPhrase(Crypto.MnemonicDictionary dictionary,
         Integer wordcount) implements CryptoBoxSecret {
       @JsonProperty("type")
       public String type() {
@@ -680,7 +680,7 @@ public final class Crypto {
      *
      * Get `encrypted_secret` with `get_crypto_box_info` function and store it on your side. Restores crypto box instance from an existing seed phrase. This type should be used when Crypto Box is initialized from a seed phrase, entered by a user.
      */
-    final record PredefinedSeedPhrase(String phrase, Crypto.MnemonicDictionary dictionary,
+    record PredefinedSeedPhrase(String phrase, Crypto.MnemonicDictionary dictionary,
         Integer wordcount) implements CryptoBoxSecret {
       @JsonProperty("type")
       public String type() {
@@ -698,7 +698,7 @@ public final class Crypto {
      *
      * @param encryptedSecret  It is an object, containing encrypted seed phrase or private key (now we support only seed phrase).
      */
-    final record EncryptedSecret(String encryptedSecret) implements CryptoBoxSecret {
+    record EncryptedSecret(String encryptedSecret) implements CryptoBoxSecret {
       @JsonProperty("type")
       public String type() {
         return "EncryptedSecret";
@@ -710,21 +710,20 @@ public final class Crypto {
    * @param signed  Signed data that must be verified encoded in `base64`.
    * @param publicKey  Signer's public key - 64 symbols hex string
    */
-  public static final record ParamsOfVerifySignature(String signed,
-      @JsonProperty("public") String publicKey) {
+  public record ParamsOfVerifySignature(String signed, @JsonProperty("public") String publicKey) {
   }
 
   /**
    * @param key Must be encoded with `hex`. 256-bit key.
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static final record ChaCha20ParamsEB(String key, String nonce) {
+  public record ChaCha20ParamsEB(String key, String nonce) {
   }
 
   /**
    * @param publicKey  Public key - 64 symbols hex string
    */
-  public static final record ParamsOfConvertPublicKeyToTonSafeFormat(String publicKey) {
+  public record ParamsOfConvertPublicKeyToTonSafeFormat(String publicKey) {
   }
 
   /**
@@ -733,7 +732,7 @@ public final class Crypto {
    * @param theirPublic  Sender's public key - unprefixed 0-padded to 64 symbols hex string
    * @param secretKey  Receiver's private key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclBoxOpen(String encrypted, String nonce, String theirPublic,
+  public record ParamsOfNaclBoxOpen(String encrypted, String nonce, String theirPublic,
       @JsonProperty("secret") String secretKey) {
   }
 
@@ -742,14 +741,14 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfMnemonicFromEntropy(String entropy,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
+  public record ParamsOfMnemonicFromEntropy(String entropy, Crypto.MnemonicDictionary dictionary,
+      Integer wordCount) {
   }
 
   /**
    * @param publicKey  Public key - 64 symbols hex string
    */
-  public static final record ResultOfHDKeyPublicFromXPrv(@JsonProperty("public") String publicKey) {
+  public record ResultOfHDKeyPublicFromXPrv(@JsonProperty("public") String publicKey) {
   }
 
   /**
@@ -757,33 +756,32 @@ public final class Crypto {
    * @param exponent  `exponent` argument of calculation.
    * @param modulus  `modulus` argument of calculation.
    */
-  public static final record ParamsOfModularPower(String base, String exponent, String modulus) {
+  public record ParamsOfModularPower(String base, String exponent, String modulus) {
   }
 
   /**
    * @param phrase  String of mnemonic words
    */
-  public static final record ResultOfMnemonicFromRandom(String phrase) {
+  public record ResultOfMnemonicFromRandom(String phrase) {
   }
 
   /**
    * @param unsigned  Data that must be signed encoded in `base64`.
    * @param secretKey  Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`.
    */
-  public static final record ParamsOfNaclSign(String unsigned,
-      @JsonProperty("secret") String secretKey) {
+  public record ParamsOfNaclSign(String unsigned, @JsonProperty("secret") String secretKey) {
   }
 
   /**
    * @param secretKey  Private key - 64 symbols hex string
    */
-  public static final record ResultOfHDKeySecretFromXPrv(@JsonProperty("secret") String secretKey) {
+  public record ResultOfHDKeySecretFromXPrv(@JsonProperty("secret") String secretKey) {
   }
 
   /**
    * @param signed  Signed data, encoded in `base64`.
    */
-  public static final record ResultOfNaclSign(String signed) {
+  public record ResultOfNaclSign(String signed) {
   }
 
   public enum CipherMode {
@@ -878,13 +876,13 @@ public final class Crypto {
   /**
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static final record ChaCha20ParamsCB(String nonce) {
+  public record ChaCha20ParamsCB(String nonce) {
   }
 
   /**
    * @param unsigned  Unsigned data, encoded in `base64`.
    */
-  public static final record ResultOfNaclSignOpen(String unsigned) {
+  public record ResultOfNaclSignOpen(String unsigned) {
   }
 
   /**
@@ -894,7 +892,7 @@ public final class Crypto {
     /**
      *  Result of getting encryption box info
      */
-    final record GetInfo(Crypto.EncryptionBoxInfo info) implements ResultOfAppEncryptionBox {
+    record GetInfo(Crypto.EncryptionBoxInfo info) implements ResultOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "GetInfo";
@@ -906,7 +904,7 @@ public final class Crypto {
      *
      * @param data  Encrypted data, encoded in Base64
      */
-    final record Encrypt(String data) implements ResultOfAppEncryptionBox {
+    record Encrypt(String data) implements ResultOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "Encrypt";
@@ -918,7 +916,7 @@ public final class Crypto {
      *
      * @param data  Decrypted data, encoded in Base64
      */
-    final record Decrypt(String data) implements ResultOfAppEncryptionBox {
+    record Decrypt(String data) implements ResultOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "Decrypt";
@@ -926,26 +924,26 @@ public final class Crypto {
     }
   }
 
-  public static final record AesParamsEB(Crypto.CipherMode mode, String key, String iv) {
+  public record AesParamsEB(Crypto.CipherMode mode, String key, String iv) {
   }
 
   /**
    * @param pubkey Encoded with hex Public key of signing box.
    */
-  public static final record ResultOfSigningBoxGetPublicKey(String pubkey) {
+  public record ResultOfSigningBoxGetPublicKey(String pubkey) {
   }
 
   /**
    * @param secretKey  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclBoxKeyPairFromSecret(@JsonProperty("secret") String secretKey) {
+  public record ParamsOfNaclBoxKeyPairFromSecret(@JsonProperty("secret") String secretKey) {
   }
 
   /**
    * @param publicKey  Public key - 64 symbols hex string
    * @param secretKey  Private key - u64 symbols hex string
    */
-  public static final record KeyPair(@JsonProperty("public") String publicKey,
+  public record KeyPair(@JsonProperty("public") String publicKey,
       @JsonProperty("secret") String secretKey) {
   }
 
@@ -953,7 +951,7 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be decrypted, encoded in Base64
    */
-  public static final record ParamsOfEncryptionBoxDecrypt(Long encryptionBox, String data) {
+  public record ParamsOfEncryptionBoxDecrypt(Long encryptionBox, String data) {
   }
 
   /**
@@ -961,55 +959,55 @@ public final class Crypto {
    * @param nonce  Nonce in `hex`
    * @param key  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclSecretBox(String decrypted, String nonce, String key) {
+  public record ParamsOfNaclSecretBox(String decrypted, String nonce, String key) {
   }
 
   /**
    * @param theirPublic Must be encoded with `hex`. 256-bit key.
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static final record NaclBoxParamsCB(String theirPublic, String nonce) {
+  public record NaclBoxParamsCB(String theirPublic, String nonce) {
   }
 
   /**
    * @param valid  Flag indicating if the mnemonic is valid or not
    */
-  public static final record ResultOfMnemonicVerify(Boolean valid) {
+  public record ResultOfMnemonicVerify(Boolean valid) {
   }
 
-  public static final record ResultOfGetCryptoBoxSeedPhrase(String phrase,
-      Crypto.MnemonicDictionary dictionary, Integer wordcount) {
+  public record ResultOfGetCryptoBoxSeedPhrase(String phrase, Crypto.MnemonicDictionary dictionary,
+      Integer wordcount) {
   }
 
   /**
    * @param signed  Signed data combined with signature encoded in `base64`.
    * @param signature  Signature encoded in `hex`.
    */
-  public static final record ResultOfSign(String signed, String signature) {
+  public record ResultOfSign(String signed, String signature) {
   }
 
   /**
    * @param xprv  Serialized extended private key
    */
-  public static final record ParamsOfHDKeyPublicFromXPrv(String xprv) {
+  public record ParamsOfHDKeyPublicFromXPrv(String xprv) {
   }
 
   public sealed interface BoxEncryptionAlgorithm {
-    final record ChaCha20(Crypto.ChaCha20ParamsCB value) implements BoxEncryptionAlgorithm {
+    record ChaCha20(Crypto.ChaCha20ParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "ChaCha20";
       }
     }
 
-    final record NaclBox(Crypto.NaclBoxParamsCB value) implements BoxEncryptionAlgorithm {
+    record NaclBox(Crypto.NaclBoxParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "NaclBox";
       }
     }
 
-    final record NaclSecretBox(Crypto.NaclSecretBoxParamsCB value) implements BoxEncryptionAlgorithm {
+    record NaclSecretBox(Crypto.NaclSecretBoxParamsCB value) implements BoxEncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "NaclSecretBox";
@@ -1053,20 +1051,20 @@ public final class Crypto {
    * @param key Must be encoded with `hex`. 256-bit key.
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static final record ParamsOfChaCha20(String data, String key, String nonce) {
+  public record ParamsOfChaCha20(String data, String key, String nonce) {
   }
 
   /**
    * @param signingBox  Signing Box handle.
    * @param unsigned Must be encoded with `base64`. Unsigned user data.
    */
-  public static final record ParamsOfSigningBoxSign(Long signingBox, String unsigned) {
+  public record ParamsOfSigningBoxSign(Long signingBox, String unsigned) {
   }
 
   /**
    * @param bytes  Generated bytes encoded in `base64`.
    */
-  public static final record ResultOfGenerateRandomBytes(String bytes) {
+  public record ResultOfGenerateRandomBytes(String bytes) {
   }
 
   /**
@@ -1075,7 +1073,7 @@ public final class Crypto {
    * @param algorithm  Encryption algorithm.
    * @param secretLifetime  Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set.
    */
-  public static final record ParamsOfGetEncryptionBoxFromCryptoBox(Long handle, String hdpath,
+  public record ParamsOfGetEncryptionBoxFromCryptoBox(Long handle, String hdpath,
       Crypto.BoxEncryptionAlgorithm algorithm, Long secretLifetime) {
   }
 
@@ -1083,20 +1081,19 @@ public final class Crypto {
    * @param signed Encoded with `base64`. Signed data that must be unsigned.
    * @param publicKey  Signer's public key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclSignOpen(String signed,
-      @JsonProperty("public") String publicKey) {
+  public record ParamsOfNaclSignOpen(String signed, @JsonProperty("public") String publicKey) {
   }
 
   /**
    * @param phrase  Phrase
    */
-  public static final record ResultOfMnemonicFromEntropy(String phrase) {
+  public record ResultOfMnemonicFromEntropy(String phrase) {
   }
 
   /**
    * @param algorithm  Encryption algorithm specifier including cipher parameters (key, IV, etc)
    */
-  public static final record ParamsOfCreateEncryptionBox(Crypto.EncryptionAlgorithm algorithm) {
+  public record ParamsOfCreateEncryptionBox(Crypto.EncryptionAlgorithm algorithm) {
   }
 
   /**
@@ -1104,21 +1101,21 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Word count
    */
-  public static final record ParamsOfMnemonicVerify(String phrase,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
+  public record ParamsOfMnemonicVerify(String phrase, Crypto.MnemonicDictionary dictionary,
+      Integer wordCount) {
   }
 
   /**
    * @param xprv  Serialized extended private key
    * @param path  Derivation path, for instance "m/44'/396'/0'/0/0"
    */
-  public static final record ParamsOfHDKeyDeriveFromXPrvPath(String xprv, String path) {
+  public record ParamsOfHDKeyDeriveFromXPrvPath(String xprv, String path) {
   }
 
   /**
    * @param key Encoded with `hex`. Derived key.
    */
-  public static final record ResultOfScrypt(String key) {
+  public record ResultOfScrypt(String key) {
   }
 
   /**
@@ -1126,32 +1123,32 @@ public final class Crypto {
    * @param hdpath By default, Everscale HD path is used. HD key derivation path.
    * @param secretLifetime  Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set.
    */
-  public static final record ParamsOfGetSigningBoxFromCryptoBox(Long handle, String hdpath,
+  public record ParamsOfGetSigningBoxFromCryptoBox(Long handle, String hdpath,
       Long secretLifetime) {
   }
 
   /**
    * @param handle  Handle of the signing box.
    */
-  public static final record RegisteredSigningBox(Long handle) {
+  public record RegisteredSigningBox(Long handle) {
   }
 
   /**
    * @param encrypted  Encrypted data encoded in `base64`.
    */
-  public static final record ResultOfNaclBox(String encrypted) {
+  public record ResultOfNaclBox(String encrypted) {
   }
 
   /**
    * @param words  The list of mnemonic words
    */
-  public static final record ResultOfMnemonicWords(String words) {
+  public record ResultOfMnemonicWords(String words) {
   }
 
   /**
    * @param data Encoded with `base64`. Encrypted/decrypted data.
    */
-  public static final record ResultOfChaCha20(String data) {
+  public record ResultOfChaCha20(String data) {
   }
 
   /**
@@ -1162,45 +1159,45 @@ public final class Crypto {
    * @param options  Options, depends on algorithm and specific encryption box implementation
    * @param publicKey  Public information, depends on algorithm
    */
-  public static final record EncryptionBoxInfo(String hdpath, String algorithm, JsonNode options,
+  public record EncryptionBoxInfo(String hdpath, String algorithm, JsonNode options,
       @JsonProperty("public") JsonNode publicKey) {
   }
 
   /**
    * @param xprv  Serialized extended master private key
    */
-  public static final record ResultOfHDKeyXPrvFromMnemonic(String xprv) {
+  public record ResultOfHDKeyXPrvFromMnemonic(String xprv) {
   }
 
   /**
    * @param xprv  Serialized extended private key
    */
-  public static final record ResultOfHDKeyDeriveFromXPrv(String xprv) {
+  public record ResultOfHDKeyDeriveFromXPrv(String xprv) {
   }
 
   public sealed interface EncryptionAlgorithm {
-    final record AES(Crypto.AesParamsEB value) implements EncryptionAlgorithm {
+    record AES(Crypto.AesParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "AES";
       }
     }
 
-    final record ChaCha20(Crypto.ChaCha20ParamsEB value) implements EncryptionAlgorithm {
+    record ChaCha20(Crypto.ChaCha20ParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "ChaCha20";
       }
     }
 
-    final record NaclBox(Crypto.NaclBoxParamsEB value) implements EncryptionAlgorithm {
+    record NaclBox(Crypto.NaclBoxParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "NaclBox";
       }
     }
 
-    final record NaclSecretBox(Crypto.NaclSecretBoxParamsEB value) implements EncryptionAlgorithm {
+    record NaclSecretBox(Crypto.NaclSecretBoxParamsEB value) implements EncryptionAlgorithm {
       @JsonProperty("type")
       public String type() {
         return "NaclSecretBox";
@@ -1215,7 +1212,7 @@ public final class Crypto {
     /**
      *  Get encryption box info
      */
-    final record GetInfo() implements ParamsOfAppEncryptionBox {
+    record GetInfo() implements ParamsOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "GetInfo";
@@ -1227,7 +1224,7 @@ public final class Crypto {
      *
      * @param data  Data, encoded in Base64
      */
-    final record Encrypt(String data) implements ParamsOfAppEncryptionBox {
+    record Encrypt(String data) implements ParamsOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "Encrypt";
@@ -1239,7 +1236,7 @@ public final class Crypto {
      *
      * @param data  Data, encoded in Base64
      */
-    final record Decrypt(String data) implements ParamsOfAppEncryptionBox {
+    record Decrypt(String data) implements ParamsOfAppEncryptionBox {
       @JsonProperty("type")
       public String type() {
         return "Decrypt";
@@ -1253,14 +1250,14 @@ public final class Crypto {
    * @param theirPublic  Receiver's public key - unprefixed 0-padded to 64 symbols hex string
    * @param secretKey  Sender's private key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclBox(String decrypted, String nonce, String theirPublic,
+  public record ParamsOfNaclBox(String decrypted, String nonce, String theirPublic,
       @JsonProperty("secret") String secretKey) {
   }
 
   /**
    * @param secretKey  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclSignKeyPairFromSecret(@JsonProperty("secret") String secretKey) {
+  public record ParamsOfNaclSignKeyPairFromSecret(@JsonProperty("secret") String secretKey) {
   }
 
   /**
@@ -1272,7 +1269,7 @@ public final class Crypto {
      *
      * @param publicKey  Signing box public key
      */
-    final record GetPublicKey(String publicKey) implements ResultOfAppSigningBox {
+    record GetPublicKey(String publicKey) implements ResultOfAppSigningBox {
       @JsonProperty("type")
       public String type() {
         return "GetPublicKey";
@@ -1284,7 +1281,7 @@ public final class Crypto {
      *
      * @param signature  Data signature encoded as hex
      */
-    final record Sign(String signature) implements ResultOfAppSigningBox {
+    record Sign(String signature) implements ResultOfAppSigningBox {
       @JsonProperty("type")
       public String type() {
         return "Sign";
@@ -1295,7 +1292,7 @@ public final class Crypto {
   /**
    * @param data Encoded with `base64`. Input data for hash calculation.
    */
-  public static final record ParamsOfHash(String data) {
+  public record ParamsOfHash(String data) {
   }
 
   public sealed interface ResultOfAppPasswordProvider {
@@ -1303,7 +1300,7 @@ public final class Crypto {
      * @param encryptedPassword  Password, encrypted and encoded to base64. Crypto box uses this password to decrypt its secret (seed phrase).
      * @param appEncryptionPubkey Used together with `encryption_public_key` to decode `encrypted_password`. Hex encoded public key of a temporary key pair, used for password encryption on application side.
      */
-    final record GetPassword(String encryptedPassword,
+    record GetPassword(String encryptedPassword,
         String appEncryptionPubkey) implements ResultOfAppPasswordProvider {
       @JsonProperty("type")
       public String type() {
@@ -1317,14 +1314,14 @@ public final class Crypto {
    * @param signature Encoded with `hex`. Signature that must be verified.
    * @param publicKey  Signer's public key - unprefixed 0-padded to 64 symbols hex string.
    */
-  public static final record ParamsOfNaclSignDetachedVerify(String unsigned, String signature,
+  public record ParamsOfNaclSignDetachedVerify(String unsigned, String signature,
       @JsonProperty("public") String publicKey) {
   }
 
   /**
    * @param length  Size of random byte array.
    */
-  public static final record ParamsOfGenerateRandomBytes(Long length) {
+  public record ParamsOfGenerateRandomBytes(Long length) {
   }
 
   /**
@@ -1335,57 +1332,57 @@ public final class Crypto {
    * @param p  Parallelization parameter.
    * @param dkLen  Intended output length in octets of the derived key.
    */
-  public static final record ParamsOfScrypt(String password, String salt, Integer logN, Long r,
-      Long p, Long dkLen) {
+  public record ParamsOfScrypt(String password, String salt, Integer logN, Long r, Long p,
+      Long dkLen) {
   }
 
   /**
    * @param secretEncryptionSalt  Salt used for secret encryption. For example, a mobile device can use device ID as salt.
    * @param secretKey  Cryptobox secret
    */
-  public static final record ParamsOfCreateCryptoBox(String secretEncryptionSalt,
+  public record ParamsOfCreateCryptoBox(String secretEncryptionSalt,
       @JsonProperty("secret") Crypto.CryptoBoxSecret secretKey) {
   }
 
-  public static final record RegisteredCryptoBox(Long handle) {
+  public record RegisteredCryptoBox(Long handle) {
   }
 
   /**
    * @param handle  Handle of the encryption box.
    */
-  public static final record RegisteredEncryptionBox(Long handle) {
+  public record RegisteredEncryptionBox(Long handle) {
   }
 
   /**
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfMnemonicFromRandom(Crypto.MnemonicDictionary dictionary,
+  public record ParamsOfMnemonicFromRandom(Crypto.MnemonicDictionary dictionary,
       Integer wordCount) {
   }
 
   /**
    * @param data Encoded with `base64`. Input data for CRC calculation.
    */
-  public static final record ParamsOfTonCrc16(String data) {
+  public record ParamsOfTonCrc16(String data) {
   }
 
   /**
    * @param hash Encoded with 'hex'. Hash of input `data`.
    */
-  public static final record ResultOfHash(String hash) {
+  public record ResultOfHash(String hash) {
   }
 
   /**
    * @param encryptionBox  Encryption box handle
    */
-  public static final record ParamsOfEncryptionBoxGetInfo(Long encryptionBox) {
+  public record ParamsOfEncryptionBoxGetInfo(Long encryptionBox) {
   }
 
   /**
    * @param xprv  Serialized extended private key
    */
-  public static final record ParamsOfHDKeySecretFromXPrv(String xprv) {
+  public record ParamsOfHDKeySecretFromXPrv(String xprv) {
   }
 
   /**
@@ -1394,20 +1391,20 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Word count
    */
-  public static final record ParamsOfMnemonicDeriveSignKeys(String phrase, String path,
+  public record ParamsOfMnemonicDeriveSignKeys(String phrase, String path,
       Crypto.MnemonicDictionary dictionary, Integer wordCount) {
   }
 
   /**
    * @param encryptedSecret  Secret (seed phrase) encrypted with salt and password.
    */
-  public static final record ResultOfGetCryptoBoxInfo(String encryptedSecret) {
+  public record ResultOfGetCryptoBoxInfo(String encryptedSecret) {
   }
 
   /**
    * @param nonce  Nonce in `hex`
    */
-  public static final record NaclSecretBoxParamsCB(String nonce) {
+  public record NaclSecretBoxParamsCB(String nonce) {
   }
 
   /**
@@ -1415,41 +1412,41 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static final record ParamsOfHDKeyXPrvFromMnemonic(String phrase,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) {
+  public record ParamsOfHDKeyXPrvFromMnemonic(String phrase, Crypto.MnemonicDictionary dictionary,
+      Integer wordCount) {
   }
 
   /**
    * @param tonPublicKey  Public key represented in TON safe format.
    */
-  public static final record ResultOfConvertPublicKeyToTonSafeFormat(String tonPublicKey) {
+  public record ResultOfConvertPublicKeyToTonSafeFormat(String tonPublicKey) {
   }
 
   /**
    * @param composite  Hexadecimal representation of u64 composite number.
    */
-  public static final record ParamsOfFactorize(String composite) {
+  public record ParamsOfFactorize(String composite) {
   }
 
   /**
    * @param data Padded to cipher block size Encrypted data, encoded in Base64.
    */
-  public static final record ResultOfEncryptionBoxEncrypt(String data) {
+  public record ResultOfEncryptionBoxEncrypt(String data) {
   }
 
   /**
    * @param dictionary  Dictionary identifier
    */
-  public static final record ParamsOfMnemonicWords(Crypto.MnemonicDictionary dictionary) {
+  public record ParamsOfMnemonicWords(Crypto.MnemonicDictionary dictionary) {
   }
 
-  public static final record AesInfo(Crypto.CipherMode mode, String iv) {
+  public record AesInfo(Crypto.CipherMode mode, String iv) {
   }
 
   /**
    * @param xprv  Derived serialized extended private key
    */
-  public static final record ResultOfHDKeyDeriveFromXPrvPath(String xprv) {
+  public record ResultOfHDKeyDeriveFromXPrvPath(String xprv) {
   }
 
   /**
@@ -1457,8 +1454,7 @@ public final class Crypto {
    * @param childIndex  Child index (see BIP-0032)
    * @param hardened  Indicates the derivation of hardened/not-hardened key (see BIP-0032)
    */
-  public static final record ParamsOfHDKeyDeriveFromXPrv(String xprv, Long childIndex,
-      Boolean hardened) {
+  public record ParamsOfHDKeyDeriveFromXPrv(String xprv, Long childIndex, Boolean hardened) {
   }
 
   /**
@@ -1475,7 +1471,7 @@ public final class Crypto {
     /**
      * @param encryptionPublicKey  Temporary library pubkey, that is used on application side for password encryption, along with application temporary private key and nonce. Used for password decryption on library side.
      */
-    final record GetPassword(String encryptionPublicKey) implements ParamsOfAppPasswordProvider {
+    record GetPassword(String encryptionPublicKey) implements ParamsOfAppPasswordProvider {
       @JsonProperty("type")
       public String type() {
         return "GetPassword";
@@ -1486,7 +1482,7 @@ public final class Crypto {
   /**
    * @param unsigned  Unsigned data encoded in `base64`.
    */
-  public static final record ResultOfVerifySignature(String unsigned) {
+  public record ResultOfVerifySignature(String unsigned) {
   }
 
   /**
@@ -1494,56 +1490,56 @@ public final class Crypto {
    * @param nonce  Nonce in `hex`
    * @param key  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static final record ParamsOfNaclSecretBoxOpen(String encrypted, String nonce, String key) {
+  public record ParamsOfNaclSecretBoxOpen(String encrypted, String nonce, String key) {
   }
 
   /**
    * @param signature Encoded with `hex`. Data signature.
    */
-  public static final record ResultOfSigningBoxSign(String signature) {
+  public record ResultOfSigningBoxSign(String signature) {
   }
 
   /**
    * @param key  Secret key - unprefixed 0-padded to 64 symbols hex string
    * @param nonce  Nonce in `hex`
    */
-  public static final record NaclSecretBoxParamsEB(String key, String nonce) {
+  public record NaclSecretBoxParamsEB(String key, String nonce) {
   }
 
   /**
    * @param decrypted  Decrypted data encoded in `base64`.
    */
-  public static final record ResultOfNaclBoxOpen(String decrypted) {
+  public record ResultOfNaclBoxOpen(String decrypted) {
   }
 
   /**
    * @param signature  Signature encoded in `hex`.
    */
-  public static final record ResultOfNaclSignDetached(String signature) {
+  public record ResultOfNaclSignDetached(String signature) {
   }
 
   /**
    * @param unsigned  Data that must be signed encoded in `base64`.
    * @param keys  Sign keys.
    */
-  public static final record ParamsOfSign(String unsigned, Crypto.KeyPair keys) {
+  public record ParamsOfSign(String unsigned, Crypto.KeyPair keys) {
   }
 
   /**
    * @param succeeded  `true` if verification succeeded or `false` if it failed
    */
-  public static final record ResultOfNaclSignDetachedVerify(Boolean succeeded) {
+  public record ResultOfNaclSignDetachedVerify(Boolean succeeded) {
   }
 
   /**
    * @param info  Encryption box information
    */
-  public static final record ResultOfEncryptionBoxGetInfo(Crypto.EncryptionBoxInfo info) {
+  public record ResultOfEncryptionBoxGetInfo(Crypto.EncryptionBoxInfo info) {
   }
 
   /**
    * @param crc  Calculated CRC for input data.
    */
-  public static final record ResultOfTonCrc16(Integer crc) {
+  public record ResultOfTonCrc16(Integer crc) {
   }
 }

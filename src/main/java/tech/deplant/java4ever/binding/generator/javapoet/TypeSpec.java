@@ -927,7 +927,7 @@ public final class TypeSpec {
 			}
 
 			for (TypeSpec typeSpec : this.typeSpecs) {
-				checkArgument(typeSpec.modifiers.containsAll(this.kind.implicitTypeModifiers),
+				checkArgument(typeSpec.modifiers.containsAll(this.kind.implicitTypeModifiers) || typeSpec.kind.equals(Kind.RECORD),
 				              "%s %s.%s requires modifiers %s", this.kind, this.name, typeSpec.name,
 				              this.kind.implicitTypeModifiers);
 			}

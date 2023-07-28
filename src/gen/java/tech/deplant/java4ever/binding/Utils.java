@@ -10,7 +10,7 @@ import java.lang.String;
  * Contains methods of "utils" module of EVER-SDK API
  *
  * Misc utility Functions. 
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Utils {
   /**
@@ -70,22 +70,22 @@ public final class Utils {
     return ctx.call("utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
   }
 
-  public static final record ParamsOfCalcStorageFee(String account, Long period) {
+  public record ParamsOfCalcStorageFee(String account, Long period) {
   }
 
-  public static final record ResultOfCalcStorageFee(String fee) {
+  public record ResultOfCalcStorageFee(String fee) {
   }
 
   /**
    * @param compressed Must be encoded as base64. Compressed data.
    */
-  public static final record ParamsOfDecompressZstd(String compressed) {
+  public record ParamsOfDecompressZstd(String compressed) {
   }
 
   /**
    * @param addressType  Account address type.
    */
-  public static final record ResultOfGetAddressType(Utils.AccountAddressType addressType) {
+  public record ResultOfGetAddressType(Utils.AccountAddressType addressType) {
   }
 
   public enum AccountAddressType {
@@ -100,45 +100,44 @@ public final class Utils {
    * @param address  Account address in any TON format.
    * @param outputFormat  Specify the format to convert to.
    */
-  public static final record ParamsOfConvertAddress(String address,
-      Utils.AddressStringFormat outputFormat) {
+  public record ParamsOfConvertAddress(String address, Utils.AddressStringFormat outputFormat) {
   }
 
   /**
    * @param uncompressed Must be encoded as base64. Uncompressed data.
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
-  public static final record ParamsOfCompressZstd(String uncompressed, Long level) {
+  public record ParamsOfCompressZstd(String uncompressed, Long level) {
   }
 
   /**
    * @param decompressed Must be encoded as base64. Decompressed data.
    */
-  public static final record ResultOfDecompressZstd(String decompressed) {
+  public record ResultOfDecompressZstd(String decompressed) {
   }
 
   /**
    * @param address  Address in the specified format
    */
-  public static final record ResultOfConvertAddress(String address) {
+  public record ResultOfConvertAddress(String address) {
   }
 
   public sealed interface AddressStringFormat {
-    final record AccountId() implements AddressStringFormat {
+    record AccountId() implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {
         return "AccountId";
       }
     }
 
-    final record Hex() implements AddressStringFormat {
+    record Hex() implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {
         return "Hex";
       }
     }
 
-    final record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
+    record Base64(Boolean url, Boolean test, Boolean bounce) implements AddressStringFormat {
       @JsonProperty("type")
       public String type() {
         return "Base64";
@@ -149,12 +148,12 @@ public final class Utils {
   /**
    * @param compressed Must be encoded as base64. Compressed data.
    */
-  public static final record ResultOfCompressZstd(String compressed) {
+  public record ResultOfCompressZstd(String compressed) {
   }
 
   /**
    * @param address  Account address in any TON format.
    */
-  public static final record ParamsOfGetAddressType(String address) {
+  public record ParamsOfGetAddressType(String address) {
   }
 }

@@ -263,7 +263,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 				this.jsonMapper = JsonContext.SDK_JSON_MAPPER();
 			}
 			var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
-			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever", "2.2.0"),
+			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever", "2.3.0"),
 			                                           defaults.network(),
 			                                           defaults.crypto(),
 			                                           defaults.abi(),

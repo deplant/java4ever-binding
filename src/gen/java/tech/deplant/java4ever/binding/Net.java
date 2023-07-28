@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Net {
   /**
@@ -547,14 +547,14 @@ public final class Net {
   /**
    * @param signatureId  Signature ID for configured network if it should be used in messages signature
    */
-  public static final record ResultOfGetSignatureId(Long signatureId) {
+  public record ResultOfGetSignatureId(Long signatureId) {
   }
 
   /**
    * @param field  Dot separated path to the field
    * @param fn  Aggregation function that must be applied to field values
    */
-  public static final record FieldAggregation(String field, Net.AggregationFn fn) {
+  public record FieldAggregation(String field, Net.AggregationFn fn) {
   }
 
   /**
@@ -595,7 +595,7 @@ public final class Net {
    * @param includeTransfers If this parameter is `true` then each transaction contains field
    * `transfers` with list of transfer. See more about this structure in function description. Include `transfers` field in iterated transactions.
    */
-  public static final record ParamsOfCreateTransactionIterator(Long startTime, Long endTime,
+  public record ParamsOfCreateTransactionIterator(Long startTime, Long endTime,
       String[] shardFilter, String[] accountsFilter, String result, Boolean includeTransfers) {
   }
 
@@ -604,14 +604,13 @@ public final class Net {
    * @param limit If value is missing or is less than 1 the library uses 1. Maximum count of the returned items.
    * @param returnResumeState  Indicates that function must return the iterator state that can be used for resuming iteration.
    */
-  public static final record ParamsOfIteratorNext(Long iterator, Long limit,
-      Boolean returnResumeState) {
+  public record ParamsOfIteratorNext(Long iterator, Long limit, Boolean returnResumeState) {
   }
 
   /**
    * @param results Returns an array of values. Each value corresponds to `queries` item. Result values for batched queries.
    */
-  public static final record ResultOfBatchQuery(JsonNode[] results) {
+  public record ResultOfBatchQuery(JsonNode[] results) {
   }
 
   public enum SortDirection {
@@ -623,7 +622,7 @@ public final class Net {
   /**
    * @param result  Result provided by DAppServer.
    */
-  public static final record ResultOfQuery(JsonNode result) {
+  public record ResultOfQuery(JsonNode result) {
   }
 
   /**
@@ -638,8 +637,7 @@ public final class Net {
    * if both are specified.
    * So it is the application's responsibility to specify the correct filter combination. Account address filter.
    */
-  public static final record ParamsOfResumeTransactionIterator(JsonNode resumeState,
-      String[] accountsFilter) {
+  public record ParamsOfResumeTransactionIterator(JsonNode resumeState, String[] accountsFilter) {
   }
 
   /**
@@ -654,27 +652,26 @@ public final class Net {
    * Note that `resume_state` corresponds to the iteration position
    * after the returned items. Optional iterator state that can be used for resuming iteration.
    */
-  public static final record ResultOfIteratorNext(JsonNode[] items, Boolean hasMore,
-      JsonNode resumeState) {
+  public record ResultOfIteratorNext(JsonNode[] items, Boolean hasMore, JsonNode resumeState) {
   }
 
   /**
    * @param handle Must be closed with `unsubscribe` Subscription handle.
    */
-  public static final record ResultOfSubscribeCollection(Long handle) {
+  public record ResultOfSubscribeCollection(Long handle) {
   }
 
   /**
    * @param address  Account address
    */
-  public static final record ParamsOfFindLastShardBlock(String address) {
+  public record ParamsOfFindLastShardBlock(String address) {
   }
 
   /**
    * @param messages  Messages.
    * @param transactions  Transactions.
    */
-  public static final record ResultOfQueryTransactionTree(Net.MessageNode[] messages,
+  public record ResultOfQueryTransactionTree(Net.MessageNode[] messages,
       Net.TransactionNode[] transactions) {
   }
 
@@ -685,8 +682,8 @@ public final class Net {
    * @param order  Sorting order
    * @param limit  Number of documents to return
    */
-  public static final record ParamsOfQueryCollection(String collection, JsonNode filter,
-      String result, Net.OrderBy[] order, Long limit) implements ParamsOfQueryOperation {
+  public record ParamsOfQueryCollection(String collection, JsonNode filter, String result,
+      Net.OrderBy[] order, Long limit) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "QueryCollection";
@@ -697,7 +694,7 @@ public final class Net {
    * @param handle Must be removed using `remove_iterator`
    * when it is no more needed for the application. Iterator handle.
    */
-  public static final record RegisteredIterator(Long handle) {
+  public record RegisteredIterator(Long handle) {
   }
 
   /**
@@ -713,21 +710,21 @@ public final class Net {
    * Default value is 50. If `transaction_max_count` is set to 0 then no limitation on
    * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
-  public static final record ParamsOfQueryTransactionTree(String inMsg, Abi.ABI[] abiRegistry,
-      Long timeout, Long transactionMaxCount) {
+  public record ParamsOfQueryTransactionTree(String inMsg, Abi.ABI[] abiRegistry, Long timeout,
+      Long transactionMaxCount) {
   }
 
   /**
    * @param query  GraphQL query text.
    * @param variables Must be a map with named values that can be used in query. Variables used in query.
    */
-  public static final record ParamsOfQuery(String query, JsonNode variables) {
+  public record ParamsOfQuery(String query, JsonNode variables) {
   }
 
   /**
    * @param result  First found object that matches the provided criteria
    */
-  public static final record ResultOfWaitForCollection(JsonNode result) {
+  public record ResultOfWaitForCollection(JsonNode result) {
   }
 
   /**
@@ -736,8 +733,8 @@ public final class Net {
    * @param result  Projection (result) string
    * @param timeout  Query timeout
    */
-  public static final record ParamsOfWaitForCollection(String collection, JsonNode filter,
-      String result, Long timeout) implements ParamsOfQueryOperation {
+  public record ParamsOfWaitForCollection(String collection, JsonNode filter, String result,
+      Long timeout) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
       return "WaitForCollection";
@@ -747,7 +744,7 @@ public final class Net {
   /**
    * @param endpoints  List of endpoints provided by server
    */
-  public static final record EndpointsSet(String[] endpoints) {
+  public record EndpointsSet(String[] endpoints) {
   }
 
   public enum AggregationFn {
@@ -766,10 +763,10 @@ public final class Net {
    * @param subscription  GraphQL subscription text.
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
-  public static final record ParamsOfSubscribe(String subscription, JsonNode variables) {
+  public record ParamsOfSubscribe(String subscription, JsonNode variables) {
   }
 
-  public static final record OrderBy(String path, Net.SortDirection direction) {
+  public record OrderBy(String path, Net.SortDirection direction) {
   }
 
   /**
@@ -783,15 +780,14 @@ public final class Net {
    * @param decodedBody Library tries to decode message body using provided `params.abi_registry`.
    * This field will be missing if none of the provided abi can be used to decode. Decoded body.
    */
-  public static final record MessageNode(String id, String srcTransactionId,
-      String dstTransactionId, String src, String dst, String value, Boolean bounce,
-      Abi.DecodedMessageBody decodedBody) {
+  public record MessageNode(String id, String srcTransactionId, String dstTransactionId, String src,
+      String dst, String value, Boolean bounce, Abi.DecodedMessageBody decodedBody) {
   }
 
   /**
    * @param blockId  Account shard last block ID
    */
-  public static final record ResultOfFindLastShardBlock(String blockId) {
+  public record ResultOfFindLastShardBlock(String blockId) {
   }
 
   /**
@@ -818,8 +814,8 @@ public final class Net {
    * Note that iterated items can contains additional fields that are
    * not requested in the `result`. Projection (result) string.
    */
-  public static final record ParamsOfCreateBlockIterator(Long startTime, Long endTime,
-      String[] shardFilter, String result) {
+  public record ParamsOfCreateBlockIterator(Long startTime, Long endTime, String[] shardFilter,
+      String result) {
   }
 
   /**
@@ -828,7 +824,7 @@ public final class Net {
    * @param first  Number of counterparties to return
    * @param after  `cursor` field of the last received result
    */
-  public static final record ParamsOfQueryCounterparties(String account, String result, Long first,
+  public record ParamsOfQueryCounterparties(String account, String result, Long first,
       String after) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
@@ -840,13 +836,13 @@ public final class Net {
    * @param values Returns an array of strings. Each string refers to the corresponding `fields` item.
    * Numeric value is returned as a decimal string representations. Values for requested fields.
    */
-  public static final record ResultOfAggregateCollection(JsonNode values) {
+  public record ResultOfAggregateCollection(JsonNode values) {
   }
 
   /**
    * @param result  Objects that match the provided criteria
    */
-  public static final record ResultOfQueryCollection(JsonNode[] result) {
+  public record ResultOfQueryCollection(JsonNode[] result) {
   }
 
   /**
@@ -854,27 +850,26 @@ public final class Net {
    * @param filter  Collection filter
    * @param result  Projection (result) string
    */
-  public static final record ParamsOfSubscribeCollection(String collection, JsonNode filter,
-      String result) {
+  public record ParamsOfSubscribeCollection(String collection, JsonNode filter, String result) {
   }
 
   /**
    * @param query  Current query endpoint
    * @param endpoints  List of all endpoints used by client
    */
-  public static final record ResultOfGetEndpoints(String query, String[] endpoints) {
+  public record ResultOfGetEndpoints(String query, String[] endpoints) {
   }
 
   /**
    * @param operations  List of query operations that must be performed per single fetch.
    */
-  public static final record ParamsOfBatchQuery(Net.ParamsOfQueryOperation[] operations) {
+  public record ParamsOfBatchQuery(Net.ParamsOfQueryOperation[] operations) {
   }
 
   /**
    * @param resumeState Same as value returned from `iterator_next`. Iterator state from which to resume.
    */
-  public static final record ParamsOfResumeBlockIterator(JsonNode resumeState) {
+  public record ParamsOfResumeBlockIterator(JsonNode resumeState) {
   }
 
   public sealed interface ParamsOfQueryOperation {
@@ -885,7 +880,7 @@ public final class Net {
    * @param filter  Collection filter
    * @param fields  Projection (result) string
    */
-  public static final record ParamsOfAggregateCollection(String collection, JsonNode filter,
+  public record ParamsOfAggregateCollection(String collection, JsonNode filter,
       Net.FieldAggregation[] fields) implements ParamsOfQueryOperation {
     @JsonProperty("type")
     public String type() {
@@ -951,7 +946,7 @@ public final class Net {
    * @param aborted  Aborted flag.
    * @param exitCode  Compute phase exit code.
    */
-  public static final record TransactionNode(String id, String inMsg, String[] outMsgs,
-      String accountAddr, String totalFees, Boolean aborted, Long exitCode) {
+  public record TransactionNode(String id, String inMsg, String[] outMsgs, String accountAddr,
+      String totalFees, Boolean aborted, Long exitCode) {
   }
 }

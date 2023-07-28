@@ -3,6 +3,7 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.lang.Boolean;
+import java.lang.Deprecated;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
@@ -12,8 +13,8 @@ import java.math.BigInteger;
  * <strong>Debot</strong>
  * Contains methods of "debot" module of EVER-SDK API
  *
- * [UNSTABLE](UNSTABLE.md) Module for working with debot. 
- * @version 1.43.3
+ * [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Module for working with debot. 
+ * @version 1.44.1
  */
 public final class Debot {
   /**
@@ -21,11 +22,12 @@ public final class Debot {
    * an instance of Debot Engine for it.
    *
    * # Remarks
-   * It does not switch debot to context 0. Browser Callbacks are not called. [UNSTABLE](UNSTABLE.md) Creates and instance of DeBot.
+   * It does not switch debot to context 0. Browser Callbacks are not called. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Creates and instance of DeBot.
    *
    * @param address  Debot smart contract address
    */
   @Unstable
+  @Deprecated
   public static Debot.RegisteredDebot init(EverSdkContext ctx, String address,
       AppSigningBox appObject) throws EverSdkException {
     return ctx.callAppObject("debot.init", new Debot.ParamsOfInit(address), appObject, Debot.RegisteredDebot.class);
@@ -41,21 +43,23 @@ public final class Debot {
    *
    * When the debot starts SDK registers `BrowserCallbacks` AppObject.
    * Therefore when `debote.remove` is called the debot is being deleted and the callback is called
-   * with `finish`=`true` which indicates that it will never be used again. [UNSTABLE](UNSTABLE.md) Starts the DeBot.
+   * with `finish`=`true` which indicates that it will never be used again. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Starts the DeBot.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
+  @Deprecated
   public static void start(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
     ctx.callVoid("debot.start", new Debot.ParamsOfStart(debotHandle));
   }
 
   /**
-   * Downloads DeBot from blockchain and creates and fetches its metadata. [UNSTABLE](UNSTABLE.md) Fetches DeBot metadata from blockchain.
+   * Downloads DeBot from blockchain and creates and fetches its metadata. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Fetches DeBot metadata from blockchain.
    *
    * @param address  Debot smart contract address.
    */
   @Unstable
+  @Deprecated
   public static Debot.ResultOfFetch fetch(EverSdkContext ctx, String address) throws
       EverSdkException {
     return ctx.call("debot.fetch", new Debot.ParamsOfFetch(address), Debot.ResultOfFetch.class);
@@ -66,59 +70,62 @@ public final class Debot {
    * Calls Debot Browser Callbacks if needed.
    *
    * # Remarks
-   * Chain of actions can be executed if input action generates a list of subactions. [UNSTABLE](UNSTABLE.md) Executes debot action.
+   * Chain of actions can be executed if input action generates a list of subactions. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Executes debot action.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param action  Debot Action that must be executed.
    */
   @Unstable
+  @Deprecated
   public static void execute(EverSdkContext ctx, Long debotHandle, Debot.DebotAction action) throws
       EverSdkException {
     ctx.callVoid("debot.execute", new Debot.ParamsOfExecute(debotHandle, action));
   }
 
   /**
-   * Used by Debot Browser to send response on Dinterface call or from other Debots. [UNSTABLE](UNSTABLE.md) Sends message to Debot.
+   * Used by Debot Browser to send response on Dinterface call or from other Debots. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Sends message to Debot.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param message  BOC of internal message to debot encoded in base64 format.
    */
   @Unstable
+  @Deprecated
   public static void send(EverSdkContext ctx, Long debotHandle, String message) throws
       EverSdkException {
     ctx.callVoid("debot.send", new Debot.ParamsOfSend(debotHandle, message));
   }
 
   /**
-   * Removes handle from Client Context and drops debot engine referenced by that handle. [UNSTABLE](UNSTABLE.md) Destroys debot handle.
+   * Removes handle from Client Context and drops debot engine referenced by that handle. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Destroys debot handle.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
   @Unstable
+  @Deprecated
   public static void remove(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
     ctx.callVoid("debot.remove", new Debot.ParamsOfRemove(debotHandle));
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Describes how much funds will be debited from the target  contract balance as a result of the transaction.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Describes how much funds will be debited from the target  contract balance as a result of the transaction.
    *
    * @param amount  Amount of nanotokens that will be sent to `dst` address.
    * @param dst  Destination address of recipient of funds.
    */
-  public static final record Spending(BigInteger amount, String dst) {
+  public record Spending(BigInteger amount, String dst) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Parameters for executing debot action.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Parameters for executing debot action.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param action  Debot Action that must be executed.
    */
-  public static final record ParamsOfExecute(Long debotHandle, Debot.DebotAction action) {
+  public record ParamsOfExecute(Long debotHandle, Debot.DebotAction action) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Returning values from Debot Browser callbacks.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Returning values from Debot Browser callbacks.
    */
   public sealed interface ResultOfAppDebotBrowser {
     /**
@@ -126,7 +133,7 @@ public final class Debot {
      *
      * @param value  String entered by user.
      */
-    final record Input(String value) implements ResultOfAppDebotBrowser {
+    record Input(String value) implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Input";
@@ -138,7 +145,7 @@ public final class Debot {
      *
      * @param signingBox Signing box is owned and disposed by debot engine Signing box for signing data requested by debot engine.
      */
-    final record GetSigningBox(Long signingBox) implements ResultOfAppDebotBrowser {
+    record GetSigningBox(Long signingBox) implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "GetSigningBox";
@@ -148,7 +155,7 @@ public final class Debot {
     /**
      *  Result of debot invoking.
      */
-    final record InvokeDebot() implements ResultOfAppDebotBrowser {
+    record InvokeDebot() implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "InvokeDebot";
@@ -160,7 +167,7 @@ public final class Debot {
      *
      * @param approved  Indicates whether the DeBot is allowed to perform the specified operation.
      */
-    final record Approve(Boolean approved) implements ResultOfAppDebotBrowser {
+    record Approve(Boolean approved) implements ResultOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Approve";
@@ -169,7 +176,7 @@ public final class Debot {
   }
 
   /**
-   * Called by debot engine to communicate with debot browser. [UNSTABLE](UNSTABLE.md) Debot Browser callbacks
+   * Called by debot engine to communicate with debot browser. [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Debot Browser callbacks
    */
   public sealed interface ParamsOfAppDebotBrowser {
     /**
@@ -177,7 +184,7 @@ public final class Debot {
      *
      * @param msg  A string that must be printed to user.
      */
-    final record Log(String msg) implements ParamsOfAppDebotBrowser {
+    record Log(String msg) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Log";
@@ -189,7 +196,7 @@ public final class Debot {
      *
      * @param contextId  Debot context ID to which debot is switched.
      */
-    final record Switch(Integer contextId) implements ParamsOfAppDebotBrowser {
+    record Switch(Integer contextId) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Switch";
@@ -199,7 +206,7 @@ public final class Debot {
     /**
      *  Notify browser that all context actions are shown.
      */
-    final record SwitchCompleted() implements ParamsOfAppDebotBrowser {
+    record SwitchCompleted() implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "SwitchCompleted";
@@ -211,7 +218,7 @@ public final class Debot {
      *
      * @param action  Debot action that must be shown to user as menu item. At least `description` property must be shown from [DebotAction] structure.
      */
-    final record ShowAction(Debot.DebotAction action) implements ParamsOfAppDebotBrowser {
+    record ShowAction(Debot.DebotAction action) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "ShowAction";
@@ -223,7 +230,7 @@ public final class Debot {
      *
      * @param prompt  A prompt string that must be printed to user before input request.
      */
-    final record Input(String prompt) implements ParamsOfAppDebotBrowser {
+    record Input(String prompt) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Input";
@@ -233,7 +240,7 @@ public final class Debot {
     /**
      * Signing box returned is owned and disposed by debot engine Get signing box to sign data.
      */
-    final record GetSigningBox() implements ParamsOfAppDebotBrowser {
+    record GetSigningBox() implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "GetSigningBox";
@@ -246,7 +253,7 @@ public final class Debot {
      * @param debotAddr  Address of debot in blockchain.
      * @param action  Debot action to execute.
      */
-    final record InvokeDebot(String debotAddr,
+    record InvokeDebot(String debotAddr,
         Debot.DebotAction action) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
@@ -259,7 +266,7 @@ public final class Debot {
      *
      * @param message Message body contains interface function and parameters. Internal message to DInterface address.
      */
-    final record Send(String message) implements ParamsOfAppDebotBrowser {
+    record Send(String message) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Send";
@@ -271,7 +278,7 @@ public final class Debot {
      *
      * @param activity  DeBot activity details.
      */
-    final record Approve(Debot.DebotActivity activity) implements ParamsOfAppDebotBrowser {
+    record Approve(Debot.DebotActivity activity) implements ParamsOfAppDebotBrowser {
       @JsonProperty("type")
       public String type() {
         return "Approve";
@@ -280,42 +287,41 @@ public final class Debot {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md)
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md)
    *
    * @param info  Debot metadata.
    */
-  public static final record ResultOfFetch(Debot.DebotInfo info) {
+  public record ResultOfFetch(Debot.DebotInfo info) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md)
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md)
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
-  public static final record ParamsOfRemove(Long debotHandle) {
+  public record ParamsOfRemove(Long debotHandle) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Structure for storing debot handle returned from `init` function.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Structure for storing debot handle returned from `init` function.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param debotAbi  Debot abi as json string.
    * @param info  Debot metadata.
    */
-  public static final record RegisteredDebot(Long debotHandle, String debotAbi,
-      Debot.DebotInfo info) {
+  public record RegisteredDebot(Long debotHandle, String debotAbi, Debot.DebotInfo info) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Parameters to start DeBot. DeBot must be already initialized with init() function.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Parameters to start DeBot. DeBot must be already initialized with init() function.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    */
-  public static final record ParamsOfStart(Long debotHandle) {
+  public record ParamsOfStart(Long debotHandle) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Describes the operation that the DeBot wants to perform.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Describes the operation that the DeBot wants to perform.
    */
   public sealed interface DebotActivity {
     /**
@@ -329,7 +335,7 @@ public final class Debot {
      * @param signkey  Public key from keypair that was used to sign external message.
      * @param signingBoxHandle  Signing box handle used to sign external message.
      */
-    final record Transaction(String msg, String dst, Debot.Spending[] out, BigInteger fee,
+    record Transaction(String msg, String dst, Debot.Spending[] out, BigInteger fee,
         Boolean setcode, String signkey, Long signingBoxHandle) implements DebotActivity {
       @JsonProperty("type")
       public String type() {
@@ -339,24 +345,24 @@ public final class Debot {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Parameters to fetch DeBot metadata.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Parameters to fetch DeBot metadata.
    *
    * @param address  Debot smart contract address.
    */
-  public static final record ParamsOfFetch(String address) {
+  public record ParamsOfFetch(String address) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Parameters of `send` function.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Parameters of `send` function.
    *
    * @param debotHandle  Debot handle which references an instance of debot engine.
    * @param message  BOC of internal message to debot encoded in base64 format.
    */
-  public static final record ParamsOfSend(Long debotHandle, String message) {
+  public record ParamsOfSend(Long debotHandle, String message) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Describes DeBot metadata.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Describes DeBot metadata.
    *
    * @param name  DeBot short name.
    * @param version  DeBot semantic version.
@@ -371,17 +377,17 @@ public final class Debot {
    * @param interfaces  Vector with IDs of DInterfaces used by DeBot.
    * @param dabiversion  ABI version ("x.y") supported by DeBot
    */
-  public static final record DebotInfo(String name, String version, String publisher,
-      String caption, String author, String support, String hello, String language, String dabi,
-      String icon, String[] interfaces, String dabiversion) {
+  public record DebotInfo(String name, String version, String publisher, String caption,
+      String author, String support, String hello, String language, String dabi, String icon,
+      String[] interfaces, String dabiversion) {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Parameters to init DeBot.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Parameters to init DeBot.
    *
    * @param address  Debot smart contract address
    */
-  public static final record ParamsOfInit(String address) {
+  public record ParamsOfInit(String address) {
   }
 
   public enum DebotErrorCode {
@@ -424,7 +430,7 @@ public final class Debot {
   }
 
   /**
-   *  [UNSTABLE](UNSTABLE.md) Describes a debot action in a Debot Context.
+   *  [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Describes a debot action in a Debot Context.
    *
    * @param description Should be used by Debot Browser as name of menu item. A short action description.
    * @param name Can be a debot function name or a print string (for Print Action). Depends on action type.
@@ -433,7 +439,7 @@ public final class Debot {
    * @param attributes In the form of "param=value,flag". attribute example: instant, args, fargs, sign. Action attributes.
    * @param misc Used by debot only. Some internal action data.
    */
-  public static final record DebotAction(String description, String name, Integer actionType,
-      Integer to, String attributes, String misc) {
+  public record DebotAction(String description, String name, Integer actionType, Integer to,
+      String attributes, String misc) {
   }
 }

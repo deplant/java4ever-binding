@@ -13,7 +13,7 @@ import java.lang.String;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Client {
   /**
@@ -146,7 +146,7 @@ public final class Client {
    * @param messageExpirationTimeout Must be specified in milliseconds. Default is 40000 (40 sec). Message lifetime for contracts which ABI includes "expire" header.
    * @param messageExpirationTimeoutGrowFactor Default is 1.5 Factor that increases the expiration timeout for each retry
    */
-  public static final record AbiConfig(Long workchain, Long messageExpirationTimeout,
+  public record AbiConfig(Long workchain, Long messageExpirationTimeout,
       Long messageExpirationTimeoutGrowFactor) {
   }
 
@@ -154,10 +154,10 @@ public final class Client {
    * @param name Usually it is a crate name. Dependency name.
    * @param gitCommit  Git commit hash of the related repository.
    */
-  public static final record BuildInfoDependency(String name, String gitCommit) {
+  public record BuildInfoDependency(String name, String gitCommit) {
   }
 
-  public static final record BindingConfig(String library, String version) {
+  public record BindingConfig(String library, String version) {
   }
 
   /**
@@ -166,10 +166,10 @@ public final class Client {
    * for the web); otherwise all the data is cached only in memory in current client's context
    * and will be lost after destruction of the client. Cache proofs in the local storage.
    */
-  public static final record ProofsConfig(Boolean cacheInLocalStorage) {
+  public record ProofsConfig(Boolean cacheInLocalStorage) {
   }
 
-  public static final record ClientError(Long code, String message, JsonNode data) {
+  public record ClientError(Long code, String message, JsonNode data) {
   }
 
   /**
@@ -209,19 +209,19 @@ public final class Client {
    * inside message encoding functions Network signature ID which is used by VM in signature verifying instructions if capability `CapSignatureWithId` is enabled in blockchain configuration parameters.
    * @param accessKey  Access key to GraphQL API (Project secret)
    */
-  public static final record NetworkConfig(String serverAddress, String[] endpoints,
-      Integer networkRetriesCount, Long maxReconnectTimeout, Long reconnectTimeout,
-      Integer messageRetriesCount, Long messageProcessingTimeout, Long waitForTimeout,
-      Long outOfSyncThreshold, Integer sendingEndpointCount, Long latencyDetectionInterval,
-      Long maxLatency, Long queryTimeout, Client.NetworkQueriesProtocol queriesProtocol,
-      Long firstRempStatusTimeout, Long nextRempStatusTimeout, Long signatureId, String accessKey) {
+  public record NetworkConfig(String serverAddress, String[] endpoints, Integer networkRetriesCount,
+      Long maxReconnectTimeout, Long reconnectTimeout, Integer messageRetriesCount,
+      Long messageProcessingTimeout, Long waitForTimeout, Long outOfSyncThreshold,
+      Integer sendingEndpointCount, Long latencyDetectionInterval, Long maxLatency,
+      Long queryTimeout, Client.NetworkQueriesProtocol queriesProtocol, Long firstRempStatusTimeout,
+      Long nextRempStatusTimeout, Long signatureId, String accessKey) {
   }
 
   /**
    * @param appRequestId Should be used in `resolve_app_request` call Request ID.
    * @param requestData  Request describing data
    */
-  public static final record ParamsOfAppRequest(Long appRequestId, JsonNode requestData) {
+  public record ParamsOfAppRequest(Long appRequestId, JsonNode requestData) {
   }
 
   public sealed interface AppRequestResult {
@@ -230,7 +230,7 @@ public final class Client {
      *
      * @param text  Error description
      */
-    final record Error(String text) implements AppRequestResult {
+    record Error(String text) implements AppRequestResult {
       @JsonProperty("type")
       public String type() {
         return "Error";
@@ -242,7 +242,7 @@ public final class Client {
      *
      * @param result  Request processing result
      */
-    final record Ok(JsonNode result) implements AppRequestResult {
+    record Ok(JsonNode result) implements AppRequestResult {
       @JsonProperty("type")
       public String type() {
         return "Ok";
@@ -250,27 +250,26 @@ public final class Client {
     }
   }
 
-  public static final record ResultOfGetApiReference(JsonNode api) {
+  public record ResultOfGetApiReference(JsonNode api) {
   }
 
   /**
    * @param appRequestId  Request ID received from SDK
    * @param result  Result of request processing
    */
-  public static final record ParamsOfResolveAppRequest(Long appRequestId,
-      Client.AppRequestResult result) {
+  public record ParamsOfResolveAppRequest(Long appRequestId, Client.AppRequestResult result) {
   }
 
   /**
    * @param cacheMaxSize Default is 10 MB Maximum BOC cache size in kilobytes.
    */
-  public static final record BocConfig(Long cacheMaxSize) {
+  public record BocConfig(Long cacheMaxSize) {
   }
 
   /**
    * @param version  Core Library version
    */
-  public static final record ResultOfVersion(String version) {
+  public record ResultOfVersion(String version) {
   }
 
   /**
@@ -285,17 +284,16 @@ public final class Client {
   /**
    * @param localStoragePath  For file based storage is a folder name where SDK will store its data. For browser based is a browser async storage key prefix. Default (recommended) value is "~/.tonclient" for native environments and ".tonclient" for web-browser.
    */
-  public static final record ClientConfig(Client.BindingConfig binding,
-      Client.NetworkConfig network, Client.CryptoConfig crypto, Client.AbiConfig abi,
-      Client.BocConfig boc, Client.ProofsConfig proofs, String localStoragePath) {
+  public record ClientConfig(Client.BindingConfig binding, Client.NetworkConfig network,
+      Client.CryptoConfig crypto, Client.AbiConfig abi, Client.BocConfig boc,
+      Client.ProofsConfig proofs, String localStoragePath) {
   }
 
   /**
    * @param buildNumber  Build number assigned to this build by the CI.
    * @param dependencies  Fingerprint of the most important dependencies.
    */
-  public static final record ResultOfBuildInfo(Long buildNumber,
-      Client.BuildInfoDependency[] dependencies) {
+  public record ResultOfBuildInfo(Long buildNumber, Client.BuildInfoDependency[] dependencies) {
   }
 
   /**
@@ -305,7 +303,7 @@ public final class Client {
    * @param mnemonicWordCount  Mnemonic word count that will be used by default in crypto functions. If not specified the default value will be 12.
    * @param hdkeyDerivationPath  Derivation path that will be used by default in crypto functions. If not specified `m/44'/396'/0'/0/0` will be used.
    */
-  public static final record CryptoConfig(Crypto.MnemonicDictionary mnemonicDictionary,
+  public record CryptoConfig(Crypto.MnemonicDictionary mnemonicDictionary,
       Integer mnemonicWordCount, String hdkeyDerivationPath) {
   }
 }

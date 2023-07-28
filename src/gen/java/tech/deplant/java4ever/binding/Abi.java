@@ -15,7 +15,7 @@ import java.math.BigInteger;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Abi {
   /**
@@ -331,8 +331,8 @@ public final class Abi {
    * @param lastPaid  Initial value for the `last_paid`.
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static final record ParamsOfEncodeAccount(Abi.StateInitSource stateInit,
-      BigInteger balance, BigInteger lastTransLt, Long lastPaid, Boc.BocCacheType bocCache) {
+  public record ParamsOfEncodeAccount(Abi.StateInitSource stateInit, BigInteger balance,
+      BigInteger lastTransLt, Long lastPaid, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -340,8 +340,7 @@ public final class Abi {
    * @param message  Message BOC encoded in `base64`.
    * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
-  public static final record ParamsOfGetSignatureData(Abi.ABI abi, String message,
-      Long signatureId) {
+  public record ParamsOfGetSignatureData(Abi.ABI abi, String message, Long signatureId) {
   }
 
   /**
@@ -351,7 +350,7 @@ public final class Abi {
    * message signing. Is this case you need to sing this data and
    * produce signed message using `abi.attach_signature`. Optional data to sign.
    */
-  public static final record ResultOfEncodeMessageBody(String body, String dataToSign) {
+  public record ResultOfEncodeMessageBody(String body, String dataToSign) {
   }
 
   /**
@@ -360,7 +359,7 @@ public final class Abi {
    * @param message  Unsigned message BOC encoded in `base64`.
    * @param signature  Signature encoded in `hex`.
    */
-  public static final record ParamsOfAttachSignature(Abi.ABI abi, String publicKey, String message,
+  public record ParamsOfAttachSignature(Abi.ABI abi, String publicKey, String message,
       String signature) {
   }
 
@@ -384,16 +383,15 @@ public final class Abi {
    * created. Otherwise can be omitted. Destination address of the message
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
-  public static final record ParamsOfEncodeMessageBody(Abi.ABI abi, Abi.CallSet callSet,
-      Boolean isInternal, Abi.Signer signer, Integer processingTryIndex, String address,
-      Long signatureId) {
+  public record ParamsOfEncodeMessageBody(Abi.ABI abi, Abi.CallSet callSet, Boolean isInternal,
+      Abi.Signer signer, Integer processingTryIndex, String address, Long signatureId) {
   }
 
   public sealed interface StateInitSource {
     /**
      *  Deploy message.
      */
-    final record Message(Abi.MessageSource source) implements StateInitSource {
+    record Message(Abi.MessageSource source) implements StateInitSource {
       @JsonProperty("type")
       public String type() {
         return "Message";
@@ -407,7 +405,7 @@ public final class Abi {
      * @param data Encoded in `base64`. Data BOC.
      * @param library Encoded in `base64`. Library BOC.
      */
-    final record StateInit(String code, String data, String library) implements StateInitSource {
+    record StateInit(String code, String data, String library) implements StateInitSource {
       @JsonProperty("type")
       public String type() {
         return "StateInit";
@@ -417,7 +415,7 @@ public final class Abi {
     /**
      * Encoded in `base64`. Content of the TVC file.
      */
-    final record Tvc(String tvc, String publicKey,
+    record Tvc(String tvc, String publicKey,
         Abi.StateInitParams initParams) implements StateInitSource {
       @JsonProperty("type")
       public String type() {
@@ -426,9 +424,9 @@ public final class Abi {
     }
   }
 
-  public static final record AbiContract(@JsonProperty("ABI version") Long abiVersionMajor,
-      Long abiVersion, String version, String[] header, Abi.AbiFunction[] functions,
-      Abi.AbiEvent[] events, Abi.AbiData[] data, Abi.AbiParam[] fields) {
+  public record AbiContract(@JsonProperty("ABI version") Long abiVersionMajor, Long abiVersion,
+      String version, String[] header, Abi.AbiFunction[] functions, Abi.AbiEvent[] events,
+      Abi.AbiData[] data, Abi.AbiParam[] fields) {
   }
 
   public enum DataLayout {
@@ -447,19 +445,18 @@ public final class Abi {
     Event
   }
 
-  public static final record AbiFunction(String name, Abi.AbiParam[] inputs, Abi.AbiParam[] outputs,
-      String id) {
+  public record AbiFunction(String name, Abi.AbiParam[] inputs, Abi.AbiParam[] outputs, String id) {
   }
 
   @JsonIgnoreProperties("outputs")
-  public static final record AbiEvent(String name, Abi.AbiParam[] inputs, String id) {
+  public record AbiEvent(String name, Abi.AbiParam[] inputs, String id) {
   }
 
   /**
    * @param message  Signed message BOC
    * @param messageId  Message ID
    */
-  public static final record ResultOfAttachSignature(String message, String messageId) {
+  public record ResultOfAttachSignature(String message, String messageId) {
   }
 
   /**
@@ -467,8 +464,7 @@ public final class Abi {
    * @param address  Destination address.
    * @param messageId  Message id.
    */
-  public static final record ResultOfEncodeInternalMessage(String message, String address,
-      String messageId) {
+  public record ResultOfEncodeInternalMessage(String message, String address, String messageId) {
   }
 
   /**
@@ -477,8 +473,8 @@ public final class Abi {
    * @param initialPubkey  Initial account owner's public key to set into account data
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static final record ParamsOfEncodeInitialData(Abi.ABI abi, JsonNode initialData,
-      String initialPubkey, Boc.BocCacheType bocCache) {
+  public record ParamsOfEncodeInitialData(Abi.ABI abi, JsonNode initialData, String initialPubkey,
+      Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -489,8 +485,8 @@ public final class Abi {
    * @param address  Destination address.
    * @param messageId  Message id.
    */
-  public static final record ResultOfEncodeMessage(String message, String dataToSign,
-      String address, String messageId) {
+  public record ResultOfEncodeMessage(String message, String dataToSign, String address,
+      String messageId) {
   }
 
   /**
@@ -498,8 +494,7 @@ public final class Abi {
    * @param data  Data BOC or BOC handle
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    */
-  public static final record ParamsOfDecodeInitialData(Abi.ABI abi, String data,
-      Boolean allowPartial) {
+  public record ParamsOfDecodeInitialData(Abi.ABI abi, String data, Boolean allowPartial) {
   }
 
   /**
@@ -507,7 +502,7 @@ public final class Abi {
    * @param data  Parameters and values as a JSON structure
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static final record ParamsOfAbiEncodeBoc(Abi.AbiParam[] params, JsonNode data,
+  public record ParamsOfAbiEncodeBoc(Abi.AbiParam[] params, JsonNode data,
       Boc.BocCacheType bocCache) {
   }
 
@@ -515,20 +510,19 @@ public final class Abi {
    * @param params  Parameters to decode from BOC
    * @param boc  Data BOC or BOC handle
    */
-  public static final record ParamsOfDecodeBoc(Abi.AbiParam[] params, String boc,
-      Boolean allowPartial) {
+  public record ParamsOfDecodeBoc(Abi.AbiParam[] params, String boc, Boolean allowPartial) {
   }
 
   /**
    * @param data  Updated data BOC or BOC handle
    */
-  public static final record ResultOfEncodeInitialData(String data) {
+  public record ResultOfEncodeInitialData(String data) {
   }
 
   /**
    * @param functionId  Contract function ID
    */
-  public static final record ResultOfCalcFunctionId(Long functionId) {
+  public record ResultOfCalcFunctionId(Long functionId) {
   }
 
   /**
@@ -538,14 +532,14 @@ public final class Abi {
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    * @param functionName  Function name or function id if is known in advance
    */
-  public static final record ParamsOfDecodeMessageBody(Abi.ABI abi, String body, Boolean isInternal,
+  public record ParamsOfDecodeMessageBody(Abi.ABI abi, String body, Boolean isInternal,
       Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) {
   }
 
   /**
    * @param boc  BOC encoded as base64
    */
-  public static final record ResultOfAbiEncodeBoc(String boc) {
+  public record ResultOfAbiEncodeBoc(String boc) {
   }
 
   /**
@@ -561,34 +555,34 @@ public final class Abi {
    * @param bounce Default is true. Flag of bounceable message.
    * @param enableIhr Default is false. Enable Instant Hypercube Routing for the message.
    */
-  public static final record ParamsOfEncodeInternalMessage(Abi.ABI abi, String address,
-      String srcAddress, Abi.DeploySet deploySet, Abi.CallSet callSet, String value, Boolean bounce,
+  public record ParamsOfEncodeInternalMessage(Abi.ABI abi, String address, String srcAddress,
+      Abi.DeploySet deploySet, Abi.CallSet callSet, String value, Boolean bounce,
       Boolean enableIhr) {
   }
 
   public sealed interface ABI {
-    final record Contract(Abi.AbiContract value) implements ABI {
+    record Contract(Abi.AbiContract value) implements ABI {
       @JsonProperty("type")
       public String type() {
         return "Contract";
       }
     }
 
-    final record Json(String value) implements ABI {
+    record Json(String value) implements ABI {
       @JsonProperty("type")
       public String type() {
         return "Json";
       }
     }
 
-    final record Handle(Long value) implements ABI {
+    record Handle(Long value) implements ABI {
       @JsonProperty("type")
       public String type() {
         return "Handle";
       }
     }
 
-    final record Serialized(Abi.AbiContract value) implements ABI {
+    record Serialized(Abi.AbiContract value) implements ABI {
       @JsonProperty("type")
       public String type() {
         return "Serialized";
@@ -597,7 +591,7 @@ public final class Abi {
   }
 
   public sealed interface MessageSource {
-    final record Encoded(String message, Abi.ABI abi) implements MessageSource {
+    record Encoded(String message, Abi.ABI abi) implements MessageSource {
       @JsonProperty("type")
       public String type() {
         return "Encoded";
@@ -611,8 +605,8 @@ public final class Abi {
    * @param message Must be encoded with `base64`. Unsigned message body BOC.
    * @param signature Must be encoded with `hex`. Signature.
    */
-  public static final record ParamsOfAttachSignatureToMessageBody(Abi.ABI abi, String publicKey,
-      String message, String signature) {
+  public record ParamsOfAttachSignatureToMessageBody(Abi.ABI abi, String publicKey, String message,
+      String signature) {
   }
 
   /**
@@ -637,8 +631,8 @@ public final class Abi {
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
-  public static final record ParamsOfEncodeMessage(Abi.ABI abi, String address,
-      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
+  public record ParamsOfEncodeMessage(Abi.ABI abi, String address, Abi.DeploySet deploySet,
+      Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
       Long signatureId) implements MessageSource {
     @JsonProperty("type")
     public String type() {
@@ -650,7 +644,7 @@ public final class Abi {
    * @param initialData Initial data is decoded if `abi` input parameter is provided List of initial values of contract's public variables.
    * @param initialPubkey  Initial account owner's public key
    */
-  public static final record ResultOfDecodeInitialData(JsonNode initialData, String initialPubkey) {
+  public record ResultOfDecodeInitialData(JsonNode initialData, String initialPubkey) {
   }
 
   /**
@@ -659,15 +653,14 @@ public final class Abi {
    * @param value  Parameters or result value.
    * @param header  Function header.
    */
-  public static final record DecodedMessageBody(Abi.MessageBodyType bodyType, String name,
-      JsonNode value, Abi.FunctionHeader header) {
+  public record DecodedMessageBody(Abi.MessageBodyType bodyType, String name, JsonNode value,
+      Abi.FunctionHeader header) {
   }
 
-  public static final record AbiData(Long key, String name, String type,
-      Abi.AbiParam[] components) {
+  public record AbiData(Long key, String name, String type, Abi.AbiParam[] components) {
   }
 
-  public static final record StateInitParams(Abi.ABI abi, JsonNode value) {
+  public record StateInitParams(Abi.ABI abi, JsonNode value) {
   }
 
   public enum AbiErrorCode {
@@ -713,14 +706,14 @@ public final class Abi {
     }
   }
 
-  public static final record ResultOfAttachSignatureToMessageBody(String body) {
+  public record ResultOfAttachSignatureToMessageBody(String body) {
   }
 
   /**
    * @param signature  Signature from the message in `hex`.
    * @param unsigned  Data to verify the signature in `base64`.
    */
-  public static final record ResultOfGetSignatureData(String signature, String unsigned) {
+  public record ResultOfGetSignatureData(String signature, String unsigned) {
   }
 
   /**
@@ -735,7 +728,7 @@ public final class Abi {
    * @param time If not specified, `now` is used (if ABI includes `time` header). Message creation time in milliseconds.
    * @param pubkey Encoded in `hex`. If not specified, method fails with exception (if ABI includes `pubkey` header).. Public key is used by the contract to check the signature.
    */
-  public static final record FunctionHeader(Long expire, BigInteger time, String pubkey) {
+  public record FunctionHeader(Long expire, BigInteger time, String pubkey) {
   }
 
   /**
@@ -745,15 +738,14 @@ public final class Abi {
    * them. Function header.
    * @param input  Function input parameters according to ABI.
    */
-  public static final record CallSet(String functionName, Abi.FunctionHeader header,
-      JsonNode input) {
+  public record CallSet(String functionName, Abi.FunctionHeader header, JsonNode input) {
   }
 
   public sealed interface Signer {
     /**
      * Creates an unsigned message. No keys are provided.
      */
-    final record None() implements Signer {
+    record None() implements Signer {
       @JsonProperty("type")
       public String type() {
         return "None";
@@ -763,7 +755,7 @@ public final class Abi {
     /**
      *  Only public key is provided in unprefixed hex string format to generate unsigned message and `data_to_sign` which can be signed later.
      */
-    final record External(String publicKey) implements Signer {
+    record External(String publicKey) implements Signer {
       @JsonProperty("type")
       public String type() {
         return "External";
@@ -773,7 +765,7 @@ public final class Abi {
     /**
      *  Key pair is provided for signing
      */
-    final record Keys(Crypto.KeyPair keys) implements Signer {
+    record Keys(Crypto.KeyPair keys) implements Signer {
       @JsonProperty("type")
       public String type() {
         return "Keys";
@@ -783,7 +775,7 @@ public final class Abi {
     /**
      *  Signing Box interface is provided for signing, allows Dapps to sign messages using external APIs, such as HSM, cold wallet, etc.
      */
-    final record SigningBox(Long handle) implements Signer {
+    record SigningBox(Long handle) implements Signer {
       @JsonProperty("type")
       public String type() {
         return "SigningBox";
@@ -794,14 +786,14 @@ public final class Abi {
   /**
    * @param data  Decoded data as a JSON structure.
    */
-  public static final record ResultOfDecodeBoc(JsonNode data) {
+  public record ResultOfDecodeBoc(JsonNode data) {
   }
 
   /**
    * @param account  Account BOC encoded in `base64`.
    * @param id  Account ID  encoded in `hex`.
    */
-  public static final record ResultOfEncodeAccount(String account, String id) {
+  public record ResultOfEncodeAccount(String account, String id) {
   }
 
   /**
@@ -811,8 +803,8 @@ public final class Abi {
    * @param initialPubkey  Initial account owner's public key to set into account data
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static final record ParamsOfUpdateInitialData(Abi.ABI abi, String data,
-      JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) {
+  public record ParamsOfUpdateInitialData(Abi.ABI abi, String data, JsonNode initialData,
+      String initialPubkey, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -820,14 +812,13 @@ public final class Abi {
    * @param data  Data BOC or BOC handle
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    */
-  public static final record ParamsOfDecodeAccountData(Abi.ABI abi, String data,
-      Boolean allowPartial) {
+  public record ParamsOfDecodeAccountData(Abi.ABI abi, String data, Boolean allowPartial) {
   }
 
   /**
    * @param data  Updated data BOC or BOC handle
    */
-  public static final record ResultOfUpdateInitialData(String data) {
+  public record ResultOfUpdateInitialData(String data) {
   }
 
   /**
@@ -836,17 +827,17 @@ public final class Abi {
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    * @param functionName  Function name or function id if is known in advance
    */
-  public static final record ParamsOfDecodeMessage(Abi.ABI abi, String message,
-      Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) {
+  public record ParamsOfDecodeMessage(Abi.ABI abi, String message, Boolean allowPartial,
+      String functionName, Abi.DataLayout dataLayout) {
   }
 
-  public static final record AbiParam(String name, String type, Abi.AbiParam[] components) {
+  public record AbiParam(String name, String type, Abi.AbiParam[] components) {
   }
 
   /**
    * @param data  Decoded data as a JSON structure.
    */
-  public static final record ResultOfDecodeAccountData(JsonNode data) {
+  public record ResultOfDecodeAccountData(JsonNode data) {
   }
 
   /**
@@ -860,7 +851,7 @@ public final class Abi {
    * 2. Public key, specified in TVM file.
    * 3. Public key, provided by Signer. Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
-  public static final record DeploySet(String tvc, String code, String stateInit, Long workchainId,
+  public record DeploySet(String tvc, String code, String stateInit, Long workchainId,
       JsonNode initialData, String initialPubkey) {
   }
 
@@ -869,7 +860,6 @@ public final class Abi {
    * @param functionName  Contract function name
    * @param output  If set to `true` output function ID will be returned which is used in contract response. Default is `false`
    */
-  public static final record ParamsOfCalcFunctionId(Abi.ABI abi, String functionName,
-      Boolean output) {
+  public record ParamsOfCalcFunctionId(Abi.ABI abi, String functionName, Boolean output) {
   }
 }

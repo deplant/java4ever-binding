@@ -13,7 +13,7 @@ import java.math.BigInteger;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Tvm {
   /**
@@ -118,8 +118,8 @@ public final class Tvm {
    * @param chksigAlwaysSucceed  Overrides standard TVM behaviour. If set to `true` then CHKSIG always will return `true`.
    * @param signatureId  Signature ID to be used in signature verifying instructions when CapSignatureWithId capability is enabled
    */
-  public static final record ExecutionOptions(String blockchainConfig, Long blockTime,
-      BigInteger blockLt, BigInteger transactionLt, Boolean chksigAlwaysSucceed, Long signatureId) {
+  public record ExecutionOptions(String blockchainConfig, Long blockTime, BigInteger blockLt,
+      BigInteger transactionLt, Boolean chksigAlwaysSucceed, Long signatureId) {
   }
 
   /**
@@ -131,14 +131,14 @@ public final class Tvm {
    * @param account Encoded as `base64` Updated account state BOC.
    * @param fees  Transaction fees
    */
-  public static final record ResultOfRunExecutor(JsonNode transaction, String[] outMessages,
+  public record ResultOfRunExecutor(JsonNode transaction, String[] outMessages,
       Processing.DecodedOutput decoded, String account, Tvm.TransactionFees fees) {
   }
 
   /**
    * @param output  Values returned by get-method on stack
    */
-  public static final record ResultOfRunGet(JsonNode output) {
+  public record ResultOfRunGet(JsonNode output) {
   }
 
   /**
@@ -149,7 +149,7 @@ public final class Tvm {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
    */
-  public static final record ParamsOfRunTvm(String message, String account,
+  public record ParamsOfRunTvm(String message, String account,
       Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boc.BocCacheType bocCache,
       Boolean returnUpdatedAccount) {
   }
@@ -165,10 +165,9 @@ public final class Tvm {
    * @param totalFwdFees  Total fees the account pays for message forwarding
    * @param accountFees  Total account fees for the transaction execution. Compounds of storage_fee + gas_fee + ext_in_msg_fee + total_fwd_fees
    */
-  public static final record TransactionFees(BigInteger inMsgFwdFee, BigInteger storageFee,
-      BigInteger gasFee, BigInteger outMsgsFwdFee, BigInteger totalAccountFees,
-      BigInteger totalOutput, BigInteger extInMsgFee, BigInteger totalFwdFees,
-      BigInteger accountFees) {
+  public record TransactionFees(BigInteger inMsgFwdFee, BigInteger storageFee, BigInteger gasFee,
+      BigInteger outMsgsFwdFee, BigInteger totalAccountFees, BigInteger totalOutput,
+      BigInteger extInMsgFee, BigInteger totalFwdFees, BigInteger accountFees) {
   }
 
   /**
@@ -181,7 +180,7 @@ public final class Tvm {
    * set this flag to true.
    * This may happen, for example, when elector contract contains too many participants Convert lists based on nested tuples in the **result** into plain arrays.
    */
-  public static final record ParamsOfRunGet(String account, String functionName, JsonNode input,
+  public record ParamsOfRunGet(String account, String functionName, JsonNode input,
       Tvm.ExecutionOptions executionOptions, Boolean tupleListAsArray) {
   }
 
@@ -237,7 +236,7 @@ public final class Tvm {
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    * @param returnUpdatedAccount Empty string is returned if the flag is `false` Return updated account flag.
    */
-  public static final record ParamsOfRunExecutor(String message, Tvm.AccountForExecutor account,
+  public record ParamsOfRunExecutor(String message, Tvm.AccountForExecutor account,
       Tvm.ExecutionOptions executionOptions, Abi.ABI abi, Boolean skipTransactionCheck,
       Boc.BocCacheType bocCache, Boolean returnUpdatedAccount) {
   }
@@ -246,7 +245,7 @@ public final class Tvm {
     /**
      *  Non-existing account to run a creation internal message. Should be used with `skip_transaction_check = true` if the message has no deploy data since transactions on the uninitialized account are always aborted
      */
-    final record None() implements AccountForExecutor {
+    record None() implements AccountForExecutor {
       @JsonProperty("type")
       public String type() {
         return "None";
@@ -256,7 +255,7 @@ public final class Tvm {
     /**
      *  Emulate uninitialized account to run deploy message
      */
-    final record Uninit() implements AccountForExecutor {
+    record Uninit() implements AccountForExecutor {
       @JsonProperty("type")
       public String type() {
         return "Uninit";
@@ -269,7 +268,7 @@ public final class Tvm {
      * @param boc Encoded as base64. Account BOC.
      * @param unlimitedBalance Can be used to calculate transaction fees without balance check Flag for running account with the unlimited balance.
      */
-    final record Account(String boc, Boolean unlimitedBalance) implements AccountForExecutor {
+    record Account(String boc, Boolean unlimitedBalance) implements AccountForExecutor {
       @JsonProperty("type")
       public String type() {
         return "Account";
@@ -282,7 +281,7 @@ public final class Tvm {
    * @param decoded  Optional decoded message bodies according to the optional `abi` parameter.
    * @param account Encoded as `base64`. Attention! Only `account_state.storage.state.data` part of the BOC is updated. Updated account state BOC.
    */
-  public static final record ResultOfRunTvm(String[] outMessages, Processing.DecodedOutput decoded,
+  public record ResultOfRunTvm(String[] outMessages, Processing.DecodedOutput decoded,
       String account) {
   }
 }

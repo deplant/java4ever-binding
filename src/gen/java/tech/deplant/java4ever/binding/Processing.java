@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.43.3
+ * @version 1.44.1
  */
 public final class Processing {
   /**
@@ -115,7 +115,7 @@ public final class Processing {
    * Note, that specifying `abi` for ABI compliant contracts is
    * strongly recommended, so that proper processing strategy can be
    * chosen. Optional message ABI.
-   * @param sendEvents  Flag for requesting events sending
+   * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
   public static Processing.ResultOfSendMessage sendMessage(EverSdkContext ctx, String message,
       Abi.ABI abi, Boolean sendEvents, Consumer<CallbackHandler> callbackHandler) throws
@@ -155,7 +155,7 @@ public final class Processing {
    * The `abi_decoded` result field will be filled out. Optional ABI for decoding the transaction result.
    * @param message Encoded with `base64`. Message BOC.
    * @param shardBlockId You must provide the same value as the `send_message` has returned. The last generated block id of the destination account shard before the message was sent.
-   * @param sendEvents  Flag that enables/disables intermediate events
+   * @param sendEvents  Flag that enables/disables intermediate events. Default is `false`.
    * @param sendingEndpoints Use this field to get more informative errors.
    * Provide the same value as the `send_message` has returned.
    * If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending. The list of endpoints to which the message was sent.
@@ -205,7 +205,7 @@ public final class Processing {
    *
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
-   * @param sendEvents  Flag for requesting events sending
+   * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
   public static Processing.ResultOfProcessMessage processMessage(EverSdkContext ctx, Abi.ABI abi,
       String address, Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
@@ -216,21 +216,21 @@ public final class Processing {
   /**
    * @param results  List of the resolved results.
    */
-  public static final record ResultOfFetchNextMonitorResults(Processing.MessageMonitoringResult[] results) {
+  public record ResultOfFetchNextMonitorResults(Processing.MessageMonitoringResult[] results) {
   }
 
   /**
    * @param unresolved  Count of the unresolved messages.
    * @param resolved  Count of resolved results.
    */
-  public static final record MonitoringQueueInfo(Long unresolved, Long resolved) {
+  public record MonitoringQueueInfo(Long unresolved, Long resolved) {
   }
 
   /**
    * @param queue  Name of the monitoring queue.
    * @param messages  Messages to start monitoring for.
    */
-  public static final record ParamsOfMonitorMessages(String queue,
+  public record ParamsOfMonitorMessages(String queue,
       Processing.MessageMonitoringParams[] messages) {
   }
 
@@ -239,20 +239,20 @@ public final class Processing {
    * the appropriate position. Decoded bodies of the out messages.
    * @param output  Decoded body of the function output message.
    */
-  public static final record DecodedOutput(Abi.DecodedMessageBody[] outMessages, JsonNode output) {
+  public record DecodedOutput(Abi.DecodedMessageBody[] outMessages, JsonNode output) {
   }
 
   /**
    * @param queue  Name of the monitoring queue.
    */
-  public static final record ParamsOfGetMonitorInfo(String queue) {
+  public record ParamsOfGetMonitorInfo(String queue) {
   }
 
   /**
    * @param messages  Messages that must be sent to the blockchain.
    * @param monitorQueue  Optional message monitor queue that starts monitoring for the processing results for sent messages.
    */
-  public static final record ParamsOfSendMessages(Processing.MessageSendingParams[] messages,
+  public record ParamsOfSendMessages(Processing.MessageSendingParams[] messages,
       String monitorQueue) {
   }
 
@@ -262,7 +262,7 @@ public final class Processing {
    * @param sendingEndpoints This list id must be used as a parameter of the
    * `wait_for_transaction`. The list of endpoints to which the message was sent.
    */
-  public static final record ResultOfSendMessage(String shardBlockId, String[] sendingEndpoints) {
+  public record ResultOfSendMessage(String shardBlockId, String[] sendingEndpoints) {
   }
 
   /**
@@ -273,7 +273,7 @@ public final class Processing {
    * @param decoded  Optional decoded message bodies according to the optional `abi` parameter.
    * @param fees  Transaction fees
    */
-  public static final record ResultOfProcessMessage(JsonNode transaction, String[] outMessages,
+  public record ResultOfProcessMessage(JsonNode transaction, String[] outMessages,
       Processing.DecodedOutput decoded, Tvm.TransactionFees fees) {
   }
 
@@ -281,7 +281,7 @@ public final class Processing {
     /**
      *  BOC of the message.
      */
-    final record Boc(String boc) implements MonitoredMessage {
+    record Boc(String boc) implements MonitoredMessage {
       @JsonProperty("type")
       public String type() {
         return "Boc";
@@ -294,7 +294,7 @@ public final class Processing {
      * @param hash  Hash of the message.
      * @param address  Destination address of the message.
      */
-    final record HashAddress(String hash, String address) implements MonitoredMessage {
+    record HashAddress(String hash, String address) implements MonitoredMessage {
       @JsonProperty("type")
       public String type() {
         return "HashAddress";
@@ -309,13 +309,13 @@ public final class Processing {
    * The `abi_decoded` result field will be filled out. Optional ABI for decoding the transaction result.
    * @param message Encoded with `base64`. Message BOC.
    * @param shardBlockId You must provide the same value as the `send_message` has returned. The last generated block id of the destination account shard before the message was sent.
-   * @param sendEvents  Flag that enables/disables intermediate events
+   * @param sendEvents  Flag that enables/disables intermediate events. Default is `false`.
    * @param sendingEndpoints Use this field to get more informative errors.
    * Provide the same value as the `send_message` has returned.
    * If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending. The list of endpoints to which the message was sent.
    */
-  public static final record ParamsOfWaitForTransaction(Abi.ABI abi, String message,
-      String shardBlockId, Boolean sendEvents, String[] sendingEndpoints) {
+  public record ParamsOfWaitForTransaction(Abi.ABI abi, String message, String shardBlockId,
+      Boolean sendEvents, String[] sendingEndpoints) {
   }
 
   /**
@@ -330,9 +330,9 @@ public final class Processing {
    * Note, that specifying `abi` for ABI compliant contracts is
    * strongly recommended, so that proper processing strategy can be
    * chosen. Optional message ABI.
-   * @param sendEvents  Flag for requesting events sending
+   * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
-  public static final record ParamsOfSendMessage(String message, Abi.ABI abi, Boolean sendEvents) {
+  public record ParamsOfSendMessage(String message, Abi.ABI abi, Boolean sendEvents) {
   }
 
   public enum MonitorFetchWaitMode {
@@ -348,7 +348,7 @@ public final class Processing {
    * @param aborted  Aborted field of the transaction.
    * @param compute  Optional information about the compute phase of the transaction.
    */
-  public static final record MessageMonitoringTransaction(String hash, Boolean aborted,
+  public record MessageMonitoringTransaction(String hash, Boolean aborted,
       Processing.MessageMonitoringTransactionCompute compute) {
   }
 
@@ -356,8 +356,7 @@ public final class Processing {
     /**
      * Fetched block will be used later in waiting phase. Notifies the application that the account's current shard block will be fetched from the network. This step is performed before the message sending so that sdk knows starting from which block it will search for the transaction.
      */
-    final record WillFetchFirstBlock(String messageId,
-        String messageDst) implements ProcessingEvent {
+    record WillFetchFirstBlock(String messageId, String messageDst) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "WillFetchFirstBlock";
@@ -369,7 +368,7 @@ public final class Processing {
      * message was not sent, and Developer can try to run `process_message` again,
      * in the hope that the connection is restored. Notifies the app that the client has failed to fetch the account's current shard block.
      */
-    final record FetchFirstBlockFailed(Client.ClientError error, String messageId,
+    record FetchFirstBlockFailed(Client.ClientError error, String messageId,
         String messageDst) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -380,7 +379,7 @@ public final class Processing {
     /**
      *  Notifies the app that the message will be sent to the network. This event means that the account's current shard block was successfully fetched and the message was successfully created (`abi.encode_message` function was executed successfully).
      */
-    final record WillSend(String shardBlockId, String messageId, String messageDst,
+    record WillSend(String shardBlockId, String messageId, String messageDst,
         String message) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -391,7 +390,7 @@ public final class Processing {
     /**
      * Do not forget to specify abi of your contract as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the message was sent to the network, i.e `processing.send_message` was successfully executed. Now, the message is in the blockchain. If Application exits at this phase, Developer needs to proceed with processing after the application is restored with `wait_for_transaction` function, passing shard_block_id and message from this event.
      */
-    final record DidSend(String shardBlockId, String messageId, String messageDst,
+    record DidSend(String shardBlockId, String messageId, String messageDst,
         String message) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -408,8 +407,8 @@ public final class Processing {
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
      * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the sending operation was failed with network error.
      */
-    final record SendFailed(String shardBlockId, String messageId, String messageDst,
-        String message, Client.ClientError error) implements ProcessingEvent {
+    record SendFailed(String shardBlockId, String messageId, String messageDst, String message,
+        Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "SendFailed";
@@ -424,7 +423,7 @@ public final class Processing {
      * shard_block_id and message from this event. Do not forget to specify abi of your contract
      * as well, it is crucial for processing. See `processing.wait_for_transaction` documentation. Notifies the app that the next shard block will be fetched from the network.
      */
-    final record WillFetchNextBlock(String shardBlockId, String messageId, String messageDst,
+    record WillFetchNextBlock(String shardBlockId, String messageId, String messageDst,
         String message) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -440,7 +439,7 @@ public final class Processing {
      *
      * Another way to tune this is to specify long timeout in `NetworkConfig.wait_for_timeout` Notifies the app that the next block can't be fetched.
      */
-    final record FetchNextBlockFailed(String shardBlockId, String messageId, String messageDst,
+    record FetchNextBlockFailed(String shardBlockId, String messageId, String messageDst,
         String message, Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -456,7 +455,7 @@ public final class Processing {
      * the maximum retries count or receives a successful result.  All the processing
      * events will be repeated. Notifies the app that the message was not executed within expire timeout on-chain and will never be because it is already expired. The expiration timeout can be configured with `AbiConfig` parameters.
      */
-    final record MessageExpired(String messageId, String messageDst, String message,
+    record MessageExpired(String messageId, String messageDst, String message,
         Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -467,7 +466,7 @@ public final class Processing {
     /**
      *  Notifies the app that the message has been delivered to the thread's validators
      */
-    final record RempSentToValidators(String messageId, String messageDst, BigInteger timestamp,
+    record RempSentToValidators(String messageId, String messageDst, BigInteger timestamp,
         JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -478,7 +477,7 @@ public final class Processing {
     /**
      *  Notifies the app that the message has been successfully included into a block candidate by the thread's collator
      */
-    final record RempIncludedIntoBlock(String messageId, String messageDst, BigInteger timestamp,
+    record RempIncludedIntoBlock(String messageId, String messageDst, BigInteger timestamp,
         JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -489,8 +488,8 @@ public final class Processing {
     /**
      *  Notifies the app that the block candidate with the message has been accepted by the thread's validators
      */
-    final record RempIncludedIntoAcceptedBlock(String messageId, String messageDst,
-        BigInteger timestamp, JsonNode json) implements ProcessingEvent {
+    record RempIncludedIntoAcceptedBlock(String messageId, String messageDst, BigInteger timestamp,
+        JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
         return "RempIncludedIntoAcceptedBlock";
@@ -500,7 +499,7 @@ public final class Processing {
     /**
      *  Notifies the app about some other minor REMP statuses occurring during message processing
      */
-    final record RempOther(String messageId, String messageDst, BigInteger timestamp,
+    record RempOther(String messageId, String messageDst, BigInteger timestamp,
         JsonNode json) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -511,7 +510,7 @@ public final class Processing {
     /**
      *  Notifies the app about any problem that has occurred in REMP processing - in this case library switches to the fallback transaction awaiting scenario (sequential block reading).
      */
-    final record RempError(String messageId, String messageDst,
+    record RempError(String messageId, String messageDst,
         Client.ClientError error) implements ProcessingEvent {
       @JsonProperty("type")
       public String type() {
@@ -525,19 +524,19 @@ public final class Processing {
    * @param waitUntil  Expiration time of the message. Must be specified as a UNIX timestamp in seconds.
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
-  public static final record MessageSendingParams(String boc, Long waitUntil, JsonNode userData) {
+  public record MessageSendingParams(String boc, Long waitUntil, JsonNode userData) {
   }
 
   /**
    * @param queue  Name of the monitoring queue.
    */
-  public static final record ParamsOfCancelMonitor(String queue) {
+  public record ParamsOfCancelMonitor(String queue) {
   }
 
   /**
    * @param exitCode  Compute phase exit code.
    */
-  public static final record MessageMonitoringTransactionCompute(Long exitCode) {
+  public record MessageMonitoringTransactionCompute(Long exitCode) {
   }
 
   public enum MessageMonitoringStatus {
@@ -550,9 +549,9 @@ public final class Processing {
 
   /**
    * @param messageEncodeParams  Message encode parameters.
-   * @param sendEvents  Flag for requesting events sending
+   * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
-  public static final record ParamsOfProcessMessage(Abi.ParamsOfEncodeMessage messageEncodeParams,
+  public record ParamsOfProcessMessage(Abi.ParamsOfEncodeMessage messageEncodeParams,
       Boolean sendEvents) {
   }
 
@@ -563,8 +562,7 @@ public final class Processing {
    * @param error  In case of `Timeout` contains possible error reason.
    * @param userData  User defined data related to this message. This is the same value as passed before with `MessageMonitoringParams` or `SendMessageParams`.
    */
-  public static final record MessageMonitoringResult(String hash,
-      Processing.MessageMonitoringStatus status,
+  public record MessageMonitoringResult(String hash, Processing.MessageMonitoringStatus status,
       Processing.MessageMonitoringTransaction transaction, String error, JsonNode userData) {
   }
 
@@ -617,7 +615,7 @@ public final class Processing {
    * @param queue  Name of the monitoring queue.
    * @param waitMode Default is `NO_WAIT`. Wait mode.
    */
-  public static final record ParamsOfFetchNextMonitorResults(String queue,
+  public record ParamsOfFetchNextMonitorResults(String queue,
       Processing.MonitorFetchWaitMode waitMode) {
   }
 
@@ -626,13 +624,13 @@ public final class Processing {
    * @param waitUntil  Block time Must be specified as a UNIX timestamp in seconds
    * @param userData  User defined data associated with this message. Helps to identify this message when user received `MessageMonitoringResult`.
    */
-  public static final record MessageMonitoringParams(Processing.MonitoredMessage message,
-      Long waitUntil, JsonNode userData) {
+  public record MessageMonitoringParams(Processing.MonitoredMessage message, Long waitUntil,
+      JsonNode userData) {
   }
 
   /**
    * @param messages  Messages that was sent to the blockchain for execution.
    */
-  public static final record ResultOfSendMessages(Processing.MessageMonitoringParams[] messages) {
+  public record ResultOfSendMessages(Processing.MessageMonitoringParams[] messages) {
   }
 }
