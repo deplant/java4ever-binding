@@ -1,3 +1,11 @@
+### 2.4.0
+
+- Extracted commons (formert java4ever-utils) from Java4ever project, thy're now under deplant/commons-core for separate maintenance
+- Extracted our custom Javapoet fork to separate repo - deplant/javapoet
+- Fix for ErrorResultData
+- Better handling of Default loader
+- More tests
+
 ### 2.3.0
 
 - Updated EVER-SDK -> 1.44.1

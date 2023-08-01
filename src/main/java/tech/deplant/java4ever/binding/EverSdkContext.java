@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
+import tech.deplant.java4ever.binding.loader.DefaultLoaderContext;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.util.concurrent.CompletionException;
@@ -29,6 +30,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
+
 
 	/**
 	 * Constructor of EVER-SDK context
@@ -263,7 +265,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 				this.jsonMapper = JsonContext.SDK_JSON_MAPPER();
 			}
 			var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
-			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig("java4ever", "2.3.0"),
+			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig(DefaultLoader.BINDING_LIBRARY_NAME, DefaultLoader.BINDING_LIBRARY_VERSION),
 			                                           defaults.network(),
 			                                           defaults.crypto(),
 			                                           defaults.abi(),
@@ -287,7 +289,7 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 		 * @throws JsonProcessingException
 		 */
 		public EverSdkContext buildNew() throws JsonProcessingException {
-			return buildNew(new DefaultLoader(this.getClass().getClassLoader()));
+			return buildNew(DefaultLoaderContext.SINGLETON(this.getClass().getClassLoader()));
 		}
 
 		public record ResultOfCreateContext(Integer result, String error) {

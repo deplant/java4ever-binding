@@ -1,15 +1,15 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
+import tech.deplant.commons.Objs;
+import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.*;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
-import tech.deplant.java4ever.binding.generator.javapoet.*;
+import tech.deplant.javapoet.*;
 import tech.deplant.java4ever.binding.generator.reference.ApiFunction;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 import tech.deplant.java4ever.binding.generator.reference.StructType;
-import tech.deplant.java4ever.utils.Objs;
-import tech.deplant.java4ever.utils.Strings;
 
 import javax.lang.model.element.Modifier;
 import java.util.ArrayList;

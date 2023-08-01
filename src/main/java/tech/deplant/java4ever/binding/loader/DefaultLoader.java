@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.binding.loader;
 
-import tech.deplant.java4ever.utils.SystemContext;
+
+import tech.deplant.commons.SystemContext;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +14,12 @@ import java.net.URL;
 import static java.lang.System.Logger.Level.DEBUG;
 
 public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
+
+
+	public final static String EVER_SDK_VERSION = "1.44.1";
+	public final static String BINDING_LIBRARY_NAME = "java4ever";
+
+	public final static String BINDING_LIBRARY_VERSION = "2.4.0";
 
 	private final static System.Logger logger = System.getLogger(DefaultLoader.class.getName());
 

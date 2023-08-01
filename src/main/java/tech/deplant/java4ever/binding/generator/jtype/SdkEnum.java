@@ -1,9 +1,9 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import tech.deplant.java4ever.binding.generator.javapoet.MethodSpec;
-import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
-import tech.deplant.java4ever.binding.generator.javapoet.TypeVariableName;
+import tech.deplant.javapoet.MethodSpec;
+import tech.deplant.javapoet.TypeSpec;
+import tech.deplant.javapoet.TypeVariableName;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 import tech.deplant.java4ever.binding.generator.reference.EnumOfConsts;
 

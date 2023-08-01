@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
-import tech.deplant.java4ever.binding.generator.javapoet.AnnotationSpec;
-import tech.deplant.java4ever.binding.generator.javapoet.ParameterSpec;
-import tech.deplant.java4ever.binding.generator.javapoet.TypeName;
+import tech.deplant.javapoet.AnnotationSpec;
+import tech.deplant.javapoet.ParameterSpec;
+import tech.deplant.javapoet.TypeName;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 
 import java.util.Map;

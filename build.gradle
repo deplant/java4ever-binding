@@ -23,7 +23,8 @@ sourceSets {
 dependencies {
 
     // RUNTIME **************************
-    api "tech.deplant.java4ever:java4ever-utils:$v_version" // java4ever-utils
+    api "tech.deplant.commons:commons-core:$commonsVersion" // Deplant Java Commons
+    api "tech.deplant.javapoet:javapoet-core:$javapoetVersion" // Javapoet
 
     // JSON
     api platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion")

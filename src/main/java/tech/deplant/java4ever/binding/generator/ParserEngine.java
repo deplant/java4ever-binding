@@ -1,19 +1,19 @@
 package tech.deplant.java4ever.binding.generator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import tech.deplant.commons.Objs;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.JsonContext;
-import tech.deplant.java4ever.binding.generator.javapoet.CodeBlock;
-import tech.deplant.java4ever.binding.generator.javapoet.JavaFile;
-import tech.deplant.java4ever.binding.generator.javapoet.TypeSpec;
+import tech.deplant.javapoet.CodeBlock;
+import tech.deplant.javapoet.JavaFile;
+import tech.deplant.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.jtype.*;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.binding.io.JsonResource;
 import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
-import tech.deplant.java4ever.utils.Objs;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;

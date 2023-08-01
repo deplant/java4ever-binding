@@ -1,7 +1,8 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
-import tech.deplant.java4ever.binding.generator.javapoet.CodeBlock;
-import tech.deplant.java4ever.utils.regex.*;
+import tech.deplant.commons.Strings;
+import tech.deplant.commons.regex.*;
+import tech.deplant.javapoet.CodeBlock;
 
 import static java.util.Objects.requireNonNullElse;
 
@@ -22,7 +23,12 @@ public record SdkDocs(String summary, String description) {
 				new Symbol(')'));
 		String mdLinksPatternString = mdLinkRegExp.toString();
 
+
 		String processedDescription = description();
+		if (Strings.isNotEmpty(processedDescription)) {
+			processedDescription.replace("<","{@literal <}").replace(">","{@literal >}");
+		}
+
 		//TODO Do something with MD-style links in description
 //		if (processedDescription != null) {
 //
@@ -33,6 +39,9 @@ public record SdkDocs(String summary, String description) {
 //		}
 
 		String processedSummary = summary();
+		if (Strings.isNotEmpty(processedSummary)) {
+			processedSummary.replace("<","{@literal <}").replace(">","{@literal >}");
+		}
 		//TODO Do something with MD-style links in summary
 //		if (processedSummary != null) {
 //

@@ -88,7 +88,8 @@ public class EverSdkException extends Exception {
 	                              String blockTime,
 	                              ErrorResult localError,
 	                              Integer resultCode,
-	                              String bindingLibrary) {
+	                              String bindingLibrary,
+	                              String bindingVersion) {
 	}
 
 	public record ErrorResult(long code, String message, ErrorResultData data) {
