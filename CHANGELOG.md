@@ -1,5 +1,6 @@
 ### 2.4.0
 
+- Updated EVER-SDK -> 1.44.2
 - Extracted commons (formert java4ever-utils) from Java4ever project, thy're now under deplant/commons-core for separate maintenance
 - Extracted our custom Javapoet fork to separate repo - deplant/javapoet
 - Fix for ErrorResultData

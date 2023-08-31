@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.44.1
+ * @version 1.44.2
  */
 public final class Net {
   /**

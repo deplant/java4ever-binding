@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.44.1
+ * @version 1.44.2
  */
 public final class Processing {
   /**

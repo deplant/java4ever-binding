@@ -13,7 +13,7 @@ import java.math.BigInteger;
  * Contains methods of "tvm" module of EVER-SDK API
  *
  *  
- * @version 1.44.1
+ * @version 1.44.2
  */
 public final class Tvm {
   /**

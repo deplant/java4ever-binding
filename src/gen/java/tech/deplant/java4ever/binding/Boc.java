@@ -12,7 +12,7 @@ import java.lang.String;
  * Contains methods of "boc" module of EVER-SDK API
  *
  * BOC manipulation module. 
- * @version 1.44.1
+ * @version 1.44.2
  */
 public final class Boc {
   /**
