@@ -1,8 +1,5 @@
-package tech.deplant.java4ever.eversdkgen;
+package tech.deplant.java4ever.gen;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Test;
-import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.reference.ApiReference;
 

@@ -1,3 +1,7 @@
+### 2.5.0
+
+- Added GraphQL typed parser
+
 ### 2.4.0
 
 - Updated EVER-SDK -> 1.44.2

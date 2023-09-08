@@ -1,8 +1,67 @@
 package tech.deplant.java4ever.binding.generator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import tech.deplant.javapoet.AnnotationSpec;
+import tech.deplant.javapoet.ParameterSpec;
+import tech.deplant.javapoet.TypeName;
+
+import javax.lang.model.element.Modifier;
 import java.util.Arrays;
+import java.util.Set;
 
 public class ParserUtils {
+
+
+	public final static Set<String> JAVA_RESERVED_WORDS = Set.of("abstract",
+	                                                             "continue",
+	                                                             "for",
+	                                                             "new",
+	                                                             "switch",
+	                                                             "assert",
+	                                                             "default",
+	                                                             "goto",
+	                                                             "package",
+	                                                             "synchronize",
+	                                                             "boolean",
+	                                                             "do",
+	                                                             "if",
+	                                                             "private",
+	                                                             "this",
+	                                                             "break",
+	                                                             "double",
+	                                                             "implements",
+	                                                             "protected",
+	                                                             "throw",
+	                                                             "byte",
+	                                                             "else",
+	                                                             "import",
+	                                                             "public",
+	                                                             "throws",
+	                                                             "case",
+	                                                             "enum",
+	                                                             "instanceof",
+	                                                             "return",
+	                                                             "transient",
+	                                                             "catch",
+	                                                             "extends",
+	                                                             "int",
+	                                                             "short",
+	                                                             "try",
+	                                                             "char",
+	                                                             "final",
+	                                                             "interface",
+	                                                             "static",
+	                                                             "void",
+	                                                             "class",
+	                                                             "finally",
+	                                                             "long",
+	                                                             "strictfp",
+	                                                             "volatile",
+	                                                             "const",
+	                                                             "float",
+	                                                             "native",
+	                                                             "super",
+	                                                             "while");
 
 	// Null-safe length
 	public static int length(final CharSequence cs) {
@@ -50,4 +109,27 @@ public class ParserUtils {
 	public static String toCapitalCase(final String str) {
 		return capitalize(camelCase(str));
 	}
+
+
+	public static AnnotationSpec renamedFieldAnnotation(String originalName) {
+		return AnnotationSpec.builder(JsonProperty.class)
+		                     .addMember("value", "$S", originalName)
+		                     .build();
+	}
+
+
+	public static ParameterSpec.Builder processReservedNames(TypeName paramType, String paramName) {
+		ParameterSpec.Builder paramBuilder;
+		if (JAVA_RESERVED_WORDS.contains(paramName)) {
+			paramBuilder = ParameterSpec.builder(paramType, "_" + paramName);
+			paramBuilder.addAnnotation(renamedFieldAnnotation(paramName));
+		} else if (paramName.contains(" ")) {
+			paramBuilder = ParameterSpec.builder(paramType, paramName.trim().replace(" ","__"));
+			paramBuilder.addAnnotation(renamedFieldAnnotation(paramName));
+		} else {
+			paramBuilder = ParameterSpec.builder(paramType, paramName);
+		}
+		return paramBuilder;
+	}
+
 }

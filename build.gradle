@@ -121,7 +121,15 @@ task generateEverSdkApi(type: JavaExec) {
     group = "other"
     description = "Generates Java Bindings for EVER-SDK"
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = "tech.deplant.java4ever.eversdkgen.EverSdkGenerator"
+    mainClass = "tech.deplant.java4ever.gen.EverSdkGenerator"
+}
+
+// Task for JavaPoet generation of EVER-SDK API
+task generateGraphQLApi(type: JavaExec) {
+    group = "other"
+    description = "Generates GraphQL Objects for Everscale/Venom GQL"
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "tech.deplant.java4ever.gen.GqlGenerator"
 }
 
 // Task for Jextract gerneration of FFM Bridge
