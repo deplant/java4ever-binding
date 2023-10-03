@@ -15,7 +15,7 @@ import java.math.BigInteger;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Abi {
   /**

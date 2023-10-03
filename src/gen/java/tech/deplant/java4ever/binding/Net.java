@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Contains methods of "net" module of EVER-SDK API
  *
  * Network access. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Net {
   /**
@@ -139,9 +139,9 @@ public final class Net {
    * @param result  Projection (result) string
    */
   public static Net.ResultOfSubscribeCollection subscribeCollection(EverSdkContext ctx,
-      String collection, JsonNode filter, String result, Consumer<CallbackHandler> callbackHandler)
-      throws EverSdkException {
-    return ctx.callEvent("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), callbackHandler, Net.ResultOfSubscribeCollection.class);
+      String collection, JsonNode filter, String result, Consumer<String> eventHandler) throws
+      EverSdkException {
+    return ctx.callEvent("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
 
   /**
@@ -184,8 +184,8 @@ public final class Net {
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
   public static Net.ResultOfSubscribeCollection subscribe(EverSdkContext ctx, String subscription,
-      JsonNode variables, Consumer<CallbackHandler> callbackHandler) throws EverSdkException {
-    return ctx.callEvent("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), callbackHandler, Net.ResultOfSubscribeCollection.class);
+      JsonNode variables, Consumer<String> eventHandler) throws EverSdkException {
+    return ctx.callEvent("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
 
   /**

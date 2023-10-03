@@ -10,7 +10,7 @@ import java.lang.String;
  * Contains methods of "utils" module of EVER-SDK API
  *
  * Misc utility Functions. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Utils {
   /**

@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Processing {
   /**
@@ -118,9 +118,8 @@ public final class Processing {
    * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
   public static Processing.ResultOfSendMessage sendMessage(EverSdkContext ctx, String message,
-      Abi.ABI abi, Boolean sendEvents, Consumer<CallbackHandler> callbackHandler) throws
-      EverSdkException {
-    return ctx.callEvent("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), callbackHandler, Processing.ResultOfSendMessage.class);
+      Abi.ABI abi, Boolean sendEvents, Consumer<String> eventHandler) throws EverSdkException {
+    return ctx.callEvent("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), eventHandler, Processing.ResultOfSendMessage.class);
   }
 
   /**
@@ -162,9 +161,8 @@ public final class Processing {
    */
   public static Processing.ResultOfProcessMessage waitForTransaction(EverSdkContext ctx,
       Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,
-      String[] sendingEndpoints, Consumer<CallbackHandler> callbackHandler) throws
-      EverSdkException {
-    return ctx.callEvent("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), callbackHandler, Processing.ResultOfProcessMessage.class);
+      String[] sendingEndpoints, Consumer<String> eventHandler) throws EverSdkException {
+    return ctx.callEvent("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), eventHandler, Processing.ResultOfProcessMessage.class);
   }
 
   /**

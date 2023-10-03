@@ -1,5 +1,6 @@
 module java4ever.bindtest {
 	requires org.slf4j;
+	requires java.net.http;
 	requires java4ever.binding;
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.databind;

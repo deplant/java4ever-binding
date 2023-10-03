@@ -14,7 +14,7 @@ import java.math.BigInteger;
  * Contains methods of "debot" module of EVER-SDK API
  *
  * [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Module for working with debot. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Debot {
   /**

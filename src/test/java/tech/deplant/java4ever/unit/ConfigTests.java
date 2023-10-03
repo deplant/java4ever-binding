@@ -10,9 +10,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.gql.AccountFilter;
-import tech.deplant.java4ever.binding.gql.Query;
-import tech.deplant.java4ever.binding.gql.StringFilter;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,23 +21,6 @@ public class ConfigTests {
 	@Test
 	public void check_ever_sdk_version() throws JsonProcessingException, EverSdkException {
 		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.version(EverSdkContext.builder().buildNew()).version());
-	}
-
-	@Test
-	public void make_query() throws JsonProcessingException, EverSdkException {
-		System.out.println(Query.accounts("balance boc", new AccountFilter(
-				new StringFilter("0:d707caf6df3a7c2bb0b64915613eca9d8f17ca1de0b938dfdcbb9b4ff30c4526",
-				                 null,
-				                 null,
-				                 null,
-				                 null,
-				                 null,
-				                 null,
-				                 null),
-				null, null, null, null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null,
-				null, null, null, null, null, null
-		), null, null, null, null, null).toGraphQLQuery());
 	}
 
 	@Test

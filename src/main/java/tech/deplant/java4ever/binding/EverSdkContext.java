@@ -3,31 +3,29 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
+import tech.deplant.java4ever.binding.ffi.SdkResponseHandler;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoaderContext;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.lang.foreign.Arena;
+import java.util.Map;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
  * Class that represents the established environment inside EVER-SDK and
  * is identified by id number. Holds last request id and functions to
  * call SDK methods.
  */
-public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeout, AtomicInteger requestCount) {
+public record EverSdkContext(int id,
+                             @JsonIgnore ObjectMapper mapper,
+                             long timeout,
+                             AtomicInteger requestCount,
+                             Map<Integer, SdkResponseHandler> responses,
+                             ExecutorService executor) {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
@@ -41,7 +39,8 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @param mapper       Jackson's ObjectMapper, ContextBuilder have correctly preconfigured one.
 	 */
 	public EverSdkContext(int id, int requestCount, long timeout, ObjectMapper mapper) {
-		this(id, mapper, timeout, new AtomicInteger(requestCount));
+		this(id, mapper, timeout, new AtomicInteger(requestCount), new ConcurrentHashMap<>(),
+		     Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	public static EverSdkContext.Builder builder() {
@@ -75,24 +74,29 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @param params
 	 * @param consumer
 	 * @param clazz
-	 * @param <T> type of function result
-	 * @param <P> type of function params
+	 * @param <T>          type of function result
+	 * @param <P>          type of function params
 	 * @return
 	 * @throws EverSdkException
 	 */
 	public <T, P> T callEvent(String functionName,
 	                          P params,
-	                          Consumer<CallbackHandler> consumer,
+	                          Consumer<String> consumer,
 	                          Class<T> clazz) throws EverSdkException {
-		try {
-			return this.mapper.readValue(processRequest(functionName, processParams(params), consumer), clazz);
-		} catch (JsonProcessingException e) {
-			logger.log(System.Logger.Level.ERROR,
-			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
-			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-			                                                            "Successful response deserialization failed! Check getCause() for actual response."),
-			                           e);
+		int requestId = requestCount().incrementAndGet();
+		var handler = new SdkResponseHandler(this,
+		                                     requestId,
+		                                     functionName,
+		                                     processParams(params),
+		                                     consumer,
+		                                     null);
+		var result = processResult(processRequest(handler), clazz);
+		if (result instanceof Net.ResultOfSubscribeCollection resultOfSubscribeCollection) {
+			handler.saveHandle(resultOfSubscribeCollection.handle());
+			logger.log(System.Logger.Level.TRACE,
+			           () -> "Subscription handle saved: " + resultOfSubscribeCollection.handle());
 		}
+		return result;
 	}
 
 	/**
@@ -107,15 +111,17 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @throws EverSdkException
 	 */
 	public <T, P> T call(String functionName, P params, Class<T> clazz) throws EverSdkException {
-		try {
-			return this.mapper.readValue(processRequest(functionName, processParams(params), null), clazz);
-		} catch (JsonProcessingException e) {
-			logger.log(System.Logger.Level.ERROR,
-			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
-			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-			                                                            "Successful response deserialization failed! Check getCause() for actual response."),
-			                           e);
-		}
+		int requestId = requestCount().incrementAndGet();
+		var result = processResult(processRequest(new SdkResponseHandler(this,
+		                                                                 requestId,
+		                                                                 functionName,
+		                                                                 processParams(params),
+		                                                                 null,
+		                                                                 null)), clazz);
+		responses().remove(requestId);
+		logger.log(System.Logger.Level.TRACE,
+		           () -> "Removing request by result acception: " + requestId);
+		return result;
 	}
 
 	/**
@@ -127,7 +133,23 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 	 * @throws EverSdkException
 	 */
 	public <P> void callVoid(String functionName, P params) throws EverSdkException {
-		processRequest(functionName, processParams(params), null);
+		int requestId = requestCount().incrementAndGet();
+		processRequest(new SdkResponseHandler(this,
+		                                      requestId,
+		                                      functionName,
+		                                      processParams(params),
+		                                      null,
+		                                      null));
+		responses().remove(requestId);
+	}
+
+	private SdkResponseHandler processRequest(SdkResponseHandler handler) throws EverSdkException {
+			responses().put(handler.requestId(), handler);
+
+			try (Arena offHeapMemory = Arena.openShared()) {
+				handler.request(executor(), offHeapMemory.scope());
+			}
+			return handler;
 	}
 
 	private <P> String processParams(P params) throws EverSdkException {
@@ -140,69 +162,16 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 		}
 	}
 
-	private String processRequest(String functionName, String params, Consumer<CallbackHandler> consumer) throws EverSdkException {
-		final int requestId = requestCount().incrementAndGet();
+	private <T> T processResult(SdkResponseHandler handler, Class<T> clazz) throws EverSdkException {
 		try {
-			logger.log(System.Logger.Level.TRACE,
-			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " SEND:" + params);
-			final String result = SdkBridge.tcRequest(id(), requestId, functionName, params, consumer)
-			                               .result()
-			                               .get(timeout(), TimeUnit.MILLISECONDS);
-			logger.log(System.Logger.Level.TRACE,
-			           () -> "FUNC: " + functionName + " CTXID:" + id() + " REQID:" + requestId + " RESP:" + result);
-			return result;
-		} catch (CompletionException | ExecutionException e) {
-			// These errors are sent by SDK, response_type=1
-			EverSdkException.ErrorResult sdkResponse = null;
-			// let's try to parse error response
-			try {
-				sdkResponse = mapper().readValue(e.getCause().getMessage(), EverSdkException.ErrorResult.class);
-				// in case of contract custom exit code ("require" error)
-				final EverSdkException.ErrorResult responseCopy = sdkResponse;
-				if (responseCopy.data().localError() != null &&
-				    responseCopy.data().localError().data().exitCode() > 0) {
-					logger.log(System.Logger.Level.WARNING,
-					           () -> "Error from SDK. Code: " + responseCopy.data().localError().code() +
-					                 ", Message: " + responseCopy.data().localError().message());
-					throw new EverSdkException(new EverSdkException.ErrorResult(responseCopy.data()
-					                                                                        .localError()
-					                                                                        .data()
-					                                                                        .exitCode(),
-					                                                            "Contract did not accept message. For more information about exit code check the contract source code or ask the contract developer",
-					                                                            responseCopy.data()
-					                                                                        .localError()
-					                                                                        .data()), e);
-				} else { // on other errors, we just re-throw
-					logger.log(System.Logger.Level.WARNING,
-					           () -> "Error from SDK. Code: " + responseCopy.code() + ", Message: " +
-					                 responseCopy.message());
-					throw new EverSdkException(responseCopy, e);
-				}
-
-			} catch (JsonProcessingException ex) {
-				// if error response parsing failed
-				logger.log(System.Logger.Level.ERROR,
-				           () -> "SDK Error Response deserialization failed! Response: " + e.getCause().getMessage() +
-				                 ex.getMessage());
-				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-				                                                            "SDK Error Response deserialization failed! Check getCause() for actual response."),
-				                           ex);
-			}
-		} catch (InterruptedException e) {
+			return this.mapper.readValue(handler.result(this.mapper, timeout(), TimeUnit.MILLISECONDS), clazz);
+		} catch (JsonProcessingException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId + " ERR: INTERRUPTED! " +
-			                 params + e.getCause() + " " + e.getMessage() + " " + e);
-			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
-		} catch (TimeoutException e) {
-			logger.log(System.Logger.Level.ERROR,
-			           () -> "FUNC:" + functionName + " CTXID:" + id() + " REQID:" + requestId +
-			                 " ERR: TIMEOUT! LIMIT: " + timeout() + " Message: " + e.getMessage());
-			throw new EverSdkException(new EverSdkException.ErrorResult(-402,
-			                                                            "EVER-SDK Execution expired on Timeout! Current timeout: " +
-			                                                            timeout()), e);
-
+			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
+			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
+			                                                            "Successful response deserialization failed! Check getCause() for actual response."),
+			                           e);
 		}
-
 	}
 
 	/**
@@ -265,7 +234,8 @@ public record EverSdkContext(int id, @JsonIgnore ObjectMapper mapper, long timeo
 				this.jsonMapper = JsonContext.SDK_JSON_MAPPER();
 			}
 			var defaults = this.jsonMapper.readValue(this.configJson, Client.ClientConfig.class);
-			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig(DefaultLoader.BINDING_LIBRARY_NAME, DefaultLoader.BINDING_LIBRARY_VERSION),
+			var mergedConfig = new Client.ClientConfig(new Client.BindingConfig(DefaultLoader.BINDING_LIBRARY_NAME,
+			                                                                    DefaultLoader.BINDING_LIBRARY_VERSION),
 			                                           defaults.network(),
 			                                           defaults.crypto(),
 			                                           defaults.abi(),

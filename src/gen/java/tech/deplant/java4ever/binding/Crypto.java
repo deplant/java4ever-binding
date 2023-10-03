@@ -13,7 +13,7 @@ import java.lang.String;
  * Contains methods of "crypto" module of EVER-SDK API
  *
  * Crypto functions. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Crypto {
   /**

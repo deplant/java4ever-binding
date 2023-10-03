@@ -42,7 +42,9 @@ public class SubscribeTests {
 		Net.subscribe(ctx,
 		              queryText,
 		              JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
-		              handler -> logger.log(System.Logger.Level.WARNING,
-		                                    "code: %d, msg: %s".formatted(handler.responseType(), handler.params())));
+		              eventString -> logger.log(System.Logger.Level.WARNING,
+		                                    "code: %s".formatted(eventString)));
+
+
 	}
 }

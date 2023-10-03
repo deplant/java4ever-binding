@@ -1,6 +1,8 @@
 ### 2.5.0
 
-- Added GraphQL typed parser
+- Updated EVER-SDK -> 1.44.3
+- Added GraphQL typed parser (only for experimentation, not production ready)
+- Fixes for subscriptions workflow
 
 ### 2.4.0
 

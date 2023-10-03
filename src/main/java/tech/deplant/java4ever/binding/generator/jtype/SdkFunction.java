@@ -89,10 +89,10 @@ public record SdkFunction(String functionModule,
 					                                                                        parsedParam));
 				}
 				case "callback" -> {
-					templateString = templateString.replace("%APP_OBJ%", ", callbackHandler");
+					templateString = templateString.replace("%APP_OBJ%", ", eventHandler");
 					templateString = templateString.replace("%CALL_TYPE%", "callEvent");
-					var paramClass = ClassName.get(CallbackHandler.class);
-					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "callbackHandler");
+					var paramClass = ClassName.get(String.class);//ClassName.get(CallbackHandler.class);
+					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "eventHandler");
 				}
 				case "app_object", "password_provider" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", appObject");

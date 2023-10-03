@@ -13,7 +13,7 @@ import java.lang.String;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.44.2
+ * @version 1.44.3
  */
 public final class Client {
   /**

@@ -27,18 +27,6 @@ public class SdkBridge {
 		}
 	}
 
-	public static SdkResponseHandler tcRequest(int contextId, int requestId, String functionName, String params, Consumer<CallbackHandler> consumer) {
-		try (Arena offHeapMemory = Arena.openShared()) {
-			final var response = new SdkResponseHandler(consumer);
-			ton_client.tc_request(contextId,
-			                      toRustString(functionName, offHeapMemory.scope()),
-			                      toRustString(params, offHeapMemory.scope()),
-			                      requestId,
-			                      tc_response_handler_t.allocate(response, SegmentScope.auto()));
-			return response;
-		}
-	}
-
 	public static MemorySegment toRustString(final String text, SegmentScope scope) {
 		SegmentAllocator allocator = SegmentAllocator.nativeAllocator(scope);
 		MemorySegment stringData = allocate(allocator);

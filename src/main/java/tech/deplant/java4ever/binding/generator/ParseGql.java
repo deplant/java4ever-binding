@@ -58,13 +58,15 @@ public class ParseGql {
 					        .build()
 					        .writeTo(Paths.get("src/gen/java"));
 				}
-				case GqlSchemaRoot.GqlType.GqlInterface intrf -> {
-					TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(intrf.name())
+				case GqlSchemaRoot.GqlType.GqlInterface(
+						var kind, String intName, String intDescription, var possibleTypes
+				) -> {
+					TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(intName)
 					                                            .addModifiers(Modifier.PUBLIC, Modifier.SEALED);
 
-					Optional.ofNullable(intrf.description())
+					Optional.ofNullable(intDescription)
 					        .ifPresent(description -> interfaceBuilder.addJavadoc(CodeBlock.builder()
-					                                                                       .addStatement(description)
+					                                                                       .addStatement(intDescription)
 					                                                                       .build()));
 
 					// let's find OBJECTs that have interfaces[] field containing this interface
@@ -75,13 +77,13 @@ public class ParseGql {
 					                                 .filter(obj1 -> obj1.interfaces()
 					                                                     .stream()
 					                                                     .anyMatch(depInt -> depInt.name()
-					                                                                               .equals(intrf.name())))
+					                                                                               .equals(intName)))
 					                                 .toList()) {
 
 						var dependentRecordBuilder = processObjects(dependentRecord);
 						dependentRecordBuilder.addSuperinterface(ClassName.get(
 								"tech.deplant.java4ever.binding.gql",
-								intrf.name()));
+								intName));
 						interfaceBuilder.addType(dependentRecordBuilder.build());
 					}
 
@@ -141,6 +143,10 @@ public class ParseGql {
 		                                                                    .addStatement(description)
 		                                                                    .build()));
 
+
+		// for executors
+		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(obj.name() + "Executor");
+
 		for (var field : obj.fields()) {
 			recordBuilder.addRecordComponent(ParserUtils.processReservedNames(getClassName(field.type()), field.name())
 			                                            .build());
@@ -150,6 +156,8 @@ public class ParseGql {
 //			                                         Modifier.STATIC).initializer("$S", field.name()).build());
 
 			if (!field.args().isEmpty()) {
+
+
 				//   public static QueryExecutorBuilder blocks(String fields, BlockFilter filter, List<QueryOrderBy> orderBy,
 				//      Integer limit, Float timeout, String accessKey, String operationId) {
 				//    var builder = new QueryExecutorBuilder("blocks", fields);
@@ -173,7 +181,8 @@ public class ParseGql {
 				functionBuilder.addParameter(ParameterSpec.builder(ClassName.STRING, "objectFieldsTree").build());
 
 				for (var arg : field.args()) {
-					functionBuilder.addParameter(ParserUtils.processReservedNames(getClassName(arg.type()), arg.name())
+					functionBuilder.addParameter(ParserUtils.processReservedNames(getClassName(arg.type()),
+					                                                              arg.name())
 					                                        .build());
 					functionBuilder.addCode(CodeBlock.builder()
 					                                 .addStatement("$T.ofNullable(" + arg.name() +
@@ -181,15 +190,27 @@ public class ParseGql {
 					                                               ClassName.get(Optional.class),
 					                                               arg.name())
 					                                 .build());
-
 				}
+
 
 				functionBuilder.addCode(CodeBlock.builder().addStatement("return builder").build());
 
-				recordBuilder.addMethod(functionBuilder.build());
+				if (obj.name().equals("Query") || obj.name().equals("Mutation") || obj.name().equals("Subscription")) {
+					classBuilder.addMethod(functionBuilder.build());
+				} else {
+					recordBuilder.addMethod(functionBuilder.build());
+				}
 
 			}
 		}
+
+		if (obj.name().equals("Query") || obj.name().equals("Mutation") || obj.name().equals("Subscription")) {
+
+			JavaFile.builder("tech.deplant.java4ever.binding.gql", classBuilder.build())
+			        .build()
+			        .writeTo(Paths.get("src/gen/java"));
+		}
+
 		return recordBuilder;
 	}
 
