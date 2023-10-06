@@ -1,5 +1,7 @@
 package tech.deplant.java4ever.binding;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.concurrent.Future;
 
 /**
@@ -68,6 +70,7 @@ public class EverSdkException extends Exception {
 		return this.errorResponse;
 	}
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public record ErrorResultData(String coreVersion,
 	                              String phase,
 	                              int exitCode,
@@ -89,7 +92,8 @@ public class EverSdkException extends Exception {
 	                              ErrorResult localError,
 	                              Integer resultCode,
 	                              String bindingLibrary,
-	                              String bindingVersion) {
+	                              String bindingVersion,
+	                              String serverCode) {
 	}
 
 	public record ErrorResult(long code, String message, ErrorResultData data) {

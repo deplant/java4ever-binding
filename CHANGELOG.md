@@ -1,3 +1,8 @@
+### 3.0.0
+
+- Updated baseline JDK -> 21
+- Supported server-code field in EVER-SDK error responses, new fields are now ignorable
+
 ### 2.5.0
 
 - Updated EVER-SDK -> 1.44.3
