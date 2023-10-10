@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +20,12 @@ public record ByteFile(String filePath) implements Supplier<byte[]>, Consumer<by
 	@Override
 	public void accept(byte[] bytes) {
 		try {
-			Files.write(Paths.get(filePath()),
+			var path = Paths.get(filePath());
+			if (!Files.exists(path)) {
+				Files.createDirectories(path.getParent());
+				Files.createFile(path);
+			}
+			Files.write(path,
 			            bytes);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

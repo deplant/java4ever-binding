@@ -7,24 +7,29 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public record JsonFile(String filePath) implements Supplier<String>, Consumer<String> {
-    @Override
-    public String get() {
-        try {
-            return Files.readString(Paths.get(filePath()))
-                    .replaceAll("[\u0000-\u001f]", "");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public String get() {
+		try {
+			return Files.readString(Paths.get(filePath()))
+			            .replaceAll("[\u0000-\u001f]", "");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 
-    @Override
-    public void accept(String jsonString) {
-        try {
-            Files.writeString(Paths.get(filePath()),
-                    jsonString);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public void accept(String jsonString) {
+		try {
+			var path = Paths.get(filePath());
+			if (!Files.exists(path)) {
+				Files.createDirectories(path.getParent());
+				Files.createFile(path);
+			}
+			Files.writeString(path,
+			                  jsonString);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
