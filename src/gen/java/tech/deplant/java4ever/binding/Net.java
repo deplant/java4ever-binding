@@ -139,7 +139,7 @@ public final class Net {
    * @param result  Projection (result) string
    */
   public static Net.ResultOfSubscribeCollection subscribeCollection(EverSdkContext ctx,
-      String collection, JsonNode filter, String result, Consumer<String> eventHandler) throws
+      String collection, JsonNode filter, String result, Consumer<JsonNode> eventHandler) throws
       EverSdkException {
     return ctx.callEvent("net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
@@ -184,7 +184,7 @@ public final class Net {
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
   public static Net.ResultOfSubscribeCollection subscribe(EverSdkContext ctx, String subscription,
-      JsonNode variables, Consumer<String> eventHandler) throws EverSdkException {
+      JsonNode variables, Consumer<JsonNode> eventHandler) throws EverSdkException {
     return ctx.callEvent("net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
 

@@ -1,5 +1,6 @@
 package tech.deplant.java4ever.binding.generator.jtype;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.commons.Objs;
 import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.*;
@@ -91,7 +92,7 @@ public record SdkFunction(String functionModule,
 				case "callback" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", eventHandler");
 					templateString = templateString.replace("%CALL_TYPE%", "callEvent");
-					var paramClass = ClassName.get(String.class);//ClassName.get(CallbackHandler.class);
+					var paramClass = ClassName.get(JsonNode.class);//ClassName.get(CallbackHandler.class);
 					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "eventHandler");
 				}
 				case "app_object", "password_provider" -> {

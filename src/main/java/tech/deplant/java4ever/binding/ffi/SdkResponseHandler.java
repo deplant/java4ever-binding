@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.binding.ffi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.EverSdkContext;
@@ -9,8 +10,6 @@ import tech.deplant.java4ever.binding.Net;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SegmentScope;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -29,23 +28,20 @@ public class SdkResponseHandler implements tc_response_handler_t {
 
 	private final String params;
 	private final CompletableFuture<String> result = new CompletableFuture<>();
-	private final List<String> eventList = new ArrayList<>();
-	private final Consumer<String> handlerConsumer;
-	private final Predicate<String> eventFilter;
+	private final Consumer<JsonNode> handlerConsumer;
+
 	private long handle = 0L;
 
 	public SdkResponseHandler(EverSdkContext ctx,
 	                          int requestId,
 	                          String functionName,
 	                          String params,
-	                          Consumer<String> consumer,
-	                          Predicate<String> filter) {
+	                          Consumer<JsonNode> consumer) {
 		this.ctx = ctx;
 		this.requestId = requestId;
 		this.functionName = Strings.notEmpty(functionName);
 		this.params = params;
 		this.handlerConsumer = consumer;
-		this.eventFilter = filter;
 	}
 
 	public int requestId() {
@@ -58,7 +54,7 @@ public class SdkResponseHandler implements tc_response_handler_t {
 
 	public void request(ExecutorService executor, SegmentScope scope) {
 		logger.log(System.Logger.Level.TRACE,
-		           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"SEND",params));
+		           () -> LOG_FORMAT.formatted(functionName, ctx.id(), requestId, "SEND", params));
 		ton_client.tc_request(ctx.id(),
 		                      SdkBridge.toRustString(functionName, scope),
 		                      SdkBridge.toRustString(params, scope),
@@ -86,9 +82,6 @@ public class SdkResponseHandler implements tc_response_handler_t {
 		} else if (x2 == ton_client.tc_response_nop()) {
 			// NOP = 2, no operation. In combination with finished = true signals that the request handling was finished.
 			logger.log(System.Logger.Level.TRACE, () -> "REQ:%d NOP".formatted(x0));
-			if (x3) {
-				this.result.complete(responseString);
-			}
 		} else if (x2 == ton_client.tc_response_app_request()) {
 			// APP_REQUEST = 3, request some data from application. See Application objects
 			logger.log(System.Logger.Level.TRACE, () -> "REQ:%d APP_REQUEST".formatted(x0));
@@ -105,30 +98,26 @@ public class SdkResponseHandler implements tc_response_handler_t {
 		} else {
 			// CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
 			logger.log(System.Logger.Level.TRACE, () -> "REQ:%d CUSTOM #%d: %s".formatted(x0, x2, responseString));
+
+			var json = ctx.readJson(responseString);
+
+			// if we have a consumer for events, let's spawn events to it
 			if (this.handlerConsumer != null) {
-				//TODO Possible shit
-				this.eventList.add(responseString);
-				if (this.eventFilter == null || this.eventFilter.test(responseString)) {
-					// I think there's no reason to fail everything if unsubscribe failed...
-					var consumer = this.handlerConsumer;
-					if (this.handle > 0) {
-						consumer = this.handlerConsumer.andThen(event -> {
-							try {
-								Net.unsubscribe(ctx, new Net.ResultOfSubscribeCollection(this.handle));
-							} catch (EverSdkException e) {
-								logger.log(System.Logger.Level.ERROR,
-								           () -> "Unsubscribe failed! REQ:%d HANDLE:%d".formatted(requestId,
-								                                                                       this.handle));
-							}
-						});
-						logger.log(System.Logger.Level.TRACE, () -> "Unsubscribing. HANDLE:%d".formatted(this.handle));
-					}
-					ctx.responses().remove(requestId);
-					logger.log(System.Logger.Level.TRACE, () -> "Removing request by event acception: " + requestId);
-					consumer.accept(responseString);
-				}
+				this.handlerConsumer.accept(json);
 			}
+
+
 		}
+
+		// if we received "final" flag, let's remove ourselves from saved responses
+		if (x3) {
+			if (!this.result.isDone()) {
+				this.result.complete(responseString);
+			}
+			logger.log(System.Logger.Level.TRACE, () -> "Removing request on x3 flag: " + requestId);
+			ctx.responses().remove(requestId);
+		}
+
 	}
 
 	public String result(ObjectMapper mapper, long timeout, TimeUnit unit) throws EverSdkException {
@@ -136,7 +125,7 @@ public class SdkResponseHandler implements tc_response_handler_t {
 		try {
 			result = this.result.get(timeout, unit);
 			logger.log(System.Logger.Level.TRACE,
-			           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"RESP",result));
+			           () -> LOG_FORMAT.formatted(functionName, ctx.id(), requestId, "RESP", result));
 			return result;
 		} catch (CompletionException | ExecutionException e) {
 			// These errors are sent by SDK, response_type=1
@@ -147,27 +136,39 @@ public class SdkResponseHandler implements tc_response_handler_t {
 				// in case of contract custom exit code ("require" error)
 				final EverSdkException.ErrorResult responseCopy = sdkResponse;
 				logger.log(System.Logger.Level.WARNING,
-				           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"ERR",responseCopy));
-					throw new EverSdkException(responseCopy, e);
+				           () -> LOG_FORMAT.formatted(functionName, ctx.id(), requestId, "ERR", responseCopy));
+				throw new EverSdkException(responseCopy, e);
 			} catch (JsonProcessingException ex) {
 				// if error response parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"ERR",new EverSdkException.ErrorResult(-500,
-				                                                                                                            "SDK Error Response deserialization failed! Check getCause() for actual response.")));
+				           () -> LOG_FORMAT.formatted(functionName,
+				                                      ctx.id(),
+				                                      requestId,
+				                                      "ERR",
+				                                      new EverSdkException.ErrorResult(-500,
+				                                                                       "SDK Error Response deserialization failed! Check getCause() for actual response.")));
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                            "SDK Error Response deserialization failed! Check getCause() for actual response."),
 				                           ex);
 			}
 		} catch (InterruptedException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"ERR",new EverSdkException.ErrorResult(-400,
-			                                                                                                             "EVER-SDK call interrupted!")));
+			           () -> LOG_FORMAT.formatted(functionName,
+			                                      ctx.id(),
+			                                      requestId,
+			                                      "ERR",
+			                                      new EverSdkException.ErrorResult(-400,
+			                                                                       "EVER-SDK call interrupted!")));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
 		} catch (TimeoutException e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> LOG_FORMAT.formatted(functionName,ctx.id(),requestId,"ERR",new EverSdkException.ErrorResult(-408,
-			                                                                                                             "EVER-SDK Execution expired on Timeout! Current timeout: " +
-			                                                                                                             timeout)));
+			           () -> LOG_FORMAT.formatted(functionName,
+			                                      ctx.id(),
+			                                      requestId,
+			                                      "ERR",
+			                                      new EverSdkException.ErrorResult(-408,
+			                                                                       "EVER-SDK Execution expired on Timeout! Current timeout: " +
+			                                                                       timeout)));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408,
 			                                                            "EVER-SDK Execution expired on Timeout! Current timeout: " +
 			                                                            timeout), e);

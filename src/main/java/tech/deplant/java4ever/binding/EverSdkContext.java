@@ -2,6 +2,8 @@ package tech.deplant.java4ever.binding;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
 import tech.deplant.java4ever.binding.ffi.SdkResponseHandler;
@@ -84,15 +86,14 @@ public record EverSdkContext(int id,
 	 */
 	public <T, P> T callEvent(String functionName,
 	                          P params,
-	                          Consumer<String> consumer,
+	                          Consumer<JsonNode> consumer,
 	                          Class<T> clazz) throws EverSdkException {
 		int requestId = requestCount().incrementAndGet();
 		var handler = new SdkResponseHandler(this,
 		                                     requestId,
 		                                     functionName,
 		                                     processParams(params),
-		                                     consumer,
-		                                     null);
+		                                     consumer);
 		var result = processResult(processRequest(handler), clazz);
 		if (result instanceof Net.ResultOfSubscribeCollection resultOfSubscribeCollection) {
 			handler.saveHandle(resultOfSubscribeCollection.handle());
@@ -122,9 +123,7 @@ public record EverSdkContext(int id,
 		                                                                 requestId,
 		                                                                 functionName,
 		                                                                 processParams(params),
-		                                                                 null,
 		                                                                 null)), clazz);
-		responses().remove(requestId);
 		logger.log(System.Logger.Level.TRACE,
 		           () -> "Removing request by result acception: " + requestId);
 		return result;
@@ -144,9 +143,7 @@ public record EverSdkContext(int id,
 		                                      requestId,
 		                                      functionName,
 		                                      processParams(params),
-		                                      null,
 		                                      null));
-		responses().remove(requestId);
 	}
 
 	private SdkResponseHandler processRequest(SdkResponseHandler handler) throws EverSdkException {
@@ -177,6 +174,16 @@ public record EverSdkContext(int id,
 			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
 			                                                            "Successful response deserialization failed! Check getCause() for actual response."),
 			                           e);
+		}
+	}
+
+	public JsonNode readJson(String jsonString) {
+		try {
+			return this.mapper.readTree(jsonString);
+		} catch (JsonProcessingException e) {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
+			return null;
 		}
 	}
 

@@ -118,7 +118,7 @@ public final class Processing {
    * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
   public static Processing.ResultOfSendMessage sendMessage(EverSdkContext ctx, String message,
-      Abi.ABI abi, Boolean sendEvents, Consumer<String> eventHandler) throws EverSdkException {
+      Abi.ABI abi, Boolean sendEvents, Consumer<JsonNode> eventHandler) throws EverSdkException {
     return ctx.callEvent("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), eventHandler, Processing.ResultOfSendMessage.class);
   }
 
@@ -161,7 +161,7 @@ public final class Processing {
    */
   public static Processing.ResultOfProcessMessage waitForTransaction(EverSdkContext ctx,
       Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,
-      String[] sendingEndpoints, Consumer<String> eventHandler) throws EverSdkException {
+      String[] sendingEndpoints, Consumer<JsonNode> eventHandler) throws EverSdkException {
     return ctx.callEvent("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), eventHandler, Processing.ResultOfProcessMessage.class);
   }
 
