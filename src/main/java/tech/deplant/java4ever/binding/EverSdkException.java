@@ -100,6 +100,18 @@ public class EverSdkException extends Exception {
 		public ErrorResult(long code, String message) {
 			this(code, message, null);
 		}
+
+		public String toLog() {
+			if (data() != null && data().localError() != null && data().localError().data() != null &&
+			    data().localError().data().exitCode() > 0) {
+				return "%d (exit: %d) %s".formatted(data().localError().code(), data()
+						.localError()
+						.data()
+						.exitCode(), data().localError().message());
+			} else {
+				return "%d %s".formatted(code(), message());
+			}
+		}
 	}
 
 

@@ -29,6 +29,9 @@ public record EverSdkContext(int id,
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
+	//TODO Scoped values patch
+	//private final static ScopedValue<EverSdkContext> SCOPED_CONTEXT = ScopedValue.newInstance();
+
 
 	/**
 	 * Constructor of EVER-SDK context
@@ -111,8 +114,11 @@ public record EverSdkContext(int id,
 	 * @throws EverSdkException
 	 */
 	public <T, P> T call(String functionName, P params, Class<T> clazz) throws EverSdkException {
+
 		int requestId = requestCount().incrementAndGet();
-		var result = processResult(processRequest(new SdkResponseHandler(this,
+		EverSdkContext ctx = this;
+		//EverSdkContext ctx = SCOPED_CONTEXT.get();
+		var result = processResult(processRequest(new SdkResponseHandler(ctx,
 		                                                                 requestId,
 		                                                                 functionName,
 		                                                                 processParams(params),
