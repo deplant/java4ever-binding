@@ -1,6 +1,8 @@
 package tech.deplant.java4ever.binding;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -26,13 +28,27 @@ public record EverSdkContext(int id,
                              @JsonIgnore ObjectMapper mapper,
                              long timeout,
                              AtomicInteger requestCount,
-                             Map<Integer, SdkResponseHandler> responses,
-                             ExecutorService executor) {
+                             @JsonIgnore Map<Integer, SdkResponseHandler> responses,
+                             @JsonIgnore ExecutorService executor) {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
 	//TODO Scoped values patch
 	//private final static ScopedValue<EverSdkContext> SCOPED_CONTEXT = ScopedValue.newInstance();
+
+
+	/**
+	 * Constructor of EVER-SDK context
+	 *
+	 * @param id           number of context received from EVER-SDK, it's provided in contextBuilder.buildNew(loader). You can call it manually from EverSdkBridge.tcCreateContext(), but it's recommended to use ContextBuilder.
+	 * @param requestCount it's 0 for new contexts or last request id for 'loaded' ones
+	 * @param timeout      timeout for operations in milliseconds
+	 */
+	@JsonCreator
+	public EverSdkContext(@JsonProperty(value = "id") int id, @JsonProperty(value = "requestCount") int requestCount, @JsonProperty(value = "timeout") long timeout) {
+		this(id, JsonContext.SDK_JSON_MAPPER(), timeout, new AtomicInteger(requestCount), new ConcurrentHashMap<>(),
+		     Executors.newVirtualThreadPerTaskExecutor());
+	}
 
 
 	/**
