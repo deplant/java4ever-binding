@@ -6,13 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.Net;
 
+import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
-import java.lang.foreign.SegmentScope;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class SdkResponseHandler implements tc_response_handler_t {
 
@@ -52,14 +50,14 @@ public class SdkResponseHandler implements tc_response_handler_t {
 		this.handle = handle;
 	}
 
-	public void request(ExecutorService executor, SegmentScope scope) {
+	public void request(ExecutorService executor, Arena arena) {
 		logger.log(System.Logger.Level.TRACE,
 		           () -> LOG_FORMAT.formatted(functionName, ctx.id(), requestId, "SEND", params));
 		ton_client.tc_request(ctx.id(),
-		                      SdkBridge.toRustString(functionName, scope),
-		                      SdkBridge.toRustString(params, scope),
+		                      SdkBridge.toRustString(functionName, arena),
+		                      SdkBridge.toRustString(params, arena),
 		                      requestId,
-		                      tc_response_handler_t.allocate(this, SegmentScope.auto()));
+		                      tc_response_handler_t.allocate(this, arena));
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class SdkResponseHandler implements tc_response_handler_t {
 	 */
 	@Override
 	public void apply(int x0, MemorySegment x1, int x2, boolean x3) {
-		final String responseString = Strings.notEmptyElse(SdkBridge.toString(x1, SegmentScope.auto()), "{}");
+		final String responseString = Strings.notEmptyElse(SdkBridge.toJavaString(x1, Arena.ofAuto()), "{}");
 		if (x2 == ton_client.tc_response_success()) {
 			this.result.complete(responseString);
 			logger.log(System.Logger.Level.TRACE, () -> "REQ:%d RESULT".formatted(x0));

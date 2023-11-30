@@ -11,91 +11,26 @@ final class constants$0 {
 
     // Suppresses default constructor, ensuring non-instantiability.
     private constants$0() {}
-    static final FunctionDescriptor tc_response_handler_t$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT,
+    static final StructLayout const$0 = MemoryLayout.structLayout(
+        RuntimeHelper.POINTER.withName("content"),
+        JAVA_INT.withName("len"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("");
+    static final VarHandle const$1 = constants$0.const$0.varHandle(MemoryLayout.PathElement.groupElement("content"));
+    static final VarHandle const$2 = constants$0.const$0.varHandle(MemoryLayout.PathElement.groupElement("len"));
+    static final FunctionDescriptor const$3 = FunctionDescriptor.ofVoid(
+        JAVA_INT,
         MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
+            RuntimeHelper.POINTER.withName("content"),
+            JAVA_INT.withName("len"),
+            MemoryLayout.paddingLayout(4)
+        ).withName(""),
+        JAVA_INT,
+        JAVA_BOOLEAN
     );
-    static final FunctionDescriptor tc_response_handler_t_UP$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_t_UP$MH = RuntimeHelper.upcallHandle(tc_response_handler_t.class, "apply", constants$0.tc_response_handler_t_UP$FUNC);
-    static final FunctionDescriptor tc_response_handler_t_DOWN$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_t_DOWN$MH = RuntimeHelper.downcallHandle(
-        constants$0.tc_response_handler_t_DOWN$FUNC
-    );
-    static final FunctionDescriptor tc_response_handler_ptr_t$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final FunctionDescriptor tc_response_handler_ptr_t_UP$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_ptr_t_UP$MH = RuntimeHelper.upcallHandle(tc_response_handler_ptr_t.class, "apply", constants$0.tc_response_handler_ptr_t_UP$FUNC);
-    static final FunctionDescriptor tc_response_handler_ptr_t_DOWN$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        ),
-        Constants$root.C_LONG$LAYOUT,
-        Constants$root.C_BOOL$LAYOUT
-    );
-    static final MethodHandle tc_response_handler_ptr_t_DOWN$MH = RuntimeHelper.downcallHandle(
-        constants$0.tc_response_handler_ptr_t_DOWN$FUNC
-    );
-    static final FunctionDescriptor tc_create_context$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
-        MemoryLayout.structLayout(
-            Constants$root.C_POINTER$LAYOUT.withName("content"),
-            Constants$root.C_LONG$LAYOUT.withName("len"),
-            MemoryLayout.paddingLayout(32)
-        )
-    );
-    static final MethodHandle tc_create_context$MH = RuntimeHelper.downcallHandle(
-        "tc_create_context",
-        constants$0.tc_create_context$FUNC
-    );
-    static final FunctionDescriptor tc_destroy_context$FUNC = FunctionDescriptor.ofVoid(
-        Constants$root.C_LONG$LAYOUT
-    );
-    static final MethodHandle tc_destroy_context$MH = RuntimeHelper.downcallHandle(
-        "tc_destroy_context",
-        constants$0.tc_destroy_context$FUNC
+    static final MethodHandle const$4 = RuntimeHelper.upcallHandle(tc_response_handler_t.class, "apply", constants$0.const$3);
+    static final MethodHandle const$5 = RuntimeHelper.downcallHandle(
+        constants$0.const$3
     );
 }
 

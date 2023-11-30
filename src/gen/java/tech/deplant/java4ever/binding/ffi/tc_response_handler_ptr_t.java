@@ -15,14 +15,14 @@ import static java.lang.foreign.ValueLayout.*;
 public interface tc_response_handler_ptr_t {
 
     void apply(java.lang.foreign.MemorySegment request_ptr, java.lang.foreign.MemorySegment params_json, int response_type, boolean finished);
-    static MemorySegment allocate(tc_response_handler_ptr_t fi, SegmentScope scope) {
-        return RuntimeHelper.upcallStub(constants$0.tc_response_handler_ptr_t_UP$MH, fi, constants$0.tc_response_handler_ptr_t$FUNC, scope);
+    static MemorySegment allocate(tc_response_handler_ptr_t fi, Arena scope) {
+        return RuntimeHelper.upcallStub(constants$1.const$1, fi, constants$1.const$0, scope);
     }
-    static tc_response_handler_ptr_t ofAddress(MemorySegment addr, SegmentScope scope) {
-        MemorySegment symbol = MemorySegment.ofAddress(addr.address(), 0, scope);
+    static tc_response_handler_ptr_t ofAddress(MemorySegment addr, Arena arena) {
+        MemorySegment symbol = addr.reinterpret(arena, null);
         return (java.lang.foreign.MemorySegment _request_ptr, java.lang.foreign.MemorySegment _params_json, int _response_type, boolean _finished) -> {
             try {
-                constants$0.tc_response_handler_ptr_t_DOWN$MH.invokeExact(symbol, _request_ptr, _params_json, _response_type, _finished);
+                constants$1.const$2.invokeExact(symbol, _request_ptr, _params_json, _response_type, _finished);
             } catch (Throwable ex$) {
                 throw new AssertionError("should not reach here", ex$);
             }

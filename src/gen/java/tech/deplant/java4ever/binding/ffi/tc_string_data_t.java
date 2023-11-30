@@ -17,17 +17,11 @@ import static java.lang.foreign.ValueLayout.*;
  */
 public class tc_string_data_t {
 
-    static final StructLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        Constants$root.C_POINTER$LAYOUT.withName("content"),
-        Constants$root.C_LONG$LAYOUT.withName("len"),
-        MemoryLayout.paddingLayout(32)
-    );
     public static MemoryLayout $LAYOUT() {
-        return tc_string_data_t.$struct$LAYOUT;
+        return constants$0.const$0;
     }
-    static final VarHandle content$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("content"));
     public static VarHandle content$VH() {
-        return tc_string_data_t.content$VH;
+        return constants$0.const$1;
     }
     /**
      * Getter for field:
@@ -36,7 +30,7 @@ public class tc_string_data_t {
      * }
      */
     public static MemorySegment content$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)tc_string_data_t.content$VH.get(seg);
+        return (java.lang.foreign.MemorySegment)constants$0.const$1.get(seg);
     }
     /**
      * Setter for field:
@@ -45,17 +39,16 @@ public class tc_string_data_t {
      * }
      */
     public static void content$set(MemorySegment seg, MemorySegment x) {
-        tc_string_data_t.content$VH.set(seg, x);
+        constants$0.const$1.set(seg, x);
     }
     public static MemorySegment content$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)tc_string_data_t.content$VH.get(seg.asSlice(index*sizeof()));
+        return (java.lang.foreign.MemorySegment)constants$0.const$1.get(seg.asSlice(index*sizeof()));
     }
     public static void content$set(MemorySegment seg, long index, MemorySegment x) {
-        tc_string_data_t.content$VH.set(seg.asSlice(index*sizeof()), x);
+        constants$0.const$1.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle len$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("len"));
     public static VarHandle len$VH() {
-        return tc_string_data_t.len$VH;
+        return constants$0.const$2;
     }
     /**
      * Getter for field:
@@ -64,7 +57,7 @@ public class tc_string_data_t {
      * }
      */
     public static int len$get(MemorySegment seg) {
-        return (int)tc_string_data_t.len$VH.get(seg);
+        return (int)constants$0.const$2.get(seg);
     }
     /**
      * Setter for field:
@@ -73,20 +66,20 @@ public class tc_string_data_t {
      * }
      */
     public static void len$set(MemorySegment seg, int x) {
-        tc_string_data_t.len$VH.set(seg, x);
+        constants$0.const$2.set(seg, x);
     }
     public static int len$get(MemorySegment seg, long index) {
-        return (int)tc_string_data_t.len$VH.get(seg.asSlice(index*sizeof()));
+        return (int)constants$0.const$2.get(seg.asSlice(index*sizeof()));
     }
     public static void len$set(MemorySegment seg, long index, int x) {
-        tc_string_data_t.len$VH.set(seg.asSlice(index*sizeof()), x);
+        constants$0.const$2.set(seg.asSlice(index*sizeof()), x);
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
     public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
-    public static MemorySegment ofAddress(MemorySegment addr, SegmentScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
+    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
 }
 
 

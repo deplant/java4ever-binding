@@ -15,14 +15,14 @@ import static java.lang.foreign.ValueLayout.*;
 public interface tc_response_handler_t {
 
     void apply(int request_id, java.lang.foreign.MemorySegment params_json, int response_type, boolean finished);
-    static MemorySegment allocate(tc_response_handler_t fi, SegmentScope scope) {
-        return RuntimeHelper.upcallStub(constants$0.tc_response_handler_t_UP$MH, fi, constants$0.tc_response_handler_t$FUNC, scope);
+    static MemorySegment allocate(tc_response_handler_t fi, Arena scope) {
+        return RuntimeHelper.upcallStub(constants$0.const$4, fi, constants$0.const$3, scope);
     }
-    static tc_response_handler_t ofAddress(MemorySegment addr, SegmentScope scope) {
-        MemorySegment symbol = MemorySegment.ofAddress(addr.address(), 0, scope);
+    static tc_response_handler_t ofAddress(MemorySegment addr, Arena arena) {
+        MemorySegment symbol = addr.reinterpret(arena, null);
         return (int _request_id, java.lang.foreign.MemorySegment _params_json, int _response_type, boolean _finished) -> {
             try {
-                constants$0.tc_response_handler_t_DOWN$MH.invokeExact(symbol, _request_id, _params_json, _response_type, _finished);
+                constants$0.const$5.invokeExact(symbol, _request_id, _params_json, _response_type, _finished);
             } catch (Throwable ex$) {
                 throw new AssertionError("should not reach here", ex$);
             }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tech.deplant.java4ever.binding.ffi.SdkBridge;
 import tech.deplant.java4ever.binding.ffi.SdkResponseHandler;
@@ -15,7 +14,10 @@ import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.lang.foreign.Arena;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -34,7 +36,7 @@ public record EverSdkContext(int id,
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
 	//TODO Scoped values patch
-	//private final static ScopedValue<EverSdkContext> SCOPED_CONTEXT = ScopedValue.newInstance();
+
 
 
 	/**
@@ -45,7 +47,9 @@ public record EverSdkContext(int id,
 	 * @param timeout      timeout for operations in milliseconds
 	 */
 	@JsonCreator
-	public EverSdkContext(@JsonProperty(value = "id") int id, @JsonProperty(value = "requestCount") int requestCount, @JsonProperty(value = "timeout") long timeout) {
+	public EverSdkContext(@JsonProperty(value = "id") int id,
+	                      @JsonProperty(value = "requestCount") int requestCount,
+	                      @JsonProperty(value = "timeout") long timeout) {
 		this(id, JsonContext.SDK_JSON_MAPPER(), timeout, new AtomicInteger(requestCount), new ConcurrentHashMap<>(),
 		     Executors.newVirtualThreadPerTaskExecutor());
 	}
@@ -163,12 +167,13 @@ public record EverSdkContext(int id,
 	}
 
 	private SdkResponseHandler processRequest(SdkResponseHandler handler) throws EverSdkException {
-			responses().put(handler.requestId(), handler);
+		responses().put(handler.requestId(), handler);
 
-			try (Arena offHeapMemory = Arena.openShared()) {
-				handler.request(executor(), offHeapMemory.scope());
-			}
-			return handler;
+		try (Arena offHeapMemory = Arena.ofShared()) {
+			SdkBridge.tcRequest(id(), handler., String params, Arena arena, int requestId, SdkResponseHandler handler)
+			handler.request(executor(), offHeapMemory);
+		}
+		return handler;
 	}
 
 	private <P> String processParams(P params) throws EverSdkException {

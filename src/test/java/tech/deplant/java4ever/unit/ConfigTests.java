@@ -1,15 +1,14 @@
 package tech.deplant.java4ever.unit;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import tech.deplant.java4ever.binding.Client;
-import tech.deplant.java4ever.binding.EverSdkContext;
-import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.*;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +27,12 @@ public class ConfigTests {
 		assertEquals(1, EverSdkContext.builder().buildNew().id());
 		assertEquals(2, EverSdkContext.builder().buildNew().id());
 		assertEquals(3, EverSdkContext.builder().buildNew().id());
+
+		Sdk sdk = Sdk.load();
+		SdkContext sdkContextDev = sdk.contextBuilder().setConfigJson().buildNew();
+		SdkContext sdkContextLocal = sdk.contextBuilder().setConfigJson().buildNew();
+		sdkContextDev.call(Crypto.naclSignOpen(null,"signed", "publicKey"));
+		EverSdkContext.builder().buildNew();
 	}
 
 	@Test

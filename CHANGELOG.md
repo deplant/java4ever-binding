@@ -1,7 +1,10 @@
 ### 3.0.0
 
 - Updated baseline JDK -> 21
+- Updated Gradle -> 8.4
+- Updated EVER-SDK -> 1.45.0
 - Supported server-code field in EVER-SDK error responses, new fields are now ignorable
+- Fixes for subscriptions workflow
 
 ### 2.5.0
 

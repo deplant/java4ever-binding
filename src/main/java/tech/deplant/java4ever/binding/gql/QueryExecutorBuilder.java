@@ -1,8 +1,8 @@
 package tech.deplant.java4ever.binding.gql;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import tech.deplant.java4ever.binding.JsonContext;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class QueryExecutorBuilder {
 
 	public <T> void addToQuery(String name, T someValue) {
 		var mapper = JsonContext.ABI_JSON_MAPPER()
-		                        .configure(JsonGenerator.Feature.QUOTE_FIELD_NAMES, false)
+		                        .configure(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature(), false)
 		                        .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		try {
 			this.args.put(name, mapper.writeValueAsString(someValue));

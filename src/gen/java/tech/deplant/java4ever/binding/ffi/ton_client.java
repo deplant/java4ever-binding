@@ -9,14 +9,14 @@ import java.lang.foreign.*;
 import static java.lang.foreign.ValueLayout.*;
 public class ton_client  {
 
-    public static final OfByte C_CHAR = Constants$root.C_CHAR$LAYOUT;
-    public static final OfShort C_SHORT = Constants$root.C_SHORT$LAYOUT;
-    public static final OfInt C_INT = Constants$root.C_LONG$LAYOUT;
-    public static final OfInt C_LONG = Constants$root.C_LONG$LAYOUT;
-    public static final OfLong C_LONG_LONG = Constants$root.C_LONG_LONG$LAYOUT;
-    public static final OfFloat C_FLOAT = Constants$root.C_FLOAT$LAYOUT;
-    public static final OfDouble C_DOUBLE = Constants$root.C_DOUBLE$LAYOUT;
-    public static final OfAddress C_POINTER = Constants$root.C_POINTER$LAYOUT;
+    public static final OfByte C_CHAR = JAVA_BYTE;
+    public static final OfShort C_SHORT = JAVA_SHORT;
+    public static final OfInt C_INT = JAVA_INT;
+    public static final OfInt C_LONG = JAVA_INT;
+    public static final OfLong C_LONG_LONG = JAVA_LONG;
+    public static final OfFloat C_FLOAT = JAVA_FLOAT;
+    public static final OfDouble C_DOUBLE = JAVA_DOUBLE;
+    public static final AddressLayout C_POINTER = RuntimeHelper.POINTER;
     /**
      * {@snippet :
      * #define true 1
@@ -46,169 +46,169 @@ public class ton_client  {
      * typedef long long int64_t;
      * }
      */
-    public static final OfLong int64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong int64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef unsigned long long uint64_t;
      * }
      */
-    public static final OfLong uint64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong uint64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef long long int_least64_t;
      * }
      */
-    public static final OfLong int_least64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong int_least64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef unsigned long long uint_least64_t;
      * }
      */
-    public static final OfLong uint_least64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong uint_least64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef long long int_fast64_t;
      * }
      */
-    public static final OfLong int_fast64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong int_fast64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef unsigned long long uint_fast64_t;
      * }
      */
-    public static final OfLong uint_fast64_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong uint_fast64_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef int int32_t;
      * }
      */
-    public static final OfInt int32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt int32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef unsigned int uint32_t;
      * }
      */
-    public static final OfInt uint32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt uint32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef int int_least32_t;
      * }
      */
-    public static final OfInt int_least32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt int_least32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef unsigned int uint_least32_t;
      * }
      */
-    public static final OfInt uint_least32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt uint_least32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef int int_fast32_t;
      * }
      */
-    public static final OfInt int_fast32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt int_fast32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef unsigned int uint_fast32_t;
      * }
      */
-    public static final OfInt uint_fast32_t = Constants$root.C_LONG$LAYOUT;
+    public static final OfInt uint_fast32_t = JAVA_INT;
     /**
      * {@snippet :
      * typedef short int16_t;
      * }
      */
-    public static final OfShort int16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort int16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef unsigned short uint16_t;
      * }
      */
-    public static final OfShort uint16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort uint16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef short int_least16_t;
      * }
      */
-    public static final OfShort int_least16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort int_least16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef unsigned short uint_least16_t;
      * }
      */
-    public static final OfShort uint_least16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort uint_least16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef short int_fast16_t;
      * }
      */
-    public static final OfShort int_fast16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort int_fast16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef unsigned short uint_fast16_t;
      * }
      */
-    public static final OfShort uint_fast16_t = Constants$root.C_SHORT$LAYOUT;
+    public static final OfShort uint_fast16_t = JAVA_SHORT;
     /**
      * {@snippet :
      * typedef signed char int8_t;
      * }
      */
-    public static final OfByte int8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte int8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef unsigned char uint8_t;
      * }
      */
-    public static final OfByte uint8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte uint8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef signed char int_least8_t;
      * }
      */
-    public static final OfByte int_least8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte int_least8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef unsigned char uint_least8_t;
      * }
      */
-    public static final OfByte uint_least8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte uint_least8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef signed char int_fast8_t;
      * }
      */
-    public static final OfByte int_fast8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte int_fast8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef unsigned char uint_fast8_t;
      * }
      */
-    public static final OfByte uint_fast8_t = Constants$root.C_CHAR$LAYOUT;
+    public static final OfByte uint_fast8_t = JAVA_BYTE;
     /**
      * {@snippet :
      * typedef long long intptr_t;
      * }
      */
-    public static final OfLong intptr_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong intptr_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef unsigned long long uintptr_t;
      * }
      */
-    public static final OfLong uintptr_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong uintptr_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef long long intmax_t;
      * }
      */
-    public static final OfLong intmax_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong intmax_t = JAVA_LONG;
     /**
      * {@snippet :
      * typedef unsigned long long uintmax_t;
      * }
      */
-    public static final OfLong uintmax_t = Constants$root.C_LONG_LONG$LAYOUT;
+    public static final OfLong uintmax_t = JAVA_LONG;
     /**
      * {@snippet :
      * enum tc_response_types.tc_response_success = 0;
@@ -258,7 +258,7 @@ public class ton_client  {
         return (int)100L;
     }
     public static MethodHandle tc_create_context$MH() {
-        return RuntimeHelper.requireNonNull(constants$0.tc_create_context$MH,"tc_create_context");
+        return RuntimeHelper.requireNonNull(constants$1.const$4,"tc_create_context");
     }
     /**
      * {@snippet :
@@ -274,7 +274,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_destroy_context$MH() {
-        return RuntimeHelper.requireNonNull(constants$0.tc_destroy_context$MH,"tc_destroy_context");
+        return RuntimeHelper.requireNonNull(constants$1.const$6,"tc_destroy_context");
     }
     /**
      * {@snippet :
@@ -290,7 +290,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_request$MH() {
-        return RuntimeHelper.requireNonNull(constants$1.tc_request$MH,"tc_request");
+        return RuntimeHelper.requireNonNull(constants$2.const$1,"tc_request");
     }
     /**
      * {@snippet :
@@ -306,7 +306,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_request_ptr$MH() {
-        return RuntimeHelper.requireNonNull(constants$1.tc_request_ptr$MH,"tc_request_ptr");
+        return RuntimeHelper.requireNonNull(constants$2.const$3,"tc_request_ptr");
     }
     /**
      * {@snippet :
@@ -322,7 +322,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_request_sync$MH() {
-        return RuntimeHelper.requireNonNull(constants$1.tc_request_sync$MH,"tc_request_sync");
+        return RuntimeHelper.requireNonNull(constants$2.const$5,"tc_request_sync");
     }
     /**
      * {@snippet :
@@ -338,7 +338,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_read_string$MH() {
-        return RuntimeHelper.requireNonNull(constants$1.tc_read_string$MH,"tc_read_string");
+        return RuntimeHelper.requireNonNull(constants$3.const$1,"tc_read_string");
     }
     /**
      * {@snippet :
@@ -354,7 +354,7 @@ public class ton_client  {
         }
     }
     public static MethodHandle tc_destroy_string$MH() {
-        return RuntimeHelper.requireNonNull(constants$1.tc_destroy_string$MH,"tc_destroy_string");
+        return RuntimeHelper.requireNonNull(constants$3.const$3,"tc_destroy_string");
     }
     /**
      * {@snippet :
