@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.java4ever.binding.Client;
+import tech.deplant.java4ever.binding.EverSdk;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.JsonContext;
-import tech.deplant.java4ever.binding.EverSdk;
 
 import java.lang.foreign.Arena;
 import java.util.HashMap;
@@ -19,10 +19,11 @@ import java.util.function.Consumer;
 public class EverSdkContext {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
+
 	private final int id;
 	private final AtomicInteger requestCount;
-
 	private final Client.ClientConfig clientConfig;
+
 	@JsonIgnore private final Map<Integer, NativeUpcallHandler> requests;
 	@JsonIgnore private final Map<Integer, CompletableFuture<String>> responses;
 	@JsonIgnore private final Map<Integer, SdkSubscription> subscriptions;
@@ -166,7 +167,9 @@ public class EverSdkContext {
 
 	private <R> R awaitSyncResponse(int requestId, Class<R> resultClass) throws EverSdkException {
 		try {
-			long timeout = Optional.ofNullable(this.clientConfig.network().queryTimeout()).orElse(60000L);
+			long timeout = Optional.ofNullable(this.clientConfig.network())
+			                       .map(config -> Optional.ofNullable(config.queryTimeout()).orElse(60000L))
+			                       .orElse(60000L);
 			String responseString = this.responses.get(requestId)
 			                                      .get(timeout,
 			                                           TimeUnit.MILLISECONDS);
@@ -190,7 +193,9 @@ public class EverSdkContext {
 				                                                  requestId,
 				                                                  "SDK Error message deserialization failed! Check getCause() for actual response."));
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-				                                                            "SDK Error message deserialization failed! Check getCause() for actual response. Message: %s JSON Err: %s".formatted(e.getCause().getMessage(),ex.getMessage())),
+				                                                            "SDK Error message deserialization failed! Check getCause() for actual response. Message: %s JSON Err: %s".formatted(
+						                                                            e.getCause().getMessage(),
+						                                                            ex.getMessage())),
 				                           ex);
 			}
 		} catch (JsonProcessingException e) {
@@ -201,12 +206,12 @@ public class EverSdkContext {
 		} catch (InterruptedException e) {
 			logger.log(System.Logger.Level.ERROR,
 			           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id,
-			                                                  requestId,"EVER-SDK call interrupted!"));
+			                                                  requestId, "EVER-SDK call interrupted!"));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
 		} catch (TimeoutException e) {
 			logger.log(System.Logger.Level.ERROR,
 			           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id,
-			                                                  requestId,"EVER-SDK Execution expired on Timeout!"));
+			                                                  requestId, "EVER-SDK Execution expired on Timeout!"));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408,
 			                                                            "EVER-SDK Execution expired on Timeout!"), e);
 
@@ -232,4 +237,17 @@ public class EverSdkContext {
 		logger.log(System.Logger.Level.TRACE,
 		           () -> EverSdk.LOG_FORMAT.formatted(this.id, requestId, functionName, "SEND", paramsJson));
 	}
+
+	public int id() {
+		return this.id;
+	}
+
+	public int requestCount() {
+		return this.requestCount.get();
+	}
+
+	public Client.ClientConfig config() {
+		return this.clientConfig;
+	}
+
 }

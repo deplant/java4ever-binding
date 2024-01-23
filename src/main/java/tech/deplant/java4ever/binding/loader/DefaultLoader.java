@@ -19,7 +19,7 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 	public final static String EVER_SDK_VERSION = "1.45.0";
 	public final static String BINDING_LIBRARY_NAME = "java4ever";
 
-	public final static String BINDING_LIBRARY_VERSION = "2.5.0";
+	public final static String BINDING_LIBRARY_VERSION = "3.0.0";
 
 	private final static System.Logger logger = System.getLogger(DefaultLoader.class.getName());
 
