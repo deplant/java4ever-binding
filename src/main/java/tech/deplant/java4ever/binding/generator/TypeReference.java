@@ -2,8 +2,8 @@ package tech.deplant.java4ever.binding.generator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.commons.Strings;
-import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.SubscribeEvent;
+import tech.deplant.java4ever.binding.ffi.EverSdkContext;
 import tech.deplant.javapoet.*;
 import tech.deplant.java4ever.binding.generator.jtype.SdkObject;
 import tech.deplant.java4ever.binding.generator.reference.*;

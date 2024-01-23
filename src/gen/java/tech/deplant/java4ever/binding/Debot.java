@@ -14,7 +14,7 @@ import java.math.BigInteger;
  * Contains methods of "debot" module of EVER-SDK API
  *
  * [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Module for working with debot. 
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Debot {
   /**
@@ -28,9 +28,9 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static Debot.RegisteredDebot init(EverSdkContext ctx, String address,
-      AppSigningBox appObject) throws EverSdkException {
-    return ctx.callAppObject("debot.init", new Debot.ParamsOfInit(address), appObject, Debot.RegisteredDebot.class);
+  public static Debot.RegisteredDebot init(int ctxId, String address, AppSigningBox appObject)
+      throws EverSdkException {
+    return EverSdk.callAppObject(ctxId, "debot.init", new Debot.ParamsOfInit(address), appObject, Debot.RegisteredDebot.class);
   }
 
   /**
@@ -49,8 +49,8 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static void start(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
-    ctx.callVoid("debot.start", new Debot.ParamsOfStart(debotHandle));
+  public static void start(int ctxId, Long debotHandle) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "debot.start", new Debot.ParamsOfStart(debotHandle));
   }
 
   /**
@@ -60,9 +60,8 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static Debot.ResultOfFetch fetch(EverSdkContext ctx, String address) throws
-      EverSdkException {
-    return ctx.call("debot.fetch", new Debot.ParamsOfFetch(address), Debot.ResultOfFetch.class);
+  public static Debot.ResultOfFetch fetch(int ctxId, String address) throws EverSdkException {
+    return EverSdk.call(ctxId, "debot.fetch", new Debot.ParamsOfFetch(address), Debot.ResultOfFetch.class);
   }
 
   /**
@@ -77,9 +76,9 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static void execute(EverSdkContext ctx, Long debotHandle, Debot.DebotAction action) throws
+  public static void execute(int ctxId, Long debotHandle, Debot.DebotAction action) throws
       EverSdkException {
-    ctx.callVoid("debot.execute", new Debot.ParamsOfExecute(debotHandle, action));
+    EverSdk.callVoid(ctxId, "debot.execute", new Debot.ParamsOfExecute(debotHandle, action));
   }
 
   /**
@@ -90,9 +89,8 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static void send(EverSdkContext ctx, Long debotHandle, String message) throws
-      EverSdkException {
-    ctx.callVoid("debot.send", new Debot.ParamsOfSend(debotHandle, message));
+  public static void send(int ctxId, Long debotHandle, String message) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "debot.send", new Debot.ParamsOfSend(debotHandle, message));
   }
 
   /**
@@ -102,8 +100,8 @@ public final class Debot {
    */
   @Unstable
   @Deprecated
-  public static void remove(EverSdkContext ctx, Long debotHandle) throws EverSdkException {
-    ctx.callVoid("debot.remove", new Debot.ParamsOfRemove(debotHandle));
+  public static void remove(int ctxId, Long debotHandle) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "debot.remove", new Debot.ParamsOfRemove(debotHandle));
   }
 
   /**

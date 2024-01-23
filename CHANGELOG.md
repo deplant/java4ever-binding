@@ -1,10 +1,16 @@
 ### 3.0.0
 
 - Updated baseline JDK -> 21
-- Updated Gradle -> 8.4
-- Updated EVER-SDK -> 1.45.0
-- Supported server-code field in EVER-SDK error responses, new fields are now ignorable
+- Updated **EVER-SDK** generated code -> **1.45.0**
+- Supported `server-code` data in EVER-SDK error handling, inconsistencies with different GQL versions are now ignorable
 - Fixes for subscriptions workflow
+- Updated Jackson -> 2.16.1
+- Updated Gradle -> 8.5
+
+Tests:
+
+- Added checks for endpoints to ignore tests when nodes are offline (with com.yegor256:jping lib)
+- Improved test log levels
 
 ### 2.5.0
 

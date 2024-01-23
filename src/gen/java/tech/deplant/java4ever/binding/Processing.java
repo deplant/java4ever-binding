@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  *
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Processing {
   /**
@@ -52,9 +52,9 @@ public final class Processing {
    * @param queue  Name of the monitoring queue.
    * @param messages  Messages to start monitoring for.
    */
-  public static void monitorMessages(EverSdkContext ctx, String queue,
+  public static void monitorMessages(int ctxId, String queue,
       Processing.MessageMonitoringParams[] messages) throws EverSdkException {
-    ctx.callVoid("processing.monitor_messages", new Processing.ParamsOfMonitorMessages(queue, messages));
+    EverSdk.callVoid(ctxId, "processing.monitor_messages", new Processing.ParamsOfMonitorMessages(queue, messages));
   }
 
   /**
@@ -62,9 +62,9 @@ public final class Processing {
    *
    * @param queue  Name of the monitoring queue.
    */
-  public static Processing.MonitoringQueueInfo getMonitorInfo(EverSdkContext ctx, String queue)
-      throws EverSdkException {
-    return ctx.call("processing.get_monitor_info", new Processing.ParamsOfGetMonitorInfo(queue), Processing.MonitoringQueueInfo.class);
+  public static Processing.MonitoringQueueInfo getMonitorInfo(int ctxId, String queue) throws
+      EverSdkException {
+    return EverSdk.call(ctxId, "processing.get_monitor_info", new Processing.ParamsOfGetMonitorInfo(queue), Processing.MonitoringQueueInfo.class);
   }
 
   /**
@@ -74,10 +74,9 @@ public final class Processing {
    * @param queue  Name of the monitoring queue.
    * @param waitMode Default is `NO_WAIT`. Wait mode.
    */
-  public static Processing.ResultOfFetchNextMonitorResults fetchNextMonitorResults(
-      EverSdkContext ctx, String queue, Processing.MonitorFetchWaitMode waitMode) throws
-      EverSdkException {
-    return ctx.call("processing.fetch_next_monitor_results", new Processing.ParamsOfFetchNextMonitorResults(queue, waitMode), Processing.ResultOfFetchNextMonitorResults.class);
+  public static Processing.ResultOfFetchNextMonitorResults fetchNextMonitorResults(int ctxId,
+      String queue, Processing.MonitorFetchWaitMode waitMode) throws EverSdkException {
+    return EverSdk.call(ctxId, "processing.fetch_next_monitor_results", new Processing.ParamsOfFetchNextMonitorResults(queue, waitMode), Processing.ResultOfFetchNextMonitorResults.class);
   }
 
   /**
@@ -85,8 +84,8 @@ public final class Processing {
    *
    * @param queue  Name of the monitoring queue.
    */
-  public static void cancelMonitor(EverSdkContext ctx, String queue) throws EverSdkException {
-    ctx.callVoid("processing.cancel_monitor", new Processing.ParamsOfCancelMonitor(queue));
+  public static void cancelMonitor(int ctxId, String queue) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "processing.cancel_monitor", new Processing.ParamsOfCancelMonitor(queue));
   }
 
   /**
@@ -95,9 +94,9 @@ public final class Processing {
    * @param messages  Messages that must be sent to the blockchain.
    * @param monitorQueue  Optional message monitor queue that starts monitoring for the processing results for sent messages.
    */
-  public static Processing.ResultOfSendMessages sendMessages(EverSdkContext ctx,
+  public static Processing.ResultOfSendMessages sendMessages(int ctxId,
       Processing.MessageSendingParams[] messages, String monitorQueue) throws EverSdkException {
-    return ctx.call("processing.send_messages", new Processing.ParamsOfSendMessages(messages, monitorQueue), Processing.ResultOfSendMessages.class);
+    return EverSdk.call(ctxId, "processing.send_messages", new Processing.ParamsOfSendMessages(messages, monitorQueue), Processing.ResultOfSendMessages.class);
   }
 
   /**
@@ -117,9 +116,9 @@ public final class Processing {
    * chosen. Optional message ABI.
    * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
-  public static Processing.ResultOfSendMessage sendMessage(EverSdkContext ctx, String message,
-      Abi.ABI abi, Boolean sendEvents, Consumer<JsonNode> eventHandler) throws EverSdkException {
-    return ctx.callEvent("processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), eventHandler, Processing.ResultOfSendMessage.class);
+  public static Processing.ResultOfSendMessage sendMessage(int ctxId, String message, Abi.ABI abi,
+      Boolean sendEvents, Consumer<JsonNode> eventHandler) throws EverSdkException {
+    return EverSdk.callEvent(ctxId, "processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), eventHandler, Processing.ResultOfSendMessage.class);
   }
 
   /**
@@ -159,10 +158,10 @@ public final class Processing {
    * Provide the same value as the `send_message` has returned.
    * If the message was not delivered (expired), SDK will log the endpoint URLs, used for its sending. The list of endpoints to which the message was sent.
    */
-  public static Processing.ResultOfProcessMessage waitForTransaction(EverSdkContext ctx,
-      Abi.ABI abi, String message, String shardBlockId, Boolean sendEvents,
-      String[] sendingEndpoints, Consumer<JsonNode> eventHandler) throws EverSdkException {
-    return ctx.callEvent("processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), eventHandler, Processing.ResultOfProcessMessage.class);
+  public static Processing.ResultOfProcessMessage waitForTransaction(int ctxId, Abi.ABI abi,
+      String message, String shardBlockId, Boolean sendEvents, String[] sendingEndpoints,
+      Consumer<JsonNode> eventHandler) throws EverSdkException {
+    return EverSdk.callEvent(ctxId, "processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), eventHandler, Processing.ResultOfProcessMessage.class);
   }
 
   /**
@@ -205,10 +204,10 @@ public final class Processing {
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
-  public static Processing.ResultOfProcessMessage processMessage(EverSdkContext ctx, Abi.ABI abi,
+  public static Processing.ResultOfProcessMessage processMessage(int ctxId, Abi.ABI abi,
       String address, Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
       Integer processingTryIndex, Long signatureId, Boolean sendEvents) throws EverSdkException {
-    return ctx.call("processing.process_message", new Processing.ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), sendEvents), Processing.ResultOfProcessMessage.class);
+    return EverSdk.call(ctxId, "processing.process_message", new Processing.ParamsOfProcessMessage(new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), sendEvents), Processing.ResultOfProcessMessage.class);
   }
 
   /**

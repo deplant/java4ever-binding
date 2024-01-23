@@ -15,7 +15,7 @@ import java.math.BigInteger;
  * Contains methods of "abi" module of EVER-SDK API
  *
  * Provides message encoding and decoding according to the ABI specification. 
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Abi {
   /**
@@ -40,10 +40,10 @@ public final class Abi {
    * created. Otherwise can be omitted. Destination address of the message
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
-  public static Abi.ResultOfEncodeMessageBody encodeMessageBody(EverSdkContext ctx, Abi.ABI abi,
+  public static Abi.ResultOfEncodeMessageBody encodeMessageBody(int ctxId, Abi.ABI abi,
       Abi.CallSet callSet, Boolean isInternal, Abi.Signer signer, Integer processingTryIndex,
       String address, Long signatureId) throws EverSdkException {
-    return ctx.call("abi.encode_message_body", new Abi.ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address, signatureId), Abi.ResultOfEncodeMessageBody.class);
+    return EverSdk.call(ctxId, "abi.encode_message_body", new Abi.ParamsOfEncodeMessageBody(abi, callSet, isInternal, signer, processingTryIndex, address, signatureId), Abi.ResultOfEncodeMessageBody.class);
   }
 
   /**
@@ -52,10 +52,9 @@ public final class Abi {
    * @param message Must be encoded with `base64`. Unsigned message body BOC.
    * @param signature Must be encoded with `hex`. Signature.
    */
-  public static Abi.ResultOfAttachSignatureToMessageBody attachSignatureToMessageBody(
-      EverSdkContext ctx, Abi.ABI abi, String publicKey, String message, String signature) throws
-      EverSdkException {
-    return ctx.call("abi.attach_signature_to_message_body", new Abi.ParamsOfAttachSignatureToMessageBody(abi, publicKey, message, signature), Abi.ResultOfAttachSignatureToMessageBody.class);
+  public static Abi.ResultOfAttachSignatureToMessageBody attachSignatureToMessageBody(int ctxId,
+      Abi.ABI abi, String publicKey, String message, String signature) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.attach_signature_to_message_body", new Abi.ParamsOfAttachSignatureToMessageBody(abi, publicKey, message, signature), Abi.ResultOfAttachSignatureToMessageBody.class);
   }
 
   /**
@@ -111,10 +110,10 @@ public final class Abi {
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
-  public static Abi.ResultOfEncodeMessage encodeMessage(EverSdkContext ctx, Abi.ABI abi,
-      String address, Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer,
-      Integer processingTryIndex, Long signatureId) throws EverSdkException {
-    return ctx.call("abi.encode_message", new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), Abi.ResultOfEncodeMessage.class);
+  public static Abi.ResultOfEncodeMessage encodeMessage(int ctxId, Abi.ABI abi, String address,
+      Abi.DeploySet deploySet, Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
+      Long signatureId) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.encode_message", new Abi.ParamsOfEncodeMessage(abi, address, deploySet, callSet, signer, processingTryIndex, signatureId), Abi.ResultOfEncodeMessage.class);
   }
 
   /**
@@ -145,10 +144,10 @@ public final class Abi {
    * @param bounce Default is true. Flag of bounceable message.
    * @param enableIhr Default is false. Enable Instant Hypercube Routing for the message.
    */
-  public static Abi.ResultOfEncodeInternalMessage encodeInternalMessage(EverSdkContext ctx,
-      Abi.ABI abi, String address, String srcAddress, Abi.DeploySet deploySet, Abi.CallSet callSet,
-      String value, Boolean bounce, Boolean enableIhr) throws EverSdkException {
-    return ctx.call("abi.encode_internal_message", new Abi.ParamsOfEncodeInternalMessage(abi, address, srcAddress, deploySet, callSet, value, bounce, enableIhr), Abi.ResultOfEncodeInternalMessage.class);
+  public static Abi.ResultOfEncodeInternalMessage encodeInternalMessage(int ctxId, Abi.ABI abi,
+      String address, String srcAddress, Abi.DeploySet deploySet, Abi.CallSet callSet, String value,
+      Boolean bounce, Boolean enableIhr) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.encode_internal_message", new Abi.ParamsOfEncodeInternalMessage(abi, address, srcAddress, deploySet, callSet, value, bounce, enableIhr), Abi.ResultOfEncodeInternalMessage.class);
   }
 
   /**
@@ -159,9 +158,9 @@ public final class Abi {
    * @param message  Unsigned message BOC encoded in `base64`.
    * @param signature  Signature encoded in `hex`.
    */
-  public static Abi.ResultOfAttachSignature attachSignature(EverSdkContext ctx, Abi.ABI abi,
+  public static Abi.ResultOfAttachSignature attachSignature(int ctxId, Abi.ABI abi,
       String publicKey, String message, String signature) throws EverSdkException {
-    return ctx.call("abi.attach_signature", new Abi.ParamsOfAttachSignature(abi, publicKey, message, signature), Abi.ResultOfAttachSignature.class);
+    return EverSdk.call(ctxId, "abi.attach_signature", new Abi.ParamsOfAttachSignature(abi, publicKey, message, signature), Abi.ResultOfAttachSignature.class);
   }
 
   /**
@@ -172,10 +171,10 @@ public final class Abi {
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    * @param functionName  Function name or function id if is known in advance
    */
-  public static Abi.DecodedMessageBody decodeMessage(EverSdkContext ctx, Abi.ABI abi,
-      String message, Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) throws
+  public static Abi.DecodedMessageBody decodeMessage(int ctxId, Abi.ABI abi, String message,
+      Boolean allowPartial, String functionName, Abi.DataLayout dataLayout) throws
       EverSdkException {
-    return ctx.call("abi.decode_message", new Abi.ParamsOfDecodeMessage(abi, message, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
+    return EverSdk.call(ctxId, "abi.decode_message", new Abi.ParamsOfDecodeMessage(abi, message, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
   }
 
   /**
@@ -187,27 +186,25 @@ public final class Abi {
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    * @param functionName  Function name or function id if is known in advance
    */
-  public static Abi.DecodedMessageBody decodeMessageBody(EverSdkContext ctx, Abi.ABI abi,
-      String body, Boolean isInternal, Boolean allowPartial, String functionName,
-      Abi.DataLayout dataLayout) throws EverSdkException {
-    return ctx.call("abi.decode_message_body", new Abi.ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
+  public static Abi.DecodedMessageBody decodeMessageBody(int ctxId, Abi.ABI abi, String body,
+      Boolean isInternal, Boolean allowPartial, String functionName, Abi.DataLayout dataLayout)
+      throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.decode_message_body", new Abi.ParamsOfDecodeMessageBody(abi, body, isInternal, allowPartial, functionName, dataLayout), Abi.DecodedMessageBody.class);
   }
 
   /**
-   * Creates account state provided with one of these sets of data :
-   * 1. BOC of code, BOC of data, BOC of library
-   * 2. TVC (string in `base64`), keys, init params Creates account state BOC
+   *  Creates account state BOC
    *
-   * @param stateInit  Source of the account state init.
+   * @param stateInit  Account state init.
    * @param balance  Initial balance.
    * @param lastTransLt  Initial value for the `last_trans_lt`.
    * @param lastPaid  Initial value for the `last_paid`.
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static Abi.ResultOfEncodeAccount encodeAccount(EverSdkContext ctx,
-      Abi.StateInitSource stateInit, BigInteger balance, BigInteger lastTransLt, Long lastPaid,
-      Boc.BocCacheType bocCache) throws EverSdkException {
-    return ctx.call("abi.encode_account", new Abi.ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), Abi.ResultOfEncodeAccount.class);
+  public static Abi.ResultOfEncodeAccount encodeAccount(int ctxId, String stateInit,
+      BigInteger balance, BigInteger lastTransLt, Long lastPaid, Boc.BocCacheType bocCache) throws
+      EverSdkException {
+    return EverSdk.call(ctxId, "abi.encode_account", new Abi.ParamsOfEncodeAccount(stateInit, balance, lastTransLt, lastPaid, bocCache), Abi.ResultOfEncodeAccount.class);
   }
 
   /**
@@ -217,13 +214,13 @@ public final class Abi {
    * @param data  Data BOC or BOC handle
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    */
-  public static Abi.ResultOfDecodeAccountData decodeAccountData(EverSdkContext ctx, Abi.ABI abi,
-      String data, Boolean allowPartial) throws EverSdkException {
-    return ctx.call("abi.decode_account_data", new Abi.ParamsOfDecodeAccountData(abi, data, allowPartial), Abi.ResultOfDecodeAccountData.class);
+  public static Abi.ResultOfDecodeAccountData decodeAccountData(int ctxId, Abi.ABI abi, String data,
+      Boolean allowPartial) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.decode_account_data", new Abi.ParamsOfDecodeAccountData(abi, data, allowPartial), Abi.ResultOfDecodeAccountData.class);
   }
 
   /**
-   *  Updates initial account data with initial values for the contract's static variables and owner's public key. This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
+   * Doesn't support ABI version >= 2.4. Use `encode_initial_data` instead Updates initial account data with initial values for the contract's static variables and owner's public key. This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
    *
    * @param abi  Contract ABI
    * @param data  Data BOC or BOC handle
@@ -231,10 +228,10 @@ public final class Abi {
    * @param initialPubkey  Initial account owner's public key to set into account data
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Abi.ResultOfUpdateInitialData updateInitialData(EverSdkContext ctx, Abi.ABI abi,
-      String data, JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
+  public static Abi.ResultOfUpdateInitialData updateInitialData(int ctxId, Abi.ABI abi, String data,
+      JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
       EverSdkException {
-    return ctx.call("abi.update_initial_data", new Abi.ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), Abi.ResultOfUpdateInitialData.class);
+    return EverSdk.call(ctxId, "abi.update_initial_data", new Abi.ParamsOfUpdateInitialData(abi, data, initialData, initialPubkey, bocCache), Abi.ResultOfUpdateInitialData.class);
   }
 
   /**
@@ -245,22 +242,22 @@ public final class Abi {
    * @param initialPubkey  Initial account owner's public key to set into account data
    * @param bocCache  Cache type to put the result. The BOC itself returned if no cache type provided.
    */
-  public static Abi.ResultOfEncodeInitialData encodeInitialData(EverSdkContext ctx, Abi.ABI abi,
+  public static Abi.ResultOfEncodeInitialData encodeInitialData(int ctxId, Abi.ABI abi,
       JsonNode initialData, String initialPubkey, Boc.BocCacheType bocCache) throws
       EverSdkException {
-    return ctx.call("abi.encode_initial_data", new Abi.ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), Abi.ResultOfEncodeInitialData.class);
+    return EverSdk.call(ctxId, "abi.encode_initial_data", new Abi.ParamsOfEncodeInitialData(abi, initialData, initialPubkey, bocCache), Abi.ResultOfEncodeInitialData.class);
   }
 
   /**
-   *  Decodes initial values of a contract's static variables and owner's public key from account initial data This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
+   * Doesn't support ABI version >= 2.4. Use `decode_account_data` instead Decodes initial values of a contract's static variables and owner's public key from account initial data This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
    *
    * @param abi Initial data is decoded if this parameter is provided Contract ABI.
    * @param data  Data BOC or BOC handle
    * @param allowPartial  Flag allowing partial BOC decoding when ABI doesn't describe the full body BOC. Controls decoder behaviour when after decoding all described in ABI params there are some data left in BOC: `true` - return decoded values `false` - return error of incomplete BOC deserialization (default)
    */
-  public static Abi.ResultOfDecodeInitialData decodeInitialData(EverSdkContext ctx, Abi.ABI abi,
-      String data, Boolean allowPartial) throws EverSdkException {
-    return ctx.call("abi.decode_initial_data", new Abi.ParamsOfDecodeInitialData(abi, data, allowPartial), Abi.ResultOfDecodeInitialData.class);
+  public static Abi.ResultOfDecodeInitialData decodeInitialData(int ctxId, Abi.ABI abi, String data,
+      Boolean allowPartial) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.decode_initial_data", new Abi.ParamsOfDecodeInitialData(abi, data, allowPartial), Abi.ResultOfDecodeInitialData.class);
   }
 
   /**
@@ -283,9 +280,9 @@ public final class Abi {
    * @param params  Parameters to decode from BOC
    * @param boc  Data BOC or BOC handle
    */
-  public static Abi.ResultOfDecodeBoc decodeBoc(EverSdkContext ctx, Abi.AbiParam[] params,
-      String boc, Boolean allowPartial) throws EverSdkException {
-    return ctx.call("abi.decode_boc", new Abi.ParamsOfDecodeBoc(params, boc, allowPartial), Abi.ResultOfDecodeBoc.class);
+  public static Abi.ResultOfDecodeBoc decodeBoc(int ctxId, Abi.AbiParam[] params, String boc,
+      Boolean allowPartial) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.decode_boc", new Abi.ParamsOfDecodeBoc(params, boc, allowPartial), Abi.ResultOfDecodeBoc.class);
   }
 
   /**
@@ -295,9 +292,9 @@ public final class Abi {
    * @param data  Parameters and values as a JSON structure
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public static Abi.ResultOfAbiEncodeBoc encodeBoc(EverSdkContext ctx, Abi.AbiParam[] params,
-      JsonNode data, Boc.BocCacheType bocCache) throws EverSdkException {
-    return ctx.call("abi.encode_boc", new Abi.ParamsOfAbiEncodeBoc(params, data, bocCache), Abi.ResultOfAbiEncodeBoc.class);
+  public static Abi.ResultOfAbiEncodeBoc encodeBoc(int ctxId, Abi.AbiParam[] params, JsonNode data,
+      Boc.BocCacheType bocCache) throws EverSdkException {
+    return EverSdk.call(ctxId, "abi.encode_boc", new Abi.ParamsOfAbiEncodeBoc(params, data, bocCache), Abi.ResultOfAbiEncodeBoc.class);
   }
 
   /**
@@ -307,9 +304,9 @@ public final class Abi {
    * @param functionName  Contract function name
    * @param output  If set to `true` output function ID will be returned which is used in contract response. Default is `false`
    */
-  public static Abi.ResultOfCalcFunctionId calcFunctionId(EverSdkContext ctx, Abi.ABI abi,
+  public static Abi.ResultOfCalcFunctionId calcFunctionId(int ctxId, Abi.ABI abi,
       String functionName, Boolean output) throws EverSdkException {
-    return ctx.call("abi.calc_function_id", new Abi.ParamsOfCalcFunctionId(abi, functionName, output), Abi.ResultOfCalcFunctionId.class);
+    return EverSdk.call(ctxId, "abi.calc_function_id", new Abi.ParamsOfCalcFunctionId(abi, functionName, output), Abi.ResultOfCalcFunctionId.class);
   }
 
   /**
@@ -319,20 +316,20 @@ public final class Abi {
    * @param message  Message BOC encoded in `base64`.
    * @param signatureId  Signature ID to be used in unsigned data preparing when CapSignatureWithId capability is enabled
    */
-  public static Abi.ResultOfGetSignatureData getSignatureData(EverSdkContext ctx, Abi.ABI abi,
+  public static Abi.ResultOfGetSignatureData getSignatureData(int ctxId, Abi.ABI abi,
       String message, Long signatureId) throws EverSdkException {
-    return ctx.call("abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message, signatureId), Abi.ResultOfGetSignatureData.class);
+    return EverSdk.call(ctxId, "abi.get_signature_data", new Abi.ParamsOfGetSignatureData(abi, message, signatureId), Abi.ResultOfGetSignatureData.class);
   }
 
   /**
-   * @param stateInit  Source of the account state init.
+   * @param stateInit  Account state init.
    * @param balance  Initial balance.
    * @param lastTransLt  Initial value for the `last_trans_lt`.
    * @param lastPaid  Initial value for the `last_paid`.
    * @param bocCache The BOC itself returned if no cache type provided Cache type to put the result.
    */
-  public record ParamsOfEncodeAccount(Abi.StateInitSource stateInit, BigInteger balance,
-      BigInteger lastTransLt, Long lastPaid, Boc.BocCacheType bocCache) {
+  public record ParamsOfEncodeAccount(String stateInit, BigInteger balance, BigInteger lastTransLt,
+      Long lastPaid, Boc.BocCacheType bocCache) {
   }
 
   /**
@@ -385,43 +382,6 @@ public final class Abi {
    */
   public record ParamsOfEncodeMessageBody(Abi.ABI abi, Abi.CallSet callSet, Boolean isInternal,
       Abi.Signer signer, Integer processingTryIndex, String address, Long signatureId) {
-  }
-
-  public sealed interface StateInitSource {
-    /**
-     *  Deploy message.
-     */
-    record Message(Abi.MessageSource source) implements StateInitSource {
-      @JsonProperty("type")
-      public String type() {
-        return "Message";
-      }
-    }
-
-    /**
-     *  State init data.
-     *
-     * @param code Encoded in `base64`. Code BOC.
-     * @param data Encoded in `base64`. Data BOC.
-     * @param library Encoded in `base64`. Library BOC.
-     */
-    record StateInit(String code, String data, String library) implements StateInitSource {
-      @JsonProperty("type")
-      public String type() {
-        return "StateInit";
-      }
-    }
-
-    /**
-     * Encoded in `base64`. Content of the TVC file.
-     */
-    record Tvc(String tvc, String publicKey,
-        Abi.StateInitParams initParams) implements StateInitSource {
-      @JsonProperty("type")
-      public String type() {
-        return "Tvc";
-      }
-    }
   }
 
   public record AbiContract(@JsonProperty("ABI version") Long abiVersionMajor, Long abiVersion,
@@ -590,15 +550,6 @@ public final class Abi {
     }
   }
 
-  public sealed interface MessageSource {
-    record Encoded(String message, Abi.ABI abi) implements MessageSource {
-      @JsonProperty("type")
-      public String type() {
-        return "Encoded";
-      }
-    }
-  }
-
   /**
    * @param abi  Contract ABI
    * @param publicKey Must be encoded with `hex`. Public key.
@@ -632,12 +583,7 @@ public final class Abi {
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
    */
   public record ParamsOfEncodeMessage(Abi.ABI abi, String address, Abi.DeploySet deploySet,
-      Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex,
-      Long signatureId) implements MessageSource {
-    @JsonProperty("type")
-    public String type() {
-      return "EncodingParams";
-    }
+      Abi.CallSet callSet, Abi.Signer signer, Integer processingTryIndex, Long signatureId) {
   }
 
   /**
@@ -658,9 +604,6 @@ public final class Abi {
   }
 
   public record AbiData(Long key, String name, String type, Abi.AbiParam[] components) {
-  }
-
-  public record StateInitParams(Abi.ABI abi, JsonNode value) {
   }
 
   public enum AbiErrorCode {
@@ -692,7 +635,9 @@ public final class Abi {
 
     EncodeInitialDataFailed(314),
 
-    InvalidFunctionName(315);
+    InvalidFunctionName(315),
+
+    PubKeyNotSupported(316);
 
     private final Integer value;
 
@@ -831,7 +776,7 @@ public final class Abi {
       String functionName, Abi.DataLayout dataLayout) {
   }
 
-  public record AbiParam(String name, String type, Abi.AbiParam[] components) {
+  public record AbiParam(String name, String type, Abi.AbiParam[] components, Boolean init) {
   }
 
   /**
@@ -849,7 +794,10 @@ public final class Abi {
    * @param initialPubkey Public key resolving priority:
    * 1. Public key from deploy set.
    * 2. Public key, specified in TVM file.
-   * 3. Public key, provided by Signer. Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
+   * 3. Public key, provided by Signer.
+   *
+   * Applicable only for contracts with ABI version < 2.4. Contract initial public key should be
+   * explicitly provided inside `initial_data` since ABI 2.4 Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
   public record DeploySet(String tvc, String code, String stateInit, Long workchainId,
       JsonNode initialData, String initialPubkey) {

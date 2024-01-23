@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.yegor256.OnlineMeans;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import tech.deplant.java4ever.binding.*;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Execution(ExecutionMode.CONCURRENT)
 public class SubscribeTests {
@@ -17,12 +20,10 @@ public class SubscribeTests {
 	private final static System.Logger logger = System.getLogger(SubscribeTests.class.getName());
 
 	@Test
-	public void subscribe_to_account() throws JsonProcessingException, EverSdkException, InterruptedException {
-		var endpoint = "http://185.20.226.96/graphql";
-		var configJson = "{\"network\":{\"endpoints\":[\"" + endpoint + "\"]}}";
-		var ctx = EverSdkContext.builder().setConfigJson(configJson).buildNew();
-		Client.version(ctx);
-
+	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
+	public void subscribe_to_account() throws EverSdkException {
+		var configJson = STR."{\"network\":{\"endpoints\":[\"\{TestEnv.NODESE_ENDPOINT}\"]}}";
+		int ctxId = TestEnv.newContext();
 		String queryText = """
 				subscription {
 							transactions(
@@ -35,16 +36,16 @@ public class SubscribeTests {
 								balance_delta
 							}
 						}
-				""".formatted("0:856f54b9126755ce6ecb7c62b7ad8c94353f7797c03ab82eda63d11120ed3ab7");
-
-		logger.log(System.Logger.Level.DEBUG,queryText);
-
-		Net.subscribe(ctx,
+				""".formatted("0:ece57bcc6c530283becbbd8a3b24d3c5987cdddc3c8b7b33be6e4a6312490415");
+		var handle = Net.subscribe(ctxId,
 		              queryText,
 		              JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
 		              eventString -> logger.log(System.Logger.Level.WARNING,
-		                                    "code: %s".formatted(eventString)));
+		                                    "code: %s".formatted(eventString))).handle();
 
+		assertTrue(handle > 0);
+
+		Net.unsubscribe(ctxId,new Net.ResultOfSubscribeCollection(handle));
 
 	}
 }

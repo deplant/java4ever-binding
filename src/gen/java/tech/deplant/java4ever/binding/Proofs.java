@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Contains methods of "proofs" module of EVER-SDK API
  *
  * [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Module for proving data, retrieved from TONOS API. 
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Proofs {
   /**
@@ -73,8 +73,8 @@ public final class Proofs {
    *
    * @param block  Single block's data, retrieved from TONOS API, that needs proof. Required fields are `id` and/or top-level `boc` (for block identification), others are optional.
    */
-  public static void proofBlockData(EverSdkContext ctx, JsonNode block) throws EverSdkException {
-    ctx.callVoid("proofs.proof_block_data", new Proofs.ParamsOfProofBlockData(block));
+  public static void proofBlockData(int ctxId, JsonNode block) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "proofs.proof_block_data", new Proofs.ParamsOfProofBlockData(block));
   }
 
   /**
@@ -96,9 +96,8 @@ public final class Proofs {
    *
    * @param transaction  Single transaction's data as queried from DApp server, without modifications. The required fields are `id` and/or top-level `boc`, others are optional. In order to reduce network requests count, it is recommended to provide `block_id` and `boc` of transaction.
    */
-  public static void proofTransactionData(EverSdkContext ctx, JsonNode transaction) throws
-      EverSdkException {
-    ctx.callVoid("proofs.proof_transaction_data", new Proofs.ParamsOfProofTransactionData(transaction));
+  public static void proofTransactionData(int ctxId, JsonNode transaction) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "proofs.proof_transaction_data", new Proofs.ParamsOfProofTransactionData(transaction));
   }
 
   /**
@@ -120,9 +119,8 @@ public final class Proofs {
    *
    * @param message  Single message's data as queried from DApp server, without modifications. The required fields are `id` and/or top-level `boc`, others are optional. In order to reduce network requests count, it is recommended to provide at least `boc` of message and non-null `src_transaction.id` or `dst_transaction.id`.
    */
-  public static void proofMessageData(EverSdkContext ctx, JsonNode message) throws
-      EverSdkException {
-    ctx.callVoid("proofs.proof_message_data", new Proofs.ParamsOfProofMessageData(message));
+  public static void proofMessageData(int ctxId, JsonNode message) throws EverSdkException {
+    EverSdk.callVoid(ctxId, "proofs.proof_message_data", new Proofs.ParamsOfProofMessageData(message));
   }
 
   /**

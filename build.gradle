@@ -33,9 +33,6 @@ dependencies {
     api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     api "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
 
-    // JavaPoet - Java code generation
-    //implementation "com.squareup:javapoet:1.13.0"
-
     // TESTS **************************
 
     // SLF4J (Tests part)
@@ -43,6 +40,8 @@ dependencies {
     testImplementation "org.slf4j:slf4j-simple:$slf4jVersion"
     // JUnit 5
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    testImplementation "com.yegor256:jping:$jpingVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
 }
@@ -186,5 +185,5 @@ tasks.withType(Test) {
     }
     useJUnitPlatform()
     jvmArgs += "--enable-preview"
-    jvmArgs += "--enable-native-access=java4ever.binding"
+    jvmArgs += "--enable-native-access=ALL-UNNAMED"
 }

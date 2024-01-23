@@ -15,4 +15,5 @@ open module java4ever.binding {
 	exports tech.deplant.java4ever.binding.generator;
 	exports tech.deplant.java4ever.binding.generator.reference;
 	exports tech.deplant.java4ever.binding.generator.jtype;
+	exports tech.deplant.java4ever.binding.ffi;
 }

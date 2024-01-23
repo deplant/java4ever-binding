@@ -16,7 +16,7 @@ import static java.lang.System.Logger.Level.DEBUG;
 public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 
 
-	public final static String EVER_SDK_VERSION = "1.44.3";
+	public final static String EVER_SDK_VERSION = "1.45.0";
 	public final static String BINDING_LIBRARY_NAME = "java4ever";
 
 	public final static String BINDING_LIBRARY_VERSION = "2.5.0";

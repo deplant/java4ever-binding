@@ -24,10 +24,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: JDK 17 / Setup
+    - name: JDK 21 / Setup
       uses: actions/setup-java@v2
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
@@ -41,22 +41,22 @@ jobs:
     - name: Gradle / Setup
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 7.4.2
+        gradle-version: 8.5
       
     - name: Gradle / Task (Build)
       uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: 7.4.2
+        gradle-version: 8.5
         arguments: build
 
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: 7.4.2
-        arguments: publishGprPublicationToGitHubPackagesRepository --stacktrace
-      env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_PACKAGES_UPLOAD_TOKEN: ${{ secrets.PUBLISH_NOEXPIRE_TOKEN }}
+    #- name: Publish to GitHub Packages
+    #  uses: gradle/gradle-build-action@v2
+    #  with:
+    #    gradle-version: 8.5
+    #    arguments: publishGprPublicationToGitHubPackagesRepository --stacktrace
+    #  env:
+    #    USERNAME: ${{ github.actor }}
+    #    TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    GH_PACKAGES_UPLOAD_TOKEN: ${{ secrets.PUBLISH_NOEXPIRE_TOKEN }}

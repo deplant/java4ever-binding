@@ -2,18 +2,13 @@ package tech.deplant.java4ever.binding.generator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import tech.deplant.commons.Objs;
-import tech.deplant.java4ever.binding.Client;
-import tech.deplant.java4ever.binding.EverSdkContext;
-import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.JsonContext;
-import tech.deplant.javapoet.CodeBlock;
-import tech.deplant.javapoet.JavaFile;
-import tech.deplant.javapoet.TypeSpec;
 import tech.deplant.java4ever.binding.generator.jtype.*;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.binding.io.JsonResource;
-import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
-import tech.deplant.java4ever.binding.loader.LibraryLoader;
+import tech.deplant.javapoet.CodeBlock;
+import tech.deplant.javapoet.JavaFile;
+import tech.deplant.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
@@ -28,15 +23,15 @@ public class ParserEngine {
 
 	public static ApiReference ofJsonResource(String resourceName) throws JsonProcessingException {
 		return JsonContext.SDK_JSON_MAPPER().readValue(new JsonResource(resourceName).get(),
-		                             ApiReference.class);
+		                                               ApiReference.class);
 	}
 
-	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException, EverSdkException {
-		var ctx = EverSdkContext.builder()
-				.setConfigJson("{}")
-				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
-		return ctx.mapper().convertValue(Client.getApiReference(ctx).api(), ApiReference.class);
-	}
+//	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException, EverSdkException {
+//		var ctx = EverSdkContext.builder()
+//				.setConfigJson("{}")
+//				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
+//		return ctx.mapper().convertValue(Client.getApiReference(ctx).api(), ApiReference.class);
+//	}
 
 	public static void parse(ApiReference parsedApiReference) throws IOException {
 

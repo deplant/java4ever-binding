@@ -70,13 +70,13 @@ public record SdkFunction(String functionModule,
 		// Args for all call params
 		List<Object> statementArgs = new ArrayList<>();
 		// Context param
-		methodBuilder.addParameter(ClassName.get(EverSdkContext.class), "ctx");
+		//methodBuilder.addParameter(ClassName.get(EverSdkContext.class), "ctx");
 		// Function SDK name
 		// adds function name as a first arg to statementArgs array
 		statementArgs.add(String.format("%s.%s", functionModule().toLowerCase(), function().name()));
 		// call template for all variants
-		String templateString = "%RETURN_KEY%ctx.%CALL_TYPE%($S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
-
+		String templateString = "%RETURN_KEY%Sdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
+		methodBuilder.addParameter(ClassName.INT, "ctxId");
 		for (ApiType param : function().params()) {
 			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
 			switch (param.name()) {

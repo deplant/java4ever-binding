@@ -1,7 +1,6 @@
 package tech.deplant.java4ever.binding.gql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import tech.deplant.java4ever.binding.EverSdkContext;
 import tech.deplant.java4ever.binding.JsonContext;
 
 import java.io.IOException;

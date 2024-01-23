@@ -13,36 +13,35 @@ import java.lang.String;
  * Contains methods of "client" module of EVER-SDK API
  *
  * Provides information about library. 
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Client {
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ResultOfGetApiReference getApiReference(EverSdkContext ctx) throws
-      EverSdkException {
-    return ctx.call("client.get_api_reference", null, Client.ResultOfGetApiReference.class);
+  public static Client.ResultOfGetApiReference getApiReference(int ctxId) throws EverSdkException {
+    return EverSdk.call(ctxId, "client.get_api_reference", null, Client.ResultOfGetApiReference.class);
   }
 
   /**
    *  Returns Core Library version
    */
-  public static Client.ResultOfVersion version(EverSdkContext ctx) throws EverSdkException {
-    return ctx.call("client.version", null, Client.ResultOfVersion.class);
+  public static Client.ResultOfVersion version(int ctxId) throws EverSdkException {
+    return EverSdk.call(ctxId, "client.version", null, Client.ResultOfVersion.class);
   }
 
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ClientConfig config(EverSdkContext ctx) throws EverSdkException {
-    return ctx.call("client.config", null, Client.ClientConfig.class);
+  public static Client.ClientConfig config(int ctxId) throws EverSdkException {
+    return EverSdk.call(ctxId, "client.config", null, Client.ClientConfig.class);
   }
 
   /**
    *  Returns detailed information about this build.
    */
-  public static Client.ResultOfBuildInfo buildInfo(EverSdkContext ctx) throws EverSdkException {
-    return ctx.call("client.build_info", null, Client.ResultOfBuildInfo.class);
+  public static Client.ResultOfBuildInfo buildInfo(int ctxId) throws EverSdkException {
+    return EverSdk.call(ctxId, "client.build_info", null, Client.ResultOfBuildInfo.class);
   }
 
   /**
@@ -51,9 +50,9 @@ public final class Client {
    * @param appRequestId  Request ID received from SDK
    * @param result  Result of request processing
    */
-  public static void resolveAppRequest(EverSdkContext ctx, Long appRequestId,
-      Client.AppRequestResult result) throws EverSdkException {
-    ctx.callVoid("client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
+  public static void resolveAppRequest(int ctxId, Long appRequestId, Client.AppRequestResult result)
+      throws EverSdkException {
+    EverSdk.callVoid(ctxId, "client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
   }
 
   public enum ClientErrorCode {

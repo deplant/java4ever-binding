@@ -10,7 +10,7 @@ import java.lang.String;
  * Contains methods of "utils" module of EVER-SDK API
  *
  * Misc utility Functions. 
- * @version 1.44.3
+ * @version 1.45.0
  */
 public final class Utils {
   /**
@@ -19,9 +19,9 @@ public final class Utils {
    * @param address  Account address in any TON format.
    * @param outputFormat  Specify the format to convert to.
    */
-  public static Utils.ResultOfConvertAddress convertAddress(EverSdkContext ctx, String address,
+  public static Utils.ResultOfConvertAddress convertAddress(int ctxId, String address,
       Utils.AddressStringFormat outputFormat) throws EverSdkException {
-    return ctx.call("utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
+    return EverSdk.call(ctxId, "utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
   }
 
   /**
@@ -36,17 +36,17 @@ public final class Utils {
    *
    * @param address  Account address in any TON format.
    */
-  public static Utils.ResultOfGetAddressType getAddressType(EverSdkContext ctx, String address)
-      throws EverSdkException {
-    return ctx.call("utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
+  public static Utils.ResultOfGetAddressType getAddressType(int ctxId, String address) throws
+      EverSdkException {
+    return EverSdk.call(ctxId, "utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
   }
 
   /**
    *  Calculates storage fee for an account over a specified time period
    */
-  public static Utils.ResultOfCalcStorageFee calcStorageFee(EverSdkContext ctx, String account,
-      Long period) throws EverSdkException {
-    return ctx.call("utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
+  public static Utils.ResultOfCalcStorageFee calcStorageFee(int ctxId, String account, Long period)
+      throws EverSdkException {
+    return EverSdk.call(ctxId, "utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
   }
 
   /**
@@ -55,9 +55,9 @@ public final class Utils {
    * @param uncompressed Must be encoded as base64. Uncompressed data.
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
-  public static Utils.ResultOfCompressZstd compressZstd(EverSdkContext ctx, String uncompressed,
-      Long level) throws EverSdkException {
-    return ctx.call("utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
+  public static Utils.ResultOfCompressZstd compressZstd(int ctxId, String uncompressed, Long level)
+      throws EverSdkException {
+    return EverSdk.call(ctxId, "utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
   }
 
   /**
@@ -65,9 +65,9 @@ public final class Utils {
    *
    * @param compressed Must be encoded as base64. Compressed data.
    */
-  public static Utils.ResultOfDecompressZstd decompressZstd(EverSdkContext ctx, String compressed)
-      throws EverSdkException {
-    return ctx.call("utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
+  public static Utils.ResultOfDecompressZstd decompressZstd(int ctxId, String compressed) throws
+      EverSdkException {
+    return EverSdk.call(ctxId, "utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
   }
 
   public record ParamsOfCalcStorageFee(String account, Long period) {

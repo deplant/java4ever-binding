@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static tech.deplant.java4ever.binding.ffi.tc_string_data_t.*;
 
-public class NativeStrings {
+class NativeStrings {
 	public static MemorySegment toRust(final String text, final Arena arena) {
 		MemorySegment nativeString = arena.allocateUtf8String(text);
 		MemorySegment stringDataSegment = arena.allocate(constants$0.const$0);
