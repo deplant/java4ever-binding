@@ -10,6 +10,12 @@ name: Gradle Package
 on:
   release:
     types: [created]
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 env:
   REGISTRY: ghcr.io
