@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
 import tech.deplant.java4ever.binding.EverSdk;
 
 public class TestEnv {
@@ -14,4 +15,14 @@ public class TestEnv {
 			throw new RuntimeException(e);
 		}
 	}
+
+
+	@Test
+	public void test_method()
+	{
+		byte num = (byte)127;
+		num++;
+		System.out.println(num);
+	}
+
 }

@@ -1,7 +1,7 @@
 # EVER-SDK for Java
 
-[![JDK version](https://img.shields.io/badge/Java-20-green.svg)](https://shields.io/)
-[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.44.3-orange)](https://github.com/tonlabs/ever-sdk)
+[![JDK version](https://img.shields.io/badge/Java-21-green.svg)](https://shields.io/)
+[![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.45.0-orange)](https://github.com/tonlabs/ever-sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
 * Discuss in
@@ -15,7 +15,7 @@ compatible with
 [Everscale](https://everscale.network/), Venom, GOSH & TON blockchain 
 networks.
 Binding calls [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface of EVER-SDK.
-Native calls are based on modern [Foreign Function & Memory API](https://openjdk.org/jeps/434).
+Native calls are based on modern [Foreign Function & Memory API](https://openjdk.org/jeps/454).
 
 This artifact provides full binding functionality, but doesn't include 
 higher level helpers for development, tests or fast prototyping. Try our larger [Java4Ever](https://github.com/deplant/java4ever-framework) framework 
@@ -31,7 +31,7 @@ that is based on this binding for easier work with TVM blockchains.
 
 #### Prerequisites
 
-* Install **JDK 20** ([link](https://adoptium.net/temurin/releases?version=20))
+* Install **JDK 21** ([link](https://adoptium.net/temurin/releases?version=20))
 
 #### Add java4ever to your Maven of Gradle setup:
 
@@ -39,7 +39,7 @@ that is based on this binding for easier work with TVM blockchains.
 
 ```groovy
 dependencies {
-    implementation 'tech.deplant.java4ever:java4ever-binding:2.5.0'
+    implementation 'tech.deplant.java4ever:java4ever-binding:3.0.0'
 }
 ```
 
@@ -50,7 +50,7 @@ dependencies {
 <dependency>
     <groupId>tech.deplant.java4ever</groupId>
     <artifactId>java4ever-binding</artifactId>
-    <version>2.5.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 

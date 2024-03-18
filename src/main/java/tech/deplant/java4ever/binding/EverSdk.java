@@ -25,6 +25,13 @@ public class EverSdk {
 		return contexts.get(contextId);
 	}
 
+	public static long getDefaultWorkchainId(int contextId) {
+		return switch (getContext(contextId).config().abi()) {
+			case null -> 0L;
+			case Client.AbiConfig abiConfig -> Optional.ofNullable(abiConfig.workchain()).orElse(0L);
+		};
+	}
+
 	public static void load() {
 		load(DefaultLoaderContext.SINGLETON(ClassLoader.getSystemClassLoader()));
 	}

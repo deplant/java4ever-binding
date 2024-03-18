@@ -34,9 +34,16 @@ public class ClientTests {
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void check_ever_sdk_version() throws EverSdkException {
+	public void sdk_version_equals_constant() throws EverSdkException {
 		int ctxId = TestEnv.newContext();
 		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.version(ctxId).version());
+	}
+
+	@Test
+	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
+	public void api_reference_version_equals_constant() throws EverSdkException {
+		int ctxId = TestEnv.newContext();
+		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.getApiReference(ctxId).api().get("version").asText());
 	}
 
 }

@@ -39,6 +39,18 @@ public class JsonContext {
 		return lazySdkMapper;
 	}
 
+	public static ObjectMapper ABI_JSON_MAPPER() {
+		if (lazyAbiMapper == null) {
+			lazyAbiMapper = JsonMapper.builder()
+			                          .addModule(new ParameterNamesModule())
+			                          .addModule(new Jdk8Module())
+			                          .addModule(new JavaTimeModule())
+			                          .build()
+			                          .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		}
+		return lazyAbiMapper;
+	}
+
 	public static JsonNode EMPTY_NODE() {
 		if (emptyNode == null) {
 			emptyNode = SDK_JSON_MAPPER().valueToTree(Map.of());
@@ -54,16 +66,26 @@ public class JsonContext {
 		return  Objs.notNullElseLazy(mapper.readValue(json.traverse(), MAP_STRING_OBJECT_TYPE), Map::of);
 	}
 
-	public static ObjectMapper ABI_JSON_MAPPER() {
-		if (lazyAbiMapper == null) {
-			lazyAbiMapper = JsonMapper.builder()
-			                                  .addModule(new ParameterNamesModule())
-			                                  .addModule(new Jdk8Module())
-			                                  .addModule(new JavaTimeModule())
-			                                  .build()
-			                                  .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		}
-		return lazyAbiMapper;
+	public static <T> T convertAbiMap(Map<String, Object> inputMap, Class<T> outputClass) {
+		return ABI_JSON_MAPPER().convertValue(inputMap, outputClass);
 	}
+
+	public static <T> T  convertAbiMap(Map<String, Object> inputMap, TypeReference<T> outputType) {
+		return ABI_JSON_MAPPER().convertValue(inputMap, outputType);
+	}
+
+	public static JsonNode readAbiStruct(Object struct) throws JsonProcessingException {
+		return ABI_JSON_MAPPER().readTree(serialize(struct));
+	}
+
+	public static <T> T  deserialize(String inputString, Class<T> outputClass) throws JsonProcessingException {
+		return ABI_JSON_MAPPER().readValue(inputString, outputClass);
+	}
+
+	public static String serialize(Object inputObject) throws JsonProcessingException {
+		return ABI_JSON_MAPPER().writeValueAsString(inputObject);
+	}
+
+
 
 }

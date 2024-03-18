@@ -52,7 +52,7 @@ public class ConfigTests {
 		int ctxId2 = EverSdk.createWithEndpoint(TestEnv.NODESE_ENDPOINT).orElseThrow();
 		var config1 = EverSdk.getContext(ctxId).config();
 		var config2 = EverSdk.getContext(ctxId2).config();
-		//assertEquals(config1,config2);
+		assertEquals(config1.toString(),config2.toString());
 	}
 
 	@Test
