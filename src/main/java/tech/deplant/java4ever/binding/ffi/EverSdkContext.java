@@ -122,26 +122,39 @@ public class EverSdkContext {
 	public void addResponse(int requestId, String responseString) {
 		if (this.responses.containsKey(requestId)) {
 			this.responses.get(requestId).complete(responseString);
+		} else {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "Slot for this request not found on processing response! CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
 		}
 	}
 
 	public void addError(int requestId, String responseString) {
-		this.responses.get(requestId).completeExceptionally(new CompletionException(responseString, null));
+		if (this.responses.containsKey(requestId)) {
+			this.responses.get(requestId).completeExceptionally(new CompletionException(responseString, null));
+		} else {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "Slot for this request not found on processing error response! CTX:%d REQ:%d ERR:%s".formatted(this.id, requestId, responseString));
+		}
+
 	}
 
 	public void addEvent(int requestId, String responseString) {
-		var subscription = this.subscriptions.get(requestId);
-		subscription.events().add(responseString);
-		JsonNode node = null;
-		try {
-			node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
-			subscription.eventConsumer().accept(node);
-		} catch (JsonProcessingException e) {
+		if (this.subscriptions.containsKey(requestId)) {
+			var subscription = this.subscriptions.get(requestId);
+			subscription.events().add(responseString);
+			try {
+				JsonNode node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
+				subscription.eventConsumer().accept(node);
+			} catch (JsonProcessingException e) {
+				logger.log(System.Logger.Level.ERROR,
+				           () -> "REQ:%d JSON Tree deserialization failed on processing event! String: %s Cause: %s".formatted(
+						           requestId,
+						           responseString,
+						           e.getMessage() + e.getCause()));
+			}
+		} else {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "REQ:%d JSON Tree deserialization failed on processing event! String: %s Cause: %s".formatted(
-					           requestId,
-					           responseString,
-					           e.getMessage() + e.getCause()));
+			           () -> "Slot for this request not found on processing subscription event! CTX:%d REQ:%d EVENT:%s".formatted(this.id, requestId, responseString));
 		}
 	}
 
