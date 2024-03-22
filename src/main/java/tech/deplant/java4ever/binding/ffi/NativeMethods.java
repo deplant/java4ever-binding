@@ -8,11 +8,11 @@ public class NativeMethods {
 
 	public static String tcCreateContext(String configJson) {
 		Arena offHeapMemory = Arena.ofAuto();
-		SegmentAllocator textAllocator = SegmentAllocator.prefixAllocator(offHeapMemory.allocate(constants$0.const$0));
+		//SegmentAllocator textAllocator = SegmentAllocator.prefixAllocator(offHeapMemory.allocate(constants$0.const$0));
 		MemorySegment handle = ton_client.tc_create_context(NativeStrings.toRust(configJson, offHeapMemory));
 		String s = NativeStrings.toJava(
 				ton_client.tc_read_string(
-						textAllocator,
+						RuntimeHelper.CONSTANT_ALLOCATOR,
 						handle
 				),
 				offHeapMemory
