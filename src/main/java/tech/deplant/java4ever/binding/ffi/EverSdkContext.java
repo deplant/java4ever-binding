@@ -12,6 +12,7 @@ import java.lang.foreign.Arena;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -21,20 +22,18 @@ public class EverSdkContext {
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
 	private final int id;
-	private final AtomicInteger requestCount;
+	private final AtomicInteger requestCount = new AtomicInteger();
 	private final Client.ClientConfig clientConfig;
 
-	@JsonIgnore private final Map<Integer, NativeUpcallHandler> requests;
-	@JsonIgnore private final Map<Integer, CompletableFuture<String>> responses;
-	@JsonIgnore private final Map<Integer, SdkSubscription> subscriptions;
+	private final Queue<Integer> requestRemoveQueue = new ConcurrentLinkedDeque<>();
+
+	@JsonIgnore private final Map<Integer, NativeUpcallHandler> requests = new ConcurrentHashMap<>();
+	@JsonIgnore private final Map<Integer, CompletableFuture<String>> responses = new ConcurrentHashMap<>();
+	@JsonIgnore private final Map<Integer, SdkSubscription> subscriptions = new ConcurrentHashMap<>();
 
 	public EverSdkContext(int id, Client.ClientConfig clientConfig) {
 		this.id = id;
 		this.clientConfig = clientConfig;
-		this.requestCount = new AtomicInteger();
-		this.requests = new HashMap<>();
-		this.responses = new HashMap<>();
-		this.subscriptions = new HashMap<>();
 	}
 
 //	public <R> R sync(R calleeFunction) {
@@ -80,7 +79,7 @@ public class EverSdkContext {
 	                          Class<T> resultClass) throws EverSdkException {
 		final int requestId = requestCountNextVal();
 		this.subscriptions.put(requestId, new SdkSubscription(consumer));
-		addRequest(requestId, functionName, params);
+		addRequest(requestId, functionName, params, true);
 		return awaitSyncResponse(requestId, resultClass);
 	}
 
@@ -97,7 +96,7 @@ public class EverSdkContext {
 	 */
 	public <T, P> T call(String functionName, P params, Class<T> resultClass) throws EverSdkException {
 		final int requestId = requestCountNextVal();
-		addRequest(requestId, functionName, params);
+		addRequest(requestId, functionName, params, true);
 		return awaitSyncResponse(requestId, resultClass);
 	}
 
@@ -111,8 +110,7 @@ public class EverSdkContext {
 	 */
 	public <P> void callVoid(String functionName, P params) throws EverSdkException {
 		final int requestId = requestCountNextVal();
-		addRequest(requestId, functionName, params);
-		finishResponse(requestId);
+		addRequest(requestId, functionName, params, false);
 	}
 
 	public int requestCountNextVal() {
@@ -159,8 +157,12 @@ public class EverSdkContext {
 	}
 
 	public void finishRequest(int requestId) {
-		this.requests.remove(requestId);
-		//this.responses.remove(requestId);
+		requestRemoveQueue.add(requestId);
+		if (requestRemoveQueue.size() > 10) {
+			this.requests.remove(requestRemoveQueue.poll());
+		}
+		logger.log(System.Logger.Level.DEBUG,
+		           () -> "Requests current size: " + this.requests.size());
 		this.subscriptions.remove(requestId);
 	}
 
@@ -241,10 +243,12 @@ public class EverSdkContext {
 	 * @param <P>
 	 * @throws EverSdkException
 	 */
-	private <P> void addRequest(int requestId, String functionName, P params) {
-		final NativeUpcallHandler handler = new NativeUpcallHandler(this.id);
+	private <P> void addRequest(int requestId, String functionName, P params, boolean hasResponse) {
+		final NativeUpcallHandler handler = new NativeUpcallHandler(this.id, hasResponse);
 		this.requests.put(requestId, handler);
-		this.responses.put(requestId, new CompletableFuture<>());
+		if (hasResponse) {
+			this.responses.put(requestId, new CompletableFuture<>());
+		}
 		var paramsJson = processParams(params);
 		NativeMethods.tcRequest(this.id, functionName, paramsJson, Arena.ofAuto(), requestId, handler);
 		logger.log(System.Logger.Level.TRACE,

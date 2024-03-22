@@ -1,13 +1,11 @@
 package tech.deplant.java4ever.binding.ffi;
 
-import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.EverSdk;
-
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.util.Optional;
 
-record NativeUpcallHandler(int contextId) implements tc_response_handler_t {
+record NativeUpcallHandler(int contextId, boolean hasResponse) implements tc_response_handler_t {
 
 	private final static System.Logger logger = System.getLogger(NativeUpcallHandler.class.getName());
 
@@ -26,37 +24,47 @@ record NativeUpcallHandler(int contextId) implements tc_response_handler_t {
 	@Override
 	public void apply(int request_id, MemorySegment params_json, int response_type, boolean finished) {
 
-		final String responseString = Strings.notEmptyElse(NativeStrings.toJava(params_json, Arena.ofAuto()), "{}");
+		try {
 
-		logger.log(System.Logger.Level.TRACE,
-		           () -> "CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
-		                                                                       request_id,
-		                                                                       response_type,
-		                                                                       finished,
-		                                                                       responseString));
-		var optionalCtx = Optional.ofNullable(EverSdk.getContext(contextId()));
+			final String responseString = NativeStrings.toJava(params_json, Arena.ofAuto());
 
-		if (optionalCtx.isEmpty()) {
+			logger.log(System.Logger.Level.TRACE,
+			           () -> "CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
+			                                                                       request_id,
+			                                                                       response_type,
+			                                                                       finished,
+			                                                                       responseString));
+			var optionalCtx = Optional.ofNullable(EverSdk.getContext(contextId()));
+
+			if (optionalCtx.isEmpty()) {
+				logger.log(System.Logger.Level.ERROR,
+				           () -> "Context not found! CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
+				                                                                                          request_id,
+				                                                                                          response_type,
+				                                                                                          finished,
+				                                                                                          responseString));
+			} else {
+				var ctx = optionalCtx.get();
+				if (response_type == ton_client.tc_response_success() && hasResponse()) {
+					ctx.addResponse(request_id, responseString);
+				} else if (response_type == ton_client.tc_response_error()) {
+					ctx.addError(request_id, responseString);
+				} else if (response_type >= 100) {
+					ctx.addEvent(request_id, responseString);
+				}
+
+				// if "final" flag received, let's remove everything
+				if (finished) {
+					EverSdk.getContext(contextId()).finishRequest(request_id);
+				}
+			}
+		} catch (Exception e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Context not found! CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
+			           () -> "Unexpected EVER-SDK interop error! CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId(),
 			                                                                                          request_id,
 			                                                                                          response_type,
 			                                                                                          finished,
-			                                                                                          responseString));
-		} else {
-			var ctx = optionalCtx.get();
-			if (response_type == ton_client.tc_response_success()) {
-				ctx.addResponse(request_id, responseString);
-			} else if (response_type == ton_client.tc_response_error()) {
-				ctx.addError(request_id, responseString);
-			} else if (response_type >= 100) {
-				ctx.addEvent(request_id, responseString);
-			}
-
-			// if "final" flag received, let's remove everything
-			if (finished) {
-				EverSdk.getContext(contextId()).finishRequest(request_id);
-			}
+			                                                                                          params_json.toString()));
 		}
 	}
 }
