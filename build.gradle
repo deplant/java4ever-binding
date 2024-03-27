@@ -8,8 +8,15 @@ group v_groupId
 version v_version
 
 repositories {
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/deplant/maven-artifactory")
+        credentials {
+            username = github_username
+            password = github_uploadToken
+        }
+    }
     mavenCentral()
-    mavenLocal()
 }
 
 sourceSets {
@@ -50,10 +57,10 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/" + v_repository)
+            url = uri("https://maven.pkg.github.com/deplant/maven-artifactory")
             credentials {
-                username = System.getenv("USERNAME")
-                password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
+                username = github_username
+                password = github_uploadToken
             }
         }
         maven {

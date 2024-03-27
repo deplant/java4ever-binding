@@ -17,6 +17,7 @@ import tech.deplant.commons.regex.Special;
 import tech.deplant.java4ever.binding.Crypto;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.EverSdk;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +34,7 @@ public class CryptoTests {
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load();
+		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
 	}
 
 	@ParameterizedTest

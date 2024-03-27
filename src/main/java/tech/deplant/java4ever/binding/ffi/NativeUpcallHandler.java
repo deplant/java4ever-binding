@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.binding.ffi;
 
 import tech.deplant.java4ever.binding.EverSdk;
+
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.util.Optional;
@@ -11,7 +12,7 @@ record NativeUpcallHandler(int contextId, boolean hasResponse) implements tc_res
 
 	/**
 	 * @param request_id
-	 * @param params_json
+	 * @param params_json memory segment with native response string
 	 * @param response_type Type of response with following possible values:
 	 *                      RESULT = 1, real response.
 	 *                      NOP = 2, no operation. In combination with finished = true signals that the request handling was finished.
@@ -25,24 +26,14 @@ record NativeUpcallHandler(int contextId, boolean hasResponse) implements tc_res
 	public void apply(int request_id, MemorySegment params_json, int response_type, boolean finished) {
 
 		try {
-
 			final String responseString = NativeStrings.toJava(params_json, Arena.ofAuto());
-
 			logger.log(System.Logger.Level.TRACE,
-			           () -> "CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
-			                                                                       request_id,
-			                                                                       response_type,
-			                                                                       finished,
-			                                                                       responseString));
+			           () -> STR."REQ:\{request_id} TYPE:\{response_type} FINISHED:\{finished} JSON:\{responseString}");
 			var optionalCtx = Optional.ofNullable(EverSdk.getContext(contextId()));
 
 			if (optionalCtx.isEmpty()) {
 				logger.log(System.Logger.Level.ERROR,
-				           () -> "Context not found! CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId,
-				                                                                                          request_id,
-				                                                                                          response_type,
-				                                                                                          finished,
-				                                                                                          responseString));
+				           () -> STR."REQ:\{request_id} TYPE:\{response_type} CTX:\{contextId} Context not found!");
 			} else {
 				var ctx = optionalCtx.get();
 				if (response_type == ton_client.tc_response_success() && hasResponse()) {
@@ -60,11 +51,7 @@ record NativeUpcallHandler(int contextId, boolean hasResponse) implements tc_res
 			}
 		} catch (Exception e) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Unexpected EVER-SDK interop error! CTX:%d REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(contextId(),
-			                                                                                          request_id,
-			                                                                                          response_type,
-			                                                                                          finished,
-			                                                                                          params_json.toString()));
+			           () -> STR."REQ:\{request_id} TYPE:\{response_type} EVER-SDK Unexpected upcall error! \{e.toString()}");
 		}
 	}
 }

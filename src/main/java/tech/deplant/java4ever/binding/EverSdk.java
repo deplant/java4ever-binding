@@ -3,6 +3,7 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.java4ever.binding.ffi.EverSdkContext;
+import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 import tech.deplant.java4ever.binding.ffi.NativeMethods;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoaderContext;
@@ -49,9 +50,9 @@ public class EverSdk {
 
 	public static <T, P> T callEvent(int ctxId, String functionName,
 	                                 P params,
-	                                 Consumer<JsonNode> consumer,
+	                                 EverSdkSubscription subscription,
 	                                 Class<T> resultClass) throws EverSdkException {
-		return EverSdk.getContext(ctxId).callEvent(functionName, params, consumer, resultClass);
+		return EverSdk.getContext(ctxId).callEvent(functionName, params, subscription, resultClass);
 	}
 
 	public static <P> void callVoid(int ctxId, String functionName, P params) throws EverSdkException {

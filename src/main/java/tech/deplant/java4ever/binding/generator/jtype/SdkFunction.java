@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.commons.Objs;
 import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.*;
+import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
@@ -75,7 +76,7 @@ public record SdkFunction(String functionModule,
 		// adds function name as a first arg to statementArgs array
 		statementArgs.add(String.format("%s.%s", functionModule().toLowerCase(), function().name()));
 		// call template for all variants
-		String templateString = "%RETURN_KEY%Sdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
+		String templateString = "%RETURN_KEY%EverSdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
 		methodBuilder.addParameter(ClassName.INT, "ctxId");
 		for (ApiType param : function().params()) {
 			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
@@ -93,7 +94,8 @@ public record SdkFunction(String functionModule,
 					templateString = templateString.replace("%APP_OBJ%", ", eventHandler");
 					templateString = templateString.replace("%CALL_TYPE%", "callEvent");
 					var paramClass = ClassName.get(JsonNode.class);//ClassName.get(CallbackHandler.class);
-					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "eventHandler");
+					//methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "eventHandler");
+					methodBuilder.addParameter(ClassName.get(EverSdkSubscription.class), "eventHandler");
 				}
 				case "app_object", "password_provider" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", appObject");

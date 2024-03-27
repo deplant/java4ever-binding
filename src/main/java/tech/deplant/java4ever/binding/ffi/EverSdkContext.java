@@ -2,20 +2,17 @@ package tech.deplant.java4ever.binding.ffi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdk;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.JsonContext;
 
 import java.lang.foreign.Arena;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class EverSdkContext {
 
@@ -29,7 +26,7 @@ public class EverSdkContext {
 
 	@JsonIgnore private final Map<Integer, NativeUpcallHandler> requests = new ConcurrentHashMap<>();
 	@JsonIgnore private final Map<Integer, CompletableFuture<String>> responses = new ConcurrentHashMap<>();
-	@JsonIgnore private final Map<Integer, SdkSubscription> subscriptions = new ConcurrentHashMap<>();
+	@JsonIgnore private final Map<Integer, EverSdkSubscription> subscriptions = new ConcurrentHashMap<>();
 
 	public EverSdkContext(int id, Client.ClientConfig clientConfig) {
 		this.id = id;
@@ -66,7 +63,7 @@ public class EverSdkContext {
 	 *
 	 * @param functionName
 	 * @param params
-	 * @param consumer
+	 * @param subscription
 	 * @param resultClass
 	 * @param <T>          type of function result
 	 * @param <P>          type of function params
@@ -75,10 +72,10 @@ public class EverSdkContext {
 	 */
 	public <T, P> T callEvent(String functionName,
 	                          P params,
-	                          Consumer<JsonNode> consumer,
+	                          EverSdkSubscription subscription,
 	                          Class<T> resultClass) throws EverSdkException {
 		final int requestId = requestCountNextVal();
-		this.subscriptions.put(requestId, new SdkSubscription(consumer));
+		this.subscriptions.put(requestId, subscription);
 		addRequest(requestId, functionName, params, true);
 		return awaitSyncResponse(requestId, resultClass);
 	}
@@ -122,7 +119,10 @@ public class EverSdkContext {
 			this.responses.get(requestId).complete(responseString);
 		} else {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Slot for this request not found on processing response! CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
+			           () -> "Slot for this request not found on processing response! CTX:%d REQ:%d RESP:%s".formatted(
+					           this.id,
+					           requestId,
+					           responseString));
 		}
 	}
 
@@ -131,28 +131,23 @@ public class EverSdkContext {
 			this.responses.get(requestId).completeExceptionally(new CompletionException(responseString, null));
 		} else {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Slot for this request not found on processing error response! CTX:%d REQ:%d ERR:%s".formatted(this.id, requestId, responseString));
+			           () -> "Slot for this request not found on processing error response! CTX:%d REQ:%d ERR:%s".formatted(
+					           this.id,
+					           requestId,
+					           responseString));
 		}
 
 	}
 
 	public void addEvent(int requestId, String responseString) {
 		if (this.subscriptions.containsKey(requestId)) {
-			var subscription = this.subscriptions.get(requestId);
-			subscription.events().add(responseString);
-			try {
-				JsonNode node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
-				subscription.eventConsumer().accept(node);
-			} catch (JsonProcessingException e) {
-				logger.log(System.Logger.Level.ERROR,
-				           () -> "REQ:%d JSON Tree deserialization failed on processing event! String: %s Cause: %s".formatted(
-						           requestId,
-						           responseString,
-						           e.getMessage() + e.getCause()));
-			}
+			this.subscriptions.get(requestId).acceptEvent(requestId, responseString);
 		} else {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Slot for this request not found on processing subscription event! CTX:%d REQ:%d EVENT:%s".formatted(this.id, requestId, responseString));
+			           () -> "Slot for this request not found on processing subscription event! CTX:%d REQ:%d EVENT:%s".formatted(
+					           this.id,
+					           requestId,
+					           responseString));
 		}
 	}
 
@@ -180,55 +175,57 @@ public class EverSdkContext {
 		}
 	}
 
+	private long callTimeout() {
+		return Optional.ofNullable(this.clientConfig.network())
+		               .map(config -> Optional.ofNullable(config.queryTimeout()).orElse(60000L))
+		               .orElse(60000L);
+	}
+
 	private <R> R awaitSyncResponse(int requestId, Class<R> resultClass) throws EverSdkException {
 		try {
-			long timeout = Optional.ofNullable(this.clientConfig.network())
-			                       .map(config -> Optional.ofNullable(config.queryTimeout()).orElse(60000L))
-			                       .orElse(60000L);
+			// waiting for response synchronously
 			String responseString = this.responses.get(requestId)
-			                                      .get(timeout,
+			                                      .get(callTimeout(),
 			                                           TimeUnit.MILLISECONDS);
 			logger.log(System.Logger.Level.TRACE,
-			           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
+			           () -> STR."CTX:\{this.id} REQ:\{requestId} RESP:\{responseString}");
+			// let's try to parse response
 			return JsonContext.SDK_JSON_MAPPER().readValue(responseString, resultClass);
-		} catch (CompletionException | ExecutionException e) {
-			// These errors are sent by SDK, response_type=1
-			EverSdkException.ErrorResult sdkResponse = null;
-			// let's try to parse error response
+		} catch (ExecutionException ex) {
 			try {
-				String errorString = e.getCause().getMessage();
-				sdkResponse = JsonContext.SDK_JSON_MAPPER().readValue(errorString, EverSdkException.ErrorResult.class);
+				// These errors are sent by SDK, response_type=1
+				String everSdkError = ex.getCause().getMessage();
 				logger.log(System.Logger.Level.WARNING,
-				           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id, requestId, errorString));
-				throw new EverSdkException(sdkResponse, e);
-			} catch (JsonProcessingException ex) {
+				           () -> STR."CTX:\{this.id} REQ:\{requestId} ERR:\{everSdkError}");
+				// let's try to parse error response
+				EverSdkException.ErrorResult sdkResponse = JsonContext.SDK_JSON_MAPPER().readValue(everSdkError, EverSdkException.ErrorResult.class);
+				throw new EverSdkException(sdkResponse, ex);
+			} catch (JsonProcessingException ex1) {
 				// if error response parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id,
-				                                                  requestId,
-				                                                  "SDK Error message deserialization failed! Check getCause() for actual response."));
+				           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Error deserialization failed! \{ex1.toString()}");
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-				                                                            "SDK Error message deserialization failed! Check getCause() for actual response. Message: %s JSON Err: %s".formatted(
-						                                                            e.getCause().getMessage(),
-						                                                            ex.getMessage())),
-				                           ex);
+				                                                            "EVER-SDK Error deserialization failed!"),
+				                           ex1.getCause());
 			}
-		} catch (JsonProcessingException e) {
+		} catch (JsonProcessingException ex2) {
+			// successful response but parsing failed
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "Successful response deserialization failed!" + e.getMessage() + e.getCause());
+			           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Response deserialization failed! \{ex2.toString()}");
 			throw new EverSdkException(new EverSdkException.ErrorResult(-500,
-			                                                            "Successful response deserialization failed! Check getCause() for actual response."));
-		} catch (InterruptedException e) {
+			                                                            "EVER-SDK response deserialization failed!"),
+			                           ex2.getCause());
+		} catch (InterruptedException ex3) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id,
-			                                                  requestId, "EVER-SDK call interrupted!"));
-			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"), e);
-		} catch (TimeoutException e) {
+			           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Call interrupted! \{ex3.toString()}");
+			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
+			                           ex3.getCause());
+		} catch (TimeoutException ex4) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id,
-			                                                  requestId, "EVER-SDK Execution expired on Timeout!"));
+			           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Call expired on Timeout! \{ex4.toString()}");
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408,
-			                                                            "EVER-SDK Execution expired on Timeout!"), e);
+			                                                            "EVER-SDK call expired on Timeout!"),
+			                           ex4.getCause());
 
 		} finally {
 			finishResponse(requestId);

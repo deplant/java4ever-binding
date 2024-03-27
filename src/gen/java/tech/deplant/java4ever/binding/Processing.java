@@ -8,7 +8,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import java.math.BigInteger;
-import java.util.function.Consumer;
+import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 
 /**
  * <strong>Processing</strong>
@@ -117,7 +117,7 @@ public final class Processing {
    * @param sendEvents  Flag for requesting events sending. Default is `false`.
    */
   public static Processing.ResultOfSendMessage sendMessage(int ctxId, String message, Abi.ABI abi,
-      Boolean sendEvents, Consumer<JsonNode> eventHandler) throws EverSdkException {
+      Boolean sendEvents, EverSdkSubscription eventHandler) throws EverSdkException {
     return EverSdk.callEvent(ctxId, "processing.send_message", new Processing.ParamsOfSendMessage(message, abi, sendEvents), eventHandler, Processing.ResultOfSendMessage.class);
   }
 
@@ -160,7 +160,7 @@ public final class Processing {
    */
   public static Processing.ResultOfProcessMessage waitForTransaction(int ctxId, Abi.ABI abi,
       String message, String shardBlockId, Boolean sendEvents, String[] sendingEndpoints,
-      Consumer<JsonNode> eventHandler) throws EverSdkException {
+      EverSdkSubscription eventHandler) throws EverSdkException {
     return EverSdk.callEvent(ctxId, "processing.wait_for_transaction", new Processing.ParamsOfWaitForTransaction(abi, message, shardBlockId, sendEvents, sendingEndpoints), eventHandler, Processing.ResultOfProcessMessage.class);
   }
 

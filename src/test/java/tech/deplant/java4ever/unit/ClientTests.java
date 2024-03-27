@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdk;
 import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ public class ClientTests {
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load();
+		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
 	}
 
 	@Test
