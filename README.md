@@ -1,4 +1,4 @@
-# EVER-SDK for Java
+# AckiNacki SDK for Java
 
 [![JDK version](https://img.shields.io/badge/Java-21-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.45.0-orange)](https://github.com/tonlabs/ever-sdk)
@@ -10,11 +10,11 @@
   docs: [![javadoc](https://javadoc.io/badge2/tech.deplant.java4ever/java4ever-binding/javadoc.svg)](https://javadoc.io/doc/tech.deplant.java4ever/java4ever-binding)
 
 This is a Java binding project for
-[EVER-SDK](https://github.com/tonlabs/ever-sdk) library that is 
-compatible with 
-[Everscale](https://everscale.network/), Venom, GOSH & TON blockchain 
-networks.
-Binding calls [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface of EVER-SDK.
+[EVER-SDK](https://github.com/tonlabs/ever-sdk) library adapted for 
+[AckiNacki](https://everscale.network/), blockchain 
+network.
+
+This binding uses [JSON-RPC](https://github.com/tonlabs/ever-sdk/blob/master/docs/for-binding-developers/json_interface.md) interface of EVER-SDK.
 Native calls are based on modern [Foreign Function & Memory API](https://openjdk.org/jeps/454).
 
 This artifact provides full binding functionality, but doesn't include 
@@ -85,19 +85,28 @@ It's very simple, just type ModuleName.methodName (list of modules and methods i
 Note that method names are converted from snake_case to camelCase. Then pass EverSdkContext object as 1st parameter. That's all.
 
 ```java
-Client.version(ctx);
+Client.version(contextId);
 ```
 
+## Support of new and custom SDK versions
 
-## Notes
+### Custom EVER-SDK libs (no new API handles)
 
-### Custom EVER-SDK libs
+Just use your custom SDK binary instead of current. 
+**java4ever-binding** is not bound to exact version of SDK.
 
-EVER-SDK libs are included in the distribution, but if you want to use custom one - build **EVER-SDK** binary lib "**ton_client**"(.so/.dll) yourself (or
-  get [precompiled one](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries))
+### Support of new API handles
+
+- Clone this repo
+- Run `gradlew generateEverSdkApi -D--enable-preview -D--enable-native-access=java4ever.binding`
 
 
-### Logging
+## Tests
 
-java4ever-binding uses the JDK Platform Loggging (JEP 264: Platform Logging API and Service),
-so can be easily bridged to any logging framework.
+- Clone this repo
+- Run `gradlew test --tests "tech.deplant.java4ever.unit.*" -D--enable-preview -D--enable-native-access=java4ever.binding`
+
+## Logging
+
+**java4ever-binding** uses the JPL - [JDK Platform Loggging](https://openjdk.org/jeps/264) facade,
+so can be easily bridged to any logging framework of your choice.
