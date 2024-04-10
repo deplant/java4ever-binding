@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Long;
 import java.lang.String;
-import java.util.function.Consumer;
+import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 
 /**
  * <strong>Net</strong>
@@ -139,7 +139,7 @@ public final class Net {
    * @param result  Projection (result) string
    */
   public static Net.ResultOfSubscribeCollection subscribeCollection(int ctxId, String collection,
-      JsonNode filter, String result, Consumer<JsonNode> eventHandler) throws EverSdkException {
+      JsonNode filter, String result, EverSdkSubscription eventHandler) throws EverSdkException {
     return EverSdk.callEvent(ctxId, "net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
 
@@ -183,7 +183,7 @@ public final class Net {
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
   public static Net.ResultOfSubscribeCollection subscribe(int ctxId, String subscription,
-      JsonNode variables, Consumer<JsonNode> eventHandler) throws EverSdkException {
+      JsonNode variables, EverSdkSubscription eventHandler) throws EverSdkException {
     return EverSdk.callEvent(ctxId, "net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), eventHandler, Net.ResultOfSubscribeCollection.class);
   }
 

@@ -1,13 +1,18 @@
 package tech.deplant.java4ever.unit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yegor256.OnlineMeans;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import tech.deplant.java4ever.binding.*;
+import tech.deplant.java4ever.binding.EverSdk;
+import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.JsonContext;
+import tech.deplant.java4ever.binding.Net;
+import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 import java.util.Map;
 
@@ -18,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SubscribeTests {
 
 	private final static System.Logger logger = System.getLogger(SubscribeTests.class.getName());
+
+	@BeforeAll
+	public static void loadSdk() {
+		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
+	}
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
@@ -38,14 +48,15 @@ public class SubscribeTests {
 						}
 				""".formatted("0:ece57bcc6c530283becbbd8a3b24d3c5987cdddc3c8b7b33be6e4a6312490415");
 		var handle = Net.subscribe(ctxId,
-		              queryText,
-		              JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
-		              eventString -> logger.log(System.Logger.Level.WARNING,
-		                                    "code: %s".formatted(eventString))).handle();
+		                           queryText,
+		                           JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
+		                           new EverSdkSubscription(eventString -> logger.log(System.Logger.Level.WARNING,
+		                                                                             "code: %s".formatted(eventString))))
+		                .handle();
 
 		assertTrue(handle > 0);
 
-		Net.unsubscribe(ctxId,new Net.ResultOfSubscribeCollection(handle));
+		Net.unsubscribe(ctxId, new Net.ResultOfSubscribeCollection(handle));
 
 	}
 }

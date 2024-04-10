@@ -14,6 +14,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.*;
+import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class ConfigTests {
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load();
+		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
 	}
 
 	@Test
