@@ -22,12 +22,12 @@ public class EverSdk {
 	private final static System.Logger logger = System.getLogger(EverSdk.class.getName());
 	private final static Map<Integer, EverSdkContext> contexts = new HashMap<>();
 
-	public static EverSdkContext getContext(int contextId) {
-		return contexts.get(contextId);
+	public static Client.ClientConfig contextConfig(int contextId) {
+		return contexts.get(contextId).config();
 	}
 
 	public static long getDefaultWorkchainId(int contextId) {
-		return switch (getContext(contextId).config().abi()) {
+		return switch (contextConfig(contextId).abi()) {
 			case null -> 0L;
 			case Client.AbiConfig abiConfig -> Optional.ofNullable(abiConfig.workchain()).orElse(0L);
 		};
@@ -41,30 +41,30 @@ public class EverSdk {
 		loader.load();
 	}
 
-	public static <T, P> T call(int ctxId,
+	public static <T, P> T call(int contextId,
 	                            String functionName,
 	                            P functionInputs,
 	                            Class<T> outputClass) throws EverSdkException {
-		return EverSdk.getContext(ctxId).call(functionName, functionInputs, outputClass);
+		return contexts.get(contextId).call(functionName, functionInputs, outputClass);
 	}
 
-	public static <T, P> T callEvent(int ctxId, String functionName,
+	public static <T, P> T callEvent(int contextId, String functionName,
 	                                 P params,
 	                                 EverSdkSubscription subscription,
 	                                 Class<T> resultClass) throws EverSdkException {
-		return EverSdk.getContext(ctxId).callEvent(functionName, params, subscription, resultClass);
+		return contexts.get(contextId).callEvent(functionName, params, subscription, resultClass);
 	}
 
-	public static <P> void callVoid(int ctxId, String functionName, P params) throws EverSdkException {
-		EverSdk.getContext(ctxId).callVoid(functionName, params);
+	public static <P> void callVoid(int contextId, String functionName, P params) throws EverSdkException {
+		contexts.get(contextId).callVoid(functionName, params);
 	}
 
-	public static <T, P, A> T callAppObject(int ctxId,
+	public static <T, P, A> T callAppObject(int contextId,
 	                                        String functionName,
 	                                        P params,
 	                                        A appObject,
 	                                        Class<T> clazz) throws EverSdkException {
-		return EverSdk.getContext(ctxId).callAppObject(functionName, params, appObject, clazz);
+		return contexts.get(contextId).callAppObject(functionName, params, appObject, clazz);
 	}
 
 	public static Optional<Integer> createDefault() throws JsonProcessingException {
