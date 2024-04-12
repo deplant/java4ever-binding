@@ -21,10 +21,9 @@ public class EverSdkContext implements tc_response_handler_t {
 	private final int id;
 	private final AtomicInteger requestCount = new AtomicInteger();
 	private final Client.ClientConfig clientConfig;
+	@JsonIgnore private final Map<Integer, RequestData> requests = new ConcurrentHashMap<>();
 
 	//private final Queue<Integer> requestRemoveQueue = new ConcurrentLinkedDeque<>();
-
-	@JsonIgnore private final Map<Integer, Arena> requests = new ConcurrentHashMap<>();
 	@JsonIgnore private final Map<Integer, CompletableFuture<String>> responses = new ConcurrentHashMap<>();
 	@JsonIgnore private final Map<Integer, EverSdkSubscription> subscriptions = new ConcurrentHashMap<>();
 
@@ -32,11 +31,6 @@ public class EverSdkContext implements tc_response_handler_t {
 		this.id = id;
 		this.clientConfig = clientConfig;
 	}
-
-//	public <R> R sync(R calleeFunction) {
-//		return ScopedValue.where(EverSdk.CONTEXT, this)
-//		                  .get(() -> calleeFunction);
-//	}
 
 	/**
 	 * Call for methods that use app_object as one of params
@@ -57,6 +51,11 @@ public class EverSdkContext implements tc_response_handler_t {
 	                                 Class<T> clazz) throws EverSdkException {
 		return call(functionName, params, clazz);
 	}
+
+//	public <R> R sync(R calleeFunction) {
+//		return ScopedValue.where(EverSdk.CONTEXT, this)
+//		                  .get(() -> calleeFunction);
+//	}
 
 	/**
 	 * Call that uses event as consumer param
@@ -115,13 +114,16 @@ public class EverSdkContext implements tc_response_handler_t {
 	}
 
 	public void addResponse(int requestId, String responseString) {
-		if (this.responses.containsKey(requestId)) {
-			this.responses.get(requestId).complete(responseString);
-		} else {
-			logger.log(System.Logger.Level.ERROR,
-			           "Slot for this request not found on processing response! CTX:%d REQ:%d RESP:%s".formatted(this.id,
-			                                                                                                     requestId,
-			                                                                                                     responseString));
+		if (this.requests.get(requestId).hasResponse()) {
+			if (this.responses.containsKey(requestId)) {
+				this.responses.get(requestId).complete(responseString);
+			} else {
+				logger.log(System.Logger.Level.ERROR,
+				           "Slot for this request not found on processing response! CTX:%d REQ:%d RESP:%s".formatted(
+						           this.id,
+						           requestId,
+						           responseString));
+			}
 		}
 	}
 
@@ -151,8 +153,10 @@ public class EverSdkContext implements tc_response_handler_t {
 	}
 
 	public void finishRequest(int requestId) {
-		if (this.requests.get(requestId) instanceof Arena a) {
-			a.close();
+		if (this.requests.get(requestId) instanceof RequestData r) {
+			if (r.nativeArena() instanceof Arena a) {
+				a.close();
+			}
 		}
 		this.requests.remove(requestId);
 /*		requestRemoveQueue.add(requestId);
@@ -246,7 +250,7 @@ public class EverSdkContext implements tc_response_handler_t {
 	private <P> void addRequest(int requestId, String functionName, P params, boolean hasResponse) {
 		//final NativeUpcallHandler handler = new NativeUpcallHandler(this.id, hasResponse);
 		var arena = Arena.ofShared();
-		this.requests.put(requestId, Arena.ofShared());
+		this.requests.put(requestId, new RequestData(hasResponse, Arena.ofShared()));
 		if (hasResponse) {
 			this.responses.put(requestId, new CompletableFuture<>());
 		}
@@ -288,7 +292,7 @@ public class EverSdkContext implements tc_response_handler_t {
 				logger.log(System.Logger.Level.TRACE,
 				           STR."REQ:\{request_id} TYPE:\{response_type} FINISHED:\{finished} JSON:\{responseString}");
 			}
-			if (response_type == ton_client.tc_response_success()/* && hasResponse()*/) {
+			if (response_type == ton_client.tc_response_success()) {
 				addResponse(request_id, responseString);
 			} else if (response_type == ton_client.tc_response_error()) {
 				addError(request_id, responseString);
@@ -298,11 +302,14 @@ public class EverSdkContext implements tc_response_handler_t {
 
 			// if "final" flag received, let's remove everything
 			if (finished) {
-				EverSdk.getContext(this.id).finishRequest(request_id);
+				finishRequest(request_id);
 			}
 		} catch (Exception e) {
 			logger.log(System.Logger.Level.ERROR,
 			           STR."REQ:\{request_id} TYPE:\{response_type} EVER-SDK Unexpected upcall error! \{e.toString()}");
 		}
+	}
+
+	record RequestData(boolean hasResponse, Arena nativeArena) {
 	}
 }

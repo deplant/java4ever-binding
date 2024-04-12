@@ -51,8 +51,8 @@ public class ConfigTests {
 	public void config_from_builder_equals_config_from_json() throws IOException {
 		int ctxId = EverSdk.builder().networkEndpoints(TestEnv.NODESE_ENDPOINT).build().orElseThrow();
 		int ctxId2 = EverSdk.createWithEndpoint(TestEnv.NODESE_ENDPOINT).orElseThrow();
-		var config1 = EverSdk.getContext(ctxId).config();
-		var config2 = EverSdk.getContext(ctxId2).config();
+		var config1 = EverSdk.contextConfig(ctxId);
+		var config2 = EverSdk.contextConfig(ctxId2);
 		assertEquals(JsonContext.serialize(config1),JsonContext.serialize(config2));
 	}
 
