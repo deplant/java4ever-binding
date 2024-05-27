@@ -1,7 +1,5 @@
 package tech.deplant.java4ever.unit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -15,11 +13,14 @@ import org.slf4j.LoggerFactory;
 import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdk;
 import tech.deplant.java4ever.binding.EverSdkException;
-import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Execution(ExecutionMode.CONCURRENT)
@@ -30,21 +31,40 @@ public class ClientTests {
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
+		TestEnv.loadEverSdk();
 	}
 
 	@Test
-	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void sdk_version_equals_constant() throws EverSdkException {
-		int ctxId = TestEnv.newContext();
-		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.version(ctxId).version());
+	public void sdk_version_equals_constant() throws EverSdkException, ExecutionException, InterruptedException {
+		int ctxId = TestEnv.newContextEmpty();
+		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.version(ctxId).get().version());
 	}
 
 	@Test
-	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void api_reference_version_equals_constant() throws EverSdkException {
-		int ctxId = TestEnv.newContext();
-		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.getApiReference(ctxId).api().get("version").asText());
+	public void api_reference_version_equals_constant() throws EverSdkException, ExecutionException, InterruptedException {
+		int ctxId = TestEnv.newContextEmpty();
+		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.getApiReference(ctxId).get().api().get("version").asText());
 	}
+
+//	@Test
+//	public void api_reference_memory_consumption_should_be_stable() throws EverSdkException, InterruptedException {
+//		int ctxId = TestEnv.newContextEmpty();
+//		try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+//			for (int i = 0; i < 10000; i++) {
+//				//CompletableFuture<Client.ResultOfGetApiReference> result = //Client.getApiReference(ctxId);
+//				CompletableFuture<Client.ResultOfGetApiReference> result = EverSdk.async(ctxId,
+//				                                                                         "client.get_api_reference",
+//				                                                                         null,
+//				                                                                         Client.ResultOfGetApiReference.class,
+//				                                                                         null);
+//				EverSdk.await(EverSdk.async(ctxId,"client.get_api_reference",
+//				                                              null,
+//				                                              Client.ResultOfGetApiReference.class,
+//				                                              null));
+//				executor.submit(() -> result.get());
+//			}
+//			executor.awaitTermination(100, TimeUnit.SECONDS);
+//		}
+//	}
 
 }

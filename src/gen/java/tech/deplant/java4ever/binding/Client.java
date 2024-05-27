@@ -7,6 +7,7 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <strong>Client</strong>
@@ -19,29 +20,32 @@ public final class Client {
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ResultOfGetApiReference getApiReference(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "client.get_api_reference", null, Client.ResultOfGetApiReference.class);
+  public static CompletableFuture<Client.ResultOfGetApiReference> getApiReference(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "client.get_api_reference", null, Client.ResultOfGetApiReference.class);
   }
 
   /**
    *  Returns Core Library version
    */
-  public static Client.ResultOfVersion version(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "client.version", null, Client.ResultOfVersion.class);
+  public static CompletableFuture<Client.ResultOfVersion> version(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "client.version", null, Client.ResultOfVersion.class);
   }
 
   /**
    *  Returns Core Library API reference
    */
-  public static Client.ClientConfig config(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "client.config", null, Client.ClientConfig.class);
+  public static CompletableFuture<Client.ClientConfig> config(int ctxId) throws EverSdkException {
+    return EverSdk.async(ctxId, "client.config", null, Client.ClientConfig.class);
   }
 
   /**
    *  Returns detailed information about this build.
    */
-  public static Client.ResultOfBuildInfo buildInfo(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "client.build_info", null, Client.ResultOfBuildInfo.class);
+  public static CompletableFuture<Client.ResultOfBuildInfo> buildInfo(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "client.build_info", null, Client.ResultOfBuildInfo.class);
   }
 
   /**
@@ -52,7 +56,7 @@ public final class Client {
    */
   public static void resolveAppRequest(int ctxId, Long appRequestId, Client.AppRequestResult result)
       throws EverSdkException {
-    EverSdk.callVoid(ctxId, "client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
+    EverSdk.asyncVoid(ctxId, "client.resolve_app_request", new Client.ParamsOfResolveAppRequest(appRequestId, result));
   }
 
   public enum ClientErrorCode {

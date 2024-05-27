@@ -3,24 +3,23 @@ package tech.deplant.java4ever.binding;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.java4ever.binding.ffi.EverSdkContext;
-import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 import tech.deplant.java4ever.binding.ffi.NativeMethods;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoaderContext;
 import tech.deplant.java4ever.binding.loader.LibraryLoader;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class EverSdk {
-
-	public final static ScopedValue<EverSdkContext> CONTEXT = ScopedValue.newInstance();
 	public final static String LOG_FORMAT = "CTX:%d REQ:%d FUNC:%s %s:%s";
 	private final static System.Logger logger = System.getLogger(EverSdk.class.getName());
-	private final static Map<Integer, EverSdkContext> contexts = new HashMap<>();
+	private final static Map<Integer, EverSdkContext> contexts = new ConcurrentHashMap<>();
+	private final static long timeout = 600_000L;
 
 	public static Client.ClientConfig contextConfig(int contextId) {
 		return contexts.get(contextId).config();
@@ -28,8 +27,8 @@ public class EverSdk {
 
 	public static long getDefaultWorkchainId(int contextId) {
 		return switch (contextConfig(contextId).abi()) {
+			case Client.AbiConfig abiConfig -> Objects.requireNonNullElse(abiConfig.workchain(), 0L);
 			case null -> 0L;
-			case Client.AbiConfig abiConfig -> Optional.ofNullable(abiConfig.workchain()).orElse(0L);
 		};
 	}
 
@@ -41,30 +40,38 @@ public class EverSdk {
 		loader.load();
 	}
 
-	public static <T, P> T call(int contextId,
-	                            String functionName,
-	                            P functionInputs,
-	                            Class<T> outputClass) throws EverSdkException {
-		return contexts.get(contextId).call(functionName, functionInputs, outputClass);
+	public static <P> CompletableFuture<Void> asyncVoid(final int contextId,
+	                                                    final String functionName,
+	                                                    final P functionInputs) throws EverSdkException {
+		return contexts.get(contextId).callAsync(functionName, functionInputs, Void.class, null, null);
 	}
 
-	public static <T, P> T callEvent(int contextId, String functionName,
-	                                 P params,
-	                                 EverSdkSubscription subscription,
-	                                 Class<T> resultClass) throws EverSdkException {
-		return contexts.get(contextId).callEvent(functionName, params, subscription, resultClass);
+
+	public static <T, P> CompletableFuture<T> async(final int contextId,
+	                                                final String functionName,
+	                                                final P functionInputs,
+	                                                final Class<T> outputClass) throws EverSdkException {
+		return contexts.get(contextId).callAsync(functionName, functionInputs, outputClass, null, null);
 	}
 
-	public static <P> void callVoid(int contextId, String functionName, P params) throws EverSdkException {
-		contexts.get(contextId).callVoid(functionName, params);
+	public static <T, P> CompletableFuture<T> asyncCallback(final int contextId,
+	                                                        final String functionName,
+	                                                        final P functionInputs,
+	                                                        final Class<T> outputClass,
+	                                                        Consumer<JsonNode> eventConsumer) throws EverSdkException {
+		return contexts.get(contextId).callAsync(functionName, functionInputs, outputClass, eventConsumer, null);
 	}
 
-	public static <T, P, A> T callAppObject(int contextId,
-	                                        String functionName,
-	                                        P params,
-	                                        A appObject,
-	                                        Class<T> clazz) throws EverSdkException {
-		return contexts.get(contextId).callAppObject(functionName, params, appObject, clazz);
+	public static <T, P> CompletableFuture<T> asyncAppObject(final int contextId,
+	                                                final String functionName,
+	                                                final P functionInputs,
+	                                                final Class<T> outputClass,
+	                                                AppObject appObject) throws EverSdkException {
+		return contexts.get(contextId).callAsync(functionName, functionInputs, outputClass, null, appObject);
+	}
+
+	public static void destroy(int contextId) {
+		NativeMethods.tcDestroyContext(contextId);
 	}
 
 	public static Optional<Integer> createDefault() throws JsonProcessingException {
@@ -89,8 +96,7 @@ public class EverSdk {
 		                                           config.proofs(),
 		                                           config.localStoragePath());
 		var mergedJson = JsonContext.SDK_JSON_MAPPER().writeValueAsString(mergedConfig);
-		//logger.log(System.Logger.Level.TRACE,
-		//           () -> "FUNC:tc_create_context JSON:%s".formatted(configJson));
+
 		final var createContextResponse = JsonContext.SDK_JSON_MAPPER()
 		                                             .readValue(NativeMethods.tcCreateContext(mergedJson),
 		                                                        ResultOfCreateContext.class);
@@ -108,6 +114,29 @@ public class EverSdk {
 
 	public static Optional<Integer> createWithJson(String configJson) throws JsonProcessingException {
 		return createWithConfig(JsonContext.SDK_JSON_MAPPER().readValue(configJson, Client.ClientConfig.class));
+	}
+
+	public static <T> T await(CompletableFuture<T> functionOutputs) throws EverSdkException {
+		try {
+			return functionOutputs.get(timeout, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException ex3) {
+			logger.log(System.Logger.Level.ERROR, () -> STR."EVER-SDK Call interrupted! \{ex3.toString()}");
+			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
+			                           ex3.getCause());
+		} catch (TimeoutException ex4) {
+			logger.log(System.Logger.Level.ERROR, () -> STR."EVER-SDK Call expired on Timeout! \{ex4.toString()}");
+			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
+			                           ex4.getCause());
+		} catch (ExecutionException e) {
+			if (e.getCause() instanceof EverSdkException everEx) {
+				throw everEx;
+			} else {
+				logger.log(System.Logger.Level.ERROR,
+				           () -> STR."EVER-SDK Call unknown execution exception! \{e.toString()}");
+				throw new EverSdkException(new EverSdkException.ErrorResult(-500, "EVER-SDK call expired on Timeout!"),
+				                           e.getCause());
+			}
+		}
 	}
 
 	public record ResultOfCreateContext(Integer result, String error) {
@@ -283,24 +312,13 @@ public class EverSdk {
 		}
 
 		private Client.NetworkConfig buildNetworkConfig() {
-			if (this.serverAddress == null &&
-			    this.endpoints == null &&
-			    this.networkRetriesCount == null &&
-			    this.maxReconnectTimeout == null &&
-			    this.reconnectTimeout == null &&
-			    this.messageRetriesCount == null &&
-			    this.messageProcessingTimeout == null &&
-			    this.waitForTimeout == null &&
-			    this.outOfSyncThreshold == null &&
-			    this.sendingEndpointCount == null &&
-			    this.latencyDetectionInterval == null &&
-			    this.maxLatency == null &&
-			    this.queryTimeout == null &&
-			    this.queriesProtocol == null &&
-			    this.firstRempStatusTimeout == null &&
-			    this.nextRempStatusTimeout == null &&
-			    this.signatureId == null &&
-			    this.accessKey == null) {
+			if (this.serverAddress == null && this.endpoints == null && this.networkRetriesCount == null &&
+			    this.maxReconnectTimeout == null && this.reconnectTimeout == null && this.messageRetriesCount == null &&
+			    this.messageProcessingTimeout == null && this.waitForTimeout == null &&
+			    this.outOfSyncThreshold == null && this.sendingEndpointCount == null &&
+			    this.latencyDetectionInterval == null && this.maxLatency == null && this.queryTimeout == null &&
+			    this.queriesProtocol == null && this.firstRempStatusTimeout == null &&
+			    this.nextRempStatusTimeout == null && this.signatureId == null && this.accessKey == null) {
 				return null;
 			} else {
 				return new Client.NetworkConfig(this.serverAddress,
@@ -325,9 +343,7 @@ public class EverSdk {
 		}
 
 		private Client.CryptoConfig buildCryptoConfig() {
-			if (this.mnemonicDictionary == null &&
-			    this.mnemonicWordCount == null &&
-			    this.hdkeyDerivationPath == null) {
+			if (this.mnemonicDictionary == null && this.mnemonicWordCount == null && this.hdkeyDerivationPath == null) {
 				return null;
 			} else {
 				return new Client.CryptoConfig(this.mnemonicDictionary,
@@ -337,9 +353,8 @@ public class EverSdk {
 		}
 
 		private Client.AbiConfig buildAbiConfig() {
-			if (this.workchain == null &&
-			this.messageExpirationTimeout == null &&
-					this.messageExpirationTimeoutGrowFactor == null) {
+			if (this.workchain == null && this.messageExpirationTimeout == null &&
+			    this.messageExpirationTimeoutGrowFactor == null) {
 				return null;
 			} else {
 				return new Client.AbiConfig(this.workchain,

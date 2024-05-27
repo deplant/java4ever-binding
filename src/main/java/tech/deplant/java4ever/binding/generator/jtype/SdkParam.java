@@ -10,6 +10,7 @@ import tech.deplant.javapoet.TypeName;
 import tech.deplant.java4ever.binding.generator.reference.ApiType;
 
 import java.util.Map;
+import java.util.Objects;
 
 public record SdkParam(TypeName refClassName,
                        String parameterName,
@@ -31,28 +32,36 @@ public record SdkParam(TypeName refClassName,
 		var typeReference = TypeReference.fromApiType(paramType);
 		var javaType = typeReference.toTypeDeclaration(typeLibrary);
 		TypeName className;
+		String paramName = "";
+		String reservedName = "";
+		boolean hasReserved = false;
+
+
 		if (javaType instanceof SdkDummy dummy) {
 			className = TypeReference.fromApiType(dummy.type()).toTypeName();
 		} else {
 			className = typeReference.toTypeName();
 		}
 
-		String paramName;
+
 		if ("Context".equals(className.toString())) {
 			paramName = "ctx";
 		} else {
 			paramName = paramType.name(); //ParserUtils.camelCase(paramType.name());
 		}
 
-		// PARAM NAME
-		//String paramName = ParserUtils.camelCase(paramType.name()); // camel cased, can clash with reserved
-		String reservedName = RESERVED_FIELD_NAMES.getOrDefault(paramName,
-		                                                        paramName); // checks for reserved words or defaults to paramName
+		if (Objects.nonNull(paramName)) {
+			// PARAM NAME
+			//String paramName = ParserUtils.camelCase(paramType.name()); // camel cased, can clash with reserved
 
-		boolean hasReserved = false;
-		if (!reservedName.equals(paramName)) {
-			hasReserved = true;
+			reservedName = RESERVED_FIELD_NAMES.getOrDefault(paramName, paramName); // checks for reserved words or defaults to paramName
+
+			hasReserved = false;
+			if (!reservedName.equals(paramName)) {
+				hasReserved = true;
+			}
 		}
+
 		return new SdkParam(className,
 		                    ParserUtils.camelCase(reservedName),
 		                    paramName,

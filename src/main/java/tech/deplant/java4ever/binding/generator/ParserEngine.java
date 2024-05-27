@@ -119,6 +119,9 @@ public class ParserEngine {
 		// main file building loop
 		// loops modules again, now to write them
 		for (var module : parsedApiReference.modules()) {
+			if ("debot".equals(module.name())) {
+				continue;
+			}
 			final TypeSpec.Builder moduleBuilder = moduleToBuilder(module,
 			                                                       ParserUtils.capitalize(module.name()),
 			                                                       apiVersion);

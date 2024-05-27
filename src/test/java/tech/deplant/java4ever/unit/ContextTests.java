@@ -1,7 +1,6 @@
 package tech.deplant.java4ever.unit;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,26 +17,31 @@ import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Execution(ExecutionMode.CONCURRENT)
 @ExtendWith(WeAreOnline.class)
-public class ConfigTests {
+public class ContextTests {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfigTests.class);
+	private static final Logger log = LoggerFactory.getLogger(ContextTests.class);
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
+		TestEnv.loadEverSdk();
+	}
+
+	@Test
+	public void create_and_destroy() {
+		EverSdk.destroy(TestEnv.newContextEmpty());
 	}
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
 	public void context_id_increments_as_we_open_new_contexts() {
-		int ctxId = TestEnv.newContext();
+		int ctxId = TestEnv.newContextEmpty();
 		int startId = ctxId;
 		assertTrue(startId >= 1);
 		ctxId = TestEnv.newContext();
@@ -58,14 +62,14 @@ public class ConfigTests {
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void binding_config_from_json_rewrites_to_preset_config() throws IOException, EverSdkException {
+	public void binding_config_from_json_rewrites_to_preset_config() throws IOException, EverSdkException, ExecutionException, InterruptedException {
 		var configJson = "{\"binding\":{\"library\":\"ton-client-java\",\"version\":\"1.5.0\"}}";
 		int ctxId = EverSdk.builder().build().orElseThrow();
 		int ctxId2 = EverSdk.createWithJson(configJson).orElseThrow();
-		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId).binding().version());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId).binding().library());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId2).binding().version());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId2).binding().library());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId).get().binding().version());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId).get().binding().library());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId2).get().binding().version());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId2).get().binding().library());
 	}
 
 }

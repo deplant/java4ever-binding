@@ -2,6 +2,7 @@ package tech.deplant.java4ever.binding.ffi;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SegmentAllocator;
 
 public class NativeMethods {
 
@@ -10,14 +11,17 @@ public class NativeMethods {
 			MemorySegment handle = ton_client.tc_create_context(NativeStrings.toRust(configJson, nativeMemory));
 			String s = NativeStrings.toJava(
 					ton_client.tc_read_string(
-							RuntimeHelper.CONSTANT_ALLOCATOR,
+							nativeMemory::allocate,
 							handle
-					),
-					nativeMemory
+					)
 			);
 			ton_client.tc_destroy_string(handle);
 			return s;
 		}
+	}
+
+	public static void tcDestroyContext(int contextId) {
+			ton_client.tc_destroy_context(contextId);
 	}
 
 	public static void tcRequest(int contextId,
