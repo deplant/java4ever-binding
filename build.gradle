@@ -149,7 +149,7 @@ tasks.register('generateFfmApiBridge') {
         workingDir "${projectDir}"
         executable jextractPath
         standardOutput = stdout;
-        args "--source", "${projectDir}/jextract/ton_client.h", "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client"
+        args "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client", "${projectDir}/jextract/ton_client.h"
     }
     stdout.toString().trim()
     println "FFM API generation ended."
@@ -157,40 +157,37 @@ tasks.register('generateFfmApiBridge') {
 
 tasks.withType(Javadoc).configureEach {
     javadocTool = javaToolchains.javadocToolFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(22)
     }
     failOnError false
     options.addBooleanOption('html5', true)
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
     options.addBooleanOption('-enable-preview', true)
-    options.addStringOption('-release', '21')
+    options.addStringOption('-release', '22')
     options.addBooleanOption('-ignore-source-errors', true)
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_22
+    targetCompatibility = JavaVersion.VERSION_22
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(22)
     }
-    options.compilerArgs += "--enable-preview"
 }
 
 tasks.withType(JavaExec).configureEach {
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(22)
     }
-    jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=java4ever.binding"
 }
 
 tasks.withType(Test) {
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(22)
     }
     useJUnitPlatform()
-    jvmArgs += "--enable-preview"
     jvmArgs += "--enable-native-access=ALL-UNNAMED"
 }

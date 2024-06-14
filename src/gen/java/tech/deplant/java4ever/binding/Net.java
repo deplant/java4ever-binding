@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.Boolean;
 import java.lang.Long;
 import java.lang.String;
-import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * <strong>Net</strong>
@@ -22,9 +23,9 @@ public final class Net {
    * @param query  GraphQL query text.
    * @param variables Must be a map with named values that can be used in query. Variables used in query.
    */
-  public static Net.ResultOfQuery query(int ctxId, String query, JsonNode variables) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "net.query", new Net.ParamsOfQuery(query, variables), Net.ResultOfQuery.class);
+  public static CompletableFuture<Net.ResultOfQuery> query(int ctxId, String query,
+      JsonNode variables) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.query", new Net.ParamsOfQuery(query, variables), Net.ResultOfQuery.class);
   }
 
   /**
@@ -32,9 +33,9 @@ public final class Net {
    *
    * @param operations  List of query operations that must be performed per single fetch.
    */
-  public static Net.ResultOfBatchQuery batchQuery(int ctxId,
+  public static CompletableFuture<Net.ResultOfBatchQuery> batchQuery(int ctxId,
       Net.ParamsOfQueryOperation[] operations) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.batch_query", new Net.ParamsOfBatchQuery(operations), Net.ResultOfBatchQuery.class);
+    return EverSdk.async(ctxId, "net.batch_query", new Net.ParamsOfBatchQuery(operations), Net.ResultOfBatchQuery.class);
   }
 
   /**
@@ -48,9 +49,10 @@ public final class Net {
    * @param order  Sorting order
    * @param limit  Number of documents to return
    */
-  public static Net.ResultOfQueryCollection queryCollection(int ctxId, String collection,
-      JsonNode filter, String result, Net.OrderBy[] order, Long limit) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.query_collection", new Net.ParamsOfQueryCollection(collection, filter, result, order, limit), Net.ResultOfQueryCollection.class);
+  public static CompletableFuture<Net.ResultOfQueryCollection> queryCollection(int ctxId,
+      String collection, JsonNode filter, String result, Net.OrderBy[] order, Long limit) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "net.query_collection", new Net.ParamsOfQueryCollection(collection, filter, result, order, limit), Net.ResultOfQueryCollection.class);
   }
 
   /**
@@ -61,9 +63,9 @@ public final class Net {
    * @param filter  Collection filter
    * @param fields  Projection (result) string
    */
-  public static Net.ResultOfAggregateCollection aggregateCollection(int ctxId, String collection,
-      JsonNode filter, Net.FieldAggregation[] fields) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.aggregate_collection", new Net.ParamsOfAggregateCollection(collection, filter, fields), Net.ResultOfAggregateCollection.class);
+  public static CompletableFuture<Net.ResultOfAggregateCollection> aggregateCollection(int ctxId,
+      String collection, JsonNode filter, Net.FieldAggregation[] fields) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.aggregate_collection", new Net.ParamsOfAggregateCollection(collection, filter, fields), Net.ResultOfAggregateCollection.class);
   }
 
   /**
@@ -79,9 +81,9 @@ public final class Net {
    * @param result  Projection (result) string
    * @param timeout  Query timeout
    */
-  public static Net.ResultOfWaitForCollection waitForCollection(int ctxId, String collection,
-      JsonNode filter, String result, Long timeout) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.wait_for_collection", new Net.ParamsOfWaitForCollection(collection, filter, result, timeout), Net.ResultOfWaitForCollection.class);
+  public static CompletableFuture<Net.ResultOfWaitForCollection> waitForCollection(int ctxId,
+      String collection, JsonNode filter, String result, Long timeout) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.wait_for_collection", new Net.ParamsOfWaitForCollection(collection, filter, result, timeout), Net.ResultOfWaitForCollection.class);
   }
 
   /**
@@ -89,7 +91,7 @@ public final class Net {
    */
   public static void unsubscribe(int ctxId, Net.ResultOfSubscribeCollection params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "net.unsubscribe", params);
+    EverSdk.asyncVoid(ctxId, "net.unsubscribe", params);
   }
 
   /**
@@ -138,9 +140,10 @@ public final class Net {
    * @param filter  Collection filter
    * @param result  Projection (result) string
    */
-  public static Net.ResultOfSubscribeCollection subscribeCollection(int ctxId, String collection,
-      JsonNode filter, String result, EverSdkSubscription eventHandler) throws EverSdkException {
-    return EverSdk.callEvent(ctxId, "net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), eventHandler, Net.ResultOfSubscribeCollection.class);
+  public static CompletableFuture<Net.ResultOfSubscribeCollection> subscribeCollection(int ctxId,
+      String collection, JsonNode filter, String result, Consumer<JsonNode> callback) throws
+      EverSdkException {
+    return EverSdk.asyncCallback(ctxId, "net.subscribe_collection", new Net.ParamsOfSubscribeCollection(collection, filter, result), Net.ResultOfSubscribeCollection.class, callback);
   }
 
   /**
@@ -182,23 +185,24 @@ public final class Net {
    * @param subscription  GraphQL subscription text.
    * @param variables Must be a map with named values that can be used in query. Variables used in subscription.
    */
-  public static Net.ResultOfSubscribeCollection subscribe(int ctxId, String subscription,
-      JsonNode variables, EverSdkSubscription eventHandler) throws EverSdkException {
-    return EverSdk.callEvent(ctxId, "net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), eventHandler, Net.ResultOfSubscribeCollection.class);
+  public static CompletableFuture<Net.ResultOfSubscribeCollection> subscribe(int ctxId,
+      String subscription, JsonNode variables, Consumer<JsonNode> callback) throws
+      EverSdkException {
+    return EverSdk.asyncCallback(ctxId, "net.subscribe", new Net.ParamsOfSubscribe(subscription, variables), Net.ResultOfSubscribeCollection.class, callback);
   }
 
   /**
    *  Suspends network module to stop any network activity
    */
   public static void suspend(int ctxId) throws EverSdkException {
-    EverSdk.callVoid(ctxId, "net.suspend", null);
+    EverSdk.asyncVoid(ctxId, "net.suspend", null);
   }
 
   /**
    *  Resumes network module to enable network activity
    */
   public static void resume(int ctxId) throws EverSdkException {
-    EverSdk.callVoid(ctxId, "net.resume", null);
+    EverSdk.asyncVoid(ctxId, "net.resume", null);
   }
 
   /**
@@ -206,30 +210,32 @@ public final class Net {
    *
    * @param address  Account address
    */
-  public static Net.ResultOfFindLastShardBlock findLastShardBlock(int ctxId, String address) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "net.find_last_shard_block", new Net.ParamsOfFindLastShardBlock(address), Net.ResultOfFindLastShardBlock.class);
+  public static CompletableFuture<Net.ResultOfFindLastShardBlock> findLastShardBlock(int ctxId,
+      String address) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.find_last_shard_block", new Net.ParamsOfFindLastShardBlock(address), Net.ResultOfFindLastShardBlock.class);
   }
 
   /**
    *  Requests the list of alternative endpoints from server
    */
-  public static Net.EndpointsSet fetchEndpoints(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.fetch_endpoints", null, Net.EndpointsSet.class);
+  public static CompletableFuture<Net.EndpointsSet> fetchEndpoints(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "net.fetch_endpoints", null, Net.EndpointsSet.class);
   }
 
   /**
    *  Sets the list of endpoints to use on reinit
    */
   public static void setEndpoints(int ctxId, Net.EndpointsSet params) throws EverSdkException {
-    EverSdk.callVoid(ctxId, "net.set_endpoints", params);
+    EverSdk.asyncVoid(ctxId, "net.set_endpoints", params);
   }
 
   /**
    *  Requests the list of alternative endpoints from server
    */
-  public static Net.ResultOfGetEndpoints getEndpoints(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.get_endpoints", null, Net.ResultOfGetEndpoints.class);
+  public static CompletableFuture<Net.ResultOfGetEndpoints> getEndpoints(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "net.get_endpoints", null, Net.ResultOfGetEndpoints.class);
   }
 
   /**
@@ -242,9 +248,9 @@ public final class Net {
    * @param first  Number of counterparties to return
    * @param after  `cursor` field of the last received result
    */
-  public static Net.ResultOfQueryCollection queryCounterparties(int ctxId, String account,
-      String result, Long first, String after) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.query_counterparties", new Net.ParamsOfQueryCounterparties(account, result, first, after), Net.ResultOfQueryCollection.class);
+  public static CompletableFuture<Net.ResultOfQueryCollection> queryCounterparties(int ctxId,
+      String account, String result, Long first, String after) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.query_counterparties", new Net.ParamsOfQueryCounterparties(account, result, first, after), Net.ResultOfQueryCollection.class);
   }
 
   /**
@@ -292,9 +298,10 @@ public final class Net {
    * Default value is 50. If `transaction_max_count` is set to 0 then no limitation on
    * transaction count is used and all transaction are returned. Maximum transaction count to wait.
    */
-  public static Net.ResultOfQueryTransactionTree queryTransactionTree(int ctxId, String inMsg,
-      Abi.ABI[] abiRegistry, Long timeout, Long transactionMaxCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout, transactionMaxCount), Net.ResultOfQueryTransactionTree.class);
+  public static CompletableFuture<Net.ResultOfQueryTransactionTree> queryTransactionTree(int ctxId,
+      String inMsg, Abi.ABI[] abiRegistry, Long timeout, Long transactionMaxCount) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "net.query_transaction_tree", new Net.ParamsOfQueryTransactionTree(inMsg, abiRegistry, timeout, transactionMaxCount), Net.ResultOfQueryTransactionTree.class);
   }
 
   /**
@@ -356,9 +363,9 @@ public final class Net {
    * Note that iterated items can contains additional fields that are
    * not requested in the `result`. Projection (result) string.
    */
-  public static Net.RegisteredIterator createBlockIterator(int ctxId, Long startTime, Long endTime,
-      String[] shardFilter, String result) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.create_block_iterator", new Net.ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), Net.RegisteredIterator.class);
+  public static CompletableFuture<Net.RegisteredIterator> createBlockIterator(int ctxId,
+      Long startTime, Long endTime, String[] shardFilter, String result) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.create_block_iterator", new Net.ParamsOfCreateBlockIterator(startTime, endTime, shardFilter, result), Net.RegisteredIterator.class);
   }
 
   /**
@@ -368,9 +375,9 @@ public final class Net {
    *
    * @param resumeState Same as value returned from `iterator_next`. Iterator state from which to resume.
    */
-  public static Net.RegisteredIterator resumeBlockIterator(int ctxId, JsonNode resumeState) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "net.resume_block_iterator", new Net.ParamsOfResumeBlockIterator(resumeState), Net.RegisteredIterator.class);
+  public static CompletableFuture<Net.RegisteredIterator> resumeBlockIterator(int ctxId,
+      JsonNode resumeState) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.resume_block_iterator", new Net.ParamsOfResumeBlockIterator(resumeState), Net.RegisteredIterator.class);
   }
 
   /**
@@ -467,10 +474,10 @@ public final class Net {
    * @param includeTransfers If this parameter is `true` then each transaction contains field
    * `transfers` with list of transfer. See more about this structure in function description. Include `transfers` field in iterated transactions.
    */
-  public static Net.RegisteredIterator createTransactionIterator(int ctxId, Long startTime,
-      Long endTime, String[] shardFilter, String[] accountsFilter, String result,
+  public static CompletableFuture<Net.RegisteredIterator> createTransactionIterator(int ctxId,
+      Long startTime, Long endTime, String[] shardFilter, String[] accountsFilter, String result,
       Boolean includeTransfers) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.create_transaction_iterator", new Net.ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), Net.RegisteredIterator.class);
+    return EverSdk.async(ctxId, "net.create_transaction_iterator", new Net.ParamsOfCreateTransactionIterator(startTime, endTime, shardFilter, accountsFilter, result, includeTransfers), Net.RegisteredIterator.class);
   }
 
   /**
@@ -492,9 +499,9 @@ public final class Net {
    * if both are specified.
    * So it is the application's responsibility to specify the correct filter combination. Account address filter.
    */
-  public static Net.RegisteredIterator resumeTransactionIterator(int ctxId, JsonNode resumeState,
-      String[] accountsFilter) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.resume_transaction_iterator", new Net.ParamsOfResumeTransactionIterator(resumeState, accountsFilter), Net.RegisteredIterator.class);
+  public static CompletableFuture<Net.RegisteredIterator> resumeTransactionIterator(int ctxId,
+      JsonNode resumeState, String[] accountsFilter) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.resume_transaction_iterator", new Net.ParamsOfResumeTransactionIterator(resumeState, accountsFilter), Net.RegisteredIterator.class);
   }
 
   /**
@@ -517,9 +524,9 @@ public final class Net {
    * @param limit If value is missing or is less than 1 the library uses 1. Maximum count of the returned items.
    * @param returnResumeState  Indicates that function must return the iterator state that can be used for resuming iteration.
    */
-  public static Net.ResultOfIteratorNext iteratorNext(int ctxId, Long iterator, Long limit,
-      Boolean returnResumeState) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.iterator_next", new Net.ParamsOfIteratorNext(iterator, limit, returnResumeState), Net.ResultOfIteratorNext.class);
+  public static CompletableFuture<Net.ResultOfIteratorNext> iteratorNext(int ctxId, Long iterator,
+      Long limit, Boolean returnResumeState) throws EverSdkException {
+    return EverSdk.async(ctxId, "net.iterator_next", new Net.ParamsOfIteratorNext(iterator, limit, returnResumeState), Net.ResultOfIteratorNext.class);
   }
 
   /**
@@ -530,14 +537,15 @@ public final class Net {
    */
   public static void removeIterator(int ctxId, Net.RegisteredIterator params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "net.remove_iterator", params);
+    EverSdk.asyncVoid(ctxId, "net.remove_iterator", params);
   }
 
   /**
    *  Returns signature ID for configured network if it should be used in messages signature
    */
-  public static Net.ResultOfGetSignatureId getSignatureId(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "net.get_signature_id", null, Net.ResultOfGetSignatureId.class);
+  public static CompletableFuture<Net.ResultOfGetSignatureId> getSignatureId(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "net.get_signature_id", null, Net.ResultOfGetSignatureId.class);
   }
 
   /**

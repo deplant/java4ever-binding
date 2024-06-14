@@ -8,16 +8,13 @@ import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
+import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.javapoet.*;
-import tech.deplant.java4ever.binding.generator.reference.ApiFunction;
-import tech.deplant.java4ever.binding.generator.reference.ApiType;
-import tech.deplant.java4ever.binding.generator.reference.StructType;
 
 import javax.lang.model.element.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -76,7 +73,7 @@ public record SdkFunction(String functionModule,
 		// adds function name as a first arg to statementArgs array
 		statementArgs.add(String.format("%s.%s", functionModule().toLowerCase(), function().name()));
 		// call template for all variants
-		String templateString = "%RETURN_KEY%EverSdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%APP_OBJ%%RETURN_CLASS%)";
+		String templateString = "%RETURN_KEY%EverSdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%RETURN_CLASS%%APP_OBJ%)";
 		methodBuilder.addParameter(ClassName.INT, "ctxId");
 		for (ApiType param : function().params()) {
 			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
@@ -91,16 +88,24 @@ public record SdkFunction(String functionModule,
 					                                                                        parsedParam));
 				}
 				case "callback" -> {
-					templateString = templateString.replace("%APP_OBJ%", ", eventHandler");
-					templateString = templateString.replace("%CALL_TYPE%", "callEvent");
+					templateString = templateString.replace("%APP_OBJ%", ", callback");
+					templateString = templateString.replace("%CALL_TYPE%", "asyncCallback");
 					var paramClass = ClassName.get(JsonNode.class);//ClassName.get(CallbackHandler.class);
-					//methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "eventHandler");
-					methodBuilder.addParameter(ClassName.get(EverSdkSubscription.class), "eventHandler");
+					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "callback");
+					//methodBuilder.addParameter(ClassName.get(EverSdkSubscription.class), "eventHandler");
 				}
 				case "app_object", "password_provider" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", appObject");
-					templateString = templateString.replace("%CALL_TYPE%", "callAppObject");
-					methodBuilder.addParameter(ClassName.get(AppSigningBox.class), "appObject");
+					templateString = templateString.replace("%CALL_TYPE%", "asyncAppObject");
+					if (param instanceof GenericType gen) {
+						TypeName[] appObjectParams = Arrays.stream(gen.generic_args()).map(arg -> switch(arg) {
+							case null -> null;
+							case RefType ref -> SdkParam.ofApiType(ref, typeLibrary());
+							default -> null;
+						}).filter(Objects::nonNull).map(SdkParam::refClassName).toArray(TypeName[]::new);
+						methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.bestGuess(gen.generic_name()), appObjectParams),
+						                           "appObject");
+					}
 				}
 				default -> logger.log(System.Logger.Level.WARNING,  () -> "Unknown parameter: " + param.name());
 			}
@@ -114,18 +119,18 @@ public record SdkFunction(String functionModule,
 			if (!resultReference.isVoid()) {
 				//
 				templateString = templateString.replace("%RETURN_KEY%", "return ");
-				templateString = templateString.replace("%CALL_TYPE%", "call");
+				templateString = templateString.replace("%CALL_TYPE%", "async");
 				templateString = templateString.replace("%RETURN_CLASS%", ", $T.class");
 				var typeName = resultReference.toTypeName();
 				// adds return class to method builder
-				methodBuilder.returns(typeName);
+				methodBuilder.returns(ParameterizedTypeName.get(ClassName.get(CompletableFuture.class), typeName));
 				// adds return class as a final arg to statementArgs array
 				statementArgs.add(typeName);
 			}
 		}
 		// void result
 		templateString = templateString.replace("%RETURN_KEY%", "");
-		templateString = templateString.replace("%CALL_TYPE%", "callVoid");
+		templateString = templateString.replace("%CALL_TYPE%", "asyncVoid");
 		templateString = templateString.replace("%RETURN_CLASS%", "");
 
 		final String finalTemplateString = templateString;

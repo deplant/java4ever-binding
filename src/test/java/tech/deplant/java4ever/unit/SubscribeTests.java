@@ -15,6 +15,7 @@ import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
 import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,13 +27,13 @@ public class SubscribeTests {
 
 	@BeforeAll
 	public static void loadSdk() {
-		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
+		TestEnv.loadEverSdk();
 	}
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void subscribe_to_account() throws EverSdkException {
-		var configJson = STR."{\"network\":{\"endpoints\":[\"\{TestEnv.NODESE_ENDPOINT}\"]}}";
+	public void subscribe_to_account() throws EverSdkException, ExecutionException, InterruptedException {
+		//var configJson = STR."{\"network\":{\"endpoints\":[\"\{TestEnv.NODESE_ENDPOINT}\"]}}";
 		int ctxId = TestEnv.newContext();
 		String queryText = """
 				subscription {
@@ -50,8 +51,8 @@ public class SubscribeTests {
 		var handle = Net.subscribe(ctxId,
 		                           queryText,
 		                           JsonContext.SDK_JSON_MAPPER().valueToTree(Map.of()),
-		                           new EverSdkSubscription(eventString -> logger.log(System.Logger.Level.WARNING,
-		                                                                             "code: %s".formatted(eventString))))
+		                           eventString -> logger.log(System.Logger.Level.WARNING,
+		                                                                             "code: %s".formatted(eventString))).get()
 		                .handle();
 
 		assertTrue(handle > 0);

@@ -35,11 +35,11 @@ public class EverSdkSubscription {
 				this.eventAction.accept(node);
 			} catch (Exception ex1) {
 				logger.log(System.Logger.Level.ERROR,
-				           () -> STR."REQ:\{requestId} EVENT: \{responseString} Subscribe Event Action processing failed! \{ex1.toString()}");
+				           () -> "REQ:%d EVENT:%s Subscribe Event Action processing failed! %s".formatted(requestId, responseString, ex1.toString()));
 			}
 		} catch (JsonProcessingException ex2) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> STR."REQ:\{requestId} EVENT: \{responseString} Subscribe Event JSON deserialization failed! \{ex2.toString()}");
+			           () -> "REQ:%d EVENT:%s Subscribe Event JSON deserialization failed! %s".formatted(requestId, responseString, ex2.toString()));
 		}
 
 	}

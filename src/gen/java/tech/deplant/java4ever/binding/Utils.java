@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.Boolean;
 import java.lang.Long;
 import java.lang.String;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <strong>Utils</strong>
@@ -19,9 +20,9 @@ public final class Utils {
    * @param address  Account address in any TON format.
    * @param outputFormat  Specify the format to convert to.
    */
-  public static Utils.ResultOfConvertAddress convertAddress(int ctxId, String address,
-      Utils.AddressStringFormat outputFormat) throws EverSdkException {
-    return EverSdk.call(ctxId, "utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
+  public static CompletableFuture<Utils.ResultOfConvertAddress> convertAddress(int ctxId,
+      String address, Utils.AddressStringFormat outputFormat) throws EverSdkException {
+    return EverSdk.async(ctxId, "utils.convert_address", new Utils.ParamsOfConvertAddress(address, outputFormat), Utils.ResultOfConvertAddress.class);
   }
 
   /**
@@ -36,17 +37,17 @@ public final class Utils {
    *
    * @param address  Account address in any TON format.
    */
-  public static Utils.ResultOfGetAddressType getAddressType(int ctxId, String address) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
+  public static CompletableFuture<Utils.ResultOfGetAddressType> getAddressType(int ctxId,
+      String address) throws EverSdkException {
+    return EverSdk.async(ctxId, "utils.get_address_type", new Utils.ParamsOfGetAddressType(address), Utils.ResultOfGetAddressType.class);
   }
 
   /**
    *  Calculates storage fee for an account over a specified time period
    */
-  public static Utils.ResultOfCalcStorageFee calcStorageFee(int ctxId, String account, Long period)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
+  public static CompletableFuture<Utils.ResultOfCalcStorageFee> calcStorageFee(int ctxId,
+      String account, Long period) throws EverSdkException {
+    return EverSdk.async(ctxId, "utils.calc_storage_fee", new Utils.ParamsOfCalcStorageFee(account, period), Utils.ResultOfCalcStorageFee.class);
   }
 
   /**
@@ -55,9 +56,9 @@ public final class Utils {
    * @param uncompressed Must be encoded as base64. Uncompressed data.
    * @param level  Compression level, from 1 to 21. Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression). If level is omitted, the default compression level is used (currently `3`).
    */
-  public static Utils.ResultOfCompressZstd compressZstd(int ctxId, String uncompressed, Long level)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
+  public static CompletableFuture<Utils.ResultOfCompressZstd> compressZstd(int ctxId,
+      String uncompressed, Long level) throws EverSdkException {
+    return EverSdk.async(ctxId, "utils.compress_zstd", new Utils.ParamsOfCompressZstd(uncompressed, level), Utils.ResultOfCompressZstd.class);
   }
 
   /**
@@ -65,9 +66,9 @@ public final class Utils {
    *
    * @param compressed Must be encoded as base64. Compressed data.
    */
-  public static Utils.ResultOfDecompressZstd decompressZstd(int ctxId, String compressed) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
+  public static CompletableFuture<Utils.ResultOfDecompressZstd> decompressZstd(int ctxId,
+      String compressed) throws EverSdkException {
+    return EverSdk.async(ctxId, "utils.decompress_zstd", new Utils.ParamsOfDecompressZstd(compressed), Utils.ResultOfDecompressZstd.class);
   }
 
   public record ParamsOfCalcStorageFee(String account, Long period) {

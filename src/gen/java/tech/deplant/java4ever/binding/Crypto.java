@@ -7,6 +7,7 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <strong>Crypto</strong>
@@ -23,9 +24,9 @@ public final class Crypto {
    *
    * @param composite  Hexadecimal representation of u64 composite number.
    */
-  public static Crypto.ResultOfFactorize factorize(int ctxId, String composite) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "crypto.factorize", new Crypto.ParamsOfFactorize(composite), Crypto.ResultOfFactorize.class);
+  public static CompletableFuture<Crypto.ResultOfFactorize> factorize(int ctxId, String composite)
+      throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.factorize", new Crypto.ParamsOfFactorize(composite), Crypto.ResultOfFactorize.class);
   }
 
   /**
@@ -36,9 +37,9 @@ public final class Crypto {
    * @param exponent  `exponent` argument of calculation.
    * @param modulus  `modulus` argument of calculation.
    */
-  public static Crypto.ResultOfModularPower modularPower(int ctxId, String base, String exponent,
-      String modulus) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.modular_power", new Crypto.ParamsOfModularPower(base, exponent, modulus), Crypto.ResultOfModularPower.class);
+  public static CompletableFuture<Crypto.ResultOfModularPower> modularPower(int ctxId, String base,
+      String exponent, String modulus) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.modular_power", new Crypto.ParamsOfModularPower(base, exponent, modulus), Crypto.ResultOfModularPower.class);
   }
 
   /**
@@ -46,8 +47,9 @@ public final class Crypto {
    *
    * @param data Encoded with `base64`. Input data for CRC calculation.
    */
-  public static Crypto.ResultOfTonCrc16 tonCrc16(int ctxId, String data) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.ton_crc16", new Crypto.ParamsOfTonCrc16(data), Crypto.ResultOfTonCrc16.class);
+  public static CompletableFuture<Crypto.ResultOfTonCrc16> tonCrc16(int ctxId, String data) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.ton_crc16", new Crypto.ParamsOfTonCrc16(data), Crypto.ResultOfTonCrc16.class);
   }
 
   /**
@@ -55,9 +57,9 @@ public final class Crypto {
    *
    * @param length  Size of random byte array.
    */
-  public static Crypto.ResultOfGenerateRandomBytes generateRandomBytes(int ctxId, Long length)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.generate_random_bytes", new Crypto.ParamsOfGenerateRandomBytes(length), Crypto.ResultOfGenerateRandomBytes.class);
+  public static CompletableFuture<Crypto.ResultOfGenerateRandomBytes> generateRandomBytes(int ctxId,
+      Long length) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.generate_random_bytes", new Crypto.ParamsOfGenerateRandomBytes(length), Crypto.ResultOfGenerateRandomBytes.class);
   }
 
   /**
@@ -65,16 +67,17 @@ public final class Crypto {
    *
    * @param publicKey  Public key - 64 symbols hex string
    */
-  public static Crypto.ResultOfConvertPublicKeyToTonSafeFormat convertPublicKeyToTonSafeFormat(
+  public static CompletableFuture<Crypto.ResultOfConvertPublicKeyToTonSafeFormat> convertPublicKeyToTonSafeFormat(
       int ctxId, String publicKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.convert_public_key_to_ton_safe_format", new Crypto.ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), Crypto.ResultOfConvertPublicKeyToTonSafeFormat.class);
+    return EverSdk.async(ctxId, "crypto.convert_public_key_to_ton_safe_format", new Crypto.ParamsOfConvertPublicKeyToTonSafeFormat(publicKey), Crypto.ResultOfConvertPublicKeyToTonSafeFormat.class);
   }
 
   /**
    *  Generates random ed25519 key pair.
    */
-  public static Crypto.KeyPair generateRandomSignKeys(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.generate_random_sign_keys", null, Crypto.KeyPair.class);
+  public static CompletableFuture<Crypto.KeyPair> generateRandomSignKeys(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.generate_random_sign_keys", null, Crypto.KeyPair.class);
   }
 
   /**
@@ -83,9 +86,9 @@ public final class Crypto {
    * @param unsigned  Data that must be signed encoded in `base64`.
    * @param keys  Sign keys.
    */
-  public static Crypto.ResultOfSign sign(int ctxId, String unsigned, Crypto.KeyPair keys) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "crypto.sign", new Crypto.ParamsOfSign(unsigned, keys), Crypto.ResultOfSign.class);
+  public static CompletableFuture<Crypto.ResultOfSign> sign(int ctxId, String unsigned,
+      Crypto.KeyPair keys) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.sign", new Crypto.ParamsOfSign(unsigned, keys), Crypto.ResultOfSign.class);
   }
 
   /**
@@ -94,9 +97,9 @@ public final class Crypto {
    * @param signed  Signed data that must be verified encoded in `base64`.
    * @param publicKey  Signer's public key - 64 symbols hex string
    */
-  public static Crypto.ResultOfVerifySignature verifySignature(int ctxId, String signed,
-      @JsonProperty("public") String publicKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.verify_signature", new Crypto.ParamsOfVerifySignature(signed, publicKey), Crypto.ResultOfVerifySignature.class);
+  public static CompletableFuture<Crypto.ResultOfVerifySignature> verifySignature(int ctxId,
+      String signed, @JsonProperty("public") String publicKey) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.verify_signature", new Crypto.ParamsOfVerifySignature(signed, publicKey), Crypto.ResultOfVerifySignature.class);
   }
 
   /**
@@ -104,8 +107,9 @@ public final class Crypto {
    *
    * @param data Encoded with `base64`. Input data for hash calculation.
    */
-  public static Crypto.ResultOfHash sha256(int ctxId, String data) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.sha256", new Crypto.ParamsOfHash(data), Crypto.ResultOfHash.class);
+  public static CompletableFuture<Crypto.ResultOfHash> sha256(int ctxId, String data) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.sha256", new Crypto.ParamsOfHash(data), Crypto.ResultOfHash.class);
   }
 
   /**
@@ -113,8 +117,9 @@ public final class Crypto {
    *
    * @param data Encoded with `base64`. Input data for hash calculation.
    */
-  public static Crypto.ResultOfHash sha512(int ctxId, String data) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.sha512", new Crypto.ParamsOfHash(data), Crypto.ResultOfHash.class);
+  public static CompletableFuture<Crypto.ResultOfHash> sha512(int ctxId, String data) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.sha512", new Crypto.ParamsOfHash(data), Crypto.ResultOfHash.class);
   }
 
   /**
@@ -141,9 +146,9 @@ public final class Crypto {
    * @param p  Parallelization parameter.
    * @param dkLen  Intended output length in octets of the derived key.
    */
-  public static Crypto.ResultOfScrypt scrypt(int ctxId, String password, String salt, Integer logN,
-      Long r, Long p, Long dkLen) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.scrypt", new Crypto.ParamsOfScrypt(password, salt, logN, r, p, dkLen), Crypto.ResultOfScrypt.class);
+  public static CompletableFuture<Crypto.ResultOfScrypt> scrypt(int ctxId, String password,
+      String salt, Integer logN, Long r, Long p, Long dkLen) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.scrypt", new Crypto.ParamsOfScrypt(password, salt, logN, r, p, dkLen), Crypto.ResultOfScrypt.class);
   }
 
   /**
@@ -153,9 +158,9 @@ public final class Crypto {
    *
    * @param secretKey  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.KeyPair naclSignKeypairFromSecretKey(int ctxId,
+  public static CompletableFuture<Crypto.KeyPair> naclSignKeypairFromSecretKey(int ctxId,
       @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_sign_keypair_from_secret_key", new Crypto.ParamsOfNaclSignKeyPairFromSecret(secretKey), Crypto.KeyPair.class);
+    return EverSdk.async(ctxId, "crypto.nacl_sign_keypair_from_secret_key", new Crypto.ParamsOfNaclSignKeyPairFromSecret(secretKey), Crypto.KeyPair.class);
   }
 
   /**
@@ -164,9 +169,9 @@ public final class Crypto {
    * @param unsigned  Data that must be signed encoded in `base64`.
    * @param secretKey  Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`.
    */
-  public static Crypto.ResultOfNaclSign naclSign(int ctxId, String unsigned,
+  public static CompletableFuture<Crypto.ResultOfNaclSign> naclSign(int ctxId, String unsigned,
       @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_sign", new Crypto.ParamsOfNaclSign(unsigned, secretKey), Crypto.ResultOfNaclSign.class);
+    return EverSdk.async(ctxId, "crypto.nacl_sign", new Crypto.ParamsOfNaclSign(unsigned, secretKey), Crypto.ResultOfNaclSign.class);
   }
 
   /**
@@ -178,9 +183,9 @@ public final class Crypto {
    * @param signed Encoded with `base64`. Signed data that must be unsigned.
    * @param publicKey  Signer's public key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.ResultOfNaclSignOpen naclSignOpen(int ctxId, String signed,
-      @JsonProperty("public") String publicKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_sign_open", new Crypto.ParamsOfNaclSignOpen(signed, publicKey), Crypto.ResultOfNaclSignOpen.class);
+  public static CompletableFuture<Crypto.ResultOfNaclSignOpen> naclSignOpen(int ctxId,
+      String signed, @JsonProperty("public") String publicKey) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_sign_open", new Crypto.ParamsOfNaclSignOpen(signed, publicKey), Crypto.ResultOfNaclSignOpen.class);
   }
 
   /**
@@ -190,9 +195,9 @@ public final class Crypto {
    * @param unsigned  Data that must be signed encoded in `base64`.
    * @param secretKey  Signer's secret key - unprefixed 0-padded to 128 symbols hex string (concatenation of 64 symbols secret and 64 symbols public keys). See `nacl_sign_keypair_from_secret_key`.
    */
-  public static Crypto.ResultOfNaclSignDetached naclSignDetached(int ctxId, String unsigned,
-      @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_sign_detached", new Crypto.ParamsOfNaclSign(unsigned, secretKey), Crypto.ResultOfNaclSignDetached.class);
+  public static CompletableFuture<Crypto.ResultOfNaclSignDetached> naclSignDetached(int ctxId,
+      String unsigned, @JsonProperty("secret") String secretKey) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_sign_detached", new Crypto.ParamsOfNaclSign(unsigned, secretKey), Crypto.ResultOfNaclSignDetached.class);
   }
 
   /**
@@ -202,17 +207,18 @@ public final class Crypto {
    * @param signature Encoded with `hex`. Signature that must be verified.
    * @param publicKey  Signer's public key - unprefixed 0-padded to 64 symbols hex string.
    */
-  public static Crypto.ResultOfNaclSignDetachedVerify naclSignDetachedVerify(int ctxId,
-      String unsigned, String signature, @JsonProperty("public") String publicKey) throws
+  public static CompletableFuture<Crypto.ResultOfNaclSignDetachedVerify> naclSignDetachedVerify(
+      int ctxId, String unsigned, String signature, @JsonProperty("public") String publicKey) throws
       EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_sign_detached_verify", new Crypto.ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), Crypto.ResultOfNaclSignDetachedVerify.class);
+    return EverSdk.async(ctxId, "crypto.nacl_sign_detached_verify", new Crypto.ParamsOfNaclSignDetachedVerify(unsigned, signature, publicKey), Crypto.ResultOfNaclSignDetachedVerify.class);
   }
 
   /**
    *  Generates a random NaCl key pair
    */
-  public static Crypto.KeyPair naclBoxKeypair(int ctxId) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_box_keypair", null, Crypto.KeyPair.class);
+  public static CompletableFuture<Crypto.KeyPair> naclBoxKeypair(int ctxId) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_box_keypair", null, Crypto.KeyPair.class);
   }
 
   /**
@@ -220,9 +226,9 @@ public final class Crypto {
    *
    * @param secretKey  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.KeyPair naclBoxKeypairFromSecretKey(int ctxId,
+  public static CompletableFuture<Crypto.KeyPair> naclBoxKeypairFromSecretKey(int ctxId,
       @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_box_keypair_from_secret_key", new Crypto.ParamsOfNaclBoxKeyPairFromSecret(secretKey), Crypto.KeyPair.class);
+    return EverSdk.async(ctxId, "crypto.nacl_box_keypair_from_secret_key", new Crypto.ParamsOfNaclBoxKeyPairFromSecret(secretKey), Crypto.KeyPair.class);
   }
 
   /**
@@ -234,9 +240,10 @@ public final class Crypto {
    * @param theirPublic  Receiver's public key - unprefixed 0-padded to 64 symbols hex string
    * @param secretKey  Sender's private key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.ResultOfNaclBox naclBox(int ctxId, String decrypted, String nonce,
-      String theirPublic, @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_box", new Crypto.ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), Crypto.ResultOfNaclBox.class);
+  public static CompletableFuture<Crypto.ResultOfNaclBox> naclBox(int ctxId, String decrypted,
+      String nonce, String theirPublic, @JsonProperty("secret") String secretKey) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_box", new Crypto.ParamsOfNaclBox(decrypted, nonce, theirPublic, secretKey), Crypto.ResultOfNaclBox.class);
   }
 
   /**
@@ -247,9 +254,10 @@ public final class Crypto {
    * @param theirPublic  Sender's public key - unprefixed 0-padded to 64 symbols hex string
    * @param secretKey  Receiver's private key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.ResultOfNaclBoxOpen naclBoxOpen(int ctxId, String encrypted, String nonce,
-      String theirPublic, @JsonProperty("secret") String secretKey) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_box_open", new Crypto.ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), Crypto.ResultOfNaclBoxOpen.class);
+  public static CompletableFuture<Crypto.ResultOfNaclBoxOpen> naclBoxOpen(int ctxId,
+      String encrypted, String nonce, String theirPublic, @JsonProperty("secret") String secretKey)
+      throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_box_open", new Crypto.ParamsOfNaclBoxOpen(encrypted, nonce, theirPublic, secretKey), Crypto.ResultOfNaclBoxOpen.class);
   }
 
   /**
@@ -259,9 +267,9 @@ public final class Crypto {
    * @param nonce  Nonce in `hex`
    * @param key  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.ResultOfNaclBox naclSecretBox(int ctxId, String decrypted, String nonce,
-      String key) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_secret_box", new Crypto.ParamsOfNaclSecretBox(decrypted, nonce, key), Crypto.ResultOfNaclBox.class);
+  public static CompletableFuture<Crypto.ResultOfNaclBox> naclSecretBox(int ctxId, String decrypted,
+      String nonce, String key) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_secret_box", new Crypto.ParamsOfNaclSecretBox(decrypted, nonce, key), Crypto.ResultOfNaclBox.class);
   }
 
   /**
@@ -271,9 +279,9 @@ public final class Crypto {
    * @param nonce  Nonce in `hex`
    * @param key  Secret key - unprefixed 0-padded to 64 symbols hex string
    */
-  public static Crypto.ResultOfNaclBoxOpen naclSecretBoxOpen(int ctxId, String encrypted,
-      String nonce, String key) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.nacl_secret_box_open", new Crypto.ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), Crypto.ResultOfNaclBoxOpen.class);
+  public static CompletableFuture<Crypto.ResultOfNaclBoxOpen> naclSecretBoxOpen(int ctxId,
+      String encrypted, String nonce, String key) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.nacl_secret_box_open", new Crypto.ParamsOfNaclSecretBoxOpen(encrypted, nonce, key), Crypto.ResultOfNaclBoxOpen.class);
   }
 
   /**
@@ -281,9 +289,9 @@ public final class Crypto {
    *
    * @param dictionary  Dictionary identifier
    */
-  public static Crypto.ResultOfMnemonicWords mnemonicWords(int ctxId,
+  public static CompletableFuture<Crypto.ResultOfMnemonicWords> mnemonicWords(int ctxId,
       Crypto.MnemonicDictionary dictionary) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.mnemonic_words", new Crypto.ParamsOfMnemonicWords(dictionary), Crypto.ResultOfMnemonicWords.class);
+    return EverSdk.async(ctxId, "crypto.mnemonic_words", new Crypto.ParamsOfMnemonicWords(dictionary), Crypto.ResultOfMnemonicWords.class);
   }
 
   /**
@@ -292,9 +300,9 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static Crypto.ResultOfMnemonicFromRandom mnemonicFromRandom(int ctxId,
+  public static CompletableFuture<Crypto.ResultOfMnemonicFromRandom> mnemonicFromRandom(int ctxId,
       Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.mnemonic_from_random", new Crypto.ParamsOfMnemonicFromRandom(dictionary, wordCount), Crypto.ResultOfMnemonicFromRandom.class);
+    return EverSdk.async(ctxId, "crypto.mnemonic_from_random", new Crypto.ParamsOfMnemonicFromRandom(dictionary, wordCount), Crypto.ResultOfMnemonicFromRandom.class);
   }
 
   /**
@@ -304,9 +312,10 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static Crypto.ResultOfMnemonicFromEntropy mnemonicFromEntropy(int ctxId, String entropy,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.mnemonic_from_entropy", new Crypto.ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), Crypto.ResultOfMnemonicFromEntropy.class);
+  public static CompletableFuture<Crypto.ResultOfMnemonicFromEntropy> mnemonicFromEntropy(int ctxId,
+      String entropy, Crypto.MnemonicDictionary dictionary, Integer wordCount) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.mnemonic_from_entropy", new Crypto.ParamsOfMnemonicFromEntropy(entropy, dictionary, wordCount), Crypto.ResultOfMnemonicFromEntropy.class);
   }
 
   /**
@@ -317,9 +326,10 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Word count
    */
-  public static Crypto.ResultOfMnemonicVerify mnemonicVerify(int ctxId, String phrase,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.mnemonic_verify", new Crypto.ParamsOfMnemonicVerify(phrase, dictionary, wordCount), Crypto.ResultOfMnemonicVerify.class);
+  public static CompletableFuture<Crypto.ResultOfMnemonicVerify> mnemonicVerify(int ctxId,
+      String phrase, Crypto.MnemonicDictionary dictionary, Integer wordCount) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.mnemonic_verify", new Crypto.ParamsOfMnemonicVerify(phrase, dictionary, wordCount), Crypto.ResultOfMnemonicVerify.class);
   }
 
   /**
@@ -331,9 +341,10 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Word count
    */
-  public static Crypto.KeyPair mnemonicDeriveSignKeys(int ctxId, String phrase, String path,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.mnemonic_derive_sign_keys", new Crypto.ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), Crypto.KeyPair.class);
+  public static CompletableFuture<Crypto.KeyPair> mnemonicDeriveSignKeys(int ctxId, String phrase,
+      String path, Crypto.MnemonicDictionary dictionary, Integer wordCount) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.mnemonic_derive_sign_keys", new Crypto.ParamsOfMnemonicDeriveSignKeys(phrase, path, dictionary, wordCount), Crypto.KeyPair.class);
   }
 
   /**
@@ -343,9 +354,10 @@ public final class Crypto {
    * @param dictionary  Dictionary identifier
    * @param wordCount  Mnemonic word count
    */
-  public static Crypto.ResultOfHDKeyXPrvFromMnemonic hdkeyXprvFromMnemonic(int ctxId, String phrase,
-      Crypto.MnemonicDictionary dictionary, Integer wordCount) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.hdkey_xprv_from_mnemonic", new Crypto.ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), Crypto.ResultOfHDKeyXPrvFromMnemonic.class);
+  public static CompletableFuture<Crypto.ResultOfHDKeyXPrvFromMnemonic> hdkeyXprvFromMnemonic(
+      int ctxId, String phrase, Crypto.MnemonicDictionary dictionary, Integer wordCount) throws
+      EverSdkException {
+    return EverSdk.async(ctxId, "crypto.hdkey_xprv_from_mnemonic", new Crypto.ParamsOfHDKeyXPrvFromMnemonic(phrase, dictionary, wordCount), Crypto.ResultOfHDKeyXPrvFromMnemonic.class);
   }
 
   /**
@@ -355,9 +367,9 @@ public final class Crypto {
    * @param childIndex  Child index (see BIP-0032)
    * @param hardened  Indicates the derivation of hardened/not-hardened key (see BIP-0032)
    */
-  public static Crypto.ResultOfHDKeyDeriveFromXPrv hdkeyDeriveFromXprv(int ctxId, String xprv,
-      Long childIndex, Boolean hardened) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.hdkey_derive_from_xprv", new Crypto.ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), Crypto.ResultOfHDKeyDeriveFromXPrv.class);
+  public static CompletableFuture<Crypto.ResultOfHDKeyDeriveFromXPrv> hdkeyDeriveFromXprv(int ctxId,
+      String xprv, Long childIndex, Boolean hardened) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.hdkey_derive_from_xprv", new Crypto.ParamsOfHDKeyDeriveFromXPrv(xprv, childIndex, hardened), Crypto.ResultOfHDKeyDeriveFromXPrv.class);
   }
 
   /**
@@ -366,9 +378,9 @@ public final class Crypto {
    * @param xprv  Serialized extended private key
    * @param path  Derivation path, for instance "m/44'/396'/0'/0/0"
    */
-  public static Crypto.ResultOfHDKeyDeriveFromXPrvPath hdkeyDeriveFromXprvPath(int ctxId,
-      String xprv, String path) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.hdkey_derive_from_xprv_path", new Crypto.ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), Crypto.ResultOfHDKeyDeriveFromXPrvPath.class);
+  public static CompletableFuture<Crypto.ResultOfHDKeyDeriveFromXPrvPath> hdkeyDeriveFromXprvPath(
+      int ctxId, String xprv, String path) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.hdkey_derive_from_xprv_path", new Crypto.ParamsOfHDKeyDeriveFromXPrvPath(xprv, path), Crypto.ResultOfHDKeyDeriveFromXPrvPath.class);
   }
 
   /**
@@ -376,9 +388,9 @@ public final class Crypto {
    *
    * @param xprv  Serialized extended private key
    */
-  public static Crypto.ResultOfHDKeySecretFromXPrv hdkeySecretFromXprv(int ctxId, String xprv)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.hdkey_secret_from_xprv", new Crypto.ParamsOfHDKeySecretFromXPrv(xprv), Crypto.ResultOfHDKeySecretFromXPrv.class);
+  public static CompletableFuture<Crypto.ResultOfHDKeySecretFromXPrv> hdkeySecretFromXprv(int ctxId,
+      String xprv) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.hdkey_secret_from_xprv", new Crypto.ParamsOfHDKeySecretFromXPrv(xprv), Crypto.ResultOfHDKeySecretFromXPrv.class);
   }
 
   /**
@@ -386,9 +398,9 @@ public final class Crypto {
    *
    * @param xprv  Serialized extended private key
    */
-  public static Crypto.ResultOfHDKeyPublicFromXPrv hdkeyPublicFromXprv(int ctxId, String xprv)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.hdkey_public_from_xprv", new Crypto.ParamsOfHDKeyPublicFromXPrv(xprv), Crypto.ResultOfHDKeyPublicFromXPrv.class);
+  public static CompletableFuture<Crypto.ResultOfHDKeyPublicFromXPrv> hdkeyPublicFromXprv(int ctxId,
+      String xprv) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.hdkey_public_from_xprv", new Crypto.ParamsOfHDKeyPublicFromXPrv(xprv), Crypto.ResultOfHDKeyPublicFromXPrv.class);
   }
 
   /**
@@ -398,9 +410,9 @@ public final class Crypto {
    * @param key Must be encoded with `hex`. 256-bit key.
    * @param nonce Must be encoded with `hex`. 96-bit nonce.
    */
-  public static Crypto.ResultOfChaCha20 chacha20(int ctxId, String data, String key, String nonce)
-      throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.chacha20", new Crypto.ParamsOfChaCha20(data, key, nonce), Crypto.ResultOfChaCha20.class);
+  public static CompletableFuture<Crypto.ResultOfChaCha20> chacha20(int ctxId, String data,
+      String key, String nonce) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.chacha20", new Crypto.ParamsOfChaCha20(data, key, nonce), Crypto.ResultOfChaCha20.class);
   }
 
   /**
@@ -417,10 +429,11 @@ public final class Crypto {
    * @param secretEncryptionSalt  Salt used for secret encryption. For example, a mobile device can use device ID as salt.
    * @param secretKey  Cryptobox secret
    */
-  public static Crypto.RegisteredCryptoBox createCryptoBox(int ctxId, String secretEncryptionSalt,
-      @JsonProperty("secret") Crypto.CryptoBoxSecret secretKey, AppSigningBox appObject) throws
-      EverSdkException {
-    return EverSdk.callAppObject(ctxId, "crypto.create_crypto_box", new Crypto.ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), appObject, Crypto.RegisteredCryptoBox.class);
+  public static CompletableFuture<Crypto.RegisteredCryptoBox> createCryptoBox(int ctxId,
+      String secretEncryptionSalt, @JsonProperty("secret") Crypto.CryptoBoxSecret secretKey,
+      AppObject<Crypto.ParamsOfAppPasswordProvider, Crypto.ResultOfAppPasswordProvider> appObject)
+      throws EverSdkException {
+    return EverSdk.asyncAppObject(ctxId, "crypto.create_crypto_box", new Crypto.ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), Crypto.RegisteredCryptoBox.class, appObject);
   }
 
   /**
@@ -428,23 +441,23 @@ public final class Crypto {
    */
   public static void removeCryptoBox(int ctxId, Crypto.RegisteredCryptoBox params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "crypto.remove_crypto_box", params);
+    EverSdk.asyncVoid(ctxId, "crypto.remove_crypto_box", params);
   }
 
   /**
    *  Get Crypto Box Info. Used to get `encrypted_secret` that should be used for all the cryptobox initializations except the first one.
    */
-  public static Crypto.ResultOfGetCryptoBoxInfo getCryptoBoxInfo(int ctxId,
+  public static CompletableFuture<Crypto.ResultOfGetCryptoBoxInfo> getCryptoBoxInfo(int ctxId,
       Crypto.RegisteredCryptoBox params) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.get_crypto_box_info", params, Crypto.ResultOfGetCryptoBoxInfo.class);
+    return EverSdk.async(ctxId, "crypto.get_crypto_box_info", params, Crypto.ResultOfGetCryptoBoxInfo.class);
   }
 
   /**
    * Attention! Store this data in your application for a very short period of time and overwrite it with zeroes ASAP. Get Crypto Box Seed Phrase.
    */
-  public static Crypto.ResultOfGetCryptoBoxSeedPhrase getCryptoBoxSeedPhrase(int ctxId,
-      Crypto.RegisteredCryptoBox params) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.get_crypto_box_seed_phrase", params, Crypto.ResultOfGetCryptoBoxSeedPhrase.class);
+  public static CompletableFuture<Crypto.ResultOfGetCryptoBoxSeedPhrase> getCryptoBoxSeedPhrase(
+      int ctxId, Crypto.RegisteredCryptoBox params) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.get_crypto_box_seed_phrase", params, Crypto.ResultOfGetCryptoBoxSeedPhrase.class);
   }
 
   /**
@@ -454,9 +467,9 @@ public final class Crypto {
    * @param hdpath By default, Everscale HD path is used. HD key derivation path.
    * @param secretLifetime  Store derived secret for this lifetime (in ms). The timer starts after each signing box operation. Secrets will be deleted immediately after each signing box operation, if this value is not set.
    */
-  public static Crypto.RegisteredSigningBox getSigningBoxFromCryptoBox(int ctxId, Long handle,
-      String hdpath, Long secretLifetime) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.get_signing_box_from_crypto_box", new Crypto.ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), Crypto.RegisteredSigningBox.class);
+  public static CompletableFuture<Crypto.RegisteredSigningBox> getSigningBoxFromCryptoBox(int ctxId,
+      Long handle, String hdpath, Long secretLifetime) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.get_signing_box_from_crypto_box", new Crypto.ParamsOfGetSigningBoxFromCryptoBox(handle, hdpath, secretLifetime), Crypto.RegisteredSigningBox.class);
   }
 
   /**
@@ -471,10 +484,10 @@ public final class Crypto {
    * @param algorithm  Encryption algorithm.
    * @param secretLifetime  Store derived secret for encryption algorithm for this lifetime (in ms). The timer starts after each encryption box operation. Secrets will be deleted (overwritten with zeroes) after each encryption operation, if this value is not set.
    */
-  public static Crypto.RegisteredEncryptionBox getEncryptionBoxFromCryptoBox(int ctxId, Long handle,
-      String hdpath, Crypto.BoxEncryptionAlgorithm algorithm, Long secretLifetime) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "crypto.get_encryption_box_from_crypto_box", new Crypto.ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), Crypto.RegisteredEncryptionBox.class);
+  public static CompletableFuture<Crypto.RegisteredEncryptionBox> getEncryptionBoxFromCryptoBox(
+      int ctxId, Long handle, String hdpath, Crypto.BoxEncryptionAlgorithm algorithm,
+      Long secretLifetime) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.get_encryption_box_from_crypto_box", new Crypto.ParamsOfGetEncryptionBoxFromCryptoBox(handle, hdpath, algorithm, secretLifetime), Crypto.RegisteredEncryptionBox.class);
   }
 
   /**
@@ -482,31 +495,32 @@ public final class Crypto {
    */
   public static void clearCryptoBoxSecretCache(int ctxId, Crypto.RegisteredCryptoBox params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "crypto.clear_crypto_box_secret_cache", params);
+    EverSdk.asyncVoid(ctxId, "crypto.clear_crypto_box_secret_cache", params);
   }
 
   /**
    *  Register an application implemented signing box.
    */
-  public static Crypto.RegisteredSigningBox registerSigningBox(int ctxId, AppSigningBox appObject)
-      throws EverSdkException {
-    return EverSdk.callAppObject(ctxId, "crypto.register_signing_box", null, appObject, Crypto.RegisteredSigningBox.class);
+  public static CompletableFuture<Crypto.RegisteredSigningBox> registerSigningBox(int ctxId,
+      AppObject<Crypto.ParamsOfAppSigningBox, Crypto.ResultOfAppSigningBox> appObject) throws
+      EverSdkException {
+    return EverSdk.asyncAppObject(ctxId, "crypto.register_signing_box", null, Crypto.RegisteredSigningBox.class, appObject);
   }
 
   /**
    *  Creates a default signing box implementation.
    */
-  public static Crypto.RegisteredSigningBox getSigningBox(int ctxId, Crypto.KeyPair params) throws
-      EverSdkException {
-    return EverSdk.call(ctxId, "crypto.get_signing_box", params, Crypto.RegisteredSigningBox.class);
+  public static CompletableFuture<Crypto.RegisteredSigningBox> getSigningBox(int ctxId,
+      Crypto.KeyPair params) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.get_signing_box", params, Crypto.RegisteredSigningBox.class);
   }
 
   /**
    *  Returns public key of signing key pair.
    */
-  public static Crypto.ResultOfSigningBoxGetPublicKey signingBoxGetPublicKey(int ctxId,
-      Crypto.RegisteredSigningBox params) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.signing_box_get_public_key", params, Crypto.ResultOfSigningBoxGetPublicKey.class);
+  public static CompletableFuture<Crypto.ResultOfSigningBoxGetPublicKey> signingBoxGetPublicKey(
+      int ctxId, Crypto.RegisteredSigningBox params) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.signing_box_get_public_key", params, Crypto.ResultOfSigningBoxGetPublicKey.class);
   }
 
   /**
@@ -515,9 +529,9 @@ public final class Crypto {
    * @param signingBox  Signing Box handle.
    * @param unsigned Must be encoded with `base64`. Unsigned user data.
    */
-  public static Crypto.ResultOfSigningBoxSign signingBoxSign(int ctxId, Long signingBox,
-      String unsigned) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.signing_box_sign", new Crypto.ParamsOfSigningBoxSign(signingBox, unsigned), Crypto.ResultOfSigningBoxSign.class);
+  public static CompletableFuture<Crypto.ResultOfSigningBoxSign> signingBoxSign(int ctxId,
+      Long signingBox, String unsigned) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.signing_box_sign", new Crypto.ParamsOfSigningBoxSign(signingBox, unsigned), Crypto.ResultOfSigningBoxSign.class);
   }
 
   /**
@@ -525,15 +539,16 @@ public final class Crypto {
    */
   public static void removeSigningBox(int ctxId, Crypto.RegisteredSigningBox params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "crypto.remove_signing_box", params);
+    EverSdk.asyncVoid(ctxId, "crypto.remove_signing_box", params);
   }
 
   /**
    *  Register an application implemented encryption box.
    */
-  public static Crypto.RegisteredEncryptionBox registerEncryptionBox(int ctxId,
-      AppSigningBox appObject) throws EverSdkException {
-    return EverSdk.callAppObject(ctxId, "crypto.register_encryption_box", null, appObject, Crypto.RegisteredEncryptionBox.class);
+  public static CompletableFuture<Crypto.RegisteredEncryptionBox> registerEncryptionBox(int ctxId,
+      AppObject<Crypto.ParamsOfAppEncryptionBox, Crypto.ResultOfAppEncryptionBox> appObject) throws
+      EverSdkException {
+    return EverSdk.asyncAppObject(ctxId, "crypto.register_encryption_box", null, Crypto.RegisteredEncryptionBox.class, appObject);
   }
 
   /**
@@ -541,7 +556,7 @@ public final class Crypto {
    */
   public static void removeEncryptionBox(int ctxId, Crypto.RegisteredEncryptionBox params) throws
       EverSdkException {
-    EverSdk.callVoid(ctxId, "crypto.remove_encryption_box", params);
+    EverSdk.asyncVoid(ctxId, "crypto.remove_encryption_box", params);
   }
 
   /**
@@ -549,9 +564,9 @@ public final class Crypto {
    *
    * @param encryptionBox  Encryption box handle
    */
-  public static Crypto.ResultOfEncryptionBoxGetInfo encryptionBoxGetInfo(int ctxId,
-      Long encryptionBox) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.encryption_box_get_info", new Crypto.ParamsOfEncryptionBoxGetInfo(encryptionBox), Crypto.ResultOfEncryptionBoxGetInfo.class);
+  public static CompletableFuture<Crypto.ResultOfEncryptionBoxGetInfo> encryptionBoxGetInfo(
+      int ctxId, Long encryptionBox) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.encryption_box_get_info", new Crypto.ParamsOfEncryptionBoxGetInfo(encryptionBox), Crypto.ResultOfEncryptionBoxGetInfo.class);
   }
 
   /**
@@ -561,9 +576,9 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be encrypted, encoded in Base64
    */
-  public static Crypto.ResultOfEncryptionBoxEncrypt encryptionBoxEncrypt(int ctxId,
-      Long encryptionBox, String data) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.encryption_box_encrypt", new Crypto.ParamsOfEncryptionBoxEncrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxEncrypt.class);
+  public static CompletableFuture<Crypto.ResultOfEncryptionBoxEncrypt> encryptionBoxEncrypt(
+      int ctxId, Long encryptionBox, String data) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.encryption_box_encrypt", new Crypto.ParamsOfEncryptionBoxEncrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxEncrypt.class);
   }
 
   /**
@@ -573,9 +588,9 @@ public final class Crypto {
    * @param encryptionBox  Encryption box handle
    * @param data  Data to be decrypted, encoded in Base64
    */
-  public static Crypto.ResultOfEncryptionBoxDecrypt encryptionBoxDecrypt(int ctxId,
-      Long encryptionBox, String data) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.encryption_box_decrypt", new Crypto.ParamsOfEncryptionBoxDecrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxDecrypt.class);
+  public static CompletableFuture<Crypto.ResultOfEncryptionBoxDecrypt> encryptionBoxDecrypt(
+      int ctxId, Long encryptionBox, String data) throws EverSdkException {
+    return EverSdk.async(ctxId, "crypto.encryption_box_decrypt", new Crypto.ParamsOfEncryptionBoxDecrypt(encryptionBox, data), Crypto.ResultOfEncryptionBoxDecrypt.class);
   }
 
   /**
@@ -583,9 +598,9 @@ public final class Crypto {
    *
    * @param algorithm  Encryption algorithm specifier including cipher parameters (key, IV, etc)
    */
-  public static Crypto.RegisteredEncryptionBox createEncryptionBox(int ctxId,
+  public static CompletableFuture<Crypto.RegisteredEncryptionBox> createEncryptionBox(int ctxId,
       Crypto.EncryptionAlgorithm algorithm) throws EverSdkException {
-    return EverSdk.call(ctxId, "crypto.create_encryption_box", new Crypto.ParamsOfCreateEncryptionBox(algorithm), Crypto.RegisteredEncryptionBox.class);
+    return EverSdk.async(ctxId, "crypto.create_encryption_box", new Crypto.ParamsOfCreateEncryptionBox(algorithm), Crypto.RegisteredEncryptionBox.class);
   }
 
   /**

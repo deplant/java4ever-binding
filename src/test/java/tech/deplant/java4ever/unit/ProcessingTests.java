@@ -9,46 +9,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.deplant.commons.regex.Special;
-import tech.deplant.java4ever.binding.Crypto;
-import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.Client;
 import tech.deplant.java4ever.binding.EverSdk;
+import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.Processing;
 import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
+import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Execution(ExecutionMode.CONCURRENT)
 @ExtendWith(WeAreOnline.class)
-public class CryptoTests {
+public class ProcessingTests {
 
-	private static final Logger log = LoggerFactory.getLogger(CryptoTests.class);
+	private static final Logger log = LoggerFactory.getLogger(ProcessingTests.class);
 
 	@BeforeAll
 	public static void loadSdk() {
 		TestEnv.loadEverSdk();
 	}
 
-	@ParameterizedTest
-	@ValueSource(ints = {12,24})
+	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void mnemonic_from_random_should_pass_regexp_for_word_count(int words) throws EverSdkException, ExecutionException, InterruptedException {
+	public void cancel_monitor_not_throws_for_random_queue() throws EverSdkException {
 		int ctxId = TestEnv.newContext();
-		Pattern pattern = Pattern.compile("[\\w-]+");
-		Matcher matcher = pattern.matcher(Crypto.mnemonicFromRandom(ctxId, Crypto.MnemonicDictionary.English, words).get().phrase());
-		int count = 0;
-		while (matcher.find())
-			count++;
-		assertEquals(words, count);
+		assertDoesNotThrow(() -> Processing.cancelMonitor(ctxId,"aaa"));
 	}
 
 }
