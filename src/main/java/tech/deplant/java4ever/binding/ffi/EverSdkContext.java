@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
-public class EverSdkContext implements tc_response_handler_t {
+public class EverSdkContext implements tc_response_handler_t.Function {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
 
@@ -95,7 +95,7 @@ public class EverSdkContext implements tc_response_handler_t {
 			try {
 				if (!request.responseFuture().isDone()) {
 					logger.log(System.Logger.Level.TRACE,
-					           () -> STR."CTX:\{this.id} REQ:\{requestId} RESP:\{responseString}");
+					           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id,requestId, responseString));
 					request.responseFuture()
 					       .complete(JsonContext.SDK_JSON_MAPPER().readValue(responseString, request.responseClass()));
 				} else {
@@ -108,7 +108,10 @@ public class EverSdkContext implements tc_response_handler_t {
 			} catch (JsonProcessingException ex2) {
 				// successful response but parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Response deserialization failed! \{ex2.toString()}");
+				           () -> "CTX:%d REQ:%d EVER-SDK Response deserialization failed! %s".formatted(
+						           this.id,
+						           requestId,
+						           ex2.toString()));
 				request.responseFuture()
 				       .completeExceptionally(new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                                                    "EVER-SDK response deserialization failed!"),
@@ -127,7 +130,7 @@ public class EverSdkContext implements tc_response_handler_t {
 				// These errors are sent by SDK, response_type=1
 				//String everSdkError = ex.getCause().getMessage();
 				logger.log(System.Logger.Level.WARNING,
-				           () -> STR."CTX:\{this.id} REQ:\{requestId} ERR:\{responseString}");
+				           () -> "CTX:%d REQ:%d ERR:%s".formatted(this.id, requestId, responseString));
 				// let's try to parse error response
 				EverSdkException.ErrorResult sdkResponse = JsonContext.SDK_JSON_MAPPER()
 				                                                      .readValue(responseString,
@@ -136,7 +139,10 @@ public class EverSdkContext implements tc_response_handler_t {
 			} catch (JsonProcessingException ex1) {
 				// if error response parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Error deserialization failed! \{ex1.toString()}");
+				           () -> "CTX:%d REQ:%d EVER-SDK Error deserialization failed! %s".formatted(
+						           this.id,
+						           requestId,
+						           ex1.toString()));
 				future.completeExceptionally(new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                                                   "EVER-SDK Error deserialization failed!"),
 				                                                  ex1.getCause()));
@@ -159,14 +165,14 @@ public class EverSdkContext implements tc_response_handler_t {
 			try {
 				JsonNode node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
 				try {
-					((Consumer<JsonNode>)handler).accept(node);
+					((Consumer<JsonNode>) handler).accept(node);
 				} catch (Exception ex1) {
 					logger.log(System.Logger.Level.ERROR,
-					           () -> STR."REQ:\{requestId} EVENT: \{responseString} Subscribe Event Action processing failed! \{ex1.toString()}");
+					           () -> "REQ:%d EVENT:%s Subscribe Event Action processing failed! %s".formatted(requestId, responseString, ex1.toString()));
 				}
 			} catch (JsonProcessingException ex2) {
 				logger.log(System.Logger.Level.ERROR,
-				           () -> STR."REQ:\{requestId} EVENT: \{responseString} Subscribe Event JSON deserialization failed! \{ex2.toString()}");
+				           () -> "REQ:%d EVENT:%s Subscribe Event JSON deserialization failed! %s".formatted(requestId, responseString, ex2.toString()));
 			}
 		} else {
 			logger.log(System.Logger.Level.ERROR,
@@ -222,17 +228,26 @@ public class EverSdkContext implements tc_response_handler_t {
 		try {
 			// waiting for response synchronously
 			String responseString = (String) this.requests.get(requestId).responseFuture().get(this.timeout, TimeUnit.MILLISECONDS);
-			logger.log(System.Logger.Level.TRACE, () -> STR."CTX:\{this.id} REQ:\{requestId} RESP:\{responseString}");
+			logger.log(System.Logger.Level.TRACE, () -> "CTX:%d REQ:%d RESP:%s".formatted(
+					this.id,
+					requestId,
+					responseString));
 			// let's try to parse response
 			return JsonContext.SDK_JSON_MAPPER().readValue(responseString, resultClass);
 		} catch (InterruptedException ex3) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Call interrupted! \{ex3.toString()}");
+			           () -> "CTX:%d REQ:%d EVER-SDK Call interrupted! %s}".formatted(
+					           this.id,
+					           requestId,
+					           ex3.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
 			                           ex3.getCause());
 		} catch (TimeoutException ex4) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> STR."CTX:\{this.id} REQ:\{requestId} EVER-SDK Call expired on Timeout! \{ex4.toString()}");
+			           () -> "CTX:%d REQ:%d EVER-SDK Call expired on Timeout! %s".formatted(
+					           this.id,
+					           requestId,
+					           ex4.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
 			                           ex4.getCause());
 
@@ -303,7 +318,11 @@ public class EverSdkContext implements tc_response_handler_t {
 			final String responseString = NativeStrings.toJava(params_json);
 			if (logger.isLoggable(System.Logger.Level.TRACE)) {
 				logger.log(System.Logger.Level.TRACE,
-				           STR."REQ:\{request_id} TYPE:\{response_type} FINISHED:\{finished} JSON:\{responseString}");
+				           "REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(
+						           this.id,
+						           response_type,
+						           String.valueOf(finished),
+						           responseString));
 			}
 			switch (tc_response_types.of(response_type)) {
 				case tc_response_types.TC_RESPONSE_SUCCESS -> addResponse(request_id, responseString);
@@ -317,7 +336,7 @@ public class EverSdkContext implements tc_response_handler_t {
 			}
 		} catch (Exception e) {
 			logger.log(System.Logger.Level.ERROR,
-			           STR."REQ:\{request_id} TYPE:\{response_type} EVER-SDK Unexpected upcall error! \{e.toString()}");
+			           "REQ:%d TYPE:%d EVER-SDK Unexpected upcall error! %s".formatted(request_id, response_type, e.toString()));
 		}
 	}
 

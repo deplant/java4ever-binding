@@ -1,6 +1,6 @@
 # EVER-SDK for Java
 
-[![JDK version](https://img.shields.io/badge/Java-21-green.svg)](https://shields.io/)
+[![JDK version](https://img.shields.io/badge/Java-22-green.svg)](https://shields.io/)
 [![SDK version](https://img.shields.io/badge/EVER%20SDK-v1.45.0-orange)](https://github.com/tonlabs/ever-sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brown.svg)](https://shields.io/)
 
@@ -31,7 +31,7 @@ that is based on this binding for easier work with TVM blockchains.
 
 #### Prerequisites
 
-* Install **JDK 21** ([link](https://adoptium.net/temurin/releases?version=20))
+* Install **JDK 22** ([link](https://adoptium.net/temurin/releases?version=20))
 
 #### Add java4ever to your Maven of Gradle setup:
 
@@ -70,13 +70,13 @@ To use custom one, specify it in buildNew() method:
 ```java
 EverSdkContext ctx = EverSdkContext.builder()
         .setConfigJson(configJson)
-        .buildNew(new AbsolutePathLoader(Path.of("\home\ton\lib\libton_client.so")));
+        .buildNew(new AbsolutePathLoader(Path.of("/home/ton/lib/libton_client.so")));
 ```
 
 Variants of loading ton_client lib:
 * `AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB")` - path from Environment variable
 * `AbsolutePathLoader.ofUserDir("libton_client.so")` - file from ~ (user home)
-* `new AbsolutePathLoader(Path.of("\home\ton\lib\libton_client.so"))` - any absolute path
+* `new AbsolutePathLoader(Path.of("/home/ton/lib/libton_client.so"))` - any absolute path
 * `new JavaLibraryPathLoader("ton_client");` - gets library from java.library.path JVM argument
 
 ### Calling EVER-SDK methods

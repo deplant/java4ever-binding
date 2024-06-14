@@ -33,7 +33,7 @@ public class SubscribeTests {
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
 	public void subscribe_to_account() throws EverSdkException, ExecutionException, InterruptedException {
-		var configJson = STR."{\"network\":{\"endpoints\":[\"\{TestEnv.NODESE_ENDPOINT}\"]}}";
+		//var configJson = STR."{\"network\":{\"endpoints\":[\"\{TestEnv.NODESE_ENDPOINT}\"]}}";
 		int ctxId = TestEnv.newContext();
 		String queryText = """
 				subscription {

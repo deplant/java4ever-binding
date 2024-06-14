@@ -29,7 +29,7 @@ public class NativeMethods {
 	                             String params,
 								 Arena nativeMemory,
 	                             int requestId,
-	                             tc_response_handler_t handler) {
+	                             tc_response_handler_t.Function handler) {
 			ton_client.tc_request(contextId,
 			                      NativeStrings.toRust(functionName, nativeMemory),
 			                      NativeStrings.toRust(params, nativeMemory),

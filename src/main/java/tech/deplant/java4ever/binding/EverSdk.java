@@ -120,11 +120,11 @@ public class EverSdk {
 		try {
 			return functionOutputs.get(timeout, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException ex3) {
-			logger.log(System.Logger.Level.ERROR, () -> STR."EVER-SDK Call interrupted! \{ex3.toString()}");
+			logger.log(System.Logger.Level.ERROR, () -> "EVER-SDK Call interrupted! %s".formatted(ex3.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
 			                           ex3.getCause());
 		} catch (TimeoutException ex4) {
-			logger.log(System.Logger.Level.ERROR, () -> STR."EVER-SDK Call expired on Timeout! \{ex4.toString()}");
+			logger.log(System.Logger.Level.ERROR, () -> "EVER-SDK Call expired on Timeout! %s".formatted(ex4.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
 			                           ex4.getCause());
 		} catch (ExecutionException e) {
@@ -132,7 +132,7 @@ public class EverSdk {
 				throw everEx;
 			} else {
 				logger.log(System.Logger.Level.ERROR,
-				           () -> STR."EVER-SDK Call unknown execution exception! \{e.toString()}");
+				           () -> "EVER-SDK Call unknown execution exception! %s".formatted(e.toString()));
 				throw new EverSdkException(new EverSdkException.ErrorResult(-500, "EVER-SDK call expired on Timeout!"),
 				                           e.getCause());
 			}

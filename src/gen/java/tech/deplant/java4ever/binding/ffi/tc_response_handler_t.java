@@ -2,32 +2,69 @@
 
 package tech.deplant.java4ever.binding.ffi;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
- * {@snippet :
- * void (*tc_response_handler_t)(unsigned int request_id,struct  params_json,unsigned int response_type,_Bool finished);
+ * {@snippet lang=c :
+ * typedef void (*tc_response_handler_t)(uint32_t, tc_string_data_t, uint32_t, _Bool)
  * }
  */
-public interface tc_response_handler_t {
+public class tc_response_handler_t {
 
-    void apply(int request_id, java.lang.foreign.MemorySegment params_json, int response_type, boolean finished);
-    static MemorySegment allocate(tc_response_handler_t fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$0.const$4, fi, constants$0.const$3, scope);
+    tc_response_handler_t() {
+        // Should not be called directly
     }
-    static tc_response_handler_t ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (int _request_id, java.lang.foreign.MemorySegment _params_json, int _response_type, boolean _finished) -> {
-            try {
-                constants$0.const$5.invokeExact(symbol, _request_id, _params_json, _response_type, _finished);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        void apply(int request_id, MemorySegment params_json, int response_type, boolean finished);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+        ton_client.C_INT,
+        tc_string_data_t.layout(),
+        ton_client.C_INT,
+        ton_client.C_BOOL
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = ton_client.upcallHandle(tc_response_handler_t.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(tc_response_handler_t.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static void invoke(MemorySegment funcPtr,int request_id, MemorySegment params_json, int response_type, boolean finished) {
+        try {
+             DOWN$MH.invokeExact(funcPtr, request_id, params_json, response_type, finished);
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 
