@@ -5,7 +5,7 @@
 - Supported `server-code` data in EVER-SDK error handling, inconsistencies with different GQL versions are now ignorable
 - Fixes for subscriptions workflow
 - Updated Jackson -> 2.16.1
-- Updated Gradle -> 8.6
+- Updated Gradle -> 8.8
 
 Tests:
 
