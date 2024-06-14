@@ -1,6 +1,6 @@
 ### 3.0.0
 
-- Updated baseline JDK -> 21
+- Updated baseline JDK -> 22
 - Updated **EVER-SDK** generated code -> **1.45.0**
 - Supported `server-code` data in EVER-SDK error handling, inconsistencies with different GQL versions are now ignorable
 - Fixes for subscriptions workflow
