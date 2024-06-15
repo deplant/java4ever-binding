@@ -3,6 +3,7 @@ package tech.deplant.java4ever.unit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import tech.deplant.java4ever.binding.EverSdk;
+import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.loader.AbsolutePathLoader;
 
 public class TestEnv {
@@ -22,16 +23,16 @@ public class TestEnv {
 
 	static int newContextEmpty() {
 		try {
-			return EverSdk.createDefault().orElseThrow();
-		} catch (JsonProcessingException e) {
+			return EverSdk.createDefault();
+		} catch (EverSdkException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	static int newContext() {
 		try {
-			return EverSdk.createWithEndpoint(NODESE_ENDPOINT).orElseThrow();
-		} catch (JsonProcessingException e) {
+			return EverSdk.createWithEndpoint(NODESE_ENDPOINT);
+		} catch (EverSdkException e) {
 			throw new RuntimeException(e);
 		}
 	}

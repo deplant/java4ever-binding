@@ -63,10 +63,10 @@ public class EverSdk {
 	}
 
 	public static <T, P> CompletableFuture<T> asyncAppObject(final int contextId,
-	                                                final String functionName,
-	                                                final P functionInputs,
-	                                                final Class<T> outputClass,
-	                                                AppObject appObject) throws EverSdkException {
+	                                                         final String functionName,
+	                                                         final P functionInputs,
+	                                                         final Class<T> outputClass,
+	                                                         AppObject appObject) throws EverSdkException {
 		return contexts.get(contextId).callAsync(functionName, functionInputs, outputClass, null, appObject);
 	}
 
@@ -74,19 +74,19 @@ public class EverSdk {
 		NativeMethods.tcDestroyContext(contextId);
 	}
 
-	public static Optional<Integer> createDefault() throws JsonProcessingException {
+	public static int createDefault() throws EverSdkException {
 		return createWithJson("{}");
 	}
 
-	public static Builder builder() throws JsonProcessingException {
+	public static Builder builder() {
 		return new Builder();
 	}
 
-	public static Optional<Integer> createWithEndpoint(String endpoint) throws JsonProcessingException {
+	public static int createWithEndpoint(String endpoint) throws EverSdkException {
 		return createWithJson("{ \"network\":{ \"endpoints\": [\"%s\"] } }".formatted(endpoint));
 	}
 
-	public static Optional<Integer> createWithConfig(Client.ClientConfig config) throws JsonProcessingException {
+	public static int createWithConfig(Client.ClientConfig config) throws EverSdkException {
 		var mergedConfig = new Client.ClientConfig(new Client.BindingConfig(DefaultLoader.BINDING_LIBRARY_NAME,
 		                                                                    DefaultLoader.BINDING_LIBRARY_VERSION),
 		                                           config.network(),
@@ -95,25 +95,59 @@ public class EverSdk {
 		                                           config.boc(),
 		                                           config.proofs(),
 		                                           config.localStoragePath());
-		var mergedJson = JsonContext.SDK_JSON_MAPPER().writeValueAsString(mergedConfig);
-
-		final var createContextResponse = JsonContext.SDK_JSON_MAPPER()
-		                                             .readValue(NativeMethods.tcCreateContext(mergedJson),
-		                                                        ResultOfCreateContext.class);
-		Optional<Integer> contextId = Optional.ofNullable(createContextResponse.result());
-		if (contextId.isEmpty() || contextId.get() < 1) {
-			logger.log(System.Logger.Level.ERROR, "sdk.create_context failed!");
-		} else {
-			int ctxId = contextId.get();
-			contexts.put(ctxId, new EverSdkContext(ctxId, mergedConfig));
-			logger.log(System.Logger.Level.TRACE,
-			           () -> "FUNC:tc_create_context CTX:%d JSON:%s".formatted(ctxId, mergedJson));
+		String resultString = "";
+		ResultOfCreateContext createContextResponse;
+		try {
+			String mergedJson = JsonContext.SDK_JSON_MAPPER().writeValueAsString(mergedConfig);
+			try {
+				resultString = NativeMethods.tcCreateContext(mergedJson);
+				createContextResponse = JsonContext.SDK_JSON_MAPPER()
+				                                   .readValue(resultString,
+				                                              ResultOfCreateContext.class);
+				Optional<Integer> contextId = Optional.ofNullable(createContextResponse.result());
+				if (contextId.isEmpty() || contextId.get() < 1) {
+					logger.log(System.Logger.Level.ERROR, () -> "FUNC:sdk.tc_create_context result is empty!");
+					throw new EverSdkException(new EverSdkException.ErrorResult(-502,
+					                                                            "FUNC:sdk.tc_create_context result is empty!"));
+				}
+				int ctxId = contextId.get();
+				contexts.put(ctxId, new EverSdkContext(ctxId, mergedConfig));
+				logger.log(System.Logger.Level.TRACE,
+				           () -> "FUNC:sdk.tc_create_context CTX:%d JSON:%s".formatted(ctxId, mergedJson));
+				return ctxId;
+			} catch (JsonProcessingException e) {
+				final String finalResultString = resultString;
+				logger.log(System.Logger.Level.ERROR,
+				           () -> "FUNC:sdk.tc_create_context request deserialization failed! Exception: %s Result: %s".formatted(
+						           e,
+						           finalResultString));
+				throw new EverSdkException(new EverSdkException.ErrorResult(-501,
+				                                                            "FUNC:sdk.tc_create_context request deserialization failed!"),
+				                           e.getCause());
+			}
+		} catch (JsonProcessingException e) {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "EVER-SDK tc_create_context request serialization failed! Exception: %s Config: %s".formatted(
+					           e,
+					           mergedConfig));
+			throw new EverSdkException(new EverSdkException.ErrorResult(-502,
+			                                                            "EVER-SDK tc_create_context request serialization failed!"),
+			                           e.getCause());
 		}
-		return contextId;
 	}
 
-	public static Optional<Integer> createWithJson(String configJson) throws JsonProcessingException {
+	public static int createWithJson(String configJson) throws EverSdkException {
+		try {
 		return createWithConfig(JsonContext.SDK_JSON_MAPPER().readValue(configJson, Client.ClientConfig.class));
+		} catch (JsonProcessingException e) {
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "EVER-SDK tc_create_context request serialization failed! Exception: %s Config: %s".formatted(
+					           e,
+					           configJson));
+			throw new EverSdkException(new EverSdkException.ErrorResult(-502,
+			                                                            "EVER-SDK tc_create_context request serialization failed!"),
+			                           e.getCause());
+		}
 	}
 
 	public static <T> T await(CompletableFuture<T> functionOutputs) throws EverSdkException {
@@ -124,7 +158,8 @@ public class EverSdk {
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
 			                           ex3.getCause());
 		} catch (TimeoutException ex4) {
-			logger.log(System.Logger.Level.ERROR, () -> "EVER-SDK Call expired on Timeout! %s".formatted(ex4.toString()));
+			logger.log(System.Logger.Level.ERROR,
+			           () -> "EVER-SDK Call expired on Timeout! %s".formatted(ex4.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
 			                           ex4.getCause());
 		} catch (ExecutionException e) {
@@ -379,7 +414,7 @@ public class EverSdk {
 			}
 		}
 
-		public Optional<Integer> build() throws IOException {
+		public int build() throws EverSdkException {
 			var config = new Client.ClientConfig(new Client.BindingConfig("java4ever", "3.0.0"),
 			                                     buildNetworkConfig(),
 			                                     buildCryptoConfig(),

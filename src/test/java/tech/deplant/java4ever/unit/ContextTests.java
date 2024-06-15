@@ -1,6 +1,7 @@
 package tech.deplant.java4ever.unit;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import org.junit.jupiter.api.BeforeAll;
@@ -52,9 +53,9 @@ public class ContextTests {
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void config_from_builder_equals_config_from_json() throws IOException {
-		int ctxId = EverSdk.builder().networkEndpoints(TestEnv.NODESE_ENDPOINT).build().orElseThrow();
-		int ctxId2 = EverSdk.createWithEndpoint(TestEnv.NODESE_ENDPOINT).orElseThrow();
+	public void config_from_builder_equals_config_from_json() throws EverSdkException, JsonProcessingException {
+		int ctxId = EverSdk.builder().networkEndpoints(TestEnv.NODESE_ENDPOINT).build();
+		int ctxId2 = EverSdk.createWithEndpoint(TestEnv.NODESE_ENDPOINT);
 		var config1 = EverSdk.contextConfig(ctxId);
 		var config2 = EverSdk.contextConfig(ctxId2);
 		assertEquals(JsonContext.serialize(config1),JsonContext.serialize(config2));
@@ -62,14 +63,14 @@ public class ContextTests {
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void binding_config_from_json_rewrites_to_preset_config() throws IOException, EverSdkException, ExecutionException, InterruptedException {
+	public void binding_config_from_json_rewrites_to_preset_config() throws EverSdkException {
 		var configJson = "{\"binding\":{\"library\":\"ton-client-java\",\"version\":\"1.5.0\"}}";
-		int ctxId = EverSdk.builder().build().orElseThrow();
-		int ctxId2 = EverSdk.createWithJson(configJson).orElseThrow();
-		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId).get().binding().version());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId).get().binding().library());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, Client.config(ctxId2).get().binding().version());
-		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, Client.config(ctxId2).get().binding().library());
+		int ctxId = EverSdk.builder().build();
+		int ctxId2 = EverSdk.createWithJson(configJson);
+		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, EverSdk.await(Client.config(ctxId)).binding().version());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, EverSdk.await(Client.config(ctxId)).binding().library());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_VERSION, EverSdk.await(Client.config(ctxId2)).binding().version());
+		assertEquals(DefaultLoader.BINDING_LIBRARY_NAME, EverSdk.await(Client.config(ctxId2)).binding().library());
 	}
 
 }
