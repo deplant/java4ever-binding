@@ -1,4 +1,4 @@
-open module java4ever.binding {
+module java4ever.binding {
 	requires java.compiler;
 	requires transitive com.fasterxml.jackson.databind;
 	requires transitive deplant.commons;
@@ -7,6 +7,11 @@ open module java4ever.binding {
 	requires com.fasterxml.jackson.datatype.jsr310;
 	requires com.fasterxml.jackson.module.paramnames;
 	requires java.net.http;
+
+	opens sdk.linux_x86_64;
+	opens sdk.macos_aarch64;
+	opens sdk.macos_x86_64;
+	opens sdk.win_x86_64;
 
 	exports tech.deplant.java4ever.binding;
 	exports tech.deplant.java4ever.binding.gql;

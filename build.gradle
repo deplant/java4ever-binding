@@ -122,6 +122,14 @@ java {
     withSourcesJar()
 }
 
+jar {
+    manifest {
+        attributes(
+                'Enable-Native-Access': "ALL-UNNAMED",
+        )
+    }
+}
+
 // Task for JavaPoet generation of EVER-SDK API
 task generateEverSdkApi(type: JavaExec) {
     group = "other"
@@ -163,7 +171,6 @@ tasks.withType(Javadoc).configureEach {
     options.addBooleanOption('html5', true)
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
-    options.addBooleanOption('-enable-preview', true)
     options.addStringOption('-release', '22')
     options.addBooleanOption('-ignore-source-errors', true)
     options.addStringOption('Xdoclint:none', '-quiet')
@@ -181,7 +188,6 @@ tasks.withType(JavaExec).configureEach {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(22)
     }
-    jvmArgs += "--enable-native-access=java4ever.binding"
 }
 
 tasks.withType(Test) {
@@ -189,5 +195,4 @@ tasks.withType(Test) {
         languageVersion = JavaLanguageVersion.of(22)
     }
     useJUnitPlatform()
-    jvmArgs += "--enable-native-access=ALL-UNNAMED"
 }
