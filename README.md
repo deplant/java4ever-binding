@@ -54,30 +54,68 @@ dependencies {
 </dependency>
 ```
 
-### Creating EVER-SDK Context
+## Examples and Guides
 
-If you use default EVER-SDK lib (_latest EVER-SDK that is included in the distribution_), 
-you can create EverSdkContext object as following:
+### Setting up SDK
 
+**SDK** setup consists of two steps:
+1. Loading EVER-SDK library (should be done once)
+2. Creating context/session with certain config (should be done for every new endpoint or config change)
+
+Both steps are described below.
+
+#### Loading EVER-SDK library
+
+To load EVER-SDK connection to JVM, use `EverSdk.load()` static method.
+Loaded EVER-SDK is a singleton, you can't use other version of library simultaneously.
+Java4Ever stores wrapped copy of actual EVER-SDK libraries in its resources. To load wrapped library, run:
 ```java
-EverSdkContext ctx = EverSdkContext.builder()
-        .setConfigJson(configJson)
-        .buildNew();
+EverSdk.load();
+```
+**Note: We found problems with loading library from resources using Spring's fatJar bundles. Please, use alternative loaders if you use fatJar too.**
+
+If you want to use custom binaries or version, you should use other loaders.
+All loaders are just ways to reach library, so you should get/build `ton_client` library first.
+You can find EverX [precompiled EVER-SDK files](https://github.com/tonlabs/ever-sdk/blob/master/README.md#download-precompiled-binaries) here.
+Here are the examples of loader options:
+```java
+// loads library from path saved in environment variable
+EverSdk.load(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB")); 
+// loads library from ~ (user home)
+EverSdk.load(AbsolutePathLoader.ofUserDir("libton_client.so")); 
+// loads from any absolute path
+EverSdk.load(new AbsolutePathLoader(Path.of("/home/ton/lib/libton_client.so"))); 
+// loads library from java.library.path JVM argument
+EverSdk.load(new JavaLibraryPathLoader("ton_client")); 
 ```
 
-To use custom one, specify it in buildNew() method:
+#### Creating config context and specifying endpoints
+
+Context configuration is needed to provide EVER-SDK library with your endpoints, timeouts and other settings.
+You can find a list of endpoints here: https://docs.evercloud.dev/products/evercloud/networks-endpoints
+If you're working with Everscale mainnet, here you can register your app and receive "ProjectID" part of the URL: https://dashboard.evercloud.dev/
 
 ```java
-EverSdkContext ctx = EverSdkContext.builder()
-        .setConfigJson(configJson)
-        .buildNew(new AbsolutePathLoader(Path.of("/home/ton/lib/libton_client.so")));
+// creates default EVER-SDK context without specifying endpoints
+int contextId1 = EverSdk.createDefault(); 
+// creates default EVER-SDK with specified endpoint
+int contextId2 = EverSdk.createWithEndpoint("http://localhost/graphql"); 
+// creates EVER-SDK context from ready JSON string
+int contextId4 = EverSdk.createWithJson(configJsonString);
 ```
 
-Variants of loading ton_client lib:
-* `AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB")` - path from Environment variable
-* `AbsolutePathLoader.ofUserDir("libton_client.so")` - file from ~ (user home)
-* `new AbsolutePathLoader(Path.of("/home/ton/lib/libton_client.so"))` - any absolute path
-* `new JavaLibraryPathLoader("ton_client");` - gets library from java.library.path JVM argument
+Save your contextId, you will use this id to call EVER-SDK methods.
+
+#### Configuring SDK with Builder
+
+Alternatively, you can call EverSdk.builder() that provides builder methods for all config values of EVER-SDK.
+Thus you can easily configure only needed parts of library.
+```java
+int contextId3 = EverSdk.builder()
+                       .networkEndpoints("http://localhost/graphql")
+                       .networkQueryTimeout(300_000L)
+                       .build();
+```
 
 ### Calling EVER-SDK methods
 
