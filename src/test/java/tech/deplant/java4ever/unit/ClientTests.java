@@ -41,6 +41,14 @@ public class ClientTests {
 	}
 
 	@Test
+	public void get_version_snippet() throws EverSdkException, ExecutionException, InterruptedException {
+		int ctxId = TestEnv.newContextEmpty();
+		var asyncResult = Client.version(ctxId);
+		var syncResult = EverSdk.await(asyncResult);
+		System.out.println("EVER-SDK Version: " + syncResult.version());
+	}
+
+	@Test
 	public void api_reference_version_equals_constant() throws EverSdkException, ExecutionException, InterruptedException {
 		int ctxId = TestEnv.newContextEmpty();
 		assertEquals(DefaultLoader.EVER_SDK_VERSION, Client.getApiReference(ctxId).get().api().get("version").asText());

@@ -123,7 +123,10 @@ It's very simple, just type ModuleName.methodName (list of modules and methods i
 Note that method names are converted from snake_case to camelCase. Then pass EverSdkContext object as 1st parameter. That's all.
 
 ```java
-Client.version(ctx);
+int contextId = TestEnv.newContextEmpty();
+var asyncResult = Client.version(contextId);
+var syncResult = EverSdk.await(asyncResult);
+System.out.println("EVER-SDK Version: " + syncResult.version());
 ```
 
 
