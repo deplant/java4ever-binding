@@ -1,3 +1,8 @@
+### 3.0.4
+
+- Fixes for multi-threading work
+- Some optimizations
+
 ### 3.0.0
 
 - Updated baseline JDK -> 22

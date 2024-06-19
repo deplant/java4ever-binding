@@ -16,6 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
+/**
+ * The type Ever sdk context.
+ */
 public class EverSdkContext implements tc_response_handler_t.Function {
 
 	private final static System.Logger logger = System.getLogger(EverSdkContext.class.getName());
@@ -28,6 +31,12 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	@JsonIgnore private final Map<Integer, Consumer<JsonNode>> subscriptions = new ConcurrentHashMap<>();
 	@JsonIgnore private final Queue<RequestData> cleanupQueue = new ConcurrentLinkedDeque<>();
 
+	/**
+	 * Instantiates a new Ever sdk context.
+	 *
+	 * @param id           the id
+	 * @param clientConfig the client config
+	 */
 	public EverSdkContext(int id, Client.ClientConfig clientConfig) {
 		this.id = id;
 		this.clientConfig = clientConfig;
@@ -37,21 +46,23 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	/**
 	 * Most used call to EVER-SDK with some output object
 	 *
-	 * @param functionName
+	 * @param <R>            Class of the result object
+	 * @param <P>            Class of the function params object
+	 * @param <AP>           Class of the AppObject param calls
+	 * @param <AR>           Class of the AppObject result callbacks
+	 * @param functionName   the function name
 	 * @param functionInputs record of input type, usually ParamsOf...
 	 * @param resultClass    class of output type record, usually ResultOf...class
-	 * @param <R> Class of the result object
-	 * @param <P> Class of the function params object
-	 * @param <AR> Class of the AppObject result callbacks
-	 * @param <AP> Class of the AppObject param calls
+	 * @param eventConsumer  the event consumer
+	 * @param appObject      the app object
 	 * @return output type record, usually ResultOf...
-	 * @throws EverSdkException
+	 * @throws EverSdkException the ever sdk exception
 	 */
-	public <R,P,AP,AR> CompletableFuture<R> callAsync(final String functionName,
-	                                             final P functionInputs,
-	                                             final Class<R> resultClass,
-	                                             final Consumer<JsonNode> eventConsumer,
-	                                             final AppObject<AP,AR> appObject) throws EverSdkException {
+	public <R, P, AP, AR> CompletableFuture<R> callAsync(final String functionName,
+	                                                     final P functionInputs,
+	                                                     final Class<R> resultClass,
+	                                                     final Consumer<JsonNode> eventConsumer,
+	                                                     final AppObject<AP, AR> appObject) throws EverSdkException {
 		final int requestId = requestCountNextVal();
 		// let's clean previous requests and their native memory sessions
 		cleanup();
@@ -60,7 +71,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		boolean hasResponse = !resultClass.equals(Void.class);
 
 		var request = new RequestData<R>(hasResponse,
-		                                 Arena.ofShared(),
+		                                 Arena.ofAuto(),
 		                                 new ReentrantLock(),
 		                                 resultClass,
 		                                 new CompletableFuture<>(),
@@ -69,14 +80,14 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		this.requests.put(requestId, request);
 
 		// with reentrant lock, multiple results on any given single request will be processed one by one
+		var paramsJson = processParams(functionInputs);
 		request.queueLock().lock();
 		try {
-			var paramsJson = processParams(functionInputs);
 			NativeMethods.tcRequest(this.id, functionName, paramsJson, request.nativeArena(), requestId, this);
+		} finally {
+			request.queueLock().unlock();
 			logger.log(System.Logger.Level.TRACE,
 			           () -> EverSdk.LOG_FORMAT.formatted(this.id, requestId, functionName, "SEND", paramsJson));
-		} finally {
-			request.queueLock().unlock(); // снимаем блокировку
 		}
 		if (!hasResponse) {
 			request.responseFuture().complete(null);
@@ -84,18 +95,27 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		return request.responseFuture();
 	}
 
+	/**
+	 * Request count next val int.
+	 *
+	 * @return the int
+	 */
 	public int requestCountNextVal() {
 		return this.requestCount.incrementAndGet();
 	}
 
-	public void addResponse(int requestId, String responseString) {
-		var request = this.requests.get(requestId);
+	/**
+	 * Add response.
+	 *
+	 * @param requestId      the request id
+	 * @param responseString the response string
+	 */
+	public void addResponse(int requestId, final RequestData request, final String responseString) {
 		if (request.hasResponse()) {
-			request.queueLock().lock();
 			try {
 				if (!request.responseFuture().isDone()) {
 					logger.log(System.Logger.Level.TRACE,
-					           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id,requestId, responseString));
+					           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
 					request.responseFuture()
 					       .complete(JsonContext.SDK_JSON_MAPPER().readValue(responseString, request.responseClass()));
 				} else {
@@ -108,24 +128,19 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 			} catch (JsonProcessingException ex2) {
 				// successful response but parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> "CTX:%d REQ:%d EVER-SDK Response deserialization failed! %s".formatted(
-						           this.id,
-						           requestId,
-						           ex2.toString()));
+				           () -> "CTX:%d REQ:%d EVER-SDK Response deserialization failed! %s".formatted(this.id,
+				                                                                                        requestId,
+				                                                                                        ex2.toString()));
 				request.responseFuture()
 				       .completeExceptionally(new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                                                    "EVER-SDK response deserialization failed!"),
 				                                                   ex2.getCause()));
-			} finally {
-				request.queueLock().unlock(); // снимаем блокировку
 			}
 		}
 	}
 
-	private void addError(int requestId, String responseString) {
-		var request = requests.get(requestId);
+	private void addError(int requestId, final RequestData request, final String responseString) {
 		if (request.responseFuture() instanceof CompletableFuture<?> future) {
-			request.queueLock().lock();
 			try {
 				// These errors are sent by SDK, response_type=1
 				//String everSdkError = ex.getCause().getMessage();
@@ -139,15 +154,12 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 			} catch (JsonProcessingException ex1) {
 				// if error response parsing failed
 				logger.log(System.Logger.Level.ERROR,
-				           () -> "CTX:%d REQ:%d EVER-SDK Error deserialization failed! %s".formatted(
-						           this.id,
-						           requestId,
-						           ex1.toString()));
+				           () -> "CTX:%d REQ:%d EVER-SDK Error deserialization failed! %s".formatted(this.id,
+				                                                                                     requestId,
+				                                                                                     ex1.toString()));
 				future.completeExceptionally(new EverSdkException(new EverSdkException.ErrorResult(-500,
 				                                                                                   "EVER-SDK Error deserialization failed!"),
 				                                                  ex1.getCause()));
-			} finally {
-				request.queueLock().unlock(); // снимаем блокировку
 			}
 		} else {
 			logger.log(System.Logger.Level.ERROR,
@@ -159,8 +171,8 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 
 	}
 
-	private void addEvent(int requestId, String responseString) {
-		var request = this.requests.get(requestId);
+	// responseType = 100 means good answer, 101 means error or reconnection
+	private void addEvent(int requestId, final RequestData request, final String responseString, int responseType) {
 		if (request.subscriptionHandler() instanceof Consumer<?> handler) {
 			try {
 				JsonNode node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
@@ -168,11 +180,15 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 					((Consumer<JsonNode>) handler).accept(node);
 				} catch (Exception ex1) {
 					logger.log(System.Logger.Level.ERROR,
-					           () -> "REQ:%d EVENT:%s Subscribe Event Action processing failed! %s".formatted(requestId, responseString, ex1.toString()));
+					           () -> "REQ:%d EVENT:%s Subscribe Event Action processing failed! %s".formatted(requestId,
+					                                                                                          responseString,
+					                                                                                          ex1.toString()));
 				}
 			} catch (JsonProcessingException ex2) {
 				logger.log(System.Logger.Level.ERROR,
-				           () -> "REQ:%d EVENT:%s Subscribe Event JSON deserialization failed! %s".formatted(requestId, responseString, ex2.toString()));
+				           () -> "REQ:%d EVENT:%s Subscribe Event JSON deserialization failed! %s".formatted(requestId,
+				                                                                                             responseString,
+				                                                                                             ex2.toString()));
 			}
 		} else {
 			logger.log(System.Logger.Level.ERROR,
@@ -183,28 +199,24 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		}
 	}
 
-	private void finishRequest(int requestId) {
-		if (this.requests.get(requestId) instanceof RequestData request) {
-			this.requests.remove(requestId);
-			this.cleanupQueue.add(request);
-		}
+	private void finishRequest(int requestId, final RequestData request) {
+		this.cleanupQueue.add(request);
+		this.requests.remove(requestId);
 		this.subscriptions.remove(requestId);
 	}
 
 	private void cleanup() {
 		while (this.cleanupQueue.poll() instanceof RequestData request) {
-			if (request.nativeArena() instanceof Arena a) {
-				request.queueLock().lock();
-				try {
-					a.close();
-				} finally {
-					request.queueLock().unlock(); // снимаем блокировку
-				}
-			}
+			request.queueLock().lock();
+			//try (var arena = request.nativeArena()) {
+			logger.log(System.Logger.Level.TRACE, () -> "Memory session arena closed");
+			//} finally {
+			request.queueLock().unlock();
+			//}
 		}
 	}
 
-	private <P> String processParams(P params) {
+	private <P> String processParams(final P params) {
 		try {
 			return (null == params) ? "" : JsonContext.SDK_JSON_MAPPER().writeValueAsString(params);
 		} catch (JsonProcessingException e) {
@@ -219,7 +231,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 			case null -> 60000L;
 			case Client.ClientConfig cl -> switch (cl.network()) {
 				case null -> 60000L;
-				case Client.NetworkConfig ntwrk -> Objects.requireNonNullElse(ntwrk.queryTimeout(),60000L);
+				case Client.NetworkConfig ntwrk -> Objects.requireNonNullElse(ntwrk.queryTimeout(), 60000L);
 			};
 		};
 	}
@@ -227,27 +239,25 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	private <R> R awaitSyncResponse(CompletableFuture<R> requestId, Class<R> resultClass) throws EverSdkException {
 		try {
 			// waiting for response synchronously
-			String responseString = (String) this.requests.get(requestId).responseFuture().get(this.timeout, TimeUnit.MILLISECONDS);
-			logger.log(System.Logger.Level.TRACE, () -> "CTX:%d REQ:%d RESP:%s".formatted(
-					this.id,
-					requestId,
-					responseString));
+			String responseString = (String) this.requests.get(requestId)
+			                                              .responseFuture()
+			                                              .get(this.timeout, TimeUnit.MILLISECONDS);
+			logger.log(System.Logger.Level.TRACE,
+			           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
 			// let's try to parse response
 			return JsonContext.SDK_JSON_MAPPER().readValue(responseString, resultClass);
 		} catch (InterruptedException ex3) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d EVER-SDK Call interrupted! %s}".formatted(
-					           this.id,
-					           requestId,
-					           ex3.toString()));
+			           () -> "CTX:%d REQ:%d EVER-SDK Call interrupted! %s}".formatted(this.id,
+			                                                                          requestId,
+			                                                                          ex3.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
 			                           ex3.getCause());
 		} catch (TimeoutException ex4) {
 			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d EVER-SDK Call expired on Timeout! %s".formatted(
-					           this.id,
-					           requestId,
-					           ex4.toString()));
+			           () -> "CTX:%d REQ:%d EVER-SDK Call expired on Timeout! %s".formatted(this.id,
+			                                                                                requestId,
+			                                                                                ex4.toString()));
 			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
 			                           ex4.getCause());
 
@@ -260,42 +270,29 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		}
 	}
 
-//	/**
-//	 * Most used call to EVER-SDK with some output object
-//	 *
-//	 * @param functionName
-//	 * @param params       record of input type, usually ParamsOf...
-//	 * @param <P>
-//	 * @throws EverSdkException
-//	 */
-//	private <P> void addRequest(int requestId, String functionName, P params, boolean hasResponse) {
-//		//final NativeUpcallHandler handler = new NativeUpcallHandler(this.id, hasResponse);
-//		var arena = Arena.ofShared();
-//		var request = new RequestData(hasResponse, arena, new ReentrantLock());
-//		cleanup();
-//		this.requests.put(requestId, request);
-//		request.queueLock().lock();
-//		try {
-//			if (hasResponse) {
-//				this.responses.put(requestId, new CompletableFuture<>());
-//			}
-//			var paramsJson = processParams(params);
-//			NativeMethods.tcRequest(this.id, functionName, paramsJson, arena, requestId, this);
-//			logger.log(System.Logger.Level.TRACE,
-//			           () -> EverSdk.LOG_FORMAT.formatted(this.id, requestId, functionName, "SEND", paramsJson));
-//		} finally {
-//			request.queueLock().unlock(); // снимаем блокировку
-//		}
-//	}
-
+	/**
+	 * Id int.
+	 *
+	 * @return the int
+	 */
 	public int id() {
 		return this.id;
 	}
 
+	/**
+	 * Request count int.
+	 *
+	 * @return the int
+	 */
 	public int requestCount() {
 		return this.requestCount.get();
 	}
 
+	/**
+	 * Config client . client config.
+	 *
+	 * @return the client . client config
+	 */
 	public Client.ClientConfig config() {
 		return this.clientConfig;
 	}
@@ -313,34 +310,52 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	 * @param finished
 	 */
 	@Override
-	public void apply(int request_id, MemorySegment params_json, int response_type, boolean finished) {
-		try {
-			final String responseString = NativeStrings.toJava(params_json);
-			if (logger.isLoggable(System.Logger.Level.TRACE)) {
-				logger.log(System.Logger.Level.TRACE,
-				           "REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(
-						           this.id,
-						           response_type,
-						           String.valueOf(finished),
-						           responseString));
+	public void apply(int request_id, final MemorySegment params_json, int response_type, boolean finished) {
+		if (this.requests.get(request_id) instanceof RequestData<?> request) {
+			// Request is present, let's lock it
+			request.queueLock().lock();
+			try {
+				final String responseString = NativeStrings.toJava(params_json);
+				if (logger.isLoggable(System.Logger.Level.TRACE)) {
+					logger.log(System.Logger.Level.TRACE,
+					           "REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(this.id,
+					                                                          response_type,
+					                                                          String.valueOf(finished),
+					                                                          responseString));
+				}
+				switch (tc_response_types.of(response_type)) {
+					case tc_response_types.TC_RESPONSE_SUCCESS -> addResponse(request_id, request, responseString);
+					case tc_response_types.TC_RESPONSE_ERROR -> addError(request_id, request, responseString);
+					case tc_response_types.TC_RESPONSE_CUSTOM -> addEvent(request_id, request, responseString, response_type);
+				}
+				// if "finished" boolean flag received, let's cleanup request
+				if (finished) {
+					finishRequest(request_id, request);
+				}
+			} catch (Exception e) {
+				logger.log(System.Logger.Level.ERROR,
+				           "REQ:%d TYPE:%d EVER-SDK Unexpected upcall error! %s".formatted(request_id,
+				                                                                           response_type,
+				                                                                           e.toString()));
+			} finally {
+				request.queueLock().unlock();
 			}
-			switch (tc_response_types.of(response_type)) {
-				case tc_response_types.TC_RESPONSE_SUCCESS -> addResponse(request_id, responseString);
-				case tc_response_types.TC_RESPONSE_ERROR -> addError(request_id, responseString);
-				case tc_response_types.TC_RESPONSE_CUSTOM -> addEvent(request_id, responseString);
-			}
-
-			// if "final" flag received, let's remove everything
-			if (finished) {
-				finishRequest(request_id);
-			}
-		} catch (Exception e) {
+		} else {
+			// Let's process the situation when request already cleaned up
 			logger.log(System.Logger.Level.ERROR,
-			           "REQ:%d TYPE:%d EVER-SDK Unexpected upcall error! %s".formatted(request_id, response_type, e.toString()));
+			           "REQ:%d TYPE:%d EVER-SDK Response on cleaned request!".formatted(request_id, response_type));
 		}
 	}
 
-	record RequestData<R>(boolean hasResponse,
+	/**
+	 * The type Request data.
+	 * It's VERY IMPORTANT to hold the pointer to RequestData for all interconnection of EVER-SDK request.
+	 * That's because nativeArena field is managed by GC.
+	 * If the RequestData will be cleaned up by GC, all subsequent answer will fail the JVM.
+	 *
+	 * @param <R> the type parameter
+	 */
+	private record RequestData<R>(boolean hasResponse,
 	                      Arena nativeArena,
 	                      ReentrantLock queueLock,
 	                      Class<R> responseClass,
@@ -349,6 +364,9 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	                      AppObject appObject) {
 	}
 
+	/**
+	 * The type Subscription handler.
+	 */
 	record SubscriptionHandler(Consumer<JsonNode> eventAction) {
 	}
 }

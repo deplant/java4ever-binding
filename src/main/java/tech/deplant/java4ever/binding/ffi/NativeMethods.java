@@ -25,11 +25,11 @@ public class NativeMethods {
 	}
 
 	public static void tcRequest(int contextId,
-	                             String functionName,
-	                             String params,
-								 Arena nativeMemory,
+	                             final String functionName,
+	                             final String params,
+	                             final Arena nativeMemory,
 	                             int requestId,
-	                             tc_response_handler_t.Function handler) {
+	                             final tc_response_handler_t.Function handler) {
 			ton_client.tc_request(contextId,
 			                      NativeStrings.toRust(functionName, nativeMemory),
 			                      NativeStrings.toRust(params, nativeMemory),
