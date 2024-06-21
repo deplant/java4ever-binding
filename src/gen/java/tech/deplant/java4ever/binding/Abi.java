@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Abi</strong>
  * Contains methods of "abi" module of EVER-SDK API
- *
+ * <p>
  * Provides message encoding and decoding according to the ABI specification. 
  * @version 1.45.0
  */
@@ -107,7 +107,7 @@ public final class Abi {
    *
    * Expiration timeouts will grow with every retry.
    * Retry grow factor is set in Client config:
-   * <.....add config parameter with default value here>
+   * &lt;.....add config parameter with default value here&gt;
    *
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
@@ -223,7 +223,7 @@ public final class Abi {
   }
 
   /**
-   * Doesn't support ABI version >= 2.4. Use `encode_initial_data` instead Updates initial account data with initial values for the contract's static variables and owner's public key. This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
+   * Doesn't support ABI version &gt;= 2.4. Use `encode_initial_data` instead Updates initial account data with initial values for the contract's static variables and owner's public key. This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
    *
    * @param abi  Contract ABI
    * @param data  Data BOC or BOC handle
@@ -252,7 +252,7 @@ public final class Abi {
   }
 
   /**
-   * Doesn't support ABI version >= 2.4. Use `decode_account_data` instead Decodes initial values of a contract's static variables and owner's public key from account initial data This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
+   * Doesn't support ABI version &gt;= 2.4. Use `decode_account_data` instead Decodes initial values of a contract's static variables and owner's public key from account initial data This operation is applicable only for initial account data (before deploy). If the contract is already deployed, its data doesn't contain this data section any more.
    *
    * @param abi Initial data is decoded if this parameter is provided Contract ABI.
    * @param data  Data BOC or BOC handle
@@ -269,7 +269,7 @@ public final class Abi {
    * ABI has it own rules for fields layout in cells so manually encoded
    * BOC can not be described in terms of ABI rules.
    *
-   * To solve this problem we introduce a new ABI type `Ref(<ParamType>)`
+   * To solve this problem we introduce a new ABI type `Ref(&lt;ParamType&gt;)`
    * which allows to store `ParamType` ABI parameter in cell reference and, thus,
    * decode manually encoded BOCs. This type is available only in `decode_boc` function
    * and will not be available in ABI messages encoding until it is included into some ABI revision.
@@ -580,7 +580,7 @@ public final class Abi {
    *
    * Expiration timeouts will grow with every retry.
    * Retry grow factor is set in Client config:
-   * <.....add config parameter with default value here>
+   * &lt;.....add config parameter with default value here&gt;
    *
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
@@ -799,7 +799,7 @@ public final class Abi {
    * 2. Public key, specified in TVM file.
    * 3. Public key, provided by Signer.
    *
-   * Applicable only for contracts with ABI version < 2.4. Contract initial public key should be
+   * Applicable only for contracts with ABI version &lt; 2.4. Contract initial public key should be
    * explicitly provided inside `initial_data` since ABI 2.4 Optional public key that can be provided in deploy set in order to substitute one in TVM file or provided by Signer.
    */
   public record DeploySet(String tvc, String code, String stateInit, Long workchainId,

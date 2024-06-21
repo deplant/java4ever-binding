@@ -43,22 +43,15 @@ public record DefaultLoader(ClassLoader loader) implements LibraryLoader {
 		return lib.getAbsolutePath();
 	}
 
-	private InputStream getLibraryResource(String name) throws IOException {
-		//return ModuleLayer.boot().findModule("java4ever.binding").orElseThrow().getResourceAsStream(name);
+	private InputStream getLibraryResource(String name) {
 		return loader().getResourceAsStream(name);
 	}
 
 	public void loadJarDll(String name) {
 		try {
-//			Module module = ModuleLayer.boot()
-//			                           .findModule("java4ever.binding")
-//			                           // Optional<Module> at this point
-//			                           .orElseThrow();
-			//InputStream in = module.getResourceAsStream(name);
 			InputStream in = getLibraryResource(name);
 			Objects.requireNonNull(in,
 			                       "EVER-SDK library file not found or can't be accessed. You can also try other LibraryLoader variants.");
-			//InputStream in = this.getClass().getResourceAsStream(name);
 			byte[] buffer = new byte[1024];
 			int read = -1;
 			File temp = null;

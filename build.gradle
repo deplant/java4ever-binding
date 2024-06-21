@@ -157,7 +157,7 @@ tasks.register('generateFfmApiBridge') {
     exec {
         workingDir "${projectDir}"
         executable jextractPath
-        standardOutput = stdout;
+        standardOutput = stdout
         args "--output", "${projectDir}/src/gen/java", "--target-package", "tech.deplant.java4ever.binding.ffi", "--header-class-name", "ton_client", "${projectDir}/jextract/ton_client.h"
     }
     stdout.toString().trim()
@@ -168,12 +168,10 @@ tasks.withType(Javadoc).configureEach {
     javadocTool = javaToolchains.javadocToolFor {
         languageVersion = JavaLanguageVersion.of(jdkVersion)
     }
-    failOnError false
     options.addBooleanOption('html5', true)
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
     options.addStringOption('-release', "$jdkVersion")
-    options.addBooleanOption('-ignore-source-errors', true)
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 

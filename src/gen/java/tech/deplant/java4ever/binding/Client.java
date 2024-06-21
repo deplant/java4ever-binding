@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Client</strong>
  * Contains methods of "client" module of EVER-SDK API
- *
+ * <p>
  * Provides information about library. 
  * @version 1.45.0
  */

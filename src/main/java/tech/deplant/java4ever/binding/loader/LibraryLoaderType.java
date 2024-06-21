@@ -4,5 +4,5 @@ public enum LibraryLoaderType {
 	ENV,
 	JAVALIB,
 	PATH,
-	DEFAULT;
+	DEFAULT
 }

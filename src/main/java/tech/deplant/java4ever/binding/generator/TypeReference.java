@@ -67,7 +67,7 @@ public record TypeReference(String module,
 		if (typeReference != null &&
 		    typeReference.module() == null &&
 		    typeReference.isRef() &&
-		    typeReference.name().length() > 0) {
+		    !typeReference.name().isEmpty()) {
 			String[] splittedName = typeReference.name().split("\\.");
 			if (splittedName.length < 2) {
 				logger.log(System.Logger.Level.ERROR, () ->

@@ -28,7 +28,6 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	private final Client.ClientConfig clientConfig;
 	private final long timeout;
 	@JsonIgnore private final Map<Integer, RequestData> requests = new ConcurrentHashMap<>();
-	@JsonIgnore private final Map<Integer, Consumer<JsonNode>> subscriptions = new ConcurrentHashMap<>();
 	@JsonIgnore private final Queue<RequestData> cleanupQueue = new ConcurrentLinkedDeque<>();
 
 	/**
@@ -62,7 +61,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	                                                     final P functionInputs,
 	                                                     final Class<R> resultClass,
 	                                                     final Consumer<JsonNode> eventConsumer,
-	                                                     final AppObject<AP, AR> appObject) throws EverSdkException {
+	                                                     final AppObject<AP, AR> appObject) {
 		final int requestId = requestCountNextVal();
 		// let's clean previous requests and their native memory sessions
 		cleanup();
@@ -173,11 +172,11 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 
 	// responseType = 100 means good answer, 101 means error or reconnection
 	private void addEvent(int requestId, final RequestData request, final String responseString, int responseType) {
-		if (request.subscriptionHandler() instanceof Consumer<?> handler) {
+		if (request.subscriptionHandler() != null) {
 			try {
 				JsonNode node = JsonContext.ABI_JSON_MAPPER().readTree(responseString);
 				try {
-					((Consumer<JsonNode>) handler).accept(node);
+					request.subscriptionHandler().accept(node);
 				} catch (Exception ex1) {
 					logger.log(System.Logger.Level.ERROR,
 					           () -> "REQ:%d EVENT:%s Subscribe Event Action processing failed! %s".formatted(requestId,
@@ -202,7 +201,6 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	private void finishRequest(int requestId, final RequestData request) {
 		this.cleanupQueue.add(request);
 		this.requests.remove(requestId);
-		this.subscriptions.remove(requestId);
 	}
 
 	private void cleanup() {
@@ -236,40 +234,6 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 		};
 	}
 
-	private <R> R awaitSyncResponse(CompletableFuture<R> requestId, Class<R> resultClass) throws EverSdkException {
-		try {
-			// waiting for response synchronously
-			String responseString = (String) this.requests.get(requestId)
-			                                              .responseFuture()
-			                                              .get(this.timeout, TimeUnit.MILLISECONDS);
-			logger.log(System.Logger.Level.TRACE,
-			           () -> "CTX:%d REQ:%d RESP:%s".formatted(this.id, requestId, responseString));
-			// let's try to parse response
-			return JsonContext.SDK_JSON_MAPPER().readValue(responseString, resultClass);
-		} catch (InterruptedException ex3) {
-			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d EVER-SDK Call interrupted! %s}".formatted(this.id,
-			                                                                          requestId,
-			                                                                          ex3.toString()));
-			throw new EverSdkException(new EverSdkException.ErrorResult(-400, "EVER-SDK call interrupted!"),
-			                           ex3.getCause());
-		} catch (TimeoutException ex4) {
-			logger.log(System.Logger.Level.ERROR,
-			           () -> "CTX:%d REQ:%d EVER-SDK Call expired on Timeout! %s".formatted(this.id,
-			                                                                                requestId,
-			                                                                                ex4.toString()));
-			throw new EverSdkException(new EverSdkException.ErrorResult(-408, "EVER-SDK call expired on Timeout!"),
-			                           ex4.getCause());
-
-		} catch (JsonMappingException e) {
-			throw new RuntimeException(e);
-		} catch (ExecutionException e) {
-			throw new RuntimeException(e);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	/**
 	 * Id int.
 	 *
@@ -298,7 +262,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	}
 
 	/**
-	 * @param request_id
+	 * @param request_id    id of the request in this context that this answer applies to
 	 * @param params_json   memory segment with native response string
 	 * @param response_type Type of response with following possible values:
 	 *                      RESULT = 1, real response.
@@ -307,7 +271,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	 *                      APP_NOTIFY = 4, notify application with some data. See Application objects
 	 *                      RESERVED = 5..99 – reserved for protocol internal purposes. Application (or binding) must ignore this response.
 	 *                      CUSTOM >= 100 - additional function data related to request handling. Depends on the function.
-	 * @param finished
+	 * @param finished      is this a final answer for this request_id
 	 */
 	@Override
 	public void apply(int request_id, final MemorySegment params_json, int response_type, boolean finished) {

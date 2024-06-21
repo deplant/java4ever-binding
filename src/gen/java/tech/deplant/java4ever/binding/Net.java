@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * <strong>Net</strong>
  * Contains methods of "net" module of EVER-SDK API
- *
+ * <p>
  * Network access. 
  * @version 1.45.0
  */
@@ -255,7 +255,7 @@ public final class Net {
 
   /**
    * Performs recursive retrieval of a transactions tree produced by a specific message:
-   * in_msg -> dst_transaction -> out_messages -> dst_transaction -> ...
+   * in_msg -&gt; dst_transaction -&gt; out_messages -&gt; dst_transaction -&gt; ...
    * If the chain of transactions execution is in progress while the function is running,
    * it will wait for the next transactions to appear until the full tree or more than 50 transactions
    * are received.
@@ -277,7 +277,7 @@ public final class Net {
    * + 25 message ids of the 4th layer + 75 message ids of the 5th layer.
    * 5. Retrieve 20 more messages and 20 more transactions of the 4th layer + 100 more message ids of the 5th layer.
    * 6. Now we have 1+5+20+20+20 = 66 transactions, which is more than 50. Function exits with the tree of
-   * 1m->1t->5m->5t->25m->25t->35m->35t. If we see any message ids in the last transactions out_msgs, which don't have
+   * 1m-&gt;1t-&gt;5m-&gt;5t-&gt;25m-&gt;25t-&gt;35m-&gt;35t. If we see any message ids in the last transactions out_msgs, which don't have
    * corresponding messages in the function result, it means that the full tree was not received and we need to continue iteration.
    *
    * To summarize, it is guaranteed that each message in `result.messages` has the corresponding transaction
@@ -341,12 +341,12 @@ public final class Net {
    * Application should call the `remove_iterator` when iterator is no longer required. Creates block iterator.
    *
    * @param startTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` >= `start_time`.
+   * includes blocks with `gen_utime` &gt;= `start_time`.
    * Otherwise the iteration starts from zero state.
    *
    * Must be specified in seconds. Starting time to iterate from.
    * @param endTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` < `end_time`.
+   * includes blocks with `gen_utime` &lt; `end_time`.
    * Otherwise the iteration never stops.
    *
    * Must be specified in seconds. Optional end time to iterate for.
@@ -438,12 +438,12 @@ public final class Net {
    * Application should call the `remove_iterator` when iterator is no longer required. Creates transaction iterator.
    *
    * @param startTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` >= `start_time`.
+   * includes blocks with `gen_utime` &gt;= `start_time`.
    * Otherwise the iteration starts from zero state.
    *
    * Must be specified in seconds. Starting time to iterate from.
    * @param endTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` < `end_time`.
+   * includes blocks with `gen_utime` &lt; `end_time`.
    * Otherwise the iteration never stops.
    *
    * Must be specified in seconds. Optional end time to iterate for.
@@ -563,12 +563,12 @@ public final class Net {
 
   /**
    * @param startTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` >= `start_time`.
+   * includes blocks with `gen_utime` &gt;= `start_time`.
    * Otherwise the iteration starts from zero state.
    *
    * Must be specified in seconds. Starting time to iterate from.
    * @param endTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` < `end_time`.
+   * includes blocks with `gen_utime` &lt; `end_time`.
    * Otherwise the iteration never stops.
    *
    * Must be specified in seconds. Optional end time to iterate for.
@@ -796,12 +796,12 @@ public final class Net {
 
   /**
    * @param startTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` >= `start_time`.
+   * includes blocks with `gen_utime` &gt;= `start_time`.
    * Otherwise the iteration starts from zero state.
    *
    * Must be specified in seconds. Starting time to iterate from.
    * @param endTime If the application specifies this parameter then the iteration
-   * includes blocks with `gen_utime` < `end_time`.
+   * includes blocks with `gen_utime` &lt; `end_time`.
    * Otherwise the iteration never stops.
    *
    * Must be specified in seconds. Optional end time to iterate for.

@@ -26,13 +26,6 @@ public class ParserEngine {
 		                                               ApiReference.class);
 	}
 
-//	public static ApiReference ofEverSdkLibrary(LibraryLoader loader) throws JsonProcessingException, EverSdkException, EverSdkException {
-//		var ctx = EverSdkContext.builder()
-//				.setConfigJson("{}")
-//				.buildNew(AbsolutePathLoader.ofSystemEnv("TON_CLIENT_LIB"));
-//		return ctx.mapper().convertValue(Client.getApiReference(ctx).api(), ApiReference.class);
-//	}
-
 	public static void parse(ApiReference parsedApiReference) throws IOException {
 
 		final String apiVersion = parsedApiReference.version();
@@ -101,9 +94,7 @@ public class ParserEngine {
 						                                     records);
 						typeLibrary.put(new SdkType(moduleCapitalName, interfaceName), javaInterface);
 					}
-					default -> {
-						typeLibrary.put(new SdkType(moduleCapitalName, type.name()), new SdkDummy(type));
-					}
+					default ->  typeLibrary.put(new SdkType(moduleCapitalName, type.name()), new SdkDummy(type));
 				}
 			}
 		}
@@ -162,23 +153,22 @@ public class ParserEngine {
 	}
 
 	public static TypeSpec.Builder moduleToBuilder(ApiModule module, String moduleNameCapitalized, String version) {
-		TypeSpec.Builder moduleBuilder = TypeSpec
+		return TypeSpec
 				.classBuilder(moduleNameCapitalized)
 				.addJavadoc(moduleDocs(module, moduleNameCapitalized, version).build())
 				.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-		return moduleBuilder;
 	}
 
 	public static CodeBlock.Builder moduleDocs(ApiModule module, String moduleNameCapitalized, String version) {
 		return CodeBlock
 				.builder()
 				.add(String.format("""
-						                   <strong>%s</strong>
-						                   Contains methods of "%s" module of EVER-SDK API
-						                                
-						                   %s %s
-						                   @version %s
-						                   """,
+									<strong>%s</strong>
+									Contains methods of "%s" module of EVER-SDK API
+									<p>
+									%s %s
+									@version %s
+									""",
 				                   moduleNameCapitalized,
 				                   module.name(),
 				                   requireNonNullElse(module.summary(), ""),

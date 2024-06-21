@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Crypto</strong>
  * Contains methods of "crypto" module of EVER-SDK API
- *
+ * <p>
  * Crypto functions. 
  * @version 1.45.0
  */

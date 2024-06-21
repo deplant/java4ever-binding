@@ -10,9 +10,6 @@ public class TestEnv {
 	public static final String NODESE_URL = "https://nodese.truequery.tech";
 	public static final String NODESE_ENDPOINT = "https://nodese.truequery.tech/graphql";
 
-//	static void loadEverSdk() {
-//		EverSdk.load(new AbsolutePathLoader("c:/opt/sdk/ton_client.dll"));
-//	}
 	static void loadEverSdk() {
 		EverSdk.load();
 	}

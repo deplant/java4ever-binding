@@ -36,13 +36,11 @@ public record SdkParam(TypeName refClassName,
 		String reservedName = "";
 		boolean hasReserved = false;
 
-
 		if (javaType instanceof SdkDummy dummy) {
 			className = TypeReference.fromApiType(dummy.type()).toTypeName();
 		} else {
 			className = typeReference.toTypeName();
 		}
-
 
 		if ("Context".equals(className.toString())) {
 			paramName = "ctx";
@@ -51,15 +49,8 @@ public record SdkParam(TypeName refClassName,
 		}
 
 		if (Objects.nonNull(paramName)) {
-			// PARAM NAME
-			//String paramName = ParserUtils.camelCase(paramType.name()); // camel cased, can clash with reserved
-
 			reservedName = RESERVED_FIELD_NAMES.getOrDefault(paramName, paramName); // checks for reserved words or defaults to paramName
-
-			hasReserved = false;
-			if (!reservedName.equals(paramName)) {
-				hasReserved = true;
-			}
+			hasReserved = !reservedName.equals(paramName);
 		}
 
 		return new SdkParam(className,

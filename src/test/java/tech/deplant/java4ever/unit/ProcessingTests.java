@@ -35,7 +35,7 @@ public class ProcessingTests {
 
 	@Test
 	@OnlineMeans(url = TestEnv.NODESE_URL, connectTimeout = 500, readTimeout = 1500)
-	public void cancel_monitor_not_throws_for_random_queue() throws EverSdkException {
+	public void cancel_monitor_not_throws_for_random_queue() {
 		int ctxId = TestEnv.newContext();
 		assertDoesNotThrow(() -> Processing.cancelMonitor(ctxId,"aaa"));
 	}

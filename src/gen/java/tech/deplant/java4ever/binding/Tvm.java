@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Tvm</strong>
  * Contains methods of "tvm" module of EVER-SDK API
- *
+ * <p>
  *  
  * @version 1.45.0
  */

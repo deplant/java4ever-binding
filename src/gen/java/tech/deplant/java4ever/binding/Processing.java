@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 /**
  * <strong>Processing</strong>
  * Contains methods of "processing" module of EVER-SDK API
- *
+ * <p>
  * Message processing module. This module incorporates functions related to complex message
  * processing scenarios.
  * @version 1.45.0
@@ -200,7 +200,7 @@ public final class Processing {
    *
    * Expiration timeouts will grow with every retry.
    * Retry grow factor is set in Client config:
-   * <.....add config parameter with default value here>
+   * &lt;.....add config parameter with default value here&gt;
    *
    * Default value is 0. Processing try index.
    * @param signatureId  Signature ID to be used in data to sign preparing when CapSignatureWithId capability is enabled
@@ -449,7 +449,7 @@ public final class Processing {
     /**
      * This event occurs only for the contracts which ABI includes "expire" header.
      *
-     * If Application specifies `NetworkConfig.message_retries_count` > 0, then `process_message`
+     * If Application specifies `NetworkConfig.message_retries_count` &gt; 0, then `process_message`
      * will perform retries: will create a new message and send it again and repeat it until it reaches
      * the maximum retries count or receives a successful result.  All the processing
      * events will be repeated. Notifies the app that the message was not executed within expire timeout on-chain and will never be because it is already expired. The expiration timeout can be configured with `AbiConfig` parameters.

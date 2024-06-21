@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class ParseGql {
 
-	public static ObjectMapper MAPPER = JsonContext.ABI_JSON_MAPPER();
+	public static final ObjectMapper MAPPER = JsonContext.ABI_JSON_MAPPER();
 
 	public static void generateFromSchema(String jsonPath) throws IOException {
 		var schema = MAPPER.readValue(new JsonResource(jsonPath).get(), GqlSchemaRoot.class).data().__schema();
@@ -114,7 +114,7 @@ public class ParseGql {
 
 	}
 
-	private static TypeSpec.Builder processObjects(GqlSchemaRoot.GqlType.GqlInputObject input) throws IOException {
+	private static TypeSpec.Builder processObjects(GqlSchemaRoot.GqlType.GqlInputObject input) {
 
 		TypeSpec.Builder recordBuilder = TypeSpec.recordBuilder(input.name()).addModifiers(Modifier.PUBLIC);
 
@@ -126,10 +126,6 @@ public class ParseGql {
 		for (var field : input.inputFields()) {
 			recordBuilder.addRecordComponent(ParserUtils.processReservedNames(getClassName(field.type()), field.name())
 			                                            .build());
-//			recordBuilder.addField(FieldSpec.builder(String.class,
-//			                                         field.name().toUpperCase(Locale.ROOT),
-//			                                         Modifier.PUBLIC,
-//			                                         Modifier.STATIC).initializer("$S", field.name()).build());
 		}
 		return recordBuilder;
 	}
@@ -150,22 +146,7 @@ public class ParseGql {
 		for (var field : obj.fields()) {
 			recordBuilder.addRecordComponent(ParserUtils.processReservedNames(getClassName(field.type()), field.name())
 			                                            .build());
-//			recordBuilder.addField(FieldSpec.builder(String.class,
-//			                                         field.name().toUpperCase(Locale.ROOT),
-//			                                         Modifier.PUBLIC,
-//			                                         Modifier.STATIC).initializer("$S", field.name()).build());
-
 			if (!field.args().isEmpty()) {
-
-
-				//   public static QueryExecutorBuilder blocks(String fields, BlockFilter filter, List<QueryOrderBy> orderBy,
-				//      Integer limit, Float timeout, String accessKey, String operationId) {
-				//    var builder = new QueryExecutorBuilder("blocks", fields);
-				//    Optional.ofNullable(filter).ifPresent(builder::addToQuery);
-				//    Optional.ofNullable(orderBy).ifPresent(builder::addToQuery);
-				//    Optional.ofNullable(limit).ifPresent(builder::addToQuery);
-				//    return builder;
-				//  }
 				var queryExecutorBuilderClass = ClassName.get(QueryExecutorBuilder.class);
 				var functionBuilder = MethodSpec.methodBuilder(field.name())
 				                                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -221,8 +202,7 @@ public class ParseGql {
 			case "SCALAR" -> {
 				final String typeName = switch (param.name()) {
 					case "Int" -> "Integer";
-					case "ID" -> "String";
-					case "RempReceiptJson" -> "String";
+					case "ID", "RempReceiptJson" -> "String";
 					default -> param.name();
 				};
 				yield ClassName.bestGuess(typeName);
@@ -237,10 +217,6 @@ public class ParseGql {
 	                                  final String query,
 	                                  final String method,
 	                                  final String... headers) throws IOException, InterruptedException {
-
-		//String uriString = url + URLEncoder.encode(query, StandardCharsets.UTF_8);
-		//System.out.println(uriString);
-		//String uriString = /*url + */URLEncoder.encode(query, StandardCharsets.UTF_8);
 		HttpClient client = HttpClient.newBuilder()
 		                              .version(HttpClient.Version.HTTP_1_1)
 		                              .connectTimeout(Duration.ofSeconds(15))
@@ -399,9 +375,6 @@ public class ParseGql {
 				""";
 		final var jsonRequest = "{\"query\":" + MAPPER.writeValueAsString(
 				"{messages(filter: {msg_type: {eq:2}}) { id body boc src created_at }}") + "}";
-//		String result1 = httpRequest(endpoint, jsonRequest,
-//		                             "POST","Accept: application/json","Content-Type: application/json");
-
 		return httpRequest(endpoint,
 		                   introspectionQueryText,
 		                   "POST",

@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Utils</strong>
  * Contains methods of "utils" module of EVER-SDK API
- *
+ * <p>
  * Misc utility Functions. 
  * @version 1.45.0
  */

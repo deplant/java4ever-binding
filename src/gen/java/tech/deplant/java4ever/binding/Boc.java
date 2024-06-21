@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <strong>Boc</strong>
  * Contains methods of "boc" module of EVER-SDK API
- *
+ * <p>
  * BOC manipulation module. 
  * @version 1.45.0
  */

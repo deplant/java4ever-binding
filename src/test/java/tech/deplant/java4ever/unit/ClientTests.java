@@ -15,10 +15,7 @@ import tech.deplant.java4ever.binding.EverSdk;
 import tech.deplant.java4ever.binding.EverSdkException;
 import tech.deplant.java4ever.binding.loader.DefaultLoader;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,7 +38,7 @@ public class ClientTests {
 	}
 
 	@Test
-	public void get_version_snippet() throws EverSdkException, ExecutionException, InterruptedException {
+	public void get_version_snippet() throws EverSdkException {
 		int ctxId = TestEnv.newContextEmpty();
 		var asyncResult = Client.version(ctxId);
 		var syncResult = EverSdk.await(asyncResult);

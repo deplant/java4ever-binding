@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * <strong>Proofs</strong>
  * Contains methods of "proofs" module of EVER-SDK API
- *
+ * <p>
  * [UNSTABLE](UNSTABLE.md) [DEPRECATED](DEPRECATED.md) Module for proving data, retrieved from TONOS API. 
  * @version 1.45.0
  */

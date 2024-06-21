@@ -22,7 +22,8 @@ public class JsonContext {
 	private static ObjectMapper lazySdkMapper;
 	private static ObjectMapper lazyAbiMapper;
 
-	private static final TypeReference<Map<String, Object>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, Object>>(){};
+	private static final TypeReference<Map<String, Object>> MAP_STRING_OBJECT_TYPE = new TypeReference<>() {
+	};
 
 	private static JsonNode emptyNode;
 
