@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Helper class for working with byte-organized files.
+ */
 public record ByteFile(String filePath) implements Supplier<byte[]>, Consumer<byte[]> {
 	@Override
 	public byte[] get() {

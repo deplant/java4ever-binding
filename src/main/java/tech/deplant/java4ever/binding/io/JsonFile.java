@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Helper class for working with JSON-organized files.
+ */
 public record JsonFile(String filePath) implements Supplier<String>, Consumer<String> {
 	@Override
 	public String get() {

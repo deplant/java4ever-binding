@@ -8,6 +8,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Helper class for working with JSON-organized project resources.
+ */
 public record JsonResource(String resourceName) implements Supplier<String>, Consumer<String> {
 	@Override
 	public String get() {

@@ -1,5 +1,8 @@
 package tech.deplant.java4ever.binding.loader;
 
+/**
+ * Every EVER-SDK loader should implement this interface to be used in EverSdk.load() statement.
+ */
 public interface LibraryLoader {
     static LibraryLoader ofType(LibraryLoaderType type, String value) {
 		return switch (type) {
@@ -10,5 +13,9 @@ public interface LibraryLoader {
 		};
 	}
 
+	/**
+	 * Any implementation should contain System.load(...); System.loadLibrary(...)
+	 * to correctly load native library connection.
+	 */
 	void load();
 }

@@ -7,6 +7,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Helper class for working with byte-organized project resources.
+ */
 public record ByteResource(String resourceName) implements Supplier<byte[]>, Consumer<byte[]> {
     @Override
     public byte[] get() {

@@ -24,7 +24,10 @@ public class EverSdk {
 	public final static String LOG_FORMAT = "CTX:%d REQ:%d FUNC:%s %s:%s";
 	private final static System.Logger logger = System.getLogger(EverSdk.class.getName());
 	private final static Map<Integer, EverSdkContext> contexts = new ConcurrentHashMap<>();
-	private final static long timeout = 600_000L;
+	/**
+	 * Timeout for the waiting of async operations.
+	 */
+	public static long timeout = 600_000L;
 
 	/**
 	 * Context config client . client config.
@@ -66,13 +69,13 @@ public class EverSdk {
 	}
 
 	/**
-	 * Async void completable future.
+	 * Async method to call EVER-SDK that do not return responses. It will response as soon as call is sent.
 	 *
-	 * @param <P>            the type parameter
-	 * @param contextId      the context id
-	 * @param functionName   the function name
-	 * @param functionInputs the function inputs
-	 * @return the completable future
+	 * @param <P>            function params type parameter
+	 * @param contextId      config context id
+	 * @param functionName   EVER-SDK function name
+	 * @param functionInputs EVER-SDK function inputs
+	 * @return the completable future with generic result type
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static <P> CompletableFuture<Void> asyncVoid(final int contextId,
@@ -83,15 +86,15 @@ public class EverSdk {
 
 
 	/**
-	 * Async completable future.
+	 * Async method to get future result from EVER-SDK
 	 *
-	 * @param <T>            the type parameter
-	 * @param <P>            the type parameter
-	 * @param contextId      the context id
-	 * @param functionName   the function name
-	 * @param functionInputs the function inputs
-	 * @param outputClass    the output class
-	 * @return the completable future
+	 * @param <T>            result type parameter
+	 * @param <P>            function params type parameter
+	 * @param contextId      config context id
+	 * @param functionName   EVER-SDK function name
+	 * @param functionInputs EVER-SDK function inputs
+	 * @param outputClass    EVER-SDK output class
+	 * @return the completable future with generic result type
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static <T, P> CompletableFuture<T> async(final int contextId,
@@ -102,16 +105,16 @@ public class EverSdk {
 	}
 
 	/**
-	 * Async callback completable future.
+	 * Async method to get future result from EVER-SDK with additional parameter to receive recurring events from EVER-SDK
 	 *
-	 * @param <T>            the type parameter
-	 * @param <P>            the type parameter
-	 * @param contextId      the context id
-	 * @param functionName   the function name
-	 * @param functionInputs the function inputs
-	 * @param outputClass    the output class
-	 * @param eventConsumer  the event consumer
-	 * @return the completable future
+	 * @param <T>            result type parameter
+	 * @param <P>            function params type parameter
+	 * @param contextId      config context id
+	 * @param functionName   EVER-SDK function name
+	 * @param functionInputs EVER-SDK function inputs
+	 * @param outputClass    EVER-SDK output class
+	 * @param eventConsumer  Java Consumer (lambda-function) that accepts JsonNode object returned by EVER-SDK
+	 * @return the completable future with generic result type
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static <T, P> CompletableFuture<T> asyncCallback(final int contextId,
@@ -123,16 +126,16 @@ public class EverSdk {
 	}
 
 	/**
-	 * Async app object completable future.
+	 * Async method to get future result from EVER-SDK with additional parameter to receive AppObject callbacks.
 	 *
-	 * @param <T>            the type parameter
-	 * @param <P>            the type parameter
-	 * @param contextId      the context id
-	 * @param functionName   the function name
-	 * @param functionInputs the function inputs
-	 * @param outputClass    the output class
-	 * @param appObject      the app object
-	 * @return the completable future
+	 * @param <T>            result type parameter
+	 * @param <P>            function params type parameter
+	 * @param contextId      config context id
+	 * @param functionName   EVER-SDK function name
+	 * @param functionInputs EVER-SDK function inputs
+	 * @param outputClass    EVER-SDK output class
+	 * @param appObject      Pointer to AppObject implementation
+	 * @return the completable future with generic result type
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static <T, P> CompletableFuture<T> asyncAppObject(final int contextId,
@@ -163,7 +166,9 @@ public class EverSdk {
 	}
 
 	/**
-	 * Builder builder.
+	 * Creates a builder object that is used to precisely configure EVER-SDK before creating new context.
+	 * After specifying all needed configs in builder style, call build() to finish and create context_id
+	 * with EVER-SDK.
 	 *
 	 * @return the builder
 	 */
@@ -172,10 +177,10 @@ public class EverSdk {
 	}
 
 	/**
-	 * Create with endpoint int.
+	 * Helper method to create new context with only one setting - endpoint of the blockchain.
 	 *
-	 * @param endpoint the endpoint
-	 * @return the int
+	 * @param endpoint the endpoint of the blockchain.
+	 * @return context_id for future usage
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static int createWithEndpoint(String endpoint) throws EverSdkException {
@@ -183,10 +188,10 @@ public class EverSdk {
 	}
 
 	/**
-	 * Create with config int.
+	 * Helper method to create new context from existing config object
 	 *
-	 * @param config the config
-	 * @return the int
+	 * @param config config object
+	 * @return context_id for future usage
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static int createWithConfig(Client.ClientConfig config) throws EverSdkException {
@@ -239,10 +244,10 @@ public class EverSdk {
 	}
 
 	/**
-	 * Create with json int.
+	 * Helper method to create new context from existing JSON config
 	 *
-	 * @param configJson the config json
-	 * @return the int
+	 * @param configJson json text that contains config parameters
+	 * @return context_id for future usage
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static int createWithJson(String configJson) throws EverSdkException {
@@ -260,11 +265,14 @@ public class EverSdk {
 	}
 
 	/**
-	 * Await t.
+	 * Helper method that awaits for completable future for timeout that
+	 * you can specify by issuing EverSdk.timeout = 60_000L.
+	 * All future errors will be wrapped in EverSdk exceptions. If you want to catch these errors,
+	 * catch errors -400, -408, -500
 	 *
-	 * @param <T>             the type parameter
-	 * @param functionOutputs the function outputs
-	 * @return the t
+	 * @param <T>             result type parameter
+	 * @param functionOutputs future result to wait for
+	 * @return returns result of the given type
 	 * @throws EverSdkException the ever sdk exception
 	 */
 	public static <T> T await(CompletableFuture<T> functionOutputs) throws EverSdkException {

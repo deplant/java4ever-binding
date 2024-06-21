@@ -126,7 +126,7 @@ java {
 jar {
     manifest {
         attributes(
-                'Enable-Native-Access': "ALL-UNNAMED",
+                'Enable-Native-Access': 'java4ever.binding',
         )
     }
 }
