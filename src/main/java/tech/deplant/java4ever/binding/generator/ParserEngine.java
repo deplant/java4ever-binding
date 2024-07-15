@@ -2,12 +2,14 @@ package tech.deplant.java4ever.binding.generator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import tech.deplant.commons.Objs;
+import tech.deplant.commons.Strings;
 import tech.deplant.java4ever.binding.JsonContext;
 import tech.deplant.java4ever.binding.generator.jtype.*;
 import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.java4ever.binding.io.JsonResource;
 import tech.deplant.javapoet.CodeBlock;
 import tech.deplant.javapoet.JavaFile;
+import tech.deplant.javapoet.MethodSpec;
 import tech.deplant.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
@@ -42,6 +44,8 @@ public class ParserEngine {
 		for (var module : parsedApiReference.modules()) {
 			String moduleCapitalName = ParserUtils.capitalize(module.name());
 
+			final Map<String, TypeSpec.Builder> appObjects = new HashMap<>();
+
 			// type parsing loop
 			for (ApiType type : module.types()) {
 				switch (type) {
@@ -71,8 +75,34 @@ public class ParserEngine {
 						List<SdkRecord> records = new ArrayList<>();
 						// patch for 'Abi' interface that messes with module with the same name
 						String interfaceName = "Abi".equals(eot.name()) ? "ABI" : eot.name();
+						boolean isAppObject = Strings.safeSubstrEquals(interfaceName, 0, 11, false, "ParamsOfApp") ||
+						              Strings.safeSubstrEquals(interfaceName, 0, 11, false, "ResultOfApp");
+						String appObjectName = "";
+						if (isAppObject) {
+							appObjectName = Strings.substr(interfaceName,8);
+							if (!appObjects.containsKey(appObjectName)) {
+								logger.log(System.Logger.Level.WARNING,appObjectName);
+								appObjects.put(appObjectName,TypeSpec.interfaceBuilder(appObjectName));
+							} else {
+								logger.log(System.Logger.Level.WARNING,"Has appObject: " + appObjectName);
+							}
+						}
 						for (ApiType eotChildType : eot.enum_types()) {
 							switch (eotChildType) {
+//								case StructType str when isAppObject -> {
+//									var appObjectBuilder = appObjects.get(appObjectName);
+//									//if (interfaceName.equals("ParamsOf" + appObjectName)) {
+//										//var aoMethodBuilder = MethodSpec.methodBuilder(eotChildType.name());
+//										//aoMethodBuilder.
+//										//appObjectBuilder.addMethod(aoMethodBuilder.build());
+//									//}
+////									records.add(SdkRecord.ofApiType(str,
+////									                                typeLibrary,
+////									                                new SdkInterfaceParent(
+////											                                moduleCapitalName,
+////											                                interfaceName,
+////											                                str.name())));
+//								}
 								case StructType str -> records.add(SdkRecord.ofApiType(str,
 								                                                       typeLibrary,
 								                                                       new SdkInterfaceParent(
@@ -87,12 +117,13 @@ public class ParserEngine {
 										"Unexpected value: " + eotChildType);
 							}
 						}
-
-						var javaInterface = new SdkInterface(eot,
-						                                     interfaceName,
-						                                     new SdkDocs(eot.summary(), eot.description()),
-						                                     records);
-						typeLibrary.put(new SdkType(moduleCapitalName, interfaceName), javaInterface);
+						//if (!isAppObject) {
+							var javaInterface = new SdkInterface(eot,
+							                                     interfaceName,
+							                                     new SdkDocs(eot.summary(), eot.description()),
+							                                     records);
+							typeLibrary.put(new SdkType(moduleCapitalName, interfaceName), javaInterface);
+						//}
 					}
 					default ->  typeLibrary.put(new SdkType(moduleCapitalName, type.name()), new SdkDummy(type));
 				}

@@ -3,8 +3,8 @@ package tech.deplant.java4ever.binding.generator.jtype;
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.commons.Objs;
 import tech.deplant.commons.Strings;
-import tech.deplant.java4ever.binding.*;
-import tech.deplant.java4ever.binding.ffi.EverSdkSubscription;
+import tech.deplant.java4ever.binding.EverSdkException;
+import tech.deplant.java4ever.binding.Unstable;
 import tech.deplant.java4ever.binding.generator.ParserEngine;
 import tech.deplant.java4ever.binding.generator.ParserUtils;
 import tech.deplant.java4ever.binding.generator.TypeReference;
@@ -12,8 +12,10 @@ import tech.deplant.java4ever.binding.generator.reference.*;
 import tech.deplant.javapoet.*;
 
 import javax.lang.model.element.Modifier;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -76,7 +78,7 @@ public record SdkFunction(String functionModule,
 		String templateString = "%RETURN_KEY%EverSdk.%CALL_TYPE%(ctxId, $S, %PARAMS%%RETURN_CLASS%%APP_OBJ%)";
 		methodBuilder.addParameter(ClassName.INT, "ctxId");
 		for (ApiType param : function().params()) {
-			logger.log(System.Logger.Level.TRACE,  () -> function().name() + "\\" + param.name() + "\\" + param.type());
+			logger.log(System.Logger.Level.TRACE, () -> function().name() + "\\" + param.name() + "\\" + param.type());
 			switch (param.name()) {
 				case "context", "_context" -> {
 					// we're always adding context, so no reason to do something
@@ -91,23 +93,38 @@ public record SdkFunction(String functionModule,
 					templateString = templateString.replace("%APP_OBJ%", ", callback");
 					templateString = templateString.replace("%CALL_TYPE%", "asyncCallback");
 					var paramClass = ClassName.get(JsonNode.class);//ClassName.get(CallbackHandler.class);
-					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass), "callback");
+					methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), paramClass),
+					                           "callback");
 					//methodBuilder.addParameter(ClassName.get(EverSdkSubscription.class), "eventHandler");
 				}
 				case "app_object", "password_provider" -> {
 					templateString = templateString.replace("%APP_OBJ%", ", appObject");
 					templateString = templateString.replace("%CALL_TYPE%", "asyncAppObject");
 					if (param instanceof GenericType gen) {
-						TypeName[] appObjectParams = Arrays.stream(gen.generic_args()).map(arg -> switch(arg) {
+//						TypeName[] appObjectParams = Arrays.stream(gen.generic_args()).map(arg -> switch(arg) {
+//							case null -> null;
+//							case RefType ref -> SdkParam.ofApiType(ref, typeLibrary());
+//							default -> null;
+//						}).filter(Objects::nonNull).map(SdkParam::refClassName).toArray(TypeName[]::new);
+//						appObjectParams[0].
+						String refName = switch(gen.generic_args()[0]) {
 							case null -> null;
-							case RefType ref -> SdkParam.ofApiType(ref, typeLibrary());
+							case RefType ref -> ref.ref_name().split("\\.")[1];
 							default -> null;
-						}).filter(Objects::nonNull).map(SdkParam::refClassName).toArray(TypeName[]::new);
-						methodBuilder.addParameter(ParameterizedTypeName.get(ClassName.bestGuess(gen.generic_name()), appObjectParams),
-						                           "appObject");
+						};
+						String appObjectInterfaceName = Strings.substr(refName, 8);
+						try {
+							methodBuilder.addParameter(ClassName.bestGuess(appObjectInterfaceName), "appObject");
+						} catch (IllegalArgumentException e) {
+							logger.log(System.Logger.Level.ERROR, function().name());
+							logger.log(System.Logger.Level.ERROR, appObjectInterfaceName);
+							throw e;
+						}
+
+
 					}
 				}
-				default -> logger.log(System.Logger.Level.WARNING,  () -> "Unknown parameter: " + param.name());
+				default -> logger.log(System.Logger.Level.WARNING, () -> "Unknown parameter: " + param.name());
 			}
 		}
 
@@ -135,7 +152,7 @@ public record SdkFunction(String functionModule,
 
 		final String finalTemplateString = templateString;
 		logger.log(System.Logger.Level.TRACE, () -> "Template: " + finalTemplateString);
-		statementArgs.forEach(arg -> logger.log(System.Logger.Level.TRACE,  () -> "Arg[]: " + arg.toString()));
+		statementArgs.forEach(arg -> logger.log(System.Logger.Level.TRACE, () -> "Arg[]: " + arg.toString()));
 
 		methodBuilder.addCode(CodeBlock
 				                      .builder()

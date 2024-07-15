@@ -267,7 +267,7 @@ public class EverSdk {
 	/**
 	 * Helper method that awaits for completable future for timeout that
 	 * you can specify by issuing EverSdk.timeout = 60_000L.
-	 * All future errors will be wrapped in EverSdk exceptions. If you want to catch these errors,
+	 * All Java Futures possible errors are wrapped in EverSdkException. If you want to catch these errors,
 	 * catch errors -400, -408, -500
 	 *
 	 * @param <T>             result type parameter

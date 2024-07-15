@@ -431,8 +431,7 @@ public final class Crypto {
    */
   public static CompletableFuture<Crypto.RegisteredCryptoBox> createCryptoBox(int ctxId,
       String secretEncryptionSalt, @JsonProperty("secret") Crypto.CryptoBoxSecret secretKey,
-      AppObject<Crypto.ParamsOfAppPasswordProvider, Crypto.ResultOfAppPasswordProvider> appObject)
-      throws EverSdkException {
+      AppPasswordProvider appObject) throws EverSdkException {
     return EverSdk.asyncAppObject(ctxId, "crypto.create_crypto_box", new Crypto.ParamsOfCreateCryptoBox(secretEncryptionSalt, secretKey), Crypto.RegisteredCryptoBox.class, appObject);
   }
 
@@ -502,8 +501,7 @@ public final class Crypto {
    *  Register an application implemented signing box.
    */
   public static CompletableFuture<Crypto.RegisteredSigningBox> registerSigningBox(int ctxId,
-      AppObject<Crypto.ParamsOfAppSigningBox, Crypto.ResultOfAppSigningBox> appObject) throws
-      EverSdkException {
+      AppSigningBox appObject) throws EverSdkException {
     return EverSdk.asyncAppObject(ctxId, "crypto.register_signing_box", null, Crypto.RegisteredSigningBox.class, appObject);
   }
 
@@ -546,8 +544,7 @@ public final class Crypto {
    *  Register an application implemented encryption box.
    */
   public static CompletableFuture<Crypto.RegisteredEncryptionBox> registerEncryptionBox(int ctxId,
-      AppObject<Crypto.ParamsOfAppEncryptionBox, Crypto.ResultOfAppEncryptionBox> appObject) throws
-      EverSdkException {
+      AppEncryptionBox appObject) throws EverSdkException {
     return EverSdk.asyncAppObject(ctxId, "crypto.register_encryption_box", null, Crypto.RegisteredEncryptionBox.class, appObject);
   }
 

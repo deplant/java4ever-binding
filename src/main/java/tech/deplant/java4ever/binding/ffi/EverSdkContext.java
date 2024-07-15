@@ -2,7 +2,6 @@ package tech.deplant.java4ever.binding.ffi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import tech.deplant.java4ever.binding.*;
 
@@ -11,7 +10,9 @@ import java.lang.foreign.MemorySegment;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -61,7 +62,7 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	                                                     final P functionInputs,
 	                                                     final Class<R> resultClass,
 	                                                     final Consumer<JsonNode> eventConsumer,
-	                                                     final AppObject<AP, AR> appObject) {
+	                                                     final AppObject appObject) {
 		final int requestId = requestCountNextVal();
 		// let's clean previous requests and their native memory sessions
 		cleanup();
@@ -171,6 +172,34 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	}
 
 	// responseType = 100 means good answer, 101 means error or reconnection
+	private void addAppObjectRequest(int requestId, final RequestData request, final String appRequestString) {
+		if (request.appObject() != null) {
+			try {
+				var appRequest = JsonContext.SDK_JSON_MAPPER()
+				                            .readValue(appRequestString, Client.ParamsOfAppRequest.class);
+				try {
+					request.appObject().consumeParams(this.id, appRequest.appRequestId(), appRequest.requestData());
+				} catch (Exception ex1) {
+					logger.log(System.Logger.Level.ERROR,
+					           () -> "REQ:%d EVENT:%s AppRequest processing failed! %s".formatted(requestId,
+					                                                                              appRequestString,
+					                                                                              ex1.toString()));
+				}
+			} catch (JsonProcessingException ex2) {
+				logger.log(System.Logger.Level.ERROR,
+				           () -> "REQ:%d EVENT:%s AppRequest JSON deserialization failed! %s".formatted(requestId,
+				                                                                                        appRequestString,
+				                                                                                        ex2.toString()));
+			}
+		} else {
+			logger.log(System.Logger.Level.ERROR,
+			           "No app request consumer for this request_id! CTX:%d REQ:%d EVENT:%s".formatted(this.id,
+			                                                                                           requestId,
+			                                                                                           appRequestString));
+		}
+	}
+
+	// responseType = 100 means good answer, 101 means error or reconnection
 	private void addEvent(int requestId, final RequestData request, final String responseString, int responseType) {
 		if (request.subscriptionHandler() != null) {
 			try {
@@ -191,10 +220,9 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 			}
 		} else {
 			logger.log(System.Logger.Level.ERROR,
-			           "Slot for this request not found on processing subscription event! CTX:%d REQ:%d EVENT:%s".formatted(
-					           this.id,
-					           requestId,
-					           responseString));
+			           "No event consumer for this request_id! CTX:%d REQ:%d EVENT:%s".formatted(this.id,
+			                                                                                     requestId,
+			                                                                                     responseString));
 		}
 	}
 
@@ -275,22 +303,26 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	 */
 	@Override
 	public void apply(int request_id, final MemorySegment params_json, int response_type, boolean finished) {
+		final String responseString = NativeStrings.toJava(params_json);
+		if (logger.isLoggable(System.Logger.Level.TRACE)) {
+			logger.log(System.Logger.Level.TRACE,
+			           "CTX:%d, REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(this.id,
+			                                                                  request_id,
+			                                                                  response_type,
+			                                                                  String.valueOf(finished),
+			                                                                  responseString));
+		}
 		if (this.requests.get(request_id) instanceof RequestData<?> request) {
 			// Request is present, let's lock it
 			request.queueLock().lock();
 			try {
-				final String responseString = NativeStrings.toJava(params_json);
-				if (logger.isLoggable(System.Logger.Level.TRACE)) {
-					logger.log(System.Logger.Level.TRACE,
-					           "REQ:%d TYPE:%d FINISHED:%s JSON:%s".formatted(this.id,
-					                                                          response_type,
-					                                                          String.valueOf(finished),
-					                                                          responseString));
-				}
 				switch (tc_response_types.of(response_type)) {
 					case tc_response_types.TC_RESPONSE_SUCCESS -> addResponse(request_id, request, responseString);
 					case tc_response_types.TC_RESPONSE_ERROR -> addError(request_id, request, responseString);
-					case tc_response_types.TC_RESPONSE_CUSTOM -> addEvent(request_id, request, responseString, response_type);
+					case tc_response_types.TC_RESPONSE_CUSTOM ->
+							addEvent(request_id, request, responseString, response_type);
+					case tc_response_types.TC_RESPONSE_APP_REQUEST ->
+							addAppObjectRequest(request_id, request, responseString);
 				}
 				// if "finished" boolean flag received, let's cleanup request
 				if (finished) {
@@ -320,12 +352,12 @@ public class EverSdkContext implements tc_response_handler_t.Function {
 	 * @param <R> the type parameter
 	 */
 	private record RequestData<R>(boolean hasResponse,
-	                      Arena nativeArena,
-	                      ReentrantLock queueLock,
-	                      Class<R> responseClass,
-	                      CompletableFuture<R> responseFuture,
-	                      Consumer<JsonNode> subscriptionHandler,
-	                      AppObject appObject) {
+	                              Arena nativeArena,
+	                              ReentrantLock queueLock,
+	                              Class<R> responseClass,
+	                              CompletableFuture<R> responseFuture,
+	                              Consumer<JsonNode> subscriptionHandler,
+	                              AppObject appObject) {
 	}
 
 	/**

@@ -264,7 +264,7 @@ public final class Abi {
   }
 
   /**
-   * Solidity functions use ABI types for <a href="https://github.com/tonlabs/TON-Solidity-Compiler/blob/master/API.md#tvmbuilderstore">builder encoding</a>.
+   * Solidity functions use ABI types for [builder encoding](https://github.com/tonlabs/TON-Solidity-Compiler/blob/master/API.md#tvmbuilderstore).
    * The simplest way to decode such a BOC is to use ABI decoding.
    * ABI has it own rules for fields layout in cells so manually encoded
    * BOC can not be described in terms of ABI rules.
