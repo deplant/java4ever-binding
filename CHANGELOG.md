@@ -1,3 +1,7 @@
+### 3.1.2
+
+- Better support for AppObjects
+
 ### 3.0.4
 
 - Fixes for multi-threading work

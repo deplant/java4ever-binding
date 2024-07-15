@@ -264,6 +264,30 @@ public class EverSdk {
 		}
 	}
 
+	public static Processing.ResultOfProcessMessage sendExternalMessage(int contextId,
+	                                                                    String dstAddress,
+	                                                                    Abi.ABI abi,
+	                                                                    String stateInit,
+	                                                                    String messageBody,
+	                                                                    String optionalSrcAddress) throws EverSdkException {
+		var message = EverSdk.await(Boc.encodeExternalInMessage(contextId,
+		                                                        optionalSrcAddress,
+		                                                        dstAddress,
+		                                                        stateInit,
+		                                                        messageBody,
+		                                                        null)).message();
+
+		var request = EverSdk.await(Processing.sendMessage(contextId, message, abi, false, null));
+
+		return EverSdk.await(Processing.waitForTransaction(contextId,
+		                                                   abi,
+		                                                   message,
+		                                                   request.shardBlockId(),
+		                                                   false,
+		                                                   request.sendingEndpoints(),
+		                                                   null));
+	}
+
 	/**
 	 * Helper method that awaits for completable future for timeout that
 	 * you can specify by issuing EverSdk.timeout = 60_000L.
